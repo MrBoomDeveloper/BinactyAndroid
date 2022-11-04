@@ -1,0 +1,6 @@
+int color ic_launcher_background 0x7f010000
+int mipmap ic_launcher 0x7f020000
+int mipmap ic_launcher_foreground 0x7f020001
+int mipmap ic_launcher_round 0x7f020002
+int string app_name 0x7f030000
+int style GdxTheme 0x7f040000

@@ -1,0 +1,73 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+	package
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:3:11-45
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+	android:versionName
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:1-24:12
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+	xmlns:android
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:2:11-69
+application
+ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:4:5-22:19
+	android:label
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:9:13-45
+	android:appCategory
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:8:13-39
+	android:icon
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:6:13-47
+	android:allowBackup
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:5:13-39
+	android:theme
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:10:13-44
+	android:isGame
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:7:13-34
+activity#com.mrboomdev.platformer.AndroidLauncher
+ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:11:9-21:20
+	android:screenOrientation
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:14:17-54
+	android:label
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:13:17-49
+	android:exported
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:16:17-40
+	android:configChanges
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:15:17-111
+	android:name
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:12:17-72
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:17:13-20:29
+action#android.intent.action.MAIN
+ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:18:17-68
+	android:name
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:18:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:19:17-76
+	android:name
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml:19:27-74
+uses-sdk
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+		ADDED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml
+		INJECTED from /storage/emulated/0/AndroidIDEProjects/Platformer/app/AndroidManifest.xml

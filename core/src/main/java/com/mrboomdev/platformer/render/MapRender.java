@@ -22,12 +22,16 @@ public class MapRender {
         rect.y = 20;
         rect.width = 64;
         rect.height = 64;
-        rectangels.put("test", rect);
-        textures.put("test", new Texture(Gdx.files.internal("img/terrain/test.jpg")));
+        rectangels.put("floor", rect);
+        textures.put("floor", new Texture(Gdx.files.internal("img/terrain/floor.jpg")));
     }
     
     public void renderTextures() {
-        Rectangle rect = rectangels.get("test");
-        sprites.draw(textures.get("test"), rect.x, rect.y);
+        for(int x = 0; x < 10; x++) {
+            for(int y = 0; y < 10; y++) {
+        		Rectangle rect = rectangels.get("floor");
+        		sprites.draw(textures.get("floor"), x*64, y*64);
+            }
+        }
     }
 }

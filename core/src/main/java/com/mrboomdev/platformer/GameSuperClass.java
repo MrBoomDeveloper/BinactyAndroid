@@ -15,6 +15,7 @@ public class GameSuperClass extends ApplicationAdapter {
 	public void create() {
 		spriteBatch = new SpriteBatch();
 		texture = new Texture(Gdx.files.internal("img/brand/mrboomdev_logo.png"));
+        System.out.println("Demo screen is active! Please remove it");
 	}
 	
 	/* This method is being called once every frame */

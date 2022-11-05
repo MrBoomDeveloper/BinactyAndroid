@@ -12,7 +12,7 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useImmersiveMode = true;
 		config.useAccelerometer = false;
 		config.useCompass = false;
-		initialize(new GameplayScene(), config);
+		initialize(new GameplayScene(1280, 720), config);
 	}
     
     @Override

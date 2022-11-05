@@ -26,11 +26,11 @@ public class MapRender {
         textures.put("floor", new Texture(Gdx.files.internal("img/terrain/floor.jpg")));
     }
     
-    public void renderTextures() {
+    public void render() {
         for(int x = 0; x < 10; x++) {
             for(int y = 0; y < 10; y++) {
         		Rectangle rect = rectangels.get("floor");
-        		sprites.draw(textures.get("floor"), x*64, y*64);
+        		sprites.draw(textures.get("floor"), x*64, y*64, 25, 50);
             }
         }
     }

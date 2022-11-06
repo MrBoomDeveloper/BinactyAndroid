@@ -4,15 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.mrboomdev.platformer.render.PlayerRender;
 import com.mrboomdev.platformer.ui.Joystick;
 
 public class Joystick {
     private SpriteBatch sprites;
     private Array<Texture> joystickTextures = new Array<Texture>();
-    private final int joystickOffset = 75;
-    private final int joystickSize = 225;
-    private int touchX = 0;
-    private int touchY = 0;
+    private final int joystickOffset = 75, joystickSize = 225;
+    private int touchX = 0, touchY = 0;
+    public float powerX = 0, powerY = 0;
     
     public Joystick(SpriteBatch sprites) {
         this.sprites = sprites;
@@ -45,10 +45,45 @@ public class Joystick {
         } else {
         	touchY = y - joystickOffset;
         }
+        
+        calculatePower(touchX, touchY);
     }
     
     public void reset() {
         touchX = joystickSize / 2 - 15;
         touchY = joystickSize / 2;
+        powerX = 0;
+        powerY = 0;
+    }
+    
+    private void calculatePower(int x, int y) {
+        powerX = 0;
+        powerY = 0;
+        
+        if(x > 97 + 10) {
+            powerX = x > (97 + 50) ? 4 : 2;
+        } else if(x < 97 - 10) {
+        	powerX = x < (97 - 50) ? -4 : -2;
+        }
+        
+        if(y > 112 + 10) {
+            powerY = y > 112 + 50 ? 4 : 2;
+        } else if(y < 112 - 10) {
+        	powerY = y < 112 - 50 ? -4 : -2;
+        }
+    }
+    
+    public String getDebugValues() {
+        String result = "PowerX: " + powerX;
+        result += "\nPowerY: " + powerY;
+        result += "\nJoystickTouchX: " + touchX;
+        result += "\nJoystickTouchY: " + touchY;
+        return result;
+    }
+    
+    public void dispose() {
+        for(Texture texture : joystickTextures) {
+            texture.dispose();
+        }
     }
 }

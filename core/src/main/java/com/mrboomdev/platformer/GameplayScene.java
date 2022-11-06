@@ -3,10 +3,10 @@ package com.mrboomdev.platformer;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mrboomdev.platformer.render.MapRender;
 import com.mrboomdev.platformer.render.PlayerRender;
@@ -16,11 +16,12 @@ public class GameplayScene extends ApplicationAdapter {
     private OrthographicCamera camera;
     private SpriteBatch sprites;
     private Music music;
-    private Rectangle rect;
     private MapRender map;
     private PlayerRender players;
     private TouchControls controls;
     private int screenWidth, screenHeight;
+    private String myNick;
+    private BitmapFont font;
     
     public GameplayScene(int width, int height) {
         screenWidth = width;
@@ -35,17 +36,18 @@ public class GameplayScene extends ApplicationAdapter {
         
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth, screenHeight);
+        //camera.position.set(0, 0, 0);
         sprites = new SpriteBatch();
-        
-        rect = new Rectangle();
+        font = new BitmapFont();
         
         map = new MapRender(sprites);
         players = new PlayerRender(sprites);
         controls = new TouchControls(sprites);
         Gdx.input.setInputProcessor(controls);
         
-        players.add("MrBoomDev");
-        players.add("Enemy");
+        myNick = "MrBoomDev";
+        players.add(myNick);
+        players.add("Nikita");
     }
     
     @Override
@@ -54,27 +56,28 @@ public class GameplayScene extends ApplicationAdapter {
         camera.update();
         sprites.setProjectionMatrix(camera.combined);
         sprites.begin();
+        
         map.render();
         players.render();
         controls.render();
+        font.setColor(Color.WHITE);
+        font.draw(sprites, getDebugValues(), 0, screenHeight - 25, 150, 0, true);
         
         sprites.end();
         
-        if(Gdx.input.isTouched()) {
-            Vector3 pos = new Vector3();
-            pos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(pos);
-            
-            rect.x = pos.x - 64 / 2;
-            if(rect.x < 0) {
-                rect.x = 0;
-             }
-             if(rect.x > 800 - 64) {
-                 rect.x = 800 - 64;
-             }
-             
-             players.move("MrBoomDev", (int)rect.x, 25);
-         }
+        players.moveBy(myNick, (int)controls.joystick.powerX, (int)controls.joystick.powerY);
+    }
+    
+    public String getDebugValues() {
+        String result = "FPS: " + Gdx.graphics.getFramesPerSecond();
+        result += "\n" + controls.joystick.getDebugValues();
+        return result;
+    }
+    
+    @Override
+    public void dispose() {
+        controls.joystick.dispose();
+        font.dispose();
     }
 }
 

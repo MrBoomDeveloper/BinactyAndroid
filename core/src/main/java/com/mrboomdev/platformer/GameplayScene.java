@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.Collections;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mrboomdev.platformer.manager.PlayersManager;
 import com.mrboomdev.platformer.render.MapRender;
-//import com.mrboomdev.platformer.render.PlayerRender;
 import com.mrboomdev.platformer.ui.TouchControls;
 
 public class GameplayScene extends ApplicationAdapter {
@@ -29,7 +28,6 @@ public class GameplayScene extends ApplicationAdapter {
     private SpriteBatch sprites;
     private Music music;
     private MapRender map;
-    //private PlayerRender players;
     private PlayersManager players;
     private TouchControls controls;
     private int screenWidth, screenHeight;
@@ -62,7 +60,7 @@ public class GameplayScene extends ApplicationAdapter {
         //players = new PlayerRender(sprites, world);
         players = new PlayersManager(world);
         
-        controls = new TouchControls(sprites);
+        controls = new TouchControls(sprites, screenHeight);
         Gdx.input.setInputProcessor(controls);
         
         String myNick = "MrBoomDev";
@@ -82,8 +80,8 @@ public class GameplayScene extends ApplicationAdapter {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circle;
         //fixtureDef.density = 1f; //скорость
-        //fixtureDef.friction = .1f; //трение
-        fixtureDef.restitution = 100f; //масса
+        fixtureDef.friction = .1f; //трение
+        //fixtureDef.restitution = 100f; //масса
         Fixture fixture = body.createFixture(fixtureDef);
         circle.dispose();
         
@@ -107,16 +105,18 @@ public class GameplayScene extends ApplicationAdapter {
         //map.render();
         players.render(sprites);
         controls.render();world.step(1/60f, 6, 2);
-        font.draw(sprites, getDebugValues(), 10, 10, 0, 0, true);
+        font.draw(sprites, getDebugValues(), 10, 10, 250, 0, true);
         debugRenderer.render(world, camera.combined);
         
         sprites.end();
         
         //body.applyLinearImpulse(10f, 10f, 1f, 1f, true);
         
-        body.applyLinearImpulse(controls.joystick.getPower(), body.getPosition(), true);
+		if(controls.joystick.isActive) {
+			body.applyLinearImpulse(controls.joystick.getPower(), body.getPosition(), true);
+		}
         
-        players.moveBy("MrBoomDev", (int)controls.joystick.powerX, (int)controls.joystick.powerY);
+        //players.moveBy("MrBoomDev", (int)controls.joystick.powerX, (int)controls.joystick.powerY);
     }
     
     public String getDebugValues() {

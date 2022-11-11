@@ -14,8 +14,11 @@ public class Joystick {
     private final int joystickOffset = 75, joystickSize = 225;
     private int touchX = 0, touchY = 0;
     public float powerX = 0, powerY = 0;
+	public boolean isActive = false;
+	private int screenHeight;
     
-    public Joystick(SpriteBatch sprites) {
+    public Joystick(SpriteBatch sprites, int screenHeight) {
+		this.screenHeight = screenHeight;
         this.sprites = sprites;
         joystickTextures.add(new Texture(Gdx.files.internal("img/ui/joystick_holder.png")));
         joystickTextures.add(new Texture(Gdx.files.internal("img/ui/joystick.png")));
@@ -29,8 +32,9 @@ public class Joystick {
     
     public void update(int x, int y) {
         //Fix reverse y
-        y = y * -1 + 720;
+        y = y * -1 + screenHeight;
         
+		isActive = true;
         if(x > joystickOffset + joystickSize - 40) {
             touchX = joystickOffset + (joystickSize / 2);
         } else if(x < joystickOffset + 5) {
@@ -51,6 +55,7 @@ public class Joystick {
     }
     
     public void reset() {
+		isActive = false;
         touchX = joystickSize / 2 - 15;
         touchY = joystickSize / 2;
         powerX = 0;

@@ -11,9 +11,9 @@ public class TouchControls implements InputProcessor {
     public Joystick joystick;
     private SpriteBatch sprites;
     
-    public TouchControls(SpriteBatch sprites) {
+    public TouchControls(SpriteBatch sprites, int screenHeight) {
         this.sprites = sprites;
-        joystick = new Joystick(sprites);
+        joystick = new Joystick(sprites, screenHeight);
     }
     
     public void render() {

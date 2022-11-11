@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.render.PlayerRender;
 import com.mrboomdev.platformer.ui.Joystick;
@@ -71,6 +72,10 @@ public class Joystick {
         } else if(y < 112 - 10) {
         	powerY = y < 112 - 50 ? -4 : -2;
         }
+    }
+    
+    public Vector2 getPower() {
+        return new Vector2(powerX * 10, powerY * 10);
     }
     
     public String getDebugValues() {

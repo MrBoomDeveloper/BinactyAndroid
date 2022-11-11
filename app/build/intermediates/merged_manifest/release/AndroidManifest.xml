@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.mrboomdev.platformer"
+    android:versionCode="2"
+    android:versionName="0.0.2" >
+
+    <uses-sdk
+        android:minSdkVersion="25"
+        android:targetSdkVersion="32" />
+
+    <application
+        android:allowBackup="true"
+        android:appCategory="game"
+        android:extractNativeLibs="false"
+        android:icon="@mipmap/ic_launcher"
+        android:isGame="true"
+        android:label="@string/app_name"
+        android:theme="@style/GdxTheme" >
+        <activity
+            android:name="com.mrboomdev.platformer.AndroidLauncher"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

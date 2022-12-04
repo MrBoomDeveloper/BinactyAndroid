@@ -1,8 +1,0 @@
-com.mrboomdev.platformer.app-pngs-0 /storage/emulated/0/projects/platformer/app/build/generated/res/pngs/debug
-com.mrboomdev.platformer.app-resValues-1 /storage/emulated/0/projects/platformer/app/build/generated/res/resValues/debug
-com.mrboomdev.platformer.app-rs-2 /storage/emulated/0/projects/platformer/app/build/generated/res/rs/debug
-com.mrboomdev.platformer.app-mergeDebugResources-3 /storage/emulated/0/projects/platformer/app/build/intermediates/incremental/debug/mergeDebugResources/merged.dir
-com.mrboomdev.platformer.app-mergeDebugResources-4 /storage/emulated/0/projects/platformer/app/build/intermediates/incremental/debug/mergeDebugResources/stripped.dir
-com.mrboomdev.platformer.app-merged_res-5 /storage/emulated/0/projects/platformer/app/build/intermediates/merged_res/debug
-com.mrboomdev.platformer.app-app-6 /storage/emulated/0/projects/platformer/app/res
-com.mrboomdev.platformer.app-debug-7 /storage/emulated/0/projects/platformer/app/src/debug/res

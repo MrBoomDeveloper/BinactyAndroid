@@ -31,7 +31,9 @@ public class Player {
         //batch.draw(texture, x, y, 100, 100);
         body.applyTorque(0, true);
         sprite.setPosition(body.getPosition().x - sprite.getWidth()/2, body.getPosition().y-sprite.getHeight()/2);
-        batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+		sprite.draw(batch);
+		
+        //batch.draw(sprite, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         font.draw(batch, nick, sprite.getX(), sprite.getY() + 100, 100, 1, true);
     }
 }

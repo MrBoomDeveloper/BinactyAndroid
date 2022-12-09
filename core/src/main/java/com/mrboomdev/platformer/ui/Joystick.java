@@ -16,6 +16,7 @@ public class Joystick {
     public float powerX = 0, powerY = 0;
 	public boolean isActive = false;
 	private int screenHeight;
+	private Vector2 position;
     
     public Joystick(SpriteBatch sprites, int screenHeight) {
 		this.screenHeight = screenHeight;
@@ -82,6 +83,10 @@ public class Joystick {
     public Vector2 getPower() {
         return new Vector2(powerX * 10, powerY * 10);
     }
+	
+	public void setPosition(Vector2 vector) {
+		this.position = vector;
+	}
     
     public String getDebugValues() {
         String result = "PowerX: " + powerX;

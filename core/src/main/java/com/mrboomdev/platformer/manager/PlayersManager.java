@@ -28,8 +28,9 @@ public class PlayersManager {
     }
     
     public void create(String nick) {
-        Texture texture = new Texture(Gdx.files.internal("img/player/player.jpg"));
+        Texture texture = new Texture(Gdx.files.internal("img/player/enemy.jpg"));
         Sprite sprite = new Sprite(texture);
+		sprite.setSize(150, 150);
         sprite.setPosition(510, 250);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -40,9 +41,9 @@ public class PlayersManager {
         
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 3f;
-        fixtureDef.friction = 3f;
-        fixtureDef.restitution = 3f;
+        fixtureDef.density = 2f;
+        fixtureDef.friction = 2f;
+        fixtureDef.restitution = 2f;
         body.createFixture(fixtureDef);
         shape.dispose();
         

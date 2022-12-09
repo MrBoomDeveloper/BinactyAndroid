@@ -61,12 +61,18 @@ configurations { natives }
 dependencies {
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
 	implementation project(':core')
+	implementation "com.google.code.gson:gson:2.10";
 	implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 
     natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-arm64-v8a"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-x86"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-x86_64"
+	 
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 	
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"

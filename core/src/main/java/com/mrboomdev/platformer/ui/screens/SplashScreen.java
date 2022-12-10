@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.screens;
+package com.mrboomdev.platformer.ui.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mrboomdev.platformer.GameplayScene;
 import com.mrboomdev.platformer.MainGame;
-import com.mrboomdev.platformer.screens.GameplayScreen;
-import com.mrboomdev.platformer.screens.SplashScreen;
 import com.mrboomdev.platformer.util.SizeUtil;
 
 public class SplashScreen implements Screen {
@@ -47,12 +45,14 @@ public class SplashScreen implements Screen {
 	  progress += delta;
 	  if(progress < 1) {
 		  logo.setAlpha(progress);
+		  gradient.setAlpha(progress);
 	  } else if(progress > LOGO_STAY_DURATION + 1) {
-	  	//float logoAlpha = (progress > LOGO_STAY_DURATION + 1) ? (LOGO_STAY_DURATION + 1 - progress) : 0;
-		  float logoAlpha = (progress < LOGO_STAY_DURATION + 2) ? (LOGO_STAY_DURATION + 2 - progress) : 0;
-		  logo.setAlpha(logoAlpha);
+		  float screenAlpha = (progress < LOGO_STAY_DURATION + 2) ? (LOGO_STAY_DURATION + 2 - progress) : 0;
+		  logo.setAlpha(screenAlpha);
+		  gradient.setAlpha(screenAlpha);
 	  } else {
 		  logo.setAlpha(1);
+		  gradient.setAlpha(1);
 	  }
 	  
 	  logo.draw(batch);

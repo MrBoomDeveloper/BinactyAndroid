@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -24,7 +25,6 @@ import com.badlogic.gdx.utils.Collections;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.manager.PlayersManager;
-// import com.mrboomdev.platformer.render.MapRender;
 import com.mrboomdev.platformer.ui.GameplayUi;
 import com.mrboomdev.platformer.ui.TouchControls;
 
@@ -52,6 +52,8 @@ public class GameplayScene extends ApplicationAdapter implements Screen {
 
   @Override
   public void render(float delta) {
+	  //Gdx.gl.glClearColor(0, 0, 0, 1);
+	  //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     world.step(1 / 60f, 6, 2);
     ScreenUtils.clear(0, 0, 0, 1);
 	ui.render();
@@ -62,7 +64,7 @@ public class GameplayScene extends ApplicationAdapter implements Screen {
 	mySprite.setPosition(body.getPosition().x - mySprite.getWidth() / 2, body.getPosition().y - mySprite.getHeight() / 2);
 	mySprite.draw(sprites);
 
-    ui.render();
+    //ui.render();
     map.render();
     players.render(sprites);
     controls.render();

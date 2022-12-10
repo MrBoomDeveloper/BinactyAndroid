@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.environment;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.google.gson.Gson;
 import com.mrboomdev.platformer.object.Block;
 
 public class MapManager {

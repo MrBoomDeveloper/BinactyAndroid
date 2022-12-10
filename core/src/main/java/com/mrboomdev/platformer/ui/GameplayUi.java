@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class GameplayUi {
 	private Stage stage;
@@ -20,8 +21,6 @@ public class GameplayUi {
 		stage = new Stage();
 		table = new Table();
 		table.setFillParent(true);
-		stage.addActor(table);
-		table.setDebug(true);
 		
 		FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto-medium.ttf"));
 		FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
@@ -34,11 +33,17 @@ public class GameplayUi {
 		TextureRegion buttonDown = new TextureRegion(buttonTexture, 50, 0, 100, 50);
 		
 		TextButtonStyle buttonStyle = new TextButtonStyle();
-		buttonStyle.up = new TextureRegionDrawable(buttonUp);
-		buttonStyle.down = new TextureRegionDrawable(buttonDown);
+		buttonStyle.up = new TextureRegionDrawable(buttonTexture);
+		buttonStyle.down = new TextureRegionDrawable(buttonTexture);
+		//buttonStyle.up = new TextureRegionDrawable(buttonUp);
+		//buttonStyle.down = new TextureRegionDrawable(buttonDown);
 		buttonStyle.font = buttonFont;
 		TextButton button = new TextButton("Hello, World!", buttonStyle);
+		button.pad(10);
 		table.add(button);
+		
+		table.setDebug(true);
+		stage.addActor(table);
 	}
 	
 	public void render() {

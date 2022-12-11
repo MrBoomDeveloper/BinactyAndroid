@@ -5,11 +5,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -18,6 +21,8 @@ public class GameplayUi {
 	private Table table;
 	
 	public GameplayUi() {
+		Skin skin = new Skin(Gdx.files.internal("components/uiskin.json"));
+		
 		stage = new Stage();
 		table = new Table();
 		table.setFillParent(true);
@@ -28,17 +33,14 @@ public class GameplayUi {
 		BitmapFont buttonFont = fontGenerator.generateFont(fontParameter);
 		fontGenerator.dispose();
 		
-		Texture buttonTexture = new Texture(Gdx.files.internal("img/ui/button.png"));
-		TextureRegion buttonUp = new TextureRegion(buttonTexture, 0, 0, 50, 50);
-		TextureRegion buttonDown = new TextureRegion(buttonTexture, 50, 0, 100, 50);
+		TextButton button = new TextButton("Hello, World!", skin);
+		button.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				
+			}
+		});
 		
-		TextButtonStyle buttonStyle = new TextButtonStyle();
-		buttonStyle.up = new TextureRegionDrawable(buttonTexture);
-		buttonStyle.down = new TextureRegionDrawable(buttonTexture);
-		//buttonStyle.up = new TextureRegionDrawable(buttonUp);
-		//buttonStyle.down = new TextureRegionDrawable(buttonDown);
-		buttonStyle.font = buttonFont;
-		TextButton button = new TextButton("Hello, World!", buttonStyle);
 		button.pad(10);
 		table.add(button);
 		

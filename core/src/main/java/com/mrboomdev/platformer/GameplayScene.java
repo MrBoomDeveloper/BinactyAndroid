@@ -56,7 +56,7 @@ public class GameplayScene extends ApplicationAdapter implements Screen {
 	  //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     world.step(1 / 60f, 6, 2);
     ScreenUtils.clear(0, 0, 0, 1);
-	ui.render();
+	//ui.render();
     camera.update();
     sprites.setProjectionMatrix(camera.combined);
     sprites.begin();
@@ -72,6 +72,8 @@ public class GameplayScene extends ApplicationAdapter implements Screen {
     font.draw(sprites, "Hello, World!", 100, 100, 250, 1, false);
     font.draw(sprites, getDebugValues(), 10, 10, 250, 0, true);
     debugRenderer.render(world, camera.combined);
+	
+	ui.render();
 
     sprites.end();
 

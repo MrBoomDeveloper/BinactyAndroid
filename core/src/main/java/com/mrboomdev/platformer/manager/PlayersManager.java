@@ -23,10 +23,12 @@ public class PlayersManager {
     public HashMap<String, Player> players = new HashMap<String, Player>();
     public Array<Player> players1 = new Array<Player>();
     
+    @Deprecated
     public PlayersManager(World world) {
         this.world = world;
     }
     
+    @Deprecated
     public void create(String nick) {
         Texture texture = new Texture(Gdx.files.internal("img/player/enemy.jpg"));
         Sprite sprite = new Sprite(texture);
@@ -51,10 +53,12 @@ public class PlayersManager {
         players.put(nick, player);
     }
     
+    @Deprecated
     public void moveBy(String nick, int x, int y) {
-        
+        throw new RuntimeException("YOU CANT USE THIS METHOD");
     }
     
+    @Deprecated
     public void render(SpriteBatch batch) {
         for(Player player : players.values()) {
             player.render(batch);

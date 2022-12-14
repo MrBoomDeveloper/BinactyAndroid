@@ -1,0 +1,25 @@
+{
+	BitmapFont: {
+		default-font: {
+			file: default.fnt
+		}
+	},
+	
+	TextButtonStyle: {
+		default: {
+			down: default-round-down,
+			up: default-round,
+			font: default-font
+		},
+		
+		neon: {
+			down: default-round-down
+		}
+	},
+	
+	WindowStyle: {
+		default: {
+			titleFont: default-font
+		}
+	}
+}

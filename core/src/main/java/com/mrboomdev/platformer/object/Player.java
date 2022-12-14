@@ -18,6 +18,7 @@ public class Player {
     public Body body;
     private Sprite sprite;
     
+    @Deprecated
     public Player(String nick, Sprite sprite, Body body) {
         this.nick = nick;
         this.body = body;
@@ -27,6 +28,7 @@ public class Player {
         font.setColor(Color.WHITE);
     }
     
+    @Deprecated
     public void render(SpriteBatch batch) {
         //batch.draw(texture, x, y, 100, 100);
         body.applyTorque(0, true);

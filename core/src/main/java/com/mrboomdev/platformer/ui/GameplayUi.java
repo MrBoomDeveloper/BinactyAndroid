@@ -43,6 +43,10 @@ public class GameplayUi {
 		
 		button.pad(10);
 		table.add(button);
+        
+        Skin skin1 = new Skin(Gdx.files.internal("components/skin.json"));
+        TextButton button1 = new TextButton("I love you", skin1, "default");
+        table.add(button1);
 		
 		table.setDebug(true);
 		stage.addActor(table);

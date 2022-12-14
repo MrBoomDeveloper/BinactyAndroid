@@ -23,8 +23,9 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Collections;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mrboomdev.platformer.entity.PlayerEntity;
 import com.mrboomdev.platformer.environment.MapManager;
-import com.mrboomdev.platformer.manager.PlayersManager;
+import com.mrboomdev.platformer.entity.PlayersManager;
 import com.mrboomdev.platformer.ui.GameplayUi;
 import com.mrboomdev.platformer.ui.TouchControls;
 
@@ -52,11 +53,8 @@ public class GameplayScene extends ApplicationAdapter implements Screen {
 
   @Override
   public void render(float delta) {
-	  //Gdx.gl.glClearColor(0, 0, 0, 1);
-	  //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     world.step(1 / 60f, 6, 2);
     ScreenUtils.clear(0, 0, 0, 1);
-	//ui.render();
     camera.update();
     sprites.setProjectionMatrix(camera.combined);
     sprites.begin();
@@ -64,7 +62,6 @@ public class GameplayScene extends ApplicationAdapter implements Screen {
 	mySprite.setPosition(body.getPosition().x - mySprite.getWidth() / 2, body.getPosition().y - mySprite.getHeight() / 2);
 	mySprite.draw(sprites);
 
-    //ui.render();
     map.render();
     players.render(sprites);
     controls.render();
@@ -87,6 +84,7 @@ public class GameplayScene extends ApplicationAdapter implements Screen {
     }
     camera.position.set(body.getPosition().x, body.getPosition().y, 0);
     body.setLinearVelocity(mySpeed.x, mySpeed.y);
+    players.move("MrBoomDev", mySpeed);
   }
 
   public String getDebugValues() {
@@ -118,12 +116,9 @@ public class GameplayScene extends ApplicationAdapter implements Screen {
     controls = new TouchControls(sprites, screenHeight);
     Gdx.input.setInputProcessor(controls);
 
-    String myNick = "MrBoomDev";
-    players.create(myNick);
-
-    String[] nicks = {"Arslan", "Amir", "Artur", "Kapusta", "FreddyFazbear123", "CatOMan", "Danilka", "Shu-nya@zavr.top"};
-    for (String nick : nicks) {
-      players.create(nick);
+    String[] nicks = {"MrBoomDev", "Arslan", "Amir", "Artur", "Kapusta", "FreddyFazbear123", "CatOMan", "Danilka", "Shu-nya@zavr.top", "Amogus123"};
+    for(String nick : nicks) {
+        players.add(nick, new PlayerEntity(nick, world));
     }
 
 	Texture myTexture = new Texture(Gdx.files.internal("img/player/player.jpg"));

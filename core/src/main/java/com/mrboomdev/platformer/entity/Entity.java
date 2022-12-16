@@ -18,18 +18,16 @@ public abstract class Entity {
     public Entity(World world) {
         Texture myTexture = new Texture(Gdx.files.internal("img/player/player.jpg"));
 	    sprite = new Sprite(myTexture);
-	    sprite.setSize(100, 100);
+	    sprite.setSize(5, 5);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(500, 150);
         body = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 2f; //скорость
-        fixtureDef.friction = 2f; // трение
-        fixtureDef.restitution = 2f; //масса
+        fixtureDef.density = 1f;
+        fixtureDef.friction = 1f;
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
     }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mrboomdev.platformer.GameplayScene;
+import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.util.SizeUtil;
 
@@ -61,7 +61,7 @@ public class SplashScreen implements Screen {
 	  batch.end();
 	  
 	  if(progress > (LOGO_STAY_DURATION + 2.3)) {
-		  game.setScreen(new GameplayScene(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+		  game.setScreen(new GameplayScreen());
 	  }
   }
 

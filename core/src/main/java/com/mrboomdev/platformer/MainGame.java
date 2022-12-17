@@ -1,12 +1,26 @@
 package com.mrboomdev.platformer;
 
 import com.badlogic.gdx.Game;
-import com.mrboomdev.platformer.ui.screens.SplashScreen;
+import com.badlogic.gdx.Screen;
+import com.mrboomdev.platformer.scenes.splash.SplashScreen;
+import com.mrboomdev.platformer.util.Analytics;
 
 public class MainGame extends Game {
-    
+    private Analytics analytics;
+
+    public MainGame(Analytics analytics) {
+        this.analytics = analytics;
+    }
+
     @Override
     public void create() {
-	    setScreen(new SplashScreen(this));
+        analytics.logDebug("Start game", "MainGame.create()");
+        setScreen(new SplashScreen(this));
+    }
+
+    @Override
+    public void setScreen(Screen screen) {
+        analytics.logDebug("Set screen", screen.getClass().getName());
+        super.setScreen(screen);
     }
 }

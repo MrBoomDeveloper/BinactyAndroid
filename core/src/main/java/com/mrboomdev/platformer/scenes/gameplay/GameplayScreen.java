@@ -1,10 +1,7 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -19,7 +16,6 @@ import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.entity.PlayersManager;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
-import com.mrboomdev.platformer.scenes.gameplay.GameplayUi;
 
 public class GameplayScreen extends CoreScreen {
     private OrthographicCamera camera;
@@ -32,7 +28,6 @@ public class GameplayScreen extends CoreScreen {
 
     @Override
     public void render(float delta) {
-        world.step(1 / 60f, 6, 2);
         ScreenUtils.clear(0, 0, 0, 1);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -46,6 +41,7 @@ public class GameplayScreen extends CoreScreen {
 
         batch.end();
         camera.position.set(players.getPosition("MrBoomDev"), 0);
+        world.step(1 / 60f, 6, 2);
     }
 
     @Override
@@ -72,7 +68,10 @@ public class GameplayScreen extends CoreScreen {
         }
         players.setController("MrBoomDev", ui.joystick);
 
-        map = new MapManager(batch);
+        map = new MapManager()
+            .load(true, "test_04")
+            .parse(4)
+            .build();
         BodyDef floor = new BodyDef();
         floor.position.set(new Vector2(0, -5f));
         Body floorBody = world.createBody(floor);

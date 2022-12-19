@@ -1,0 +1,23 @@
+{
+	"name": "Test 01",
+	"width": 10,
+	"height": 10,
+	"version": 1,
+	
+	"used": [
+		"air", "floor"
+	],
+	
+	"tiles": [
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"air", "air", "air", "air", "air", "air", "air", "air", "air", "air",
+		"floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor", "floor"
+	]
+}

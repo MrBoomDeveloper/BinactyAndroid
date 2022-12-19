@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
+import com.mrboomdev.platformer.widgets.DebugValuesWidget;
+import com.mrboomdev.platformer.widgets.ActionButton;
 
 public class GameplayUi {
 	public Stage stage;
@@ -41,6 +43,9 @@ public class GameplayUi {
         
         joystick = new JoystickWidget();
         table.addActor(joystick);
+        
+        ActionButton button = new ActionButton();
+        table.addActor(button);
 		
 		table.setDebug(true);
 		stage.addActor(table);

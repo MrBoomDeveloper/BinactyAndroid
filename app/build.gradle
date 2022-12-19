@@ -36,8 +36,8 @@ android {
 		applicationId 'com.mrboomdev.platformer'
 		minSdkVersion 25
 		targetSdkVersion 32
-		versionCode 2
-		versionName "0.0.2"
+		versionCode 4
+		versionName "0.0.4"
 		multiDexEnabled true
 	}
 	compileOptions {
@@ -48,7 +48,7 @@ android {
 	
 	buildTypes {
 		release {
-			minifyEnabled false
+			minifyEnabled true
 			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 		}
 	}
@@ -56,7 +56,6 @@ android {
 }
 
 repositories {
-	// needed for AAPT2, may be needed for other tools
 	google()
 }
 
@@ -89,9 +88,6 @@ dependencies {
     natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 }
 
-// Called every time gradle gets executed, takes the native dependencies of
-// the natives configuration, and extracts them to the proper libs/ folders
-// so they get packed with the APK.
 task copyAndroidNatives() {
 	doFirst {
 		file("libs/armeabi/").mkdirs()

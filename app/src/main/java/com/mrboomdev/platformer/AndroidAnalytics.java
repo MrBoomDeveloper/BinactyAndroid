@@ -16,8 +16,8 @@ public class AndroidAnalytics implements Analytics {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         builder.append(name);
-        builder.append("] ");
+        builder.append("]");
         Log.d("[DebugLog]" + builder.toString(), content);
-        crashlytics.log(builder.toString() + content);
+        crashlytics.log(builder.toString() + " " + content);
     }
 }

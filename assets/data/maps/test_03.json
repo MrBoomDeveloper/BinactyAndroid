@@ -1,0 +1,130 @@
+{
+	"header": {
+		"name": "Test 03",
+		"width": 10,
+		"height": 10,
+		"version": 3
+	},
+	
+	"tiles": [
+		[
+			"FLOOR",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"AIR"
+		], [
+			"FLOOR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR"
+		], [
+			"FLOOR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR"
+		], [
+			"FLOOR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR"
+		], [
+			"FLOOR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR"
+		], [
+			"FLOOR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR"
+		], [
+			"FLOOR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR"
+		], [
+			"FLOOR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR"
+		], [
+			"FLOOR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR",
+			"AIR"
+		], [
+			"FLOOR",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"WALL",
+			"AIR"
+		]
+	],
+	
+	"spawns": [
+		[0, 0],
+		[1, 1],
+		[2, 2],
+		[3, 3],
+		[4, 4]
+	]
+}

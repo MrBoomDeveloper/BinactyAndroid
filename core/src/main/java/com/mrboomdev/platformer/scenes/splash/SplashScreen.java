@@ -13,7 +13,7 @@ public class SplashScreen extends CoreScreen {
 	private SpriteBatch batch;
 	private Sprite logo, gradient;
 	private float progress = 0;
-	private final float LOGO_STAY_DURATION = 1.4f;
+	private final float LOGO_STAY_DURATION = 1.8f;
 	
 	public SplashScreen(MainGame game) {
 		this.game = game;
@@ -41,7 +41,7 @@ public class SplashScreen extends CoreScreen {
 	  Gdx.gl.glClearColor(17, 7, 31, progress);
 	  batch.begin();
 	  
-	  progress += delta;
+	  progress += delta * 1.8f;
 	  if(progress < 1) {
 		  logo.setAlpha(progress);
 		  gradient.setAlpha(progress);

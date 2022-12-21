@@ -20,7 +20,7 @@ public class MainGame extends Game {
 
     @Override
     public void setScreen(Screen screen) {
-        analytics.logDebug("Set screen", screen.getClass().getName());
+        analytics.logDebug("setScreen", screen.getClass().getName());
         super.setScreen(screen);
     }
 }

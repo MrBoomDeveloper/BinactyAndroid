@@ -5,23 +5,41 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class ActionButton extends Actor {
-    private Sprite sprite;
-    
-    public ActionButton() {
-        this.sprite = new Sprite(new Texture(Gdx.files.internal("img/ui/button.png")));
-    }
+  private Sprite sprite;
 
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        //sprite.set
-    }
+  public ActionButton() {
+    sprite = new Sprite(new Texture(Gdx.files.internal("img/ui/button.png")));
+    setSize(125, 125);
+    sprite.setSize(getWidth(), getHeight());
+    sprite.setAlpha(.7f);
+    addListener(new ClickListener() {
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            sprite.setAlpha(.5f);
+            return true;
+        }
 
-    @Override
-    public void draw(Batch batch, float opacity) {
-        super.draw(batch, opacity);
-        sprite.draw(batch);
-    }
+        @Override
+        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            super.clicked(event, x ,y);
+            sprite.setAlpha(.7f);
+        }
+    });
+  }
+
+  @Override
+  public void act(float delta) {
+    super.act(delta);
+    sprite.setPosition(getX(), getY());
+  }
+
+  @Override
+  public void draw(Batch batch, float opacity) {
+    super.draw(batch, opacity);
+    sprite.draw(batch);
+  }
 }

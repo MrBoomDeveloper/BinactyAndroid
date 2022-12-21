@@ -1,47 +1,39 @@
 package com.mrboomdev.platformer.environment;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.google.gson.Gson;
-import com.mrboomdev.platformer.environment.MapBlock;
-import com.mrboomdev.platformer.environment.MapData;
-import com.mrboomdev.platformer.environment.MapLayer;
-import com.mrboomdev.platformer.environment.fixed.FixedMapRender;
 
 public class MapManager {
-    private String json;
+    private MapBuilder builder;
     private MapData data;
-    private int version;
+    private String json;
+    private Vector2 size;
     
-    public MapManager load(boolean isInternal, String name) {
-        if(isInternal) {
-            json = Gdx.files.internal("data/maps/" + name + ".json").readString();
-        } else {
-            json = Gdx.files.external(Gdx.files.getExternalStoragePath() + name).readString();
-        }
-        return this;
+    public MapManager() {
+        size = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
     
-    public MapManager parse(int version) {
-        this.version = version;
+    public void load(FileHandle file) {
         Gson gson = new Gson();
+        json = file.readString();
         data = gson.fromJson(json, MapData.class);
-        return this;
+        builder = new MapBuilder(data.tiles);
+        builder.loadTextures(data.load);
     }
     
-    public MapManager build() {
-        return this;
+    public void build(World world) {
+        builder.build(world);
     }
 	
 	public void render(SpriteBatch batch, MapLayer layer) {
-		if(version == 4) {
-            /*FixedMapRender.render(batch);
-            for(int x = 0; x < data.tiles.length; x++) {
-                for(int y = 0; y < data.tiles[x].length; y++) {
-                    
-                }
-            }*/
-        }
+        builder.render(batch, size);
 	}
+    
+    public void setSceneSize(Vector2 size) {
+        this.size = size;
+    }
 }

@@ -1,59 +1,114 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import com.mrboomdev.platformer.widgets.ActionButton;
+import com.mrboomdev.platformer.widgets.TextWidget;
 
-public class GameplayUi {
-	public Stage stage;
+public class GameplayUi implements CoreUi {
+	public Stage stage; 
     public JoystickWidget joystick;
-	private Table table;
+    private float time = 360000;
+    private TextWidget timer;
+    public DebugValuesWidget debugValues; 
 	
 	public GameplayUi() {
-		Skin skin = new Skin(Gdx.files.internal("components/uiskin.json"));
-		
 		stage = new Stage();
-		table = new Table();
-		table.setFillParent(true);
-		
-		FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto-medium.ttf"));
-		FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
-		fontParameter.size = 12;
-		BitmapFont buttonFont = fontGenerator.generateFont(fontParameter);
-		fontGenerator.dispose();
         
-        Skin skin1 = new Skin(Gdx.files.internal("components/skin.json"));
-        TextButton button1 = new TextButton("I love you", skin1, "default");
-        table.add(button1);
+        ActionButton screenshot = new ActionButton();
+        screenshot.setPosition(Gdx.graphics.getWidth() - screenshot.getWidth() - 50,
+            Gdx.graphics.getHeight() - screenshot.getHeight() - 50);
+        screenshot.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                System.exit(0);
+            }
+        });
+        stage.addActor(screenshot);
+        
+        ActionButton pause = new ActionButton();
+        pause.setPosition(Gdx.graphics.getWidth() - (screenshot.getWidth() * 2) - 50 - 35,
+            Gdx.graphics.getHeight() - screenshot.getHeight() - 50);
+        pause.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                System.exit(0);
+            }
+        });
+        stage.addActor(pause);
+        
+        HorizontalGroup group = new HorizontalGroup();
+        group.setSize(250, 100);
+        group.right().top();
+        ActionButton action = new ActionButton();
+        group.addActor(action);
+        group.pad(25);
+        ActionButton action1 = new ActionButton();
+        group.addActor(action1);
+        group.pad(25);
+        stage.addActor(group);
+        
+		Table table = new Table();
+        table.setFillParent(true);
+        table.right().bottom().pad(50);
+        
+        table.add(new Actor()).pad(20);
+        ActionButton button = new ActionButton();
+        table.add(button).pad(20);
+        table.row();
+        ActionButton button1 = new ActionButton();
+        table.add(button1).pad(20);
+        ActionButton button2 = new ActionButton();
+        table.add(button2).pad(20);
         
         joystick = new JoystickWidget();
-        table.addActor(joystick);
+        stage.addActor(joystick);
         
-        ActionButton button = new ActionButton();
-        table.addActor(button);
-		
-		table.setDebug(true);
+        Table table1 = new Table();
+        table.setFillParent(true);
+        table1.right().bottom();
+        ActionButton button3 = new ActionButton();
+        table1.add(button3);
+        stage.addActor(table1);
+        
+        debugValues = new DebugValuesWidget();
+        stage.addActor(debugValues);
+        
+        timer = new TextWidget(Gdx.files.internal("font/gilroy-bold.ttf"), 60);
+        timer.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 75);
+        stage.addActor(timer);
+        
 		stage.addActor(table);
+        stage.setDebugAll(true);
 	}
 	
-	public void render() {
-		stage.act(Gdx.graphics.getDeltaTime());
+	public void render(float delta) {
+		stage.act(delta);
 		stage.draw();
+        time -= delta * 1000;
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
+        timer.setText(dateFormat.format((int)time));
+        debugValues.setValue("TimeLeft", String.valueOf(time));
+        
+        if(time <= 0) {
+            System.exit(0);
+        }
 	}
 	
 	public void dispose() {

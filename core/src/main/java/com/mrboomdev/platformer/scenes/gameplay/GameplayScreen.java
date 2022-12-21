@@ -35,13 +35,14 @@ public class GameplayScreen extends CoreScreen {
 	
         map.render(batch, MapLayer.BACKGROUND);
         players.render(batch);
-        map.render(batch, MapLayer.FOREGROUND);
-    	ui.render();
+        //map.render(batch, MapLayer.FOREGROUND);
+    	ui.render(delta);
         debugRenderer.render(world, camera.combined);
 
         batch.end();
         camera.position.set(players.getPosition("MrBoomDev"), 0);
         world.step(1 / 60f, 6, 2);
+        ui.debugValues.setValue("RenderCalls", String.valueOf(batch.renderCalls));
     }
 
     @Override
@@ -60,6 +61,11 @@ public class GameplayScreen extends CoreScreen {
     
         ui = new GameplayUi();
         Gdx.input.setInputProcessor(ui.stage);
+        
+        map = new MapManager();
+        map.setSceneSize(new Vector2(camera.viewportWidth, camera.viewportHeight));
+        map.load(Gdx.files.internal("data/maps/test_04.json"));
+        map.build(world);
 
         players = new PlayersManager(world);
         String[] nicks = {"MrBoomDev", "Kapusta", "FreddyFazbear123", "CatOMan", "Amogus"};
@@ -67,17 +73,5 @@ public class GameplayScreen extends CoreScreen {
             players.add(nick, new PlayerEntity(nick, world));
         }
         players.setController("MrBoomDev", ui.joystick);
-
-        map = new MapManager()
-            .load(true, "test_04")
-            .parse(4)
-            .build();
-        BodyDef floor = new BodyDef();
-        floor.position.set(new Vector2(0, -5f));
-        Body floorBody = world.createBody(floor);
-        PolygonShape floorBox = new PolygonShape();
-        floorBox.setAsBox(camera.viewportWidth, 2f);
-        floorBody.createFixture(floorBox, 0.0f);
-        floorBox.dispose();
     }
 }

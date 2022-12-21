@@ -17,6 +17,7 @@ public class JoystickWidget extends Actor implements Controller {
     private Vector2 touchPosition;
     private float pointOpacity = .5f;
     private boolean isActive = false;
+    private final int limit = 25;
 
     public JoystickWidget() {
         setBounds(100, 100, 250, 250);
@@ -38,16 +39,16 @@ public class JoystickWidget extends Actor implements Controller {
                 if(pointer != usedPointer) return;
                 Vector2 position = new Vector2();
               
-                if(x > getWidth()) {
-                    position.x = getWidth();
+                if(x > getWidth() - limit) {
+                    position.x = getWidth() - limit;
                 } else {
-                    position.x = x < 0 ? 0 : x;
+                    position.x = x < limit ? limit : x;
                 }
               
-                if(y > getHeight()) {
-                    position.y = getHeight();
+                if(y > getHeight() - limit) {
+                    position.y = getHeight() - limit;
                 } else {
-                    position.y = y < 0 ? 0 : y;
+                    position.y = y < limit ? limit : y;
                 }
               
                 setPosition(position, true);
@@ -85,9 +86,10 @@ public class JoystickWidget extends Actor implements Controller {
     }
   
     public Vector2 getPower() {
+        int offset = isActive ? 0 : 25;
         return new Vector2(
-            ( touchPosition.x - (getWidth() / 2) + 25 ) / 4,
-            ( touchPosition.y - (getHeight() / 2) + 25 ) / 4
+            ( touchPosition.x - (getWidth() / 2) + offset ) / 4,
+            ( touchPosition.y - (getHeight() / 2) + offset ) / 4
         );
     }
 

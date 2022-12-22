@@ -18,7 +18,7 @@ public abstract class Entity {
     public Entity(World world) {
         Texture myTexture = new Texture(Gdx.files.internal("img/player/player.jpg"));
 	    sprite = new Sprite(myTexture);
-	    sprite.setSize(5, 5);
+	    sprite.setSize(1.8f, 1.8f);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         body = world.createBody(bodyDef);
@@ -26,8 +26,8 @@ public abstract class Entity {
         shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
-        fixtureDef.friction = 1f;
+        fixtureDef.density = .1f;
+        //fixtureDef.friction = .1f; //1f;
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
     }

@@ -5,6 +5,7 @@
 	"version": 4,
         
     "load": [
+        "air",
         "wall",
         "floor",
         "game_machine"

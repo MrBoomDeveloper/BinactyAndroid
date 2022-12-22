@@ -88,8 +88,8 @@ public class JoystickWidget extends Actor implements Controller {
     public Vector2 getPower() {
         int offset = isActive ? 0 : 25;
         return new Vector2(
-            ( touchPosition.x - (getWidth() / 2) + offset ) / 4,
-            ( touchPosition.y - (getHeight() / 2) + offset ) / 4
+            ( touchPosition.x - (getWidth() / 2) + offset ) / 8,
+            ( touchPosition.y - (getHeight() / 2) + offset ) / 8
         );
     }
 

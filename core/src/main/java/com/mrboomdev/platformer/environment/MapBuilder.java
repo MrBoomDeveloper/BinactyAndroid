@@ -1,8 +1,6 @@
 package com.mrboomdev.platformer.environment;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -10,60 +8,65 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 
 public class MapBuilder {
-    private Array<Sprite> textures = new Array<>();
+    private Array<Block> blocks = new Array<>();
     private int[][] tiles;
+    private final int tileSize = 2;
     
     public MapBuilder(int[][] tiles) {
         this.tiles = tiles;
     }
     
-    public void loadTextures(String[] tiles) {
-        textures.add(null);
-        for(String name : tiles) {
-            Sprite sprite = new Sprite(new Texture(Gdx.files.internal("img/tiles/" + name + ".png")));
-            textures.add(sprite);
+    public void loadBlocks(String[] load, Map<String, Block> blocks) {
+        for(String name : load) {
+            this.blocks.add(blocks.get(name).init());
         }
     }
     
     public void build(World world) {
         for(int x = 0; x < tiles.length; x++) {
             for(int y = 0; y < tiles[x].length; y++) {
-                int tile = tiles[x][y];
-                if(tile != 0) {
-                    BodyDef bodyDef = new BodyDef();
-                    bodyDef.position.set(y * 4, x * 4);
-                    Body body = world.createBody(bodyDef);
-                    PolygonShape polygon = new PolygonShape();
-                    polygon.setAsBox(2, 2);
-                    body.createFixture(polygon, 0);
-                    polygon.dispose();
-                }
+                buildBlock(blocks.get(tiles[x][y]), new Vector2(x * 2, y * 2), world);
             }
         }
     }
     
-    public void render(SpriteBatch batch, Vector2 screenSize) {
+    public void buildBlock(Block block, Vector2 position, World world) {
+        if(block.colission) {
+            BodyDef bodyDef = new BodyDef();
+            bodyDef.position.set(position.y, position.x + ((block.height - tileSize) / 2));
+            Body body = world.createBody(bodyDef);
+            PolygonShape polygon = new PolygonShape();
+            polygon.setAsBox(block.width / 2, block.height / 2);
+            body.createFixture(polygon, 0);
+            polygon.dispose();
+        }
+    }
+    
+    public void render(SpriteBatch batch, Bounds cameraBounds) {
         for(int x = 0; x < tiles.length; x++) {
             for(int y = 0; y < tiles[x].length; y++) {
-                /*if((x * 4 > screenSize.x || x * 4 < screenSize.x) || 
-                    (y * 4 > screenSize.y || y * 4 < screenSize.y)) {
-                        System.out.println(x * 4 + " " + y * 4 + " : " + screenSize.x + " " + screenSize.y);
-                    break;
-                }*/
-                
-                int tile = tiles[x][y];
-                
-                Sprite back = textures.get(2);
-                back.setAlpha(.3f);
-                back.setBounds(y * 4 - 2, x * 4 - 2, 4, 4);
-                back.draw(batch);
-                
-                if(tile != 0) {
-                    batch.draw(textures.get(tile), y * 4 - 2, x * 4 - 2, 4, 4);
-                }
+                renderBlock(blocks.get(tiles[x][y]),
+                    new Vector2(y * tileSize, x * tileSize),
+                    cameraBounds, batch);
             }
+        }
+    }
+    
+    public void renderBlock(Block block, Vector2 position, Bounds bounds, SpriteBatch batch) {
+        if(position.x - (block.width / 2) > bounds.toX ||
+            position.x + (block.width / 2) < bounds.fromX ||
+            position.y - (block.height / 2) > bounds.toY ||
+            position.y + (block.height / 2) < bounds.fromY) {
+                return;
+        }
+        
+        if(block.sprite != null) {
+            batch.draw(block.sprite, position.x - (tileSize / 2), 
+                position.y - (tileSize / 2), 
+                block.width, block.height);
         }
     }
 }

@@ -1,16 +1,11 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
@@ -27,6 +22,8 @@ public class GameplayUi implements CoreUi {
 	
 	public GameplayUi() {
 		stage = new Stage();
+        debugValues = new DebugValuesWidget();
+        stage.addActor(debugValues);
         
         ActionButton screenshot = new ActionButton();
         screenshot.setPosition(Gdx.graphics.getWidth() - screenshot.getWidth() - 50,
@@ -52,17 +49,6 @@ public class GameplayUi implements CoreUi {
         });
         stage.addActor(pause);
         
-        HorizontalGroup group = new HorizontalGroup();
-        group.setSize(250, 100);
-        group.right().top();
-        ActionButton action = new ActionButton();
-        group.addActor(action);
-        group.pad(25);
-        ActionButton action1 = new ActionButton();
-        group.addActor(action1);
-        group.pad(25);
-        stage.addActor(group);
-        
 		Table table = new Table();
         table.setFillParent(true);
         table.right().bottom().pad(50);
@@ -85,9 +71,6 @@ public class GameplayUi implements CoreUi {
         ActionButton button3 = new ActionButton();
         table1.add(button3);
         stage.addActor(table1);
-        
-        debugValues = new DebugValuesWidget();
-        stage.addActor(debugValues);
         
         timer = new TextWidget(Gdx.files.internal("font/gilroy-bold.ttf"), 60);
         timer.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 75);

@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.MainGame;
+import com.mrboomdev.platformer.util.anime.AnimeStep;
+import com.mrboomdev.platformer.util.anime.AnimeUtil;
 
 public class SplashScreen extends CoreScreen {
 	private MainGame game;
@@ -23,17 +25,24 @@ public class SplashScreen extends CoreScreen {
   public void show() {
 	  batch = new SpriteBatch();
 	  
-	  Texture logoTexture = new Texture(Gdx.files.internal("img/brand/dev_logo.png"));
-	  Texture gradientTexture = new Texture(Gdx.files.internal("img/brand/gradient.png"));
-	  
-	  logo = new Sprite(logoTexture);
+	  logo = new Sprite(new Texture(Gdx.files.internal("img/brand/dev_logo.png")));
 	  logo.setScale(.4f);
 	  logo.setCenter(
 	  	Gdx.graphics.getWidth() / 2, 
 		  Gdx.graphics.getHeight() / 2
 	  );
-	  gradient = new Sprite(gradientTexture);
+      
+	  gradient = new Sprite(new Texture(Gdx.files.internal("img/brand/gradient.png")));
 	  gradient.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+      
+      new AnimeUtil()
+          .addStep(new AnimeStep(AnimeStep.Type.FADE, 0, 1, 1000), 0)
+          .addStep(new AnimeStep(AnimeStep.Type.FADE, 1, 0, 750), 2000)
+          .runAsync(logo, gradient);
+          
+      new AnimeUtil()
+          .addStep(new AnimeStep(AnimeStep.Type.SCALE, .4f, .6f, 2000), 0)
+          .runAsync(logo);
   }
 
   @Override

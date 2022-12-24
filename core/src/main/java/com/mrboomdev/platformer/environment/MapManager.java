@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.google.gson.reflect.TypeToken;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 import com.mrboomdev.platformer.environment.Block;
+import com.mrboomdev.platformer.environment.MapData;
 import java.lang.reflect.Type;
 import java.util.Map;
 import com.badlogic.gdx.Gdx;
@@ -35,7 +36,7 @@ public class MapManager {
     
     public void build(World world) {
         Type token = new TypeToken<Map<String, Block>>(){}.getType();
-        Map<String, Block> blocks = new Gson().fromJson(Gdx.files.internal("data/blocks.json").readString(), token);
+        Map<String, Block> blocks = new Gson().fromJson(Gdx.files.internal("world/blocks.json").readString(), token);
         
         builder.loadBlocks(data.load, blocks);
         builder.build(world);
@@ -43,7 +44,7 @@ public class MapManager {
 	
 	public void render(SpriteBatch batch, MapLayer layer) {
         updateCameraBounds();
-        builder.render(batch, cameraBounds);
+        builder.render(layer, batch, cameraBounds);
 	}
     
     public void setCamera(Camera camera) {

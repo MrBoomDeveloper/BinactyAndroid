@@ -25,14 +25,14 @@ public class SplashScreen extends CoreScreen {
   public void show() {
 	  batch = new SpriteBatch();
 	  
-	  logo = new Sprite(new Texture(Gdx.files.internal("img/brand/dev_logo.png")));
+	  logo = new Sprite(new Texture(Gdx.files.internal("ui/brand/dev_logo.png")));
 	  logo.setScale(.4f);
 	  logo.setCenter(
 	  	Gdx.graphics.getWidth() / 2, 
 		  Gdx.graphics.getHeight() / 2
 	  );
       
-	  gradient = new Sprite(new Texture(Gdx.files.internal("img/brand/gradient.png")));
+	  gradient = new Sprite(new Texture(Gdx.files.internal("ui/brand/gradient.png")));
 	  gradient.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       
       new AnimeUtil()

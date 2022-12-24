@@ -24,7 +24,7 @@ public class JoystickWidget extends Actor implements Controller {
         setTouchable(Touchable.enabled);
         addListener(new InputListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int btn) {
                 if(usedPointer == 999) {
                     usedPointer = pointer;
                     setPosition(new Vector2(x, y), true);
@@ -35,28 +35,20 @@ public class JoystickWidget extends Actor implements Controller {
 
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                super.touchDragged(event, x, y, pointer);
                 if(pointer != usedPointer) return;
                 Vector2 position = new Vector2();
-              
-                if(x > getWidth() - limit) {
-                    position.x = getWidth() - limit;
-                } else {
-                    position.x = x < limit ? limit : x;
-                }
-              
-                if(y > getHeight() - limit) {
-                    position.y = getHeight() - limit;
-                } else {
-                    position.y = y < limit ? limit : y;
-                }
-              
+                position.x = (x > getWidth() - limit)
+                    ? (getWidth() - limit)
+                    : (x < limit ? limit : x);
+                    
+                position.y = (y > getHeight() - limit)
+                    ? (getHeight() - limit)
+                    : (y < limit ? limit : y);
                 setPosition(position, true);
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                super.touchUp(event, x, y, pointer, button);
                 if(pointer == usedPointer) {
                     usedPointer = 999;
                     setPosition(new Vector2(getX(), getY()), false);
@@ -65,8 +57,8 @@ public class JoystickWidget extends Actor implements Controller {
             }
       });
 
-      holder = new Sprite(new Texture(Gdx.files.internal("img/ui/joystick_holder.png")));
-      point = new Sprite(new Texture(Gdx.files.internal("img/ui/joystick.png")));
+      holder = new Sprite(new Texture(Gdx.files.internal("ui/buttons/joystick_holder.png")));
+      point = new Sprite(new Texture(Gdx.files.internal("ui/buttons/joystick_point.png")));
       point.setSize(75, 75);
       holder.setAlpha(.4f);
       point.setAlpha(.5f);
@@ -76,7 +68,6 @@ public class JoystickWidget extends Actor implements Controller {
 
     @Override
     public void act(float delta) {
-        super.act(delta);
         if(isActive && pointOpacity < 1) {
             pointOpacity += delta * 1.2f;
         } else if(pointOpacity > .5f) {
@@ -88,8 +79,8 @@ public class JoystickWidget extends Actor implements Controller {
     public Vector2 getPower() {
         int offset = isActive ? 0 : 25;
         return new Vector2(
-            ( touchPosition.x - (getWidth() / 2) + offset ) / 8,
-            ( touchPosition.y - (getHeight() / 2) + offset ) / 8
+            ( touchPosition.x - (getWidth() / 2) + offset ) / 10,
+            ( touchPosition.y - (getHeight() / 2) + offset ) / 10
         );
     }
 

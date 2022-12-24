@@ -37,7 +37,7 @@ android {
 		minSdkVersion 25
 		targetSdkVersion 32
 		versionCode 4
-		versionName "0.0.4"
+		versionName "0.1.0"
 		multiDexEnabled true
 	}
 	compileOptions {

@@ -18,8 +18,10 @@ public class DebugValuesWidget extends Actor {
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto-medium.ttf"));
         FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
         fontParameter.size = 14;
+        fontParameter.color = Color.WHITE;
+        fontParameter.borderColor = Color.BLACK;
+        fontParameter.borderWidth = 1;
         font = fontGenerator.generateFont(fontParameter);
-        font.setColor(Color.WHITE);
     }
     
     public void setValue(String key, String value) {

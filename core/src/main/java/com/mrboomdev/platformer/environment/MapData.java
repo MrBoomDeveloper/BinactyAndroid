@@ -1,16 +1,16 @@
 package com.mrboomdev.platformer.environment;
-
-import com.badlogic.gdx.math.Vector2;
+import com.mrboomdev.platformer.environment.data.MapTiles;
 
 public class MapData {
-    public String name;
-    public int width, height;
-    public int version;
-    String[] load;
-    int[][] tiles;
-    int[][] spawns;
+    public String[] load;
+    public int[][] spawns;
+    public MapTiles tiles;
     
-    public Vector2 getSize() {
-        return new Vector2(width, height);
+    public class about {
+        public String name = "Unknown";
+        public String author = "Unknown";
+        public String[] tags = {"No", "Tags", "Found"};
+        public int duration = 6;
+        public int version = 1;
     }
 }

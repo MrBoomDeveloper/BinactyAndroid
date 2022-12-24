@@ -77,7 +77,7 @@ public class GameplayUi implements CoreUi {
         stage.addActor(timer);
         
 		stage.addActor(table);
-        stage.setDebugAll(true);
+        //stage.setDebugAll(true);
 	}
 	
 	public void render(float delta) {

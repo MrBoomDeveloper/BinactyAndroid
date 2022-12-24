@@ -1,4 +1,4 @@
 app/build
 core/build
 .gradle/
-
+.androidide/

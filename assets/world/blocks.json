@@ -1,0 +1,51 @@
+{
+    "air": {
+        "colission": false
+    },
+    "floor": {
+        "width": 2,
+        "height": 2,
+        "texture": "floor/blue.png"
+    },
+    "floor_shadow": {
+        "width": 2,
+        "height": 2,
+        "texture": "floor/blue_shadow.png"
+    },
+    "wall": {
+        "width": 2,
+        "height": 3.8,
+        "texture": "wall/front.png"
+    },
+    "wall_top": {
+        "width": 2,
+        "height": 3.8,
+        "texture": "wall/top.png"
+    },
+    "wall_last": {
+        "width": 2,
+        "height": 3.8,
+        "offsetY": 1,
+        "texture": "wall/front.png"
+    },
+    "game_machine": {
+        "width": 1.9,
+        "height": 3.5,
+        "texture": "game_machine.png"
+    },
+    "barrier": {
+        "width": 2,
+        "height": 2
+    },
+    
+    "tv": {
+        "texture": "tv/0.png",
+        "width": 1,
+        "height": 1
+    },
+    "door": {
+        "texture": "door/0.png",
+        "width": 2,
+        "height": 3
+    }
+}

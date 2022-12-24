@@ -12,21 +12,21 @@ public class ActionButton extends Actor {
   private Sprite sprite;
 
   public ActionButton() {
-    sprite = new Sprite(new Texture(Gdx.files.internal("img/ui/button.png")));
+    sprite = new Sprite(new Texture(Gdx.files.internal("ui/buttons/button.png")));
     setSize(125, 125);
     sprite.setSize(getWidth(), getHeight());
-    sprite.setAlpha(.7f);
+    sprite.setAlpha(.4f);
     addListener(new ClickListener() {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-            sprite.setAlpha(.5f);
+            sprite.setAlpha(.25f);
             return true;
         }
 
         @Override
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
             super.clicked(event, x ,y);
-            sprite.setAlpha(.7f);
+            sprite.setAlpha(.4f);
         }
     });
   }

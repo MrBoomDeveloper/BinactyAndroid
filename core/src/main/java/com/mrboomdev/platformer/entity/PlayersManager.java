@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.Controller;
 import com.mrboomdev.platformer.entity.PlayerEntity;
@@ -22,6 +23,10 @@ public class PlayersManager {
     
     public Vector2 getPosition(String nick) {
         return playersArray[playersPositions.get(nick)].body.getPosition();
+    }
+    
+    public Body getBody(String nick) {
+        return playersArray[playersPositions.get(nick)].body;
     }
     
     public void add(String nick, PlayerEntity player) {

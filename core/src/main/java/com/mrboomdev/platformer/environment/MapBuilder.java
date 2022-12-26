@@ -1,6 +1,9 @@
 package com.mrboomdev.platformer.environment;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,23 +38,13 @@ public class MapBuilder {
         }
     }
     
-    public void build(World world) {
+    public void build(World world, RayHandler rayHandler) {
         for(int x = mapTiles.foreground.length - 1; x >= 0; x--) {
             for(int y = 0; y < mapTiles.foreground[x].length; y++) {
-                buildBlock(blocks.get(mapTiles.foreground[x][y]), new Vector2(x * 2, y * 2), world);
+                blocks.get(mapTiles.foreground[x][y]).build(
+                    new Vector2(x * 2, y * 2),
+                    world, rayHandler);
             }
-        }
-    }
-    
-    public void buildBlock(Block block, Vector2 position, World world) {
-        if(block.colission) {
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.position.set(position.y, position.x + ((block.height - tileSize) / 2) + .4f);
-            Body body = world.createBody(bodyDef);
-            PolygonShape polygon = new PolygonShape();
-            polygon.setAsBox(block.width / 2, block.height / 2 - .4f);
-            body.createFixture(polygon, 0);
-            polygon.dispose();
         }
     }
     
@@ -62,27 +55,12 @@ public class MapBuilder {
             
         for(int y = tiles.length - 1; y >= 0; y--) {
             for(int x = 0; x < tiles[y].length; x++) {
-                renderBlock(blocks.get(tiles[y][x]),
+                blocks.get(tiles[y][x]).render(
                     new Vector2(x * tileSize, y * tileSize),
                     cameraBounds, batch);
             }
         }
         
         if(layer == MapLayer.FOREGROUND) shadow.draw(batch);
-    }
-    
-    public void renderBlock(Block block, Vector2 position, Bounds bounds, SpriteBatch batch) {
-        if(position.x - (block.width / 2) > bounds.toX ||
-            position.x + (block.width / 2) < bounds.fromX ||
-            position.y - (block.height / 2) > bounds.toY ||
-            position.y + block.height < bounds.fromY) {
-                return;
-        }
-        
-        if(block.sprite != null) {
-            batch.draw(block.sprite, position.x - (tileSize / 2) + block.offsetX, 
-                position.y - (tileSize / 2) + block.offsetY, 
-                block.width, block.height);
-        }
     }
 }

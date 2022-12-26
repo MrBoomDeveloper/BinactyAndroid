@@ -1,30 +1,59 @@
 {
-	"name": "Test 05",
-	"version": 5,
+    "meta": {
+	    "name": "Test 05: Updated 02",
+        "subtitle": "Concept map",
+        "description": "Whats new: Website link to author; Blocks can be placed at any x and y; Each block now can have individual properties, which eliminates a lot of dublicate blocks; added custom icon of the map; now you can link logic script file, which can control and add custom things to maps; Added subtitle, which can provide a short way to describe your map;",
+        "duration": 6,
+        "tags": ["Test map", "Official"],
+        "author": "MrBoomDev",
+        "website": "https://mrboomdev.ru",
+        "icon": "icon.png",
+	    "version": 5
+    },
     
-    "load": [
-        "AIR",
-        "FLOOR",
-        "WALL"
-    ],
+    "ambient": {
+        "lights": {
+            "player": [20, 50, 250, .8],
+            "scene": [0, 0, 0, .1]
+        },
+        
+        "music": {
+            "music_01.mp3",
+            "music_02.mp3",
+            "music_03.mp3"
+        },
+        
+        "load": [
+            "air",
+            "wall",
+            "floor",
+            "game_machine",
+            "barrier",
+            "wall_last",
+            "door",
+            "wall_top"
+        ]
+    },
 	
 	"tiles": {
-		{
-			"name": "AIR",
-			"x": 0,
-			"y": 0
-		}, {
-			"name": "FLOOR",
-			"x": 1,
-			"y": 0
-		}
-	},
-	
-	"spawns": [
-		[2, 2],
-		[1, 1],
-		[6, 6],
-		[3, 3],
-		[4, 4]
-	]
+        "background": [
+            {
+            	position: [5, 5],
+            	size: [1, 1],
+            	opacity: 1,
+            	offset: [0, 0],
+            	type: "my-skin"
+            }
+	    ],
+        
+        "foreground": [
+            
+	    ],
+        
+        "spawns": [
+		    
+	    ]
+    },
+    
+    "logic": "logic.js"
 }

@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.environment;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Camera;
 import com.google.gson.reflect.TypeToken;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
@@ -20,7 +21,6 @@ public class MapManager {
     private MapData data;
     private Bounds cameraBounds;
     private Vector2 cameraStart, cameraEnd;
-    private String json;
     
     public MapManager() {
         cameraEnd = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -29,17 +29,17 @@ public class MapManager {
     
     public void load(FileHandle file) {
         Gson gson = new Gson();
-        json = file.readString();
+        String json = file.readString();
         data = gson.fromJson(json, MapData.class);
         builder = new MapBuilder(data.tiles);
     }
     
-    public void build(World world) {
+    public void build(World world, RayHandler rayHandler) {
         Type token = new TypeToken<Map<String, Block>>(){}.getType();
         Map<String, Block> blocks = new Gson().fromJson(Gdx.files.internal("world/blocks.json").readString(), token);
         
         builder.loadBlocks(data.load, blocks);
-        builder.build(world);
+        builder.build(world, rayHandler);
     }
 	
 	public void render(SpriteBatch batch, MapLayer layer) {

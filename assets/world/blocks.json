@@ -3,49 +3,46 @@
         "colission": false
     },
     "floor": {
-        "width": 2,
-        "height": 2,
+        "size": [2, 2],
         "texture": "floor/blue.png"
     },
-    "floor_shadow": {
-        "width": 2,
-        "height": 2,
-        "texture": "floor/blue_shadow.png"
-    },
     "wall": {
-        "width": 2,
-        "height": 3.8,
+        "size": [2, 3.8],
         "texture": "wall/front.png"
     },
     "wall_top": {
-        "width": 2,
-        "height": 3.8,
+        "size": [2, 3.8],
         "texture": "wall/top.png"
     },
     "wall_last": {
-        "width": 2,
-        "height": 3.8,
-        "offsetY": 1,
-        "texture": "wall/front.png"
+        "size": [2, 3.8],
+        "offset": [0, 1],
+        "texture": "wall/front.png",
+        "offset_bounds": [ 0, 0, 0, 1 ]
     },
     "game_machine": {
-        "width": 1.9,
-        "height": 3.5,
-        "texture": "game_machine.png"
+        "size": [1.9, 3.5],
+        "texture": "game_machine.png",
+        "lights": {
+            "distance": 2,
+            "offsetX": 0,
+            "offset": [0, -1],
+            "color": {
+                "values": [255, 255, 255, 0.9]
+            }
+        }
     },
     "barrier": {
-        "width": 2,
-        "height": 2
+        "size": [2, 2],
+        "offset_bounds": [ 0, 0, 0, -1 ]
     },
     
     "tv": {
-        "texture": "tv/0.png",
-        "width": 1,
-        "height": 1
+        "size": [1, 1],
+        "texture": "tv/0.png"
     },
     "door": {
-        "texture": "door/0.png",
-        "width": 2,
-        "height": 3
+        "size": [2, 3],
+        "texture": "door/0.png"
     }
 }

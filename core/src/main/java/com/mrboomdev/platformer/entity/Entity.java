@@ -24,7 +24,7 @@ public abstract class Entity {
 	    sprite.setSize(1.8f, 1.8f);
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(5, 5);
+        bodyDef.position.set(12, 12);
         body = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);

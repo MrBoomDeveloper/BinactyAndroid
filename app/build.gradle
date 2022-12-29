@@ -36,8 +36,8 @@ android {
 		applicationId 'com.mrboomdev.platformer'
 		minSdkVersion 25
 		targetSdkVersion 32
-		versionCode 4
-		versionName "0.1.0"
+		versionCode 5
+		versionName "0.1.1"
 		multiDexEnabled true
 	}
 	compileOptions {

@@ -17,20 +17,25 @@ import com.badlogic.gdx.utils.Timer;
 public abstract class Entity {
     public Body body;
     public Sprite sprite;
+    public Sprite weapon;
     
     public Entity(World world) {
-        Texture myTexture = new Texture(Gdx.files.internal("world/player/player.jpg"));
-	    sprite = new Sprite(myTexture);
-	    sprite.setSize(1.8f, 1.8f);
+        weapon = new Sprite(new Texture(Gdx.files.internal("world/player/weapon/tomson.png")));
+        weapon.setSize(1.2f, .6f);
+    
+	    sprite = new Sprite(new Texture(Gdx.files.internal("world/player/jack.png")));
+	    sprite.setSize(1.0f, 1.8f);
+        
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(12, 12);
         body = world.createBody(bodyDef);
+        
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = .001f;
+        //fixtureDef.density = .001f;
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
     }

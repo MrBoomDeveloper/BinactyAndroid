@@ -27,6 +27,7 @@ public class GameplayScreen extends CoreScreen {
     private World world;
     private GameplayUi ui;
     private RayHandler rayHandler;
+    private Box2DDebugRenderer debugRenderer;
 
     @Override
     public void render(float delta) {
@@ -44,6 +45,7 @@ public class GameplayScreen extends CoreScreen {
         rayHandler.updateAndRender();
         
         batch.begin();
+        //debugRenderer.render(world, camera.combined);
         ui.render(delta);
         batch.end();
         
@@ -95,5 +97,7 @@ public class GameplayScreen extends CoreScreen {
         lobbyTheme.setVolume(.2f);
         lobbyTheme.setLooping(true);
         lobbyTheme.play();
+        
+        debugRenderer = new Box2DDebugRenderer();
     }
 }

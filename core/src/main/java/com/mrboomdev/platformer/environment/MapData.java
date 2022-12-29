@@ -3,7 +3,6 @@ import com.mrboomdev.platformer.environment.data.MapTiles;
 
 public class MapData {
     public String[] load;
-    public int[][] spawns;
     public MapTiles tiles;
     
     public class about {

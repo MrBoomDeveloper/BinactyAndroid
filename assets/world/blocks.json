@@ -23,9 +23,9 @@
     "game_machine": {
         "size": [1.9, 3.5],
         "texture": "game_machine.png",
+        "offset_bounds": [ 0, 0.2, 0, -0.2 ],
         "lights": {
             "distance": 2,
-            "offsetX": 0,
             "offset": [0, -1],
             "color": {
                 "values": [255, 255, 255, 0.9]
@@ -35,6 +35,38 @@
     "barrier": {
         "size": [2, 2],
         "offset_bounds": [ 0, 0, 0, -1 ]
+    },
+    "gift": {
+        "texture": "gift.png",
+        "size": [ 1, 1 ],
+        "offset_bounds": [ -0.5, -0.5, 0, 0.5 ]
+    },
+    "pizza": {
+        "texture": "pizza.png",
+        "size": [ 1, 1.1 ],
+        "offset": [ 0.4, 3 ],
+        "colission": false
+    },
+    "plush_danya": {
+        "texture": "plush_danya.png",
+        "size": [ 1, 1.3 ],
+        "offset_bounds": [ -0.5, -0.4, 0, 0.4 ]
+    },
+    "chair": {
+        "texture": "chair.png",
+        "size": [ 1.8, 2.0 ],
+        "colission": false
+    },
+    "table": {
+        "texture": "table.png",
+        "size": [ 4.5, 2.5 ],
+        "offset_bounds": [ 1.2, 0, 0, 0 ]
+    },
+    "stage": {
+        "texture": "stage.png",
+        "size": [ 8, 3 ],
+        "offset": [ 0, 0.2 ],
+        "offset_bounds": [ 3, -0.4, 0, 0 ]
     },
     
     "tv": {

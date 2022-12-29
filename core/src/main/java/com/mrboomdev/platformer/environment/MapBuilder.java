@@ -42,7 +42,7 @@ public class MapBuilder {
         for(int x = mapTiles.foreground.length - 1; x >= 0; x--) {
             for(int y = 0; y < mapTiles.foreground[x].length; y++) {
                 blocks.get(mapTiles.foreground[x][y]).build(
-                    new Vector2(x * 2, y * 2),
+                    new Vector2(y * 2, x * 2),
                     world, rayHandler);
             }
         }

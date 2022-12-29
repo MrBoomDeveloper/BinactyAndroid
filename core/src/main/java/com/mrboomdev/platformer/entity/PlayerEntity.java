@@ -20,6 +20,7 @@ public class PlayerEntity extends Entity {
     private Sprite boom;
     private float boomAnimation;
     private Sound boomSound;
+    private Vector2 was_position;
 
     public PlayerEntity(String nick, World world) {
         super(world);
@@ -27,6 +28,7 @@ public class PlayerEntity extends Entity {
         this.boom = new Sprite(new Texture(Gdx.files.internal("effects/boom.png")));
         this.boomSound = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/boom.mp3"));
         body.setUserData(this);
+        was_position = body.getPosition();
     }
 
     public void setController(Controller controller) {
@@ -34,10 +36,19 @@ public class PlayerEntity extends Entity {
     }
 
     public void draw(SpriteBatch batch) {
+        if(was_position.x > body.getPosition().x) {
+            
+        }
+        was_position = body.getPosition();
+    
+        weapon.setPosition(
+            body.getPosition().x,
+            body.getPosition().y - .3f);
         sprite.setPosition(
             body.getPosition().x - sprite.getWidth() / 2,
             body.getPosition().y - sprite.getHeight() / 2);
         sprite.draw(batch);
+        weapon.draw(batch);
         
         boomAnimation += Gdx.graphics.getDeltaTime();
         if(boomAnimation < 1) {

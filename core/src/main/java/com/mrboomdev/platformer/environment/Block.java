@@ -19,6 +19,7 @@ import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 
 public class Block {
     private final int tileSize = 2;
+    private int radius = 0;
     public float[] size = {2, 2};
     public float[] offset = {0, 0};
     public String texture;
@@ -43,19 +44,21 @@ public class Block {
         if(colission) {
             BodyDef bodyDef = new BodyDef();
             if(offset_bounds != null) {
-                System.out.println(offset_bounds[3] + " hhggyyyyyuhbhhyyy6yggv");
-                bodyDef.position.set(position.y + offset_bounds[0],
-                    position.x + ((size[1] - tileSize) / 2) + .4f + offset_bounds[1]);
+                bodyDef.position.set(
+                    position.x + offset_bounds[0],
+                    position.y + offset_bounds[1]
+                        + ((size[1] - tileSize) / 2) + .4f);
             } else {
-                bodyDef.position.set(position.y,
-                    position.x + ((size[1] - tileSize) / 2) + .4f);
+                bodyDef.position.set(position.x,
+                    position.y + ((size[1] - tileSize) / 2) + .4f);
             }
                 
             Body body = world.createBody(bodyDef);
             PolygonShape polygon = new PolygonShape();
             if(offset_bounds != null) {
-                polygon.setAsBox(size[0] / 2 + (offset_bounds[2] - offset_bounds[0]), 
-                    size[1] / 2 - .4f + (offset_bounds[3] - offset_bounds[1]));
+                polygon.setAsBox(
+                    size[0] / 2 + offset_bounds[2],
+                    size[1] / 2 + offset_bounds[3] - .4f);
             } else {
                 polygon.setAsBox(size[0] / 2, size[1] / 2 - .4f);
             }

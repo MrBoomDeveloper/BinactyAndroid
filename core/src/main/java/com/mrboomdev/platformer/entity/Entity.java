@@ -17,11 +17,11 @@ import com.badlogic.gdx.utils.Timer;
 public abstract class Entity {
     public Body body;
     public Sprite sprite;
-    public Sprite weapon;
+    //public Sprite weapon;
     
     public Entity(World world) {
-        weapon = new Sprite(new Texture(Gdx.files.internal("world/player/weapon/tomson.png")));
-        weapon.setSize(1.2f, .6f);
+        /*weapon = new Sprite(new Texture(Gdx.files.internal("world/player/weapon/tomson.png")));
+        weapon.setSize(1.2f, .6f);*/
     
 	    sprite = new Sprite(new Texture(Gdx.files.internal("world/player/jack.png")));
 	    sprite.setSize(1.0f, 1.8f);
@@ -35,7 +35,6 @@ public abstract class Entity {
         shape.setAsBox(sprite.getWidth() / 2, sprite.getHeight() / 2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        //fixtureDef.density = .001f;
         Fixture fixture = body.createFixture(fixtureDef);
         shape.dispose();
     }

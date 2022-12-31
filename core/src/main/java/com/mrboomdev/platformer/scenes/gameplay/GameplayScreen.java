@@ -11,7 +11,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import java.util.HashSet;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.EntityColission;
 import com.mrboomdev.platformer.entity.PlayerEntity;
 import com.mrboomdev.platformer.environment.MapLayer;
@@ -46,10 +48,10 @@ public class GameplayScreen extends CoreScreen {
         
         batch.begin();
         //debugRenderer.render(world, camera.combined);
+        players.drawNicks(batch, camera);
         ui.render(delta);
         batch.end();
         
-        ui.debugValues.setValue("RenderCalls", String.valueOf(batch.renderCalls));
         camera.position.set(players.getPosition("MrBoomDev"), 0);
         world.step(1 / 60f, 6, 2);
     }
@@ -81,7 +83,13 @@ public class GameplayScreen extends CoreScreen {
         map.setCamera(camera);
 
         players = new PlayersManager(world);
-        String[] nicks = {"MrBoomDev", "Kapusta", "FreddyFazbear123", "CatOMan", "Amogus"};
+        Gson gson = new Gson();
+        String[] botsNicks = gson.fromJson(Gdx.files.internal("world/player/bots.json").readString(), String[].class);
+        HashSet<String> nicks = new HashSet<>();
+        for(int i = 0; i < 9; i++) {
+            nicks.add(botsNicks[(int)(Math.random() * botsNicks.length)]);
+        }
+        nicks.add("MrBoomDev");
         for(String nick : nicks) {
             players.add(nick, new PlayerEntity(nick, world));
         }

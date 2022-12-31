@@ -1,6 +1,8 @@
 package com.mrboomdev.platformer.entity;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -45,5 +47,18 @@ public class PlayersManager {
             playersArray[i].draw(batch);
             } catch(Exception e) { e.printStackTrace(); }
         }
+    }
+    
+    public void drawNicks(SpriteBatch batch, Camera camera) {
+        batch.setProjectionMatrix(batch.getProjectionMatrix().cpy().scale(.025f, .025f, 1));
+        for(PlayerEntity player : playersArray) {
+            if(player != null) {
+            player.drawNick(batch);
+            System.out.println("non null");
+            } else {
+            System.out.println("null");
+            }
+        }
+        batch.setProjectionMatrix(camera.combined);
     }
 }

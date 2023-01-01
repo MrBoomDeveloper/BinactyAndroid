@@ -91,7 +91,7 @@ public class GameplayScreen extends CoreScreen {
         }
         nicks.add("MrBoomDev");
         for(String nick : nicks) {
-            players.add(nick, new PlayerEntity(nick, world));
+            players.add(nick, new PlayerEntity("klarrie", nick, world));
         }
         players.setController("MrBoomDev", ui.joystick);
         

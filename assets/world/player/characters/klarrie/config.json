@@ -1,33 +1,35 @@
 {
+    "id": "klarrie",
 	"name": "Klarrie",
-	"description": "Это самый первый персонаж, которого я придумал. Она пугливая очень, прям как Кобени из Человека-Бензопилы."
-	"tag": "Default Character"
+	"description": "Это самый первый персонаж, которого я придумал. Она пугливая очень, прям как Кобени из Человека-Бензопилы.",
+	"tag": "Default Character",
 	"hp": 100,
 	"speed": 10,
 	"shield": 1,
 	"attack": 8,
+    "texture_path": "texture.png",
 	"size": [ 2, 4 ],
 
 	"bones": {
 		"head": {
+            "region": [ 0, 0, 19, 16 ],
 			"size": [ .8, .8 ],
-			"position": [ .2, 0 ],
-			"from_texture": [ 0, 0, 10, 10 ]
+			"position": [ -0.25, 0.1 ]
 		},
 		"body": {
-			"size": [ .8, .8 ],
-			"position": [ .2, 0 ],
-			"from_texture": [ 0, 0, 10, 10 ]
+            "region": [ 3, 18, 11, 13 ],
+			"size": [ .6, .7 ],
+			"position": [ -0.15, -0.55 ]
 		},
 		"arm": {
-			"size": [ .8, .8 ],
-			"position": [ .2, 0 ],
-			"from_texture": [ 0, 0, 10, 10 ]
+            "region": [ 26, 1, 4, 10 ],
+			"size": [ .26, .5 ],
+			"position": [ 0, -0.6 ]
 		},
 		"leg": {
-			"size": [ .8, .8 ],
-			"position": [ .2, 0 ],
-			"from_texture": [ 0, 0, 10, 10 ]
+        	"region": [ 26, 21, 4, 9 ],
+			"size": [ .23, .5 ],
+			"position": [ 0, -0.95 ]
 		}
 	}
 }

@@ -1,9 +1,7 @@
 package com.mrboomdev.platformer.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,30 +10,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Timer;
+import com.mrboomdev.platformer.util.Direction;
 
 public class PlayerEntity extends Entity {
     public String nick;
-    private Controller controller;
     private Sprite boom;
     private float boomAnimation;
     private Sound boomSound;
     private Vector2 was_position;
     private BitmapFont font;
+    private float animationProgress = 0;
+    private float limbOffset = -2;
+    private Direction moveDirection;
+    private Direction animationDirection;
 
-    public PlayerEntity(String nick, World world) {
-        super(world);
+    public PlayerEntity(String name, String nick, World world) {
+        super(name, world);
         this.nick = nick;
         this.boom = new Sprite(new Texture(Gdx.files.internal("effects/boom.png")));
         this.boomSound = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/boom.mp3"));
         body.setUserData(this);
         was_position = body.getPosition();
+        moveDirection = new Direction(Direction.NONE);
+        animationDirection = new Direction(Direction.FORWARD);
         
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto-medium.ttf"));
         FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
@@ -45,25 +44,39 @@ public class PlayerEntity extends Entity {
         fontParam.color = Color.WHITE;
         font = fontGenerator.generateFont(fontParam);
     }
-
-    public void setController(Controller controller) {
-        this.controller = controller;
+    
+    public void animate() {
+        if(Math.abs(body.getLinearVelocity().x) == 0) {
+            if(animationProgress > 0) animationProgress -= .01;
+            if(limbOffset > -2) limbOffset -= 4;
+            return;
+        }
+        
+        sprite.setSize(was_position.x > body.getPosition().x ? -1 : 1, 1.8f);
+        was_position = body.getPosition();
+        moveDirection.setFrom(body.getLinearVelocity().x);
+        
+        animationProgress += animationDirection.isForward()
+            ? Math.abs(body.getLinearVelocity().x / 600)
+            : - Math.abs(body.getLinearVelocity().x / 600);
+            
+        if(animationDirection.isForward() && animationProgress > .1f) {
+            animationDirection.current = Direction.BACKWARD;
+        } else if(animationDirection.isBackward() && animationProgress < 0) {
+            animationDirection.current = Direction.FORWARD;
+        }
+        if(limbOffset < 50) limbOffset += 4;
     }
 
     public void draw(SpriteBatch batch) {
-        if(Math.abs(body.getLinearVelocity().x) > 0) {
-            sprite.setSize(was_position.x > body.getPosition().x ? -1 : 1, 1.8f);
-        }
-        
-        was_position = body.getPosition();
-    
+        System.out.println(limbOffset);
         /*weapon.setPosition(
             body.getPosition().x,
             body.getPosition().y - .3f);*/
-        sprite.setPosition(
+        /*sprite.setPosition(
             body.getPosition().x - sprite.getWidth() / 2,
             body.getPosition().y - sprite.getHeight() / 2);
-        sprite.draw(batch);
+        sprite.draw(batch);*/
         //weapon.draw(batch);
         
         boomAnimation += Gdx.graphics.getDeltaTime();
@@ -71,21 +84,30 @@ public class PlayerEntity extends Entity {
             boom.setCenter(body.getPosition().x, body.getPosition().y);
             boom.draw(batch);
         }
-
-        if (controller != null) usePower(controller.getPower());
+        
+        this.animate();
+        System.out.println(animationProgress * 5);
+        config.bones.leg.draw(batch, body.getPosition().add(
+            new Vector2(-0.15f, animationProgress * 2)), -(animationProgress * -1000 + /*60*/ limbOffset), moveDirection);
+        config.bones.leg.draw(batch, body.getPosition().add(
+            new Vector2(0.15f, animationProgress * 2)), animationProgress * -1000 + /*50*/ limbOffset, moveDirection);
+        config.bones.body.draw(batch, body.getPosition().add(
+            new Vector2(0, animationProgress / .8f)), 
+            0, moveDirection);
+        config.bones.head.draw(batch, body.getPosition().add(
+            new Vector2(0, animationProgress)), 
+            0, moveDirection);
+            
+        if(controller != null) usePower(controller.getPower());
     }
     
     public void drawNick(SpriteBatch batch) {
-        font.draw(batch, nick, body.getPosition().x * 40 - 50, body.getPosition().y * 40 + 56, 100, Align.center, true);
+        font.draw(batch, nick, body.getPosition().x * 40 - 45, body.getPosition().y * 40 + 56, 100, Align.center, true);
     }
     
     public void die() {
         boomSound.play(.2f);
         boom.setSize(2, 2);
         boomAnimation = 0;
-    }
-
-    public void usePower(Vector2 power) {
-        body.setLinearVelocity(power);
     }
 }

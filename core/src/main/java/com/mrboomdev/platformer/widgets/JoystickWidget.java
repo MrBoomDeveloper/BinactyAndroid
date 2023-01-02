@@ -1,6 +1,8 @@
 package com.mrboomdev.platformer.widgets;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -77,7 +79,17 @@ public class JoystickWidget extends Actor implements Controller {
     }
   
     public Vector2 getPower() {
+        //If using keyboard
+        Vector2 keyboardMovement = new Vector2();
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) keyboardMovement.x = -5;
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) keyboardMovement.x = 5;
+        if(Gdx.input.isKeyPressed(Input.Keys.UP)) keyboardMovement.y = 5;
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) keyboardMovement.y = -5;
+        if(keyboardMovement.x != 0 && keyboardMovement.y != 0) return keyboardMovement;
+        
+        //If using touch controls
         int offset = isActive ? 0 : 25;
+        Gdx.app.log("jfjfjfjnfnf", ((touchPosition.x - (getWidth() / 2) + offset ) / 18) + ":" + ((touchPosition.y - ((getHeight() / 2)) + offset ) / 18));
         return new Vector2(
             ( touchPosition.x - (getWidth() / 2) + offset ) / 18,
             ( touchPosition.y - (getHeight() / 2) + offset ) / 18

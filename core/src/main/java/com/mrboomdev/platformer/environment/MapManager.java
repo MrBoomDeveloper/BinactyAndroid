@@ -21,6 +21,7 @@ public class MapManager {
     private MapData data;
     private Bounds cameraBounds;
     private Vector2 cameraStart, cameraEnd;
+    public int index;
     
     public MapManager() {
         cameraEnd = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

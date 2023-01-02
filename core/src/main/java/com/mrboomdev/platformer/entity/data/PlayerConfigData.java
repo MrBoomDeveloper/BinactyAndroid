@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.util.Direction;
 
 public class PlayerConfigData {
+    private String texture_path;
+    private Texture texture;
     public String id = "no_id";
 	public String name = "Unknown character";
 	public String tag = "A custom character";
@@ -18,8 +20,6 @@ public class PlayerConfigData {
 	public int attack = 10;
 	public int[] size;
 	public Bones bones;
-    public String texture_path;
-    public Texture texture;
     
     public PlayerConfigData init() {
         texture = new Texture(Gdx.files.internal("world/player/characters/" + id + "/" + texture_path));
@@ -28,6 +28,7 @@ public class PlayerConfigData {
     }
 	
 	public class Bones {
+        public float legs_gap = 0.15f;
 		public Bone head;
 		public Bone body;
 		public Bone arm;

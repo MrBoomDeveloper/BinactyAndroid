@@ -11,7 +11,7 @@ public class Direction {
     }
     
     public void setFrom(float x) {
-        current = x > 0 ? FORWARD : BACKWARD;
+        current = x >= 0 ? FORWARD : BACKWARD;
     }
     
     public boolean isForward() {

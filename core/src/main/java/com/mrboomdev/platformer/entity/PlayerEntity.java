@@ -22,9 +22,9 @@ public class PlayerEntity extends Entity {
     private Vector2 was_position;
     private BitmapFont font;
     private float animationProgress = 0;
-    private float limbOffset = -2;
     private Direction moveDirection;
     private Direction animationDirection;
+    private float speed;
 
     public PlayerEntity(String name, String nick, World world) {
         super(name, world);
@@ -46,9 +46,9 @@ public class PlayerEntity extends Entity {
     }
     
     public void animate() {
-        if(Math.abs(body.getLinearVelocity().x) == 0) {
+        speed = Math.max(Math.abs(body.getLinearVelocity().x), Math.abs(body.getLinearVelocity().y));
+        if(speed == 0) {
             if(animationProgress > 0) animationProgress -= .01;
-            if(limbOffset > -2) limbOffset -= 4;
             return;
         }
         
@@ -56,20 +56,15 @@ public class PlayerEntity extends Entity {
         was_position = body.getPosition();
         moveDirection.setFrom(body.getLinearVelocity().x);
         
-        animationProgress += animationDirection.isForward()
-            ? Math.abs(body.getLinearVelocity().x / 600)
-            : - Math.abs(body.getLinearVelocity().x / 600);
-            
+        animationProgress += (animationDirection.isForward() ? speed : -speed) / 600;
         if(animationDirection.isForward() && animationProgress > .1f) {
             animationDirection.current = Direction.BACKWARD;
         } else if(animationDirection.isBackward() && animationProgress < 0) {
             animationDirection.current = Direction.FORWARD;
         }
-        if(limbOffset < 50) limbOffset += 4;
     }
 
     public void draw(SpriteBatch batch) {
-        System.out.println(limbOffset);
         /*weapon.setPosition(
             body.getPosition().x,
             body.getPosition().y - .3f);*/
@@ -86,14 +81,24 @@ public class PlayerEntity extends Entity {
         }
         
         this.animate();
-        System.out.println(animationProgress * 5);
+        if(nick == "MrBoomDev") System.out.println(speed);
+        float limbGap = (speed * 165);
+        float limbOffset = speed * 8;
         config.bones.leg.draw(batch, body.getPosition().add(
-            new Vector2(-0.15f, animationProgress * 2)), -(animationProgress * -1000 + /*60*/ limbOffset), moveDirection);
+            new Vector2(-config.bones.legs_gap, animationProgress * 2)),
+            -(animationProgress * -(limbGap) + limbOffset), moveDirection);
         config.bones.leg.draw(batch, body.getPosition().add(
-            new Vector2(0.15f, animationProgress * 2)), animationProgress * -1000 + /*50*/ limbOffset, moveDirection);
+            new Vector2(config.bones.legs_gap, animationProgress * 2)), 
+            animationProgress * -(limbGap) + limbOffset, moveDirection);
+        config.bones.arm.draw(batch, body.getPosition().add(
+            new Vector2(moveDirection.isForward() ? .27f : -.27f, animationProgress * 2)), 
+            -(animationProgress * -(limbGap) + limbOffset), moveDirection);
         config.bones.body.draw(batch, body.getPosition().add(
             new Vector2(0, animationProgress / .8f)), 
             0, moveDirection);
+        config.bones.arm.draw(batch, body.getPosition().add(
+            new Vector2(moveDirection.isBackward() ? .27f : -.27f, animationProgress * 2)), 
+            animationProgress * -(limbGap) + limbOffset, moveDirection);
         config.bones.head.draw(batch, body.getPosition().add(
             new Vector2(0, animationProgress)), 
             0, moveDirection);
@@ -102,7 +107,7 @@ public class PlayerEntity extends Entity {
     }
     
     public void drawNick(SpriteBatch batch) {
-        font.draw(batch, nick, body.getPosition().x * 40 - 45, body.getPosition().y * 40 + 56, 100, Align.center, true);
+        font.draw(batch, nick, body.getPosition().x * 40 - 50, body.getPosition().y * 40 + 56, 100, Align.center, true);
     }
     
     public void die() {

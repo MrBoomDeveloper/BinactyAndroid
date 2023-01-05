@@ -1,7 +1,9 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mrboomdev.platformer.util.ActorUtil;
 import java.text.SimpleDateFormat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -22,32 +24,15 @@ public class GameplayUi implements CoreUi {
 	
 	public GameplayUi() {
 		stage = new Stage();
-        debugValues = new DebugValuesWidget();
-        stage.addActor(debugValues);
-        
-        ActionButton screenshot = new ActionButton();
-        screenshot.setPosition(Gdx.graphics.getWidth() - screenshot.getWidth() - 50,
-            Gdx.graphics.getHeight() - screenshot.getHeight() - 50);
-        screenshot.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                System.exit(0);
-            }
-        });
-        stage.addActor(screenshot);
-        
-        ActionButton pause = new ActionButton();
-        pause.setPosition(Gdx.graphics.getWidth() - (screenshot.getWidth() * 2) - 50 - 35,
-            Gdx.graphics.getHeight() - screenshot.getHeight() - 50);
-        pause.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                System.exit(0);
-            }
-        });
-        stage.addActor(pause);
+        debugValues = new DebugValuesWidget().addTo(stage);
+        ActorUtil screenshot = new ActionButton()
+            .toPosition(new Vector2(Gdx.graphics.getWidth() - 175, Gdx.graphics.getHeight() - 175))
+            .onClick(() -> Gdx.app.exit())
+            .addTo(stage);
+        ActorUtil pause = new ActionButton()
+            .toPosition(new Vector2(Gdx.graphics.getWidth() - 335, Gdx.graphics.getHeight() - 175))
+            .onClick(() -> System.exit(0))
+            .addTo(stage);
         
 		Table table = new Table();
         table.setFillParent(true);

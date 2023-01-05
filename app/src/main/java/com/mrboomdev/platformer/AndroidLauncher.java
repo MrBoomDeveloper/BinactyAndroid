@@ -38,8 +38,7 @@ public class AndroidLauncher extends AndroidApplication {
 		gameConfig.useAccelerometer = false;
 		gameConfig.useCompass = false;
 		
-		DisplayMetrics metrics = getResources().getDisplayMetrics();
-		initialize(new MainGame(new AndroidAnalytics()), gameConfig);
+        initialize(MainGame.getInstance(new AndroidAnalytics()), gameConfig);
 	}
     
     @Override

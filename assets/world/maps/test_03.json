@@ -1,11 +1,7 @@
 {
     "meta": {
 	    "name": "Test 03: Updated 02",
-        "description": "This is just a concept. Animations may be not implemented in the future.",
-        "duration": 6,
         "tags": ["Test map", "Official"],
-        "author": "MrBoomDev",
-	    "version": 4
     },
     
     "ambient": {

@@ -2,13 +2,7 @@
     "meta": {
 	    "name": "Test 05: Updated 02",
         "subtitle": "Concept map",
-        "description": "Whats new: Website link to author; Blocks can be placed at any x and y; Each block now can have individual properties, which eliminates a lot of dublicate blocks; added custom icon of the map; now you can link logic script file, which can control and add custom things to maps; Added subtitle, which can provide a short way to describe your map;",
-        "duration": 6,
         "tags": ["Test map", "Official"],
-        "author": "MrBoomDev",
-        "website": "https://mrboomdev.ru",
-        "icon": "icon.png",
-	    "version": 5
     },
     
     "ambient": {
@@ -48,12 +42,6 @@
         
         "foreground": [
             
-	    ],
-        
-        "spawns": [
-		    
 	    ]
-    },
-    
-    "logic": "logic.js"
+    }
 }

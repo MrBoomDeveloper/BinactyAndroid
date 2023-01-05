@@ -22,7 +22,7 @@ public abstract class Entity {
     public PlayerConfigData config;
     //public Sprite weapon;
     
-    public Entity(String name, World world) {
+    public Entity(String name, World world, Vector2 position) {
         Gson gson = new Gson();
         config = gson.fromJson(
             Gdx.files.internal("world/player/characters/" + name + "/config.json").readString(), 
@@ -36,7 +36,7 @@ public abstract class Entity {
         
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(12, 12);
+        bodyDef.position.set(position.x, position.y);
         body = world.createBody(bodyDef);
         
         PolygonShape shape = new PolygonShape();
@@ -48,6 +48,10 @@ public abstract class Entity {
     }
     
     public void usePower(Vector2 power) {
+        if(power.x > 5) power.x = 5;
+        if(power.x < -5) power.x = -5;
+        if(power.y > 5) power.y = 5;
+        if(power.y < -5) power.y = -5;
         body.setLinearVelocity(power);
     }
     
@@ -57,5 +61,7 @@ public abstract class Entity {
     
     public abstract void die();
     
-    public abstract void draw(SpriteBatch batch);
+    public void draw(SpriteBatch batch) {
+        //TODO: add footstep sound
+    };
 }

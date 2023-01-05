@@ -1,5 +1,8 @@
 package com.mrboomdev.platformer.widgets;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mrboomdev.platformer.util.ActorUtil;
+import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import com.badlogic.gdx.Gdx;
@@ -10,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-public class DebugValuesWidget extends Actor {
+public class DebugValuesWidget extends ActorUtil {
     private BitmapFont font;
     private HashMap<String, String> values = new HashMap<>();
     
@@ -22,6 +25,11 @@ public class DebugValuesWidget extends Actor {
         fontParameter.borderColor = Color.BLACK;
         fontParameter.borderWidth = 1;
         font = fontGenerator.generateFont(fontParameter);
+    }
+    
+    public DebugValuesWidget addTo(Stage stage) {
+        super.addTo(stage);
+        return this;
     }
     
     public void setValue(String key, String value) {

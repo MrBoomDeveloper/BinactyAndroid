@@ -26,8 +26,8 @@ public class PlayerEntity extends Entity {
     private Direction animationDirection;
     private float speed;
 
-    public PlayerEntity(String name, String nick, World world) {
-        super(name, world);
+    public PlayerEntity(String name, String nick, World world, Vector2 position) {
+        super(name, world, position);
         this.nick = nick;
         this.boom = new Sprite(new Texture(Gdx.files.internal("effects/boom.png")));
         this.boomSound = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/boom.mp3"));
@@ -65,6 +65,7 @@ public class PlayerEntity extends Entity {
     }
 
     public void draw(SpriteBatch batch) {
+        super.draw(batch);
         /*weapon.setPosition(
             body.getPosition().x,
             body.getPosition().y - .3f);*/
@@ -81,7 +82,6 @@ public class PlayerEntity extends Entity {
         }
         
         this.animate();
-        if(nick == "MrBoomDev") System.out.println(speed);
         float limbGap = (speed * 165);
         float limbOffset = speed * 8;
         config.bones.leg.draw(batch, body.getPosition().add(

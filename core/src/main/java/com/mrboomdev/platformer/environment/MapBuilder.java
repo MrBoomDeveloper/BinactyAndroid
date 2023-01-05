@@ -14,17 +14,18 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.environment.MapLayer;
-import com.mrboomdev.platformer.environment.data.MapTiles;
+import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 import java.util.Map;
 
 public class MapBuilder {
     private Array<Block> blocks = new Array<>();
     private Sprite shadow;
-    private MapTiles mapTiles;
+    private MapData.Tiles mapTiles;
     private final int tileSize = 2;
+    public Array<Vector2> spawnPositions = new Array<>();
     
-    public MapBuilder(MapTiles tiles) {
+    public MapBuilder(MapData.Tiles tiles) {
         this.mapTiles = tiles;
         this.shadow = new Sprite(new Texture(Gdx.files.internal("world/blocks/shadow.png")));
         this.shadow.setSize(tiles.background[0].length * 2, 2);
@@ -41,9 +42,12 @@ public class MapBuilder {
     public void build(World world, RayHandler rayHandler) {
         for(int x = mapTiles.foreground.length - 1; x >= 0; x--) {
             for(int y = 0; y < mapTiles.foreground[x].length; y++) {
-                blocks.get(mapTiles.foreground[x][y]).build(
+                String special = blocks.get(mapTiles.foreground[x][y]).build(
                     new Vector2(y * 2, x * 2),
                     world, rayHandler);
+                    
+                if(special == null) continue;
+                if(special.equals("spawn_position")) spawnPositions.add(new Vector2(y * 2, x * 2));
             }
         }
     }

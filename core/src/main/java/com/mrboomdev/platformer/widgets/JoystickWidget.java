@@ -19,7 +19,7 @@ public class JoystickWidget extends Actor implements Controller {
     private Vector2 touchPosition;
     private float pointOpacity = .5f;
     private boolean isActive = false;
-    private final int limit = 25;
+    private final int limit = 10;
 
     public JoystickWidget() {
         setBounds(100, 100, 250, 250);
@@ -89,10 +89,9 @@ public class JoystickWidget extends Actor implements Controller {
         
         //If using touch controls
         int offset = isActive ? 0 : 25;
-        Gdx.app.log("jfjfjfjnfnf", ((touchPosition.x - (getWidth() / 2) + offset ) / 18) + ":" + ((touchPosition.y - ((getHeight() / 2)) + offset ) / 18));
         return new Vector2(
-            ( touchPosition.x - (getWidth() / 2) + offset ) / 18,
-            ( touchPosition.y - (getHeight() / 2) + offset ) / 18
+            ( touchPosition.x - (getWidth() / 2) + offset ) / 10,
+            ( touchPosition.y - (getHeight() / 2) + offset ) / 10
         );
     }
 

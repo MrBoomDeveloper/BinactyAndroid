@@ -13,20 +13,20 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mrboomdev.platformer.environment.data.BlockLight;
+import com.mrboomdev.platformer.environment.MapBuilder;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 
 public class Block {
     private final int tileSize = 2;
-    private int radius = 0;
+    private Sprite sprite;
+    public String special;
     public float[] size = {2, 2};
     public float[] offset = {0, 0};
     public String texture;
     public boolean colission = true;
-    public Sprite sprite;
     public float[] offset_bounds;
-    public BlockLight lights;
+    public Light lights;
     
     public Block init() {
         if(texture == null) return this;
@@ -40,7 +40,7 @@ public class Block {
         return this;
     }
     
-    public void build(Vector2 position, World world, RayHandler rayHandler) {
+    public String build(Vector2 position, World world, RayHandler rayHandler) {
         if(colission) {
             BodyDef bodyDef = new BodyDef();
             if(offset_bounds != null) {
@@ -76,6 +76,7 @@ public class Block {
                     lights.offset[1]);
             }
         }
+        return special;
     }
     
     public void render(Vector2 position, Bounds bounds, SpriteBatch batch) {
@@ -91,5 +92,11 @@ public class Block {
                 position.y - (tileSize / 2) + offset[1], 
                 size[0], size[1]);
         }
+    }
+    
+    public class Light {
+        public float[] offset = {0, 0};
+        public float distance = 2;
+        public ColorUtil color = new ColorUtil(255, 255, 255, 1);
     }
 }

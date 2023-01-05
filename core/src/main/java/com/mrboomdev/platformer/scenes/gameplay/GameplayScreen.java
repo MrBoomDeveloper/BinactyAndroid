@@ -13,9 +13,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.environment.FreePosition;
 import com.mrboomdev.platformer.environment.PositionGraph;
 import com.mrboomdev.platformer.environment.TravelPath;
+//import com.mrboomdev.platformer.util.anime.AnimeManual;
 import java.util.HashSet;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.google.gson.Gson;
@@ -38,6 +40,7 @@ public class GameplayScreen extends CoreScreen {
     private Box2DDebugRenderer debugRenderer;
     private PositionGraph positionGraph;
     private GraphPath<FreePosition> graphPath;
+    //private AnimeManual anime;
 
     @Override
     public void render(float delta) {
@@ -78,7 +81,12 @@ public class GameplayScreen extends CoreScreen {
         batch = new SpriteBatch();
 	    Box2D.init();
         
+        //anime = new AnimeManual();
         shapeRenderer = new ShapeRenderer();
+        //anime.addEntity(shapeRenderer);
+        /*anime.setUpdateListener((ShapeRenderer shapeRenderer) -> {
+            
+        });*/
         positionGraph = new PositionGraph();
         
         FreePosition startPosition = new FreePosition(50, 50);
@@ -92,6 +100,7 @@ public class GameplayScreen extends CoreScreen {
         positionGraph.connectPositions(startPosition, pos1);
         positionGraph.connectPositions(pos1, pos2);
         positionGraph.connectPositions(startPosition, pos2);
+        positionGraph.connectPositions(pos2, pos3);
         graphPath = positionGraph.findPath(startPosition, pos2);
         
         world = new World(new Vector2(0, 0), true);
@@ -117,8 +126,11 @@ public class GameplayScreen extends CoreScreen {
             nicks.add(botsNicks[(int)(Math.random() * botsNicks.length)]);
         }
         nicks.add("MrBoomDev");
+        Array<Vector2> spawnPositions = map.spawnPositions;
         for(String nick : nicks) {
-            players.add(nick, new PlayerEntity("klarrie", nick, world));
+            players.add(
+                nick, new PlayerEntity("klarrie", nick, world,
+                spawnPositions.get((int)(Math.random() * spawnPositions.size))));
         }
         players.setController("MrBoomDev", ui.joystick);
         

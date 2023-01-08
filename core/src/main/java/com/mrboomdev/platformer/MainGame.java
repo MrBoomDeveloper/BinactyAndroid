@@ -2,6 +2,7 @@ package com.mrboomdev.platformer;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.mrboomdev.platformer.scenes.splash.SplashScreen;
 import com.mrboomdev.platformer.util.Analytics;
@@ -24,7 +25,19 @@ public class MainGame extends Game {
 
   private MainGame(Analytics analytics) {
     this.analytics = analytics;
-    this.asset = new AssetManager();
+    this.asset = new AssetManager() {
+      @Override
+      public synchronized void unload(String file) {
+        analytics.logInfo("UnloadFile", file);
+        super.unload(file);
+      }
+
+      @Override
+      public synchronized <T extends java.lang.Object> void load(String file, Class<T> fileClass) {
+        analytics.logInfo("LoadFile", file + " : " + fileClass.getName());
+        super.load(file, fileClass);
+      }
+    };
   }
 
   @Override

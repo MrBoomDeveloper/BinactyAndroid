@@ -6,8 +6,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.Controller;
 import com.mrboomdev.platformer.entity.PlayerEntity;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class PlayersManager {
@@ -16,6 +18,10 @@ public class PlayersManager {
     
     public PlayersManager(World world) {
         this.world = world;
+    }
+    
+    public Collection<PlayerEntity> getAll() {
+        return players.values();
     }
     
     public void setController(String nick, Controller controller) {

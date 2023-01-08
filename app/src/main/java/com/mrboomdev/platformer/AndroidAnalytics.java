@@ -12,12 +12,22 @@ public class AndroidAnalytics implements Analytics {
     }
 
     @Override
-    public void logDebug(String name, String content) {
+    public void logDebug(String tag, String content) {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
-        builder.append(name);
+        builder.append(tag);
         builder.append("]");
         Log.d("[DebugLog]" + builder.toString(), content);
+        crashlytics.log(builder.toString() + " " + content);
+    }
+    
+    @Override
+    public void logInfo(String tag, String content) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        builder.append(tag);
+        builder.append("]");
+        Log.i("[InfoLog]" + builder.toString(), content);
         crashlytics.log(builder.toString() + " " + content);
     }
 }

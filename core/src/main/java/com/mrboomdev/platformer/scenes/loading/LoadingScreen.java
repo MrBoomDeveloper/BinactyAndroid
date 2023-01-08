@@ -2,6 +2,8 @@ package com.mrboomdev.platformer.scenes.loading;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -39,7 +41,11 @@ public class LoadingScreen extends CoreScreen {
                 //TODO
                 break;
             case GAMEPLAY:
-                asset.load("ui/buttons/button.png", Texture.class);
+                asset.load("ui/overlay/big_elements.png", Texture.class);
+                asset.load("audio/music/lobby_theme.mp3", Music.class);
+                asset.load("effects/boom.png", Texture.class);
+                asset.load("audio/sounds/boom.mp3", Sound.class);
+                asset.load("etc/blank.png", Texture.class);
                 break;
         }
         asset.finishLoading();

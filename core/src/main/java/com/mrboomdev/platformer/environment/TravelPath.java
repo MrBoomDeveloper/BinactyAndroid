@@ -19,8 +19,8 @@ public class TravelPath implements Connection<FreePosition> {
     
     public void render(ShapeRenderer renderer) {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.RED);
-        renderer.rectLine(fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, 10);
+        renderer.setColor(new Color(255, 0, 0, .2f));
+        renderer.rectLine(fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, .1f);
         renderer.end();
     }
 

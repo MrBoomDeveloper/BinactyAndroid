@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -12,32 +13,34 @@ import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ActionButton extends ActorUtil {
-    public static final int size = 125;
+  public static final int size = 115;
+  public static final float defaultOpacity = .1f;
+  public static final float activeOpacity = .07f;
   private Sprite sprite;
 
   public ActionButton(Texture texture) {
     AssetManager asset = MainGame.getInstance().asset;
-    sprite = new Sprite(asset.get("ui/buttons/button.png", Texture.class));
-    //sprite = new Sprite(new Texture(Gdx.files.internal("ui/buttons/button.png")));
+    Texture bigCircles = asset.get("ui/overlay/big_elements.png", Texture.class);
+    sprite = new Sprite(new TextureRegion(bigCircles, 400, 0, 200, 200));
     setSize(size, size);
     sprite.setSize(getWidth(), getHeight());
-    sprite.setAlpha(.3f);
+    sprite.setAlpha(defaultOpacity);
     addListener(new ClickListener() {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-            sprite.setAlpha(.2f);
+            sprite.setAlpha(activeOpacity);
             return true;
         }
 
         @Override
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-            sprite.setAlpha(.3f);
+            sprite.setAlpha(defaultOpacity);
         }
     });
   }
   
   public ActionButton() {
-    this(new Texture(Gdx.files.internal("ui/other/blank.png")));
+    this(new Texture(Gdx.files.internal("etc/blank.png")));
   }
 
   @Override

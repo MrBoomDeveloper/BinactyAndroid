@@ -13,8 +13,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.mrboomdev.platformer.environment.FreePosition;
 import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
+import com.mrboomdev.platformer.environment.path.PositionPoint;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 import java.util.Map;
 
@@ -23,10 +25,11 @@ public class MapBuilder {
     private Sprite shadow;
     private MapData.Tiles mapTiles;
     private final int tileSize = 2;
-    public Array<Vector2> spawnPositions = new Array<>();
+    private MapManager manager;
     
-    public MapBuilder(MapData.Tiles tiles) {
+    public MapBuilder(MapData.Tiles tiles, MapManager manager) {
         this.mapTiles = tiles;
+        this.manager = manager;
         this.shadow = new Sprite(new Texture(Gdx.files.internal("world/blocks/shadow.png")));
         this.shadow.setSize(tiles.background[0].length * 2, 2);
         this.shadow.setPosition(-1, -1);
@@ -47,7 +50,15 @@ public class MapBuilder {
                     world, rayHandler);
                     
                 if(special == null) continue;
-                if(special.equals("spawn_position")) spawnPositions.add(new Vector2(y * 2, x * 2));
+                if(special.equals("spawn_position")) {
+                    manager.spawnPositions.add(new Vector2(y * 2, x * 2));
+                    manager.aiZones.put(PositionPoint.toText(
+                        new Vector2(y * 2, x * 2)), new FreePosition(y * 2, x * 2));
+                }
+                if(special.equals("ai_zone")) {
+                    manager.aiZones.put(PositionPoint.toText(
+                        new Vector2(y * 2, x * 2)), new FreePosition(y * 2, x * 2));
+                }
             }
         }
     }

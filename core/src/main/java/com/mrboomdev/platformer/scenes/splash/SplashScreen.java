@@ -32,12 +32,12 @@ public class SplashScreen extends CoreScreen {
 	    gradient = new Sprite(new Texture(Gdx.files.internal("ui/brand/gradient.png")));
 	    gradient.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         
-        anime = new AnimeManual()
+        anime = new AnimeManual<Sprite>()
             .addEntity(logo, gradient)
-            .addTimecodeListener(1.5f, (Array<Object> entries) -> {
+            .addTimecodeListener(1.5f, unused -> {
                 direction.current = Direction.BACKWARD;
             })
-            .addTimecodeListener(2.5f, (Array<Object> entries) -> {
+            .addTimecodeListener(2.2f, unused -> {
                 asset.finishLoading();
                 MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
             })

@@ -1,0 +1,24 @@
+{
+    "loadingScreen": {
+        "load: [
+            { "path": "ui/banner/loading.png", "type": "texture" },
+            { "path": "audio/sounds/click.mp3", "type": "auido" }
+        ]
+    },
+    "lobbyScreen": {
+        "load": [
+            { "path": "audio/music/lobby.mp3", "type": "music" }
+        ]
+    },
+    "gameplayScreen": {
+        "load": [
+            { "path": "ui/overlay/actions.png", "type": "texture" },
+            { "path": "ui/overlay/joystick.png", "type": "texture" },
+            { "path": "audio/sounds/footstep.mp3", "type": "sound" },
+            { "path": "audio/sounds/run.mp3", "type": "sound" }
+        ],
+        "unload": [
+            "ui/banner/loading.png"
+        ]
+    }
+}

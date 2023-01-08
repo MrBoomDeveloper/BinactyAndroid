@@ -25,25 +25,25 @@ public class GameplayUi implements CoreUi {
 	public GameplayUi() {
 		stage = new Stage();
         debugValues = new DebugValuesWidget().addTo(stage);
-        ActorUtil screenshot = new ActionButton()
+        /*ActorUtil screenshot = new ActionButton()
             .toPosition(new Vector2(Gdx.graphics.getWidth() - 175, Gdx.graphics.getHeight() - 175))
             .onClick(() -> Gdx.app.exit())
             .addTo(stage);
         ActorUtil pause = new ActionButton()
             .toPosition(new Vector2(Gdx.graphics.getWidth() - 335, Gdx.graphics.getHeight() - 175))
             .onClick(() -> System.exit(0))
-            .addTo(stage);
+            .addTo(stage);*/
         
 		Table table = new Table();
         table.setFillParent(true);
-        table.right().bottom().pad(50);
+        table.right().bottom().pad(75);
         
-        table.add(new Actor()).pad(20);
+        table.add(new Actor()).pad(15);
         ActionButton button = new ActionButton();
-        table.add(button).pad(20);
+        table.add(button).pad(15);
         table.row();
         ActionButton button1 = new ActionButton();
-        table.add(button1).pad(20);
+        table.add(button1).pad(15);
         ActionButton button2 = new ActionButton();
         table.add(button2).pad(20);
         

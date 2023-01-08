@@ -1,9 +1,8 @@
 package com.mrboomdev.platformer.widgets;
 
+import java.util.TreeMap;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.platformer.util.ActorUtil;
-import com.mrboomdev.platformer.widgets.DebugValuesWidget;
-import java.util.HashMap;
 import java.util.Map.Entry;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,11 +10,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class DebugValuesWidget extends ActorUtil {
     private BitmapFont font;
-    private HashMap<String, String> values = new HashMap<>();
+    private TreeMap<String, String> values = new TreeMap<>();
     
     public DebugValuesWidget() {
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto-medium.ttf"));

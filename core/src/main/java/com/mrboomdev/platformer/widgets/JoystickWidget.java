@@ -3,14 +3,17 @@ package com.mrboomdev.platformer.widgets;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.Controller;
 
 public class JoystickWidget extends Actor implements Controller {
@@ -58,9 +61,11 @@ public class JoystickWidget extends Actor implements Controller {
                 }
             }
       });
-
-      holder = new Sprite(new Texture(Gdx.files.internal("ui/buttons/joystick_holder.png")));
-      point = new Sprite(new Texture(Gdx.files.internal("ui/buttons/joystick_point.png")));
+      
+      AssetManager asset = MainGame.getInstance().asset;
+      Texture bigCircles = asset.get("ui/overlay/big_elements.png");
+      holder = new Sprite(new TextureRegion(bigCircles, 0, 0, 200, 200));
+      point = new Sprite(new TextureRegion(bigCircles, 200, 0, 200, 200));
       point.setSize(75, 75);
       holder.setAlpha(.4f);
       point.setAlpha(.5f);

@@ -48,11 +48,7 @@ public abstract class Entity {
     }
     
     public void usePower(Vector2 power) {
-        if(power.x > 5) power.x = 5;
-        if(power.x < -5) power.x = -5;
-        if(power.y > 5) power.y = 5;
-        if(power.y < -5) power.y = -5;
-        body.setLinearVelocity(power);
+        body.setLinearVelocity(power.limit(5));
     }
     
     public void setController(Controller controller) {

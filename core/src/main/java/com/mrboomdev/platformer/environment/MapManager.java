@@ -1,9 +1,15 @@
 package com.mrboomdev.platformer.environment;
 
+import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.mrboomdev.platformer.environment.TravelPath;
+import java.util.HashMap;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.reflect.TypeToken;
+import com.mrboomdev.platformer.environment.FreePosition;
+import com.mrboomdev.platformer.environment.PositionGraph;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 import com.mrboomdev.platformer.environment.Block;
 import com.mrboomdev.platformer.environment.MapData;
@@ -23,6 +29,8 @@ public class MapManager {
     private Bounds cameraBounds;
     private Vector2 cameraStart, cameraEnd;
     public Array<Vector2> spawnPositions = new Array<Vector2>();
+    public HashMap<String, FreePosition> aiZones = new HashMap<>();
+    public PositionGraph positionGraph;
     
     public MapManager() {
         cameraEnd = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -33,7 +41,7 @@ public class MapManager {
         Gson gson = new Gson();
         String json = file.readString();
         data = gson.fromJson(json, MapData.class);
-        builder = new MapBuilder(data.tiles);
+        builder = new MapBuilder(data.tiles, this);
     }
     
     public void build(World world, RayHandler rayHandler) {
@@ -41,13 +49,33 @@ public class MapManager {
         Map<String, Block> blocks = new Gson().fromJson(Gdx.files.internal("world/blocks.json").readString(), token);
         builder.loadBlocks(data.load, blocks);
         builder.build(world, rayHandler);
-        this.spawnPositions = builder.spawnPositions;
+        
+        positionGraph = new PositionGraph();
+        aiZones.values().forEach(position -> positionGraph.addPosition(position));
+        for(FreePosition positionA : aiZones.values()) {
+            for(FreePosition positionB : aiZones.values()) {
+                if(positionA.equals(positionB)) continue;
+                if(Math.abs(positionA.position.dst(positionB.position)) < 3) {
+                    positionGraph.connectPositions(positionA, positionB);
+                }
+            }
+        }
+        //GraphPath<FreePosition> graphPath = positionGraph.findPath(new FreePosition(0, 0), new FreePosition(2, 2));
     }
 	
 	public void render(SpriteBatch batch, MapLayer layer) {
         updateCameraBounds();
         builder.render(layer, batch, cameraBounds);
 	}
+    
+    public void renderDebug(ShapeRenderer shapeRenderer) {
+        for(TravelPath path : positionGraph.paths) {
+            path.render(shapeRenderer);
+        }
+        for(FreePosition position : positionGraph.positions) {
+            position.render(shapeRenderer, false);
+        }
+    }
     
     public void setCamera(Camera camera) {
         this.camera = camera;

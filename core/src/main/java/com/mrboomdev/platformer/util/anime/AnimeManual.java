@@ -8,19 +8,14 @@ public class AnimeManual<T> {
     private Array<Object> entities;
     private HashMap<Float, Timecode> timecodes = new HashMap<>();
     public float progress;
+    private boolean disposed = false;
     
     public <T>AnimeManual() {
         entities = new Array<Object>();
     }
     
-    public AnimeManual addEntity(Object... entities) {
-        for(Object entity : entities) {
-            this.entities.add(entity);
-        }
-        return this;
-    }
-    
     public void update(float delta) {
+        if(disposed) return;
         progress += delta;
         listener.update(progress, delta, entities);
         for(Timecode timecode : timecodes.values()) {
@@ -29,6 +24,20 @@ public class AnimeManual<T> {
                 timecode.wasActivated = true;
             }
         }
+    }
+    
+    public void dispose() {
+        this.disposed = true;
+        this.timecodes = null;
+        this.listener = null;
+        this.entities = null;
+    }
+    
+    public AnimeManual addEntity(Object... entities) {
+        for(Object entity : entities) {
+            this.entities.add(entity);
+        }
+        return this;
     }
     
     public AnimeManual addTimecodeListener(float timecode, TimecodeListener listener) {

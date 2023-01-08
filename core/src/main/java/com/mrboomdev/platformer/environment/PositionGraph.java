@@ -19,6 +19,12 @@ public class PositionGraph implements IndexedGraph<FreePosition> {
     public ObjectMap<FreePosition, Array<Connection<FreePosition>>> positionsMap = new ObjectMap<>();
     private int lastIndex = 0;
     
+    public void addPositions(FreePosition... positions) {
+        for(FreePosition position : positions) {
+            
+        }
+    }
+    
     public void addPosition(FreePosition position) {
         position.index = lastIndex;
         lastIndex++;

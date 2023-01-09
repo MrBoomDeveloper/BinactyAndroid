@@ -10,6 +10,10 @@ public class Direction {
         current = direction;
     }
     
+    public Direction reverse() {
+        return new Direction(current == 1 ? 2 : 1);
+    }
+    
     public void setFrom(float x) {
         current = x >= 0 ? FORWARD : BACKWARD;
     }

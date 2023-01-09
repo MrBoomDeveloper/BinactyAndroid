@@ -84,21 +84,27 @@ public class PlayerEntity extends Entity {
         this.animate();
         float limbGap = (speed * 165);
         float limbOffset = speed * 8;
+        
+        config.bones.arm.draw(batch, body.getPosition().add(
+            new Vector2(moveDirection.isForward() ? .27f : -.27f, animationProgress * 2)), 
+            -(animationProgress * -(limbGap) + limbOffset), moveDirection.reverse(), false);
+            
         config.bones.leg.draw(batch, body.getPosition().add(
             new Vector2(-config.bones.legs_gap, animationProgress * 2)),
             -(animationProgress * -(limbGap) + limbOffset), moveDirection);
-        config.bones.leg.draw(batch, body.getPosition().add(
-            new Vector2(config.bones.legs_gap, animationProgress * 2)), 
-            animationProgress * -(limbGap) + limbOffset, moveDirection);
-        config.bones.arm.draw(batch, body.getPosition().add(
-            new Vector2(moveDirection.isForward() ? .27f : -.27f, animationProgress * 2)), 
-            -(animationProgress * -(limbGap) + limbOffset), moveDirection);
+            
         config.bones.body.draw(batch, body.getPosition().add(
             new Vector2(0, animationProgress / .8f)), 
             0, moveDirection);
+            
+        config.bones.leg.draw(batch, body.getPosition().add(
+            new Vector2(config.bones.legs_gap, animationProgress * 2)), 
+            animationProgress * -(limbGap) + limbOffset, moveDirection);
+            
         config.bones.arm.draw(batch, body.getPosition().add(
             new Vector2(moveDirection.isBackward() ? .27f : -.27f, animationProgress * 2)), 
-            animationProgress * -(limbGap) + limbOffset, moveDirection);
+            animationProgress * -(limbGap) + limbOffset, moveDirection, true);
+            
         config.bones.head.draw(batch, body.getPosition().add(
             new Vector2(0, animationProgress)), 
             0, moveDirection);
@@ -107,7 +113,7 @@ public class PlayerEntity extends Entity {
     }
     
     public void drawNick(SpriteBatch batch) {
-        font.draw(batch, nick, body.getPosition().x * 40 - 50, body.getPosition().y * 40 + 56, 100, Align.center, true);
+        font.draw(batch, nick, body.getPosition().x * 50 - 50, body.getPosition().y * 50 + 62, 100, Align.center, true);
     }
     
     public void die() {

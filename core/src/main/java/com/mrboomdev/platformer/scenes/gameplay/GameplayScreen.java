@@ -31,7 +31,7 @@ import java.util.HashSet;
 
 public class GameplayScreen extends CoreScreen {
   private ShapeRenderer shapeRenderer;
-  private OrthographicCamera camera;
+  public OrthographicCamera camera;
   private SpriteBatch batch;
   private MapManager map;
   private PlayersManager players;
@@ -139,7 +139,7 @@ public class GameplayScreen extends CoreScreen {
     rayHandler.setBlurNum(3);
     camera = new OrthographicCamera(32, 18);
 
-    ui = new GameplayUi();
+    ui = new GameplayUi(this);
     Gdx.input.setInputProcessor(ui.stage);
 
     map = new MapManager();

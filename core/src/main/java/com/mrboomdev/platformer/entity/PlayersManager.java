@@ -51,7 +51,7 @@ public class PlayersManager {
     }
     
     public void drawNicks(SpriteBatch batch, Camera camera) {
-        batch.setProjectionMatrix(batch.getProjectionMatrix().cpy().scale(.025f, .025f, 1));
+        batch.setProjectionMatrix(batch.getProjectionMatrix().cpy().scale(.02f, .02f, 1));
         for(PlayerEntity player : players.values()) {
             if(player != null) {
                 player.drawNick(batch);

@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.scenes.gameplay;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.util.ActorUtil;
 import java.text.SimpleDateFormat;
 import com.badlogic.gdx.Gdx;
@@ -21,8 +22,11 @@ public class GameplayUi implements CoreUi {
     private float time = 360000;
     private TextWidget timer;
     public DebugValuesWidget debugValues; 
+    private GameplayScreen gameplay;
+    private float cameraZoom;
 	
-	public GameplayUi() {
+	public GameplayUi(GameplayScreen screen) {
+        this.gameplay = screen;
 		stage = new Stage();
         debugValues = new DebugValuesWidget().addTo(stage);
         /*ActorUtil screenshot = new ActionButton()
@@ -38,9 +42,16 @@ public class GameplayUi implements CoreUi {
         table.setFillParent(true);
         table.right().bottom().pad(75);
         
-        table.add(new Actor()).pad(15);
-        ActionButton button = new ActionButton();
-        table.add(button).pad(15);
+        cameraZoom = gameplay.camera.zoom;
+        new ActionButton().onClick(() -> {
+            cameraZoom += .05f;
+            gameplay.camera.zoom = cameraZoom;
+        }).addTo(table);
+        new ActionButton().onClick(() -> {
+            cameraZoom -= .05f;
+            gameplay.camera.zoom = cameraZoom;
+        }).addTo(table);
+        
         table.row();
         ActionButton button1 = new ActionButton();
         table.add(button1).pad(15);

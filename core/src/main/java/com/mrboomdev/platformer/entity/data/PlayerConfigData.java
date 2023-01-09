@@ -31,7 +31,7 @@ public class PlayerConfigData {
         public float legs_gap = 0.15f;
 		public Bone head;
 		public Bone body;
-		public Bone arm;
+		public Arm arm;
 		public Bone leg;
         
         public void init(Texture texture) {
@@ -68,4 +68,20 @@ public class PlayerConfigData {
             sprite.draw(batch);
         }
 	}
+    
+    public class Arm extends Bone {
+        public void draw(SpriteBatch batch, Vector2 position, float angle, Direction direction, boolean isRight) {
+            sprite.setSize(direction.isBackward() ? -size[0] : size[0], size[1]);
+            sprite.setPosition((direction.isBackward()
+                ? position.x - (this.position[0] - (isRight ?  0 :     0.2f))
+                : position.x - (this.position[0] + (isRight ? -0.02f : 0.18f))),
+                  position.y + this.position[1]);
+            sprite.setOrigin(
+                sprite.getWidth() / 2, 
+                sprite.getHeight());
+            sprite.setRotation(angle);
+                
+            sprite.draw(batch);
+        }
+    }
 }

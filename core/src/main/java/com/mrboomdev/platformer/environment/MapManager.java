@@ -55,12 +55,11 @@ public class MapManager {
         for(FreePosition positionA : aiZones.values()) {
             for(FreePosition positionB : aiZones.values()) {
                 if(positionA.equals(positionB)) continue;
-                if(Math.abs(positionA.position.dst(positionB.position)) < 3) {
+                if(Math.abs(positionA.position.dst(positionB.position)) < 2.5f) {
                     positionGraph.connectPositions(positionA, positionB);
                 }
             }
         }
-        //GraphPath<FreePosition> graphPath = positionGraph.findPath(new FreePosition(0, 0), new FreePosition(2, 2));
     }
 	
 	public void render(SpriteBatch batch, MapLayer layer) {

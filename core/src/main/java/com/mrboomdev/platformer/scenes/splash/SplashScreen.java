@@ -16,10 +16,10 @@ public class SplashScreen extends CoreScreen {
 	private SpriteBatch batch;
 	private Sprite logo, gradient;
     private AssetManager asset;
-    private AnimeManual anime;
+    private AnimeManual anime = new AnimeManual();
     private float alphaProgress;
     private Direction direction = new Direction(Direction.FORWARD);
-
+    
     @Override
     public void show() {
         asset = MainGame.getInstance().asset;
@@ -32,8 +32,7 @@ public class SplashScreen extends CoreScreen {
 	    gradient = new Sprite(new Texture(Gdx.files.internal("ui/brand/gradient.png")));
 	    gradient.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         
-        anime = new AnimeManual<Sprite>()
-            .addEntity(logo, gradient)
+        anime.addEntity(logo, gradient)
             .addTimecodeListener(1.5f, unused -> {
                 direction.current = Direction.BACKWARD;
             })
@@ -41,7 +40,7 @@ public class SplashScreen extends CoreScreen {
                 asset.finishLoading();
                 MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
             })
-            .setUpdateListener((float progress, float delta, Array<Object> entries) -> {
+            .setUpdateListener((float delta, Array<Object> entries) -> {
                 if(direction.isForward()) {
                     alphaProgress = Math.min(alphaProgress + (delta * 2), 1);
                 } else if(direction.isBackward()) {

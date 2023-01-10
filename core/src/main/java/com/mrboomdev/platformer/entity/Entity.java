@@ -22,10 +22,14 @@ public abstract class Entity {
     public PlayerConfigData config;
     //public Sprite weapon;
     
-    public Entity(String name, World world, Vector2 position) {
+    public Entity(String character, World world) {
+        this(character, world, new Vector2(0, 0));
+    }
+    
+    public Entity(String character, World world, Vector2 position) {
         Gson gson = new Gson();
         config = gson.fromJson(
-            Gdx.files.internal("world/player/characters/" + name + "/config.json").readString(), 
+            Gdx.files.internal("world/player/characters/" + character + "/config.json").readString(), 
             PlayerConfigData.class).init();
         
         /*weapon = new Sprite(new Texture(Gdx.files.internal("world/player/weapon/tomson.png")));
@@ -59,5 +63,9 @@ public abstract class Entity {
     
     public void draw(SpriteBatch batch) {
         //TODO: add footstep sound
-    };
+    }
+    
+    public void setPosition(Vector2 position) {
+        body.setTransform(position, 0);
+    }
 }

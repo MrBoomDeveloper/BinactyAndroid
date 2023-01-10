@@ -30,4 +30,9 @@ public class FreePosition {
         renderer.circle(x, y, .5f);
         renderer.end();
     }
+    
+    @Override
+    public String toString() {
+        return x + " " + y;
+    }
 }

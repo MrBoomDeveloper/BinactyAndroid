@@ -1,23 +1,24 @@
 package com.mrboomdev.platformer.util.anime;
 
+import java.util.List;
 import java.util.HashMap;
 import com.badlogic.gdx.utils.Array;
 
-public class AnimeManual<T> {
+public class AnimeManual {
     private UpdateListener listener;
     private Array<Object> entities;
     private HashMap<Float, Timecode> timecodes = new HashMap<>();
     public float progress;
     private boolean disposed = false;
     
-    public <T>AnimeManual() {
+    public AnimeManual() {
         entities = new Array<Object>();
     }
     
     public void update(float delta) {
         if(disposed) return;
         progress += delta;
-        listener.update(progress, delta, entities);
+        listener.update(delta, entities);
         for(Timecode timecode : timecodes.values()) {
             if(timecode.time <= progress && !timecode.wasActivated) {
                 timecode.listener.update(entities);
@@ -46,7 +47,7 @@ public class AnimeManual<T> {
     }
     
     public AnimeManual setUpdateListener(UpdateListener listener) {
-        this.listener = listener;
+        this.listener = listener; 
         return this;
     }
     
@@ -66,6 +67,6 @@ public class AnimeManual<T> {
     }
     
     public interface UpdateListener {
-        void update(float progress, float delta, Array<Object> entries);
+        void update(float delta, Array<Object> entries);
     }
 }

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mrboomdev.platformer">
+    
+    <uses-permission android:name=”android.permission.INTERNET” />
           
     <application
         android:allowBackup="true"
+        android:usesCleartextTraffic="true"
         android:icon="@drawable/app_icon"
         android:isGame="true"
         android:appCategory="game"
@@ -11,7 +14,7 @@
         android:theme="@style/GdxTheme">
             
         <activity
-            android:name="com.mrboomdev.platformer.AndroidLauncher"
+            android:name=".AndroidLauncher"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout"
@@ -22,6 +25,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name=".ReactActivity"
+            android:screenOrientation="landscape"
+            android:exported="true" />
+            
+        <activity 
+            android:name="com.facebook.react.devsupport.DevSettingsActivity" />
         
         <service
             android:name=".NotificationReceiver"

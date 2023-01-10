@@ -38,7 +38,7 @@ public class LoadingScreen extends CoreScreen {
     public void show() {
         switch(loadScene) {
             case LOBBY:
-                //TODO
+                MainGame.getInstance().toggleGameView(false);
                 break;
             case GAMEPLAY:
                 asset.load("ui/overlay/big_elements.png", Texture.class);
@@ -55,9 +55,6 @@ public class LoadingScreen extends CoreScreen {
     public void render(float delta) {
         if(asset.update(17)) {
             switch(loadScene) {
-                case LOBBY:
-                    //TODO
-                    break;
                 case GAMEPLAY:
                     game.setScreen(new GameplayScreen());
                     break;

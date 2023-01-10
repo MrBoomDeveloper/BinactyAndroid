@@ -38,7 +38,7 @@ public class SplashScreen extends CoreScreen {
             })
             .addTimecodeListener(2.2f, unused -> {
                 asset.finishLoading();
-                MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
+                MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.LOBBY));
             })
             .setUpdateListener((float delta, Array<Object> entries) -> {
                 if(direction.isForward()) {

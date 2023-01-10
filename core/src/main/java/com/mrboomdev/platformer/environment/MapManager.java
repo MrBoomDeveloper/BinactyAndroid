@@ -51,7 +51,7 @@ public class MapManager {
         builder.build(world, rayHandler);
         
         positionGraph = new PositionGraph();
-        aiZones.values().forEach(position -> positionGraph.addPosition(position));
+        aiZones.values().forEach(positionGraph::addPosition);
         for(FreePosition positionA : aiZones.values()) {
             for(FreePosition positionB : aiZones.values()) {
                 if(positionA.equals(positionB)) continue;

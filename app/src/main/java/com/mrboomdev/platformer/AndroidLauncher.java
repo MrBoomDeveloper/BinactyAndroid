@@ -1,8 +1,10 @@
 package com.mrboomdev.platformer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -10,9 +12,15 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.mrboomdev.platformer.AndroidAnalytics;
 import com.itsaky.androidide.logsender.LogSender;
+import com.mrboomdev.platformer.MainGame;
+import com.mrboomdev.platformer.NativeContainer;
+import com.mrboomdev.platformer.ReactActivity;
+import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 
-public class AndroidLauncher extends AndroidApplication {
+public class AndroidLauncher extends AndroidApplication implements NativeContainer {
     private FirebaseAnalytics analytics;
+    private AndroidApplicationConfiguration gameConfig;
+    private boolean isInitialized = false;
     
 	@Override
 	protected void onCreate(Bundle instance) {
@@ -33,13 +41,30 @@ public class AndroidLauncher extends AndroidApplication {
         remoteConfig.setConfigSettingsAsync(remoteConfigSettings);
         Log.i("Firebase", remoteConfig.getString("beta_ui"));
 		
-		AndroidApplicationConfiguration gameConfig = new AndroidApplicationConfiguration();
+		gameConfig = new AndroidApplicationConfiguration();
 		gameConfig.useImmersiveMode = true;
 		gameConfig.useAccelerometer = false;
 		gameConfig.useCompass = false;
-		
-        initialize(MainGame.getInstance(new AndroidAnalytics()), gameConfig);
+        
+        toggleGameView(true);
 	}
+    
+    @Override
+    public void toggleGameView(boolean isActive) {
+        if(isActive) {
+            if(isInitialized) {
+                Gdx.app.postRunnable(() -> {
+                    MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
+                });
+            } else {
+                initialize(MainGame.getInstance(new AndroidAnalytics(), this), gameConfig);
+                isInitialized = true;
+            }
+        } else {
+            Intent intent = new Intent(this, ReactActivity.class);
+            startActivity(intent);
+        }
+    }
     
     @Override
     public void onBackPressed() {

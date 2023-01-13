@@ -6,12 +6,17 @@
 ### Plans
 - Gameplay:
   - Advanced bots ai:
+    - Fix movement to the space when player is near of walls
     - Stuck position escaping
     - Try to defense
     - Random glitches to look like a human
     - Random personalities
-  - More maps
-  - More characters
+  - More maps:
+    - More blocks
+    - More themes
+  - More characters:
+    - More animations
+    - More skins
   - Actions (Attack, dash, shoot, heal, super)
   - Effects (Fire, boom and etc.)
   - Sounds (Footsteps, effects and etc.)
@@ -30,15 +35,32 @@
   - Main screen
   - Shop screen
   - Achievments screen
-  - Settings screen
+  - Settings screen:
+    - Saving config and restoring it from storage
+    - Cloud backup
   - Profile overview
-  - GameOver screen
+    - My own profile
+    - Other's players profiles
+  - GameOver screen:
+    - Rewards
+    - New level splash animation
 - Internal mods support:
-  - Map Editor
-  - Character editor
+  - Map Editor:
+    - Tiles editor
+    - Metadata editor
+    - Ambient editor
+  - Character editor:
+    - Bone editor
+    - Animation editor
   - Detailed character editor (with custom bones, animations)
 - Gamejolt linking:
+  - Account creation:
+    - Connect to the server
+    - Store data on server
+    - Load data from the server
   - Achievments
+    - Storing on the server
+    - Reading data from server
   - Account sync
   - Leaderboard
   - Friends system

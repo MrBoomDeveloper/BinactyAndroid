@@ -69,6 +69,7 @@ public class PlayerEntity extends Entity {
     }
 
     public void draw(SpriteBatch batch) {
+        if(isDead) return;
         super.draw(batch);
         /*weapon.setPosition(
             body.getPosition().x,
@@ -117,10 +118,13 @@ public class PlayerEntity extends Entity {
     }
     
     public void drawNick(SpriteBatch batch) {
+        if(isDead) return;
         font.draw(batch, nick, body.getPosition().x * 50 - 50, body.getPosition().y * 50 + 62, 100, Align.center, true);
     }
     
-    public void die() {
+    @Override
+    public void gainDamage(int damage) {
+        super.gainDamage(damage);
         boomSound.play(.2f);
         boom.setSize(2, 2);
         boomAnimation = 0;

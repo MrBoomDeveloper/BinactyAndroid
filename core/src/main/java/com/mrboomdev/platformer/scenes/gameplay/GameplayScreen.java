@@ -55,10 +55,13 @@ public class GameplayScreen extends CoreScreen {
     Vector2 myPos = entities.get("MrBoomDev").body.getPosition();
     ui.debugValues.setValue("MyPositionX", String.valueOf(myPos.x / 2));
     ui.debugValues.setValue("MyPositionY", String.valueOf(myPos.y / 2));
+    ui.debugValues.setValue("MyHealth", String.valueOf(entities.get("MrBoomDev").stats.health));
     
     batch.end();
-
-    camera.position.set(entities.get("MrBoomDev").body.getPosition(), 0);
+    
+    if(!entities.get("MrBoomDev").isDead) {
+        camera.position.set(entities.get("MrBoomDev").body.getPosition(), 0);
+    }
     world.step(Math.min(delta, 1 / 60f), 6, 2);
     entities.doAiStuff((PlayerEntity)entities.get("MrBoomDev"), map);
   }

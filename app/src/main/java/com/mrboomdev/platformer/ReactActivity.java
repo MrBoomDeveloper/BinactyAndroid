@@ -2,7 +2,7 @@ package com.mrboomdev.platformer;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactInstanceManager;
@@ -36,14 +36,11 @@ public class ReactActivity extends Activity implements DefaultHardwareBackBtnHan
       setContentView(root);
       getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
         WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-    /*Button button = new Button(this);
-    button.setText("Open game");
-    button.setOnClickListener(
+    /*button.setOnClickListener(
         (View view) -> {
           finish();
           MainGame.getInstance().toggleGameView(true);
-        });
-    setContentView(button);*/
+        });*/
     }
     
     @Override

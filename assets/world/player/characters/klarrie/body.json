@@ -1,0 +1,16 @@
+{
+  "texturePath": "klarrie.png",
+  "bounds": [ 0, 0, 5, 7 ],
+  "bones": {
+    "head": {
+      "bounds": [ 2, 2, 10, 10 ],
+      "position": [ 1, 0 ],
+      "size": [ 2, 2 ]
+    }, 
+    "body": {
+      "bounds": [ 2, 2, 10, 10 ],
+      "position": [ 1, 2 ],
+      "size": [ 1, 1 ]
+    }
+  }
+}

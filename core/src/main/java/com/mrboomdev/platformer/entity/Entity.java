@@ -12,14 +12,21 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.google.gson.Gson;
+import com.mrboomdev.platformer.entity.EntityConfig;
 import com.mrboomdev.platformer.entity.data.PlayerConfigData;
+import com.mrboomdev.platformer.entity.EntityConfig.Stats;
 
 public abstract class Entity {
+    private World world;
+    public static final String entitiesDirectory = "world/player/characters/";
+    public boolean isDead, isDestroyed;
     public Texture texture;
     public Controller controller;
     public Body body;
     public Sprite sprite;
     public PlayerConfigData config;
+    public EntityConfig configNew;
+    public Stats stats;
     //public Sprite weapon;
     
     public Entity(String character, World world) {
@@ -27,9 +34,14 @@ public abstract class Entity {
     }
     
     public Entity(String character, World world, Vector2 position) {
+        this.world = world;
         Gson gson = new Gson();
+        configNew = gson.fromJson(Gdx.files.internal(entitiesDirectory + character + "/manifest.json").readString(), 
+            EntityConfig.class).build(character, world);
+        this.stats = configNew.stats.cpy();
+        
         config = gson.fromJson(
-            Gdx.files.internal("world/player/characters/" + character + "/config.json").readString(), 
+            Gdx.files.internal(entitiesDirectory + character + "/config.json").readString(), 
             PlayerConfigData.class).init();
         
         /*weapon = new Sprite(new Texture(Gdx.files.internal("world/player/weapon/tomson.png")));
@@ -52,6 +64,7 @@ public abstract class Entity {
     }
     
     public void usePower(Vector2 power) {
+        if(isDead) return;
         body.setLinearVelocity(power.limit(5));
     }
     
@@ -59,13 +72,29 @@ public abstract class Entity {
         this.controller = controller;
     }
     
-    public abstract void die();
+    public void gainDamage(int damage) {
+        stats.health -= damage;
+        if(stats.health <= 0) {
+            die();
+        }
+    }
+    
+    public void die() {
+        if(isDead) return;
+        isDead = true;
+    }
     
     public void draw(SpriteBatch batch) {
-        //TODO: add footstep sound
+        if(isDead) return;
+        configNew.body.draw(batch, body.getPosition());
+    }
+    
+    public void attack(Vector2 power) {
+        
     }
     
     public void setPosition(Vector2 position) {
+        if(isDead) return;
         body.setTransform(position, 0);
     }
 }

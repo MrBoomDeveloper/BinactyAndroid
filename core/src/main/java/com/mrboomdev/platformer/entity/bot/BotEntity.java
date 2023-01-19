@@ -16,6 +16,7 @@ public class BotEntity extends PlayerEntity {
     }
     
     public void doAiStuff(PlayerEntity player, MapManager map) {
+        if(isDead || player.isDead) return;
         Vector2 power = player.body.getPosition().sub(body.getPosition());
         float distance = player.body.getPosition().dst(body.getPosition());
         

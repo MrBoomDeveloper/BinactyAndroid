@@ -1,0 +1,28 @@
+{
+  "idle": {
+    "length": 10,
+    "bones": {
+      "head": {
+        "position": [ "0", "$progress / 5" ]
+      },
+      "body": {
+        
+      }
+    }
+  },
+  "walk": {
+    "length": 2
+  },
+  "run": {
+    
+  },
+  "attack": {
+    "length": 1.5
+  },
+  "shoot": {
+    
+  },
+  "hit": {
+    
+  }
+}

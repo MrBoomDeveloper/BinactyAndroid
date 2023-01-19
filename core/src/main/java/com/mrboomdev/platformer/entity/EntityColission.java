@@ -6,18 +6,20 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.PlayerEntity;
 
 public class EntityColission implements ContactListener {
-
     @Override
     public void beginContact(Contact contact) {
-        if(contact.getFixtureA().getBody().getUserData() instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity)contact.getFixtureA().getBody().getUserData();
-            if(contact.getFixtureB().getBody().getUserData() instanceof PlayerEntity) {
-                player.die();
-                PlayerEntity player2 = (PlayerEntity)contact.getFixtureB().getBody().getUserData();
-                player2.die();
+        if(contact.getFixtureA() == null || contact.getFixtureB() == null) return;
+        
+        if(contact.getFixtureA().getBody().getUserData() instanceof Entity) {
+            Entity player = (Entity)contact.getFixtureA().getBody().getUserData();
+            if(contact.getFixtureB().getBody().getUserData() instanceof Entity) {
+                Entity player2 = (Entity)contact.getFixtureB().getBody().getUserData();
+                player.gainDamage(player2.stats.damage);
+                player2.gainDamage(player.stats.damage);
             }
         }
     }

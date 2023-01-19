@@ -1,0 +1,13 @@
+{
+  "name": "Klarrie",
+  "description": "Default character",
+  "bodyPath": "body.json",
+  "animationPath": "animation.json",
+  "stats": {
+    "health": 100,
+    "damage": 4,
+    "speed": 7,
+    "shield": 5,
+    "stamina": 25
+  }
+}

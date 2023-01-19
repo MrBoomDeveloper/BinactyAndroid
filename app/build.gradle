@@ -57,7 +57,7 @@ android {
 	defaultConfig {
 		applicationId 'com.mrboomdev.platformer'
 		minSdkVersion 25
-		targetSdkVersion 32
+		targetSdkVersion 33
 		versionCode 7
 		versionName "0.1.3"
 		multiDexEnabled true
@@ -161,7 +161,7 @@ android {
         }
     }
     
-    applicationVariants.all { variant ->
+    /*applicationVariants.all { variant ->
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // https://developer.android.com/studio/build/configure-apk-splits.html
@@ -174,7 +174,7 @@ android {
             }
 
         }
-    }
+    }*/
 }
 
 repositories {
@@ -194,10 +194,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 	implementation "com.google.code.gson:gson:2.10";
     
-    //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
-
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation 'androidx.appcompat:appcompat:1.7.0-alpha01'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
+    
+    implementation "com.facebook.react:react-native:+"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
@@ -212,15 +212,7 @@ dependencies {
         exclude group:'com.facebook.flipper'
     }
 
-    if (enableHermes) {
-        //noinspection GradleDynamicVersion
-        implementation("com.facebook.react:hermes-engine:+") { // From node_modules
-            exclude group:'com.facebook.fbjni'
-        }
-    } else {
-        implementation jscFlavor
-    }
-    
+    implementation jscFlavor
 	implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"

@@ -18,6 +18,7 @@ import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.PlayerEntity;
 import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
+import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 
 public class GameplayScreen extends CoreScreen {
@@ -79,7 +80,7 @@ public class GameplayScreen extends CoreScreen {
     });*/
 
     world = new World(new Vector2(0, 0), true);
-    world.setContactListener(new EntityColission());
+    world.setContactListener(new ProjectileColission());
     rayHandler = new RayHandler(world);
     rayHandler.setAmbientLight(0, 0, 0, .1f);
     rayHandler.setBlurNum(3);

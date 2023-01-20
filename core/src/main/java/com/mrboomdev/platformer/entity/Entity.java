@@ -19,7 +19,7 @@ import com.mrboomdev.platformer.entity.EntityConfig.Stats;
 public abstract class Entity {
     private World world;
     public static final String entitiesDirectory = "world/player/characters/";
-    public boolean isDead, isDestroyed;
+    public boolean isDead, isDestroyed, isProjectile;
     public Texture texture;
     public Controller controller;
     public Body body;
@@ -31,6 +31,10 @@ public abstract class Entity {
     
     public Entity(String character, World world) {
         this(character, world, new Vector2(0, 0));
+    }
+    
+    public Entity(String projectile, World world, Vector2 position, boolean isProjectile) {
+        this.isProjectile = isProjectile;
     }
     
     public Entity(String character, World world, Vector2 position) {

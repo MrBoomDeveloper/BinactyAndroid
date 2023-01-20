@@ -54,6 +54,7 @@ public class Block {
             }
                 
             Body body = world.createBody(bodyDef);
+            body.setUserData(this);
             PolygonShape polygon = new PolygonShape();
             if(offset_bounds != null) {
                 polygon.setAsBox(

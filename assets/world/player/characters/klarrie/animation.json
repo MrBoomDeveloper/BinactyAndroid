@@ -1,28 +1,42 @@
 {
-  "idle": {
-    "length": 10,
-    "bones": {
-      "head": {
-        "position": [ "0", "$progress / 5" ]
+  "presets": {
+    "legWalk": {
+      "speed": 200,
+      "loop": true,
+      "frames": [
+        { "bounds": [ 0, 0, 0, 0 ] },
+        { "bounds": [ 0, 0, 0, 0 ] },
+        { "bounds": [ 0, 0, 0, 0 ] },
+        { "bounds": [ 0, 0, 0, 0 ] }
+      ]
+    },
+    
+    "legRun": {},
+    "armWalk": {},
+    "armRun": {}
+  },
+  
+  "animations": {
+    "walk": {
+      "legRight": {
+        "extends": "legWalk",
+        "offset": 100
       },
-      "body": {
-        
+      
+      "legLeft": {
+        "extends": "legWalk"
       }
-    }
-  },
-  "walk": {
-    "length": 2
-  },
-  "run": {
+    },
     
-  },
-  "attack": {
-    "length": 1.5
-  },
-  "shoot": {
-    
-  },
-  "hit": {
-    
+    "run": {},
+    "hit": {
+      "emote": {
+        "speed": 750,
+        "frames": [{ "bounds": [ 0, 0, 0, 0 ] }]
+      }
+    },
+    "shoot": {},
+    "dash": {},
+    "attack": {}
   }
 }

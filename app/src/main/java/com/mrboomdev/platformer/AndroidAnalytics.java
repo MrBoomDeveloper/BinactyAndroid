@@ -13,21 +13,24 @@ public class AndroidAnalytics implements Analytics {
 
     @Override
     public void logDebug(String tag, String content) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        builder.append(tag);
-        builder.append("]");
-        Log.d("[DebugLog]" + builder.toString(), content);
-        crashlytics.log(builder.toString() + " " + content);
+        Log.d(generateTag("DEBUG", tag, true), content);
+        crashlytics.log(generateTag("DEBUG", tag, false) + content);
     }
     
     @Override
     public void logInfo(String tag, String content) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
-        builder.append(tag);
-        builder.append("]");
-        Log.i("[InfoLog]" + builder.toString(), content);
-        crashlytics.log(builder.toString() + " " + content);
+        Log.d(generateTag("INFO", tag, true), content);
+        crashlytics.log(generateTag("INFO", tag, false) + content);
+    }
+    
+    @Override
+    public void logError(String tag, String content) {
+        Log.d(generateTag("ERROR", tag, true), content);
+        crashlytics.log(generateTag("ERROR", tag, false) + content);
+    }
+    
+    private String generateTag(String type, String tag, boolean isLogcat) {
+        if(isLogcat) return "_ACTION_" + type + "_" + tag;
+        return "[" + type + "_" + tag + "] ";
     }
 }

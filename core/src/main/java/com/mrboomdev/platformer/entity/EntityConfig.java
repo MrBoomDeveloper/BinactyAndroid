@@ -11,6 +11,7 @@ import com.mrboomdev.platformer.entity.EntityBody;
 public class EntityConfig {
     private String bodyPath;
     private String animationPath;
+    public String highlight;
     public String name = "New entity";
     public String description = "No description.";
     public EntityBody body;

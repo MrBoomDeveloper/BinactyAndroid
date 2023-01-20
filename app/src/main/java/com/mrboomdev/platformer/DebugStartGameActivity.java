@@ -9,6 +9,7 @@ import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.NativeContainer;
 import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
+import com.mrboomdev.platformer.BuildConfig;
 
 public class DebugStartGameActivity extends AndroidApplication implements NativeContainer {
     private FirebaseAnalytics analytics;
@@ -26,7 +27,7 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 		gameConfig.useAccelerometer = false;
 		gameConfig.useCompass = false;
         
-    toggleGameView(true);
+        toggleGameView(true);
 	}
     
     @Override
@@ -35,15 +36,20 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
             if(!isInitialized) {
                 initialize(MainGame.getInstance(new AndroidAnalytics(), this), gameConfig);
                 isInitialized = true;
-            } else {
-                Gdx.app.postRunnable(() -> {
-			        MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
-                });
+                return;
             }
-        } else {
-	  	    Gdx.app.postRunnable(() -> {
+            Gdx.app.postRunnable(() -> {
 			    MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
             });
+            return;
         }
+	    Gdx.app.postRunnable(() -> {
+			MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
+        });
+    }
+    
+    @Override
+    public boolean isDebug() {
+        return BuildConfig.DEBUG;
     }
 }

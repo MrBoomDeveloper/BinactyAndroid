@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mrboomdev.platformer.MainGame;
+import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
@@ -41,6 +42,13 @@ public class LoadingScreen extends CoreScreen {
                 MainGame.getInstance().toggleGameView(false);
                 break;
             case GAMEPLAY:
+                EnvironmentCreator creator = new EnvironmentCreator(world -> {
+                    game.analytics.logInfo("WorldStatus", "Successfully created world!");
+                }, exception -> {
+                    game.analytics.logError("WorldStatus", "An exception has occured while creating a world.");
+                    Gdx.app.exit();
+                });
+                creator.start();
                 asset.load("ui/overlay/big_elements.png", Texture.class);
                 asset.load("audio/music/lobby_theme.mp3", Music.class);
                 asset.load("effects/boom.png", Texture.class);

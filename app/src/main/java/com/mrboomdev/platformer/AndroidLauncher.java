@@ -16,6 +16,7 @@ import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.NativeContainer;
 import com.mrboomdev.platformer.ReactActivity;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
+import com.mrboomdev.platformer.BuildConfig;
 
 public class AndroidLauncher extends AndroidApplication implements NativeContainer {
     private FirebaseAnalytics analytics;
@@ -67,7 +68,10 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
     }
     
     @Override
-    public void onBackPressed() {
-        
+    public boolean isDebug() {
+        return BuildConfig.DEBUG;
     }
+    
+    @Override
+    public void onBackPressed() {}
 }

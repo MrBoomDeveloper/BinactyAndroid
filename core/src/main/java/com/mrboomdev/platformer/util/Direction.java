@@ -4,7 +4,7 @@ public class Direction {
     public static final int NONE = 0;
     public static final int FORWARD = 1;
     public static final int BACKWARD = 2;
-    public int current;
+    public int current = NONE;
         
     public Direction(int direction) {
         current = direction;

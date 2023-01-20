@@ -1,16 +1,28 @@
 {
   "texturePath": "klarrie.png",
   "bounds": [ 0, 0, 5, 7 ],
+  
   "bones": {
     "head": {
-      "bounds": [ 2, 2, 10, 10 ],
-      "position": [ 1, 0 ],
-      "size": [ 2, 2 ]
-    }, 
+      "bounds": [ 0, 0, 20, 16 ],
+      "position": [ -0.3, 0.2 ],
+      "size": [ 0.8, 0.7 ],
+      "layer": 1
+    },
+    
     "body": {
-      "bounds": [ 2, 2, 10, 10 ],
-      "position": [ 1, 2 ],
-      "size": [ 1, 1 ]
+      "bounds": [ 52, 0, 11, 15 ],
+      "position": [ -0.3, -0.4 ],
+      "size": [ 0.6, 0.7 ],
+      "layer": 0
+    },
+    
+    "legRight": {
+      "bounds": [ 52, 0, 11, 15 ],
+      "position": [ -0.32, -0.4 ],
+      "size": [ 0, 0 ],
+      "layer": 2
+      }
     }
   }
 }

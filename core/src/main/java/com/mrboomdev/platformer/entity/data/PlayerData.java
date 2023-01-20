@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.entity.data;
 
+@Deprecated
 public class PlayerData {
 	public String path;
 	public String icon;

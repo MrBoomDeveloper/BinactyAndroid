@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.EntityConfig;
 import com.mrboomdev.platformer.entity.data.PlayerConfigData;
 import com.mrboomdev.platformer.entity.EntityConfig.Stats;
+import com.mrboomdev.platformer.util.Direction;
 
 public abstract class Entity {
     private World world;
@@ -33,16 +34,17 @@ public abstract class Entity {
         this(character, world, new Vector2(0, 0));
     }
     
-    public Entity(String projectile, World world, Vector2 position, boolean isProjectile) {
-        this.isProjectile = isProjectile;
+    public Entity(String projectile, World world, Vector2 position, boolean isKinematic) {
+        this.isProjectile = isKinematic;
     }
     
     public Entity(String character, World world, Vector2 position) {
-        this.world = world;
         Gson gson = new Gson();
-        configNew = gson.fromJson(Gdx.files.internal(entitiesDirectory + character + "/manifest.json").readString(), 
+        this.world = world;
+        this.configNew = gson.fromJson(Gdx.files.internal(entitiesDirectory + character + "/manifest.json").readString(), 
             EntityConfig.class).build(character, world);
         this.stats = configNew.stats.cpy();
+        
         
         config = gson.fromJson(
             Gdx.files.internal(entitiesDirectory + character + "/config.json").readString(), 
@@ -90,11 +92,12 @@ public abstract class Entity {
     
     public void draw(SpriteBatch batch) {
         if(isDead) return;
+        configNew.body.direction.setFrom(body.getLinearVelocity().x);
         configNew.body.draw(batch, body.getPosition());
     }
     
     public void attack(Vector2 power) {
-        
+        throw new RuntimeException("Method not done yet.");
     }
     
     public void setPosition(Vector2 position) {

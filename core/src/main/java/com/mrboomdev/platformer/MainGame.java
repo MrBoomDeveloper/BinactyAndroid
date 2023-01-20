@@ -11,7 +11,7 @@ import com.mrboomdev.platformer.util.Analytics;
 public class MainGame extends Game implements NativeContainer {
   private static MainGame instance;
   private NativeContainer container;
-  private Analytics analytics;
+  public Analytics analytics;
   public AssetManager asset;
 
   public static MainGame getInstance() {
@@ -31,13 +31,13 @@ public class MainGame extends Game implements NativeContainer {
     this.asset = new AssetManager() {
       @Override
       public synchronized void unload(String file) {
-        analytics.logInfo("UnloadFile", file);
+        analytics.logInfo("Assets", "Unload file: " + file);
         super.unload(file);
       }
 
       @Override
       public synchronized <T extends java.lang.Object> void load(String file, Class<T> fileClass) {
-        analytics.logInfo("LoadFile", file + " : " + fileClass.getName());
+        analytics.logDebug("Assets", "Load file: " + file);
         super.load(file, fileClass);
       }
     };
@@ -51,18 +51,25 @@ public class MainGame extends Game implements NativeContainer {
   
   @Override
   public void toggleGameView(boolean isActive) {
+      analytics.logDebug("Game", "Toggle game view: " + (isActive ? "Active" : "Inactive"));
       container.toggleGameView(isActive);
+  }
+  
+  @Override
+  public boolean isDebug() {
+      return container.isDebug();
   }
 
   @Override
   public void setScreen(Screen screen) {
-    analytics.logDebug("setScreen", screen.getClass().getName());
+    analytics.logDebug("Game", "Set screen: " + screen.getClass().getName());
     super.setScreen(screen);
   }
 
   @Override
   public void dispose() {
     super.dispose();
+    analytics.logInfo("Game", "Dispose");
     asset.clear();
   }
 }

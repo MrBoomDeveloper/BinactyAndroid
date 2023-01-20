@@ -22,7 +22,6 @@ public class ProjectileColission implements ContactListener {
             Entity player = (Entity)me.getUserData();
             Entity player2 = (Entity)enemy.getUserData();
             player.gainDamage(player2.stats.damage);
-            player2.gainDamage(player.stats.damage);
         }
         
         if(me.getUserData() instanceof ProjectileBullet && enemy.getUserData() instanceof Block) {

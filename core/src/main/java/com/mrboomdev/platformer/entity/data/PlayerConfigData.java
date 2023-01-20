@@ -8,16 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.util.Direction;
 
+@Deprecated
 public class PlayerConfigData {
     private String texture_path;
     private Texture texture;
     public String id = "no_id";
 	public String name = "Unknown character";
-	public String tag = "A custom character";
-	public int hp = 100;
-	public int speed = 10;
-	public int shield = 10;
-	public int attack = 10;
 	public int[] size;
 	public Bones bones;
     

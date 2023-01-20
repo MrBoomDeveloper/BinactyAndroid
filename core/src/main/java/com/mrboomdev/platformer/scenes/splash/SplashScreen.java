@@ -33,10 +33,10 @@ public class SplashScreen extends CoreScreen {
 	    gradient.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         
         anime.addEntity(logo, gradient)
-            .addTimecodeListener(1.5f, unused -> {
+            .addTimecodeListener(1.8f, unused -> {
                 direction.current = Direction.BACKWARD;
             })
-            .addTimecodeListener(2.2f, unused -> {
+            .addTimecodeListener(2.5f, unused -> {
                 asset.finishLoading();
                 MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.LOBBY));
             })

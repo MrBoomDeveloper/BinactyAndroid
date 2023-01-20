@@ -70,7 +70,6 @@ public class PlayerEntity extends Entity {
 
     public void draw(SpriteBatch batch) {
         if(isDead) return;
-        super.draw(batch);
         /*weapon.setPosition(
             body.getPosition().x,
             body.getPosition().y - .3f);*/
@@ -111,10 +110,11 @@ public class PlayerEntity extends Entity {
             animationProgress * -(limbGap) + limbOffset, moveDirection, true);
             
         config.bones.head.draw(batch, body.getPosition().add(
-            new Vector2(0, animationProgress)), 
+            new Vector2(0, animationProgress)),
             0, moveDirection);
             
         if(controller != null) usePower(controller.getPower());
+        super.draw(batch);
     }
     
     public void drawNick(SpriteBatch batch) {

@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.World;
 // import com.mrboomdev.platformer.util.anime.AnimeManual;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mrboomdev.platformer.MainGame;
-import com.mrboomdev.platformer.entity.EntityColission;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.PlayerEntity;
 import com.mrboomdev.platformer.environment.MapLayer;
@@ -22,6 +21,7 @@ import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 
 public class GameplayScreen extends CoreScreen {
+  private MainGame game;
   private SpriteBatch batch;
   private ShapeRenderer shapeRenderer;
   public OrthographicCamera camera;
@@ -50,7 +50,7 @@ public class GameplayScreen extends CoreScreen {
     rayHandler.updateAndRender();
 
     batch.begin();
-    // debugRenderer.render(world, camera.combined);
+    if(game.isDebug()) debugRenderer.render(world, camera.combined);
     //map.renderDebug(shapeRenderer);
     ui.render(delta);
     Vector2 myPos = entities.get("MrBoomDev").body.getPosition();
@@ -69,6 +69,7 @@ public class GameplayScreen extends CoreScreen {
   
   @Override
   public void show() {
+    this.game = MainGame.getInstance();
     batch = new SpriteBatch();
     shapeRenderer = new ShapeRenderer();
     Box2D.init();
@@ -103,8 +104,8 @@ public class GameplayScreen extends CoreScreen {
     lobbyTheme.setVolume(.2f);
     lobbyTheme.setLooping(true);
     lobbyTheme.play();
-
-    debugRenderer = new Box2DDebugRenderer();
+    
+    if(game.isDebug()) debugRenderer = new Box2DDebugRenderer();
   }
 
   @Override

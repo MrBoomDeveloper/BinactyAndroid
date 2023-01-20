@@ -4,18 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.google.gson.annotations.SerializedName;
-import com.mrboomdev.platformer.util.SizeUtil.Bounds;
-import java.util.HashMap;
+import com.mrboomdev.platformer.util.Direction;
+import java.util.ArrayList;
+import java.util.TreeMap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class EntityBody {
     private String texturePath;
-    private int[] bounds;
-    public HashMap<String, Bone> bones = new HashMap<>();
+    private ArrayList<Float> bounds;
+    private Vector2 wasPosition = new Vector2(0, 0);
+    public TreeMap<String, Bone> bones = new TreeMap<>();
     public Texture texture;
+    public Direction direction = new Direction(Direction.FORWARD);
 
     public EntityBody build(String character, World world) {
         this.texture = new Texture(Gdx.files.internal(Entity.entitiesDirectory + character + "/" + texturePath));
@@ -27,26 +29,38 @@ public class EntityBody {
     
     public void draw(SpriteBatch batch, Vector2 position) {
         for(Bone bone : bones.values()) {
-            bone.draw(batch, position);
+            bone.draw(batch, position, direction);
         }
     }
     
-    public class Bone {
+    public class Bone implements Comparable<Bone> {
         private TextureRegion textureRegion;
         private Sprite sprite;
-        public float[] position, size, bounds;
+        public int layer = 0;
+        public ArrayList<Float> position, size;
+        public ArrayList<Integer> bounds;
         
         public Bone build(Texture texture) {
-            this.textureRegion = new TextureRegion(texture, this.bounds[0], this.bounds[1], this.bounds[2], this.bounds[3]);
+            this.textureRegion = new TextureRegion(texture, bounds.get(0), bounds.get(1), bounds.get(2), bounds.get(3));
             sprite = new Sprite(textureRegion);
-            sprite.setSize(this.size[0], this.size[1]);
-            sprite.setPosition(this.position[0], this.position[1]);
+            sprite.setSize(size.get(0), size.get(1));
+            sprite.setPosition(position.get(0), position.get(1));
             return this;
         }
     
-        public void draw(SpriteBatch batch, Vector2 bodyPosition) {
-            sprite.setPosition(bodyPosition.x + this.position[0], bodyPosition.y + this.position[1]);
+        public void draw(SpriteBatch batch, Vector2 bodyPosition, Direction direction) {
+            sprite.setSize(direction.isBackward() ? -size.get(0) : size.get(0), size.get(1));
+            //sprite.setPosition(bodyPosition.x + position.get(0), bodyPosition.y + position.get(1));
+            sprite.setPosition((direction.isBackward()
+                ? bodyPosition.x - position.get(0)
+                : bodyPosition.x + position.get(0)),
+                  bodyPosition.y + position.get(1));
             sprite.draw(batch);
+        }
+        
+        @Override
+        public int compareTo(Bone bone) {
+            return this.layer - bone.layer;
         }
     }
 }

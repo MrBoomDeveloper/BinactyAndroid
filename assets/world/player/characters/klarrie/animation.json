@@ -1,7 +1,7 @@
 {
-  "presets": {
+  "presents": {
     "legWalk": {
-      "speed": 200,
+      "speed": 0.5,
       "mode": "loop",
       "frames": [
         { "bounds": [ 45, 0, 5, 11 ] },
@@ -17,10 +17,17 @@
   },
   
   "animations": {
-    "walk": {
+    "idle": {
       "legRight": {
         "extend": "legWalk",
         "offset": 100
+      }
+    },
+    
+    "walk": {
+      "legRight": {
+        "extend": "legWalk",
+        "offset": 0.2
       },
       
       "legLeft": {
@@ -28,15 +35,44 @@
       }
     },
     
-    "run": {},
+    "run": {
+      "legRight": {
+        "extend": "legWalk",
+        "offset": 100
+      }
+    },
+    
     "hit": {
       "emote": {
         "speed": 750,
         "frames": [{ "bounds": [ 0, 0, 0, 0 ] }]
+      },
+      
+      "legRight": {
+        "extend": "legWalk",
+        "offset": 100
       }
     },
-    "shoot": {},
-    "dash": {},
-    "attack": {}
+    
+    "shoot": {
+      "legRight": {
+        "extend": "legWalk",
+        "offset": 100
+      }
+    },
+    
+    "dash": {
+      "legRight": {
+        "extend": "legWalk",
+        "offset": 100
+      }
+    },
+    
+    "attack": {
+      "legRight": {
+        "extend": "legWalk",
+        "offset": 100
+      }
+    }
   }
 }

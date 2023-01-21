@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.skin.EntityAnimation;
+import com.mrboomdev.platformer.entity.skin.EntityAnimation.AnimationObject;
 import com.mrboomdev.platformer.util.Direction;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -26,18 +27,18 @@ public class EntityBody {
     public EntityBody build(String character, World world, EntityAnimation animations) {
         this.animations = animations;
         this.texture = new Texture(Gdx.files.internal(character + "/" + texturePath));
-        for(HashMap.Entry entry : bones.entrySet()) {
-            ((Bone)entry.getValue()).build(texture, animations, (String)entry.getKey());
+        for (HashMap.Entry entry : bones.entrySet()) {
+            ((Bone) entry.getValue()).build(texture, animations, (String) entry.getKey());
         }
         return this;
     }
-    
+
     public void draw(SpriteBatch batch, Vector2 position) {
-        for(Bone bone : bones.values()) {
+        for (Bone bone : bones.values()) {
             bone.draw(batch, position, direction);
         }
     }
-    
+
     public class Bone implements Comparable<Bone> {
         private Texture texture;
         private Sprite sprite;
@@ -45,9 +46,10 @@ public class EntityBody {
         public TextureRegion textureRegion;
         public ArrayList<Float> position, size;
         public ArrayList<Integer> bounds;
+        public boolean animated = false;
         public int layer = 0;
         public String name;
-        
+
         public Bone build(Texture texture, EntityAnimation animations, String name) {
             this.name = name;
             this.texture = texture;
@@ -56,19 +58,38 @@ public class EntityBody {
             sprite = new Sprite(textureRegion);
             sprite.setSize(size.get(0), size.get(1));
             sprite.setPosition(position.get(0), position.get(1));
+            if (animated) buildAnimations();
             return this;
         }
-    
+
+        private void buildAnimations() {
+            for(HashMap.Entry<String, HashMap<String, AnimationObject>> animation : animations.animations.entrySet()) {
+                HashMap<String, AnimationObject> object = animation.getValue();
+                animation.getValue().get(name).animationName = animation.getKey();
+                animation.getValue().get(name).animationBone = name;
+                animation.getValue().get(name).build(animations.presents, animations.modes, texture);
+            }
+            /*for(HashMap<String, AnimationObject> frames : animations.animations.values()) {
+                StringBuilder a = new StringBuilder();
+                for(HashMap.Entry entry : frames.entrySet()) {
+                    a.append("Key: " + (String)entry.getKey());
+                    a.append("\n");
+                }
+                frames.get(name).build(animations.presents, animations.modes, texture);
+            }*/
+        }
+
         public void draw(SpriteBatch batch, Vector2 bodyPosition, Direction direction) {
-            //sprite.setRegion(animations.getFrame(name, texture));
+            // if(animated) sprite.setRegion(animations.getFrame(name, texture));
             sprite.setSize(direction.isBackward() ? -size.get(0) : size.get(0), size.get(1));
-            sprite.setPosition((direction.isBackward()
-                ? bodyPosition.x - position.get(0)
-                : bodyPosition.x + position.get(0)),
-                  bodyPosition.y + position.get(1));
+            sprite.setPosition(
+                    (direction.isBackward()
+                            ? bodyPosition.x - position.get(0)
+                            : bodyPosition.x + position.get(0)),
+                    bodyPosition.y + position.get(1));
             sprite.draw(batch);
         }
-        
+
         @Override
         public int compareTo(Bone bone) {
             return this.layer - bone.layer;

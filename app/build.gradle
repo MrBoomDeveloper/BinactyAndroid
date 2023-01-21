@@ -58,8 +58,8 @@ android {
 		applicationId 'com.mrboomdev.platformer'
 		minSdkVersion 25
 		targetSdkVersion 33
-		versionCode 7
-		versionName "0.1.3"
+		versionCode 8
+		versionName "0.2.0"
 		multiDexEnabled true
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
         if (isNewArchitectureEnabled()) {
@@ -143,8 +143,10 @@ android {
     }
     
 	compileOptions {
-		sourceCompatibility "8.0"
-		targetCompatibility "8.0"
+		//sourceCompatibility "8.0"
+		//targetCompatibility "8.0"
+        sourceCompatibility "11.0"
+		targetCompatibility "11.0"
 		coreLibraryDesugaringEnabled true
 	}
 	

@@ -56,7 +56,7 @@ public abstract class Entity {
     public void usePower(Vector2 power) {
         if(isDead) return;
         float speed = Math.max(Math.abs(power.x), Math.abs(power.y));
-        configNew.animation.setAnimation((speed > 3) ? "run" : "walk");
+        //configNew.animation.setAnimation((speed > 3) ? "run" : "walk");
         body.setLinearVelocity(power.limit(5));
     }
     

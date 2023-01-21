@@ -98,7 +98,7 @@ public class GameplayScreen extends CoreScreen {
     entities = new EntityManager(world);
     entities.setSpawnsPositions(map.spawnPositions);
     entities.addBots(10);
-    entities.addPlayer(new PlayerEntity("MrBoomDev", "klarrie", world), ui.joystick, rayHandler);
+    entities.addPlayer(new PlayerEntity("MrBoomDev", EntityManager.entitiesDirectory + "klarrie", world), ui.joystick, rayHandler);
 
     Music lobbyTheme = MainGame.getInstance().asset.get("audio/music/lobby_theme.mp3", Music.class);
     lobbyTheme.setVolume(.2f);

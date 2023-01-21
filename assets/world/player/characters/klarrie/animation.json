@@ -2,12 +2,12 @@
   "presets": {
     "legWalk": {
       "speed": 200,
-      "loop": true,
+      "mode": "loop",
       "frames": [
-        { "bounds": [ 0, 0, 0, 0 ] },
-        { "bounds": [ 0, 0, 0, 0 ] },
-        { "bounds": [ 0, 0, 0, 0 ] },
-        { "bounds": [ 0, 0, 0, 0 ] }
+        { "bounds": [ 45, 0, 5, 11 ] },
+        { "bounds": [ 0, 12, 5, 11 ] },
+        { "bounds": [ 7, 12, 5, 11 ] },
+        { "bounds": [ 16, 12, 5, 11 ] }
       ]
     },
     
@@ -19,12 +19,12 @@
   "animations": {
     "walk": {
       "legRight": {
-        "extends": "legWalk",
+        "extend": "legWalk",
         "offset": 100
       },
       
       "legLeft": {
-        "extends": "legWalk"
+        "extend": "legWalk"
       }
     },
     

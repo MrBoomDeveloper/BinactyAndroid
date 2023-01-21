@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
 import com.mrboomdev.platformer.util.Direction;
 
+@Deprecated
 public class PlayerEntity extends Entity {
     public String nick;
     private Sprite boom;
@@ -26,10 +27,12 @@ public class PlayerEntity extends Entity {
     private Direction animationDirection;
     private float speed;
     
+    @Deprecated
     public PlayerEntity(String name, String character, World world) {
         this(name, character, world, new Vector2(0, 0));
     }
-
+    
+    @Deprecated
     public PlayerEntity(String name, String character, World world, Vector2 position) {
         super(character, world, position);
         this.nick = name;
@@ -49,6 +52,7 @@ public class PlayerEntity extends Entity {
         font = fontGenerator.generateFont(fontParam);
     }
     
+    @Deprecated
     public void animate() {
         speed = Math.max(Math.abs(body.getLinearVelocity().x), Math.abs(body.getLinearVelocity().y));
         if(speed == 0) {
@@ -56,7 +60,6 @@ public class PlayerEntity extends Entity {
             return;
         }
         
-        sprite.setSize(was_position.x > body.getPosition().x ? -1 : 1, 1.8f);
         was_position = body.getPosition();
         moveDirection.setFrom(body.getLinearVelocity().x);
         
@@ -67,18 +70,10 @@ public class PlayerEntity extends Entity {
             animationDirection.current = Direction.FORWARD;
         }
     }
-
+    
+    @Deprecated
     public void draw(SpriteBatch batch) {
         if(isDead) return;
-        /*weapon.setPosition(
-            body.getPosition().x,
-            body.getPosition().y - .3f);*/
-        /*sprite.setPosition(
-            body.getPosition().x - sprite.getWidth() / 2,
-            body.getPosition().y - sprite.getHeight() / 2);
-        sprite.draw(batch);*/
-        //weapon.draw(batch);
-        
         boomAnimation += Gdx.graphics.getDeltaTime();
         if(boomAnimation < 1) {
             boom.setCenter(body.getPosition().x, body.getPosition().y);
@@ -117,11 +112,13 @@ public class PlayerEntity extends Entity {
         super.draw(batch);
     }
     
+    @Deprecated
     public void drawNick(SpriteBatch batch) {
         if(isDead) return;
         font.draw(batch, nick, body.getPosition().x * 50 - 50, body.getPosition().y * 50 + 62, 100, Align.center, true);
     }
     
+    @Deprecated
     @Override
     public void gainDamage(int damage) {
         super.gainDamage(damage);

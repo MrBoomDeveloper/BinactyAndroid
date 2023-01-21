@@ -21,6 +21,7 @@ import com.mrboomdev.platformer.entity.bot.BotEntity;
 public class EntityManager {
     private World world;
     private Array<Vector2> spawns = new Array<>();
+    public static final String entitiesDirectory = "world/player/characters/";
     public HashMap<String, Entity> entities = new HashMap<>();
     
     public EntityManager(World world) {
@@ -47,7 +48,7 @@ public class EntityManager {
             bots.add(botsNicknames[(int) (Math.random() * botsNicknames.length)]);
         }
         for(String name : bots) {
-            BotEntity bot = new BotEntity(name, "klarrie", world);
+            BotEntity bot = new BotEntity(name, entitiesDirectory + "klarrie", world);
             bot.setPosition(spawns.get((int) (Math.random() * spawns.size)));
             entities.put(bot.nick, bot);
         }

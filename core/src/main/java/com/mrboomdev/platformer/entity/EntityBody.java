@@ -9,7 +9,7 @@ import com.mrboomdev.platformer.entity.skin.EntityAnimation;
 import com.mrboomdev.platformer.entity.skin.EntityAnimation.AnimationObject;
 import com.mrboomdev.platformer.util.Direction;
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.Collections;
 import java.util.HashMap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,27 +20,30 @@ public class EntityBody {
     private ArrayList<Float> bounds;
     private Vector2 wasPosition = new Vector2(0, 0);
     private EntityAnimation animations;
-    public TreeMap<String, Bone> bones = new TreeMap<>();
+    public HashMap<String, Bone> bones = new HashMap<>();
     public Texture texture;
     public Direction direction = new Direction(Direction.FORWARD);
 
     public EntityBody build(String character, World world, EntityAnimation animations) {
         this.animations = animations;
         this.texture = new Texture(Gdx.files.internal(character + "/" + texturePath));
-        for (HashMap.Entry entry : bones.entrySet()) {
-            ((Bone) entry.getValue()).build(texture, animations, (String) entry.getKey());
+        for(HashMap.Entry entry : bones.entrySet()) {
+            ((Bone)entry.getValue()).build(texture, animations, (String) entry.getKey());
         }
         return this;
     }
 
     public void draw(SpriteBatch batch, Vector2 position) {
-        for (Bone bone : bones.values()) {
+        animations.update(Gdx.graphics.getDeltaTime());
+        ArrayList<Bone> array = new ArrayList<>(bones.values());
+        Collections.sort(array);
+        for(Bone bone : array) {
             bone.draw(batch, position, direction);
         }
     }
 
     public class Bone implements Comparable<Bone> {
-        private Texture texture;
+        private TextureRegion texture;
         private Sprite sprite;
         private EntityAnimation animations;
         public TextureRegion textureRegion;
@@ -52,7 +55,7 @@ public class EntityBody {
 
         public Bone build(Texture texture, EntityAnimation animations, String name) {
             this.name = name;
-            this.texture = texture;
+            this.texture = new TextureRegion(texture);
             this.animations = animations;
             this.textureRegion = new TextureRegion(texture, bounds.get(0), bounds.get(1), bounds.get(2), bounds.get(3));
             sprite = new Sprite(textureRegion);
@@ -64,29 +67,27 @@ public class EntityBody {
 
         private void buildAnimations() {
             for(HashMap.Entry<String, HashMap<String, AnimationObject>> animation : animations.animations.entrySet()) {
-                HashMap<String, AnimationObject> object = animation.getValue();
-                animation.getValue().get(name).animationName = animation.getKey();
-                animation.getValue().get(name).animationBone = name;
-                animation.getValue().get(name).build(animations.presents, animations.modes, texture);
+                AnimationObject object = (animation.getValue().containsKey(name))
+                    ? animation.getValue().get(name)
+                    : animations.animations.get("idle").get(name);
+                object.animationName = animation.getKey();
+                object.animationBone = name;
+                object.build(animations.presents, animations.modes, textureRegion);
             }
-            /*for(HashMap<String, AnimationObject> frames : animations.animations.values()) {
-                StringBuilder a = new StringBuilder();
-                for(HashMap.Entry entry : frames.entrySet()) {
-                    a.append("Key: " + (String)entry.getKey());
-                    a.append("\n");
-                }
-                frames.get(name).build(animations.presents, animations.modes, texture);
-            }*/
         }
 
         public void draw(SpriteBatch batch, Vector2 bodyPosition, Direction direction) {
-            // if(animated) sprite.setRegion(animations.getFrame(name, texture));
-            sprite.setSize(direction.isBackward() ? -size.get(0) : size.get(0), size.get(1));
-            sprite.setPosition(
-                    (direction.isBackward()
-                            ? bodyPosition.x - position.get(0)
-                            : bodyPosition.x + position.get(0)),
-                    bodyPosition.y + position.get(1));
+            if(!animated) {
+				sprite.setSize(direction.isBackward() ? -size.get(0) : size.get(0), size.get(1));
+				sprite.setPosition(direction.isBackward()
+            		? bodyPosition.x - position.get(0)
+                	: bodyPosition.x + position.get(0),
+                 	bodyPosition.y + position.get(1));
+			} else {
+				AnimationObject object = animations.getFrame2(name);
+				sprite = object.getSprite(direction, bodyPosition);
+				//sprite.setRegion(animations.getFrame(name));
+			}
             sprite.draw(batch);
         }
 

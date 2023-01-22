@@ -3,12 +3,17 @@ package com.mrboomdev.platformer.entity.skin;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.mrboomdev.platformer.util.Direction;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EntityAnimation {
     private String current;
+    public float progress;
     public HashMap<String, HashMap<String, AnimationObject>> animations;
     public HashMap<String, AnimationObject> presents;
     public HashMap<String, PlayMode> modes = new HashMap<>() {{
@@ -29,24 +34,36 @@ public class EntityAnimation {
         current = animations.containsKey(name) ? name : "idle";
     }
     
-    public TextureRegion getFrame(String bone, Texture defaultTexture) {
-        if(animations.get(current).containsKey(defaultTexture))
-            return animations.get(current).get(bone).animation.getKeyFrame(0, true);
-        else
-            return null;
+    public void update(float delta) {
+        progress += delta;
     }
     
+    public TextureRegion getFrame(String bone) {
+        if(animations.get(current).containsKey(bone))
+            return animations.get(current).get(bone).animation.getKeyFrame(progress, true);
+        return animations.get("idle").get(bone).animation.getKeyFrame(progress, true);
+    }
+	
+	public AnimationObject getFrame2(String bone) {
+		if(animations.get(current).containsKey(bone)) {
+			animations.get(current).get(bone).progress = this.progress;
+            return animations.get(current).get(bone);
+		}
+		animations.get("idle").get(bone).progress = this.progress;
+        return animations.get("idle").get(bone);
+	}
+    
     public class AnimationObject {
-        public Texture texture;
+        public TextureRegion texture;
         public String animationName, animationBone;
         public Animation<TextureRegion> animation;
         public ArrayList<AnimationFrame> frames;
         public String mode;
-        public float speed = 999, offset = 999;
+        public float speed = 0.05f, offset = 0.5f, progress = 0;
         public String extend;
         
-        public void build(HashMap<String, AnimationObject> presents, HashMap<String, PlayMode> modes, Texture texture) {
-            if(presents.containsKey(animationName)) {
+        public void build(HashMap<String, AnimationObject> presents, HashMap<String, PlayMode> modes, TextureRegion texture) {
+            if(presents.containsKey(extend)) {
                 AnimationObject present = presents.get(extend);
                 if(frames == null) frames = present.frames;
                 if(speed == 999) speed = present.speed;
@@ -55,13 +72,31 @@ public class EntityAnimation {
             }
             if(mode == null) mode = "normal";
             this.texture = texture;
-            System.out.println(animationName + ":" + animationBone);
-            TextureRegion[] regions = new TextureRegion[frames.size()];
+            Array<TextureRegion> newRegions = new Array<>();
             for(int i = 0; i < frames.size(); i++) {
-                regions[i] = new TextureRegion(texture, getBounds(i, 0), getBounds(i, 1), getBounds(i, 2), getBounds(i, 3));
+                newRegions.add(new TextureRegion(texture, getBounds(i, 0), getBounds(i, 1), getBounds(i, 2), getBounds(i, 3)));
             }
-            this.animation = new Animation<TextureRegion>(speed, regions);
+            this.animation = new Animation<TextureRegion>(this.speed, newRegions, modes.get(mode));
         }
+		
+		public Sprite getSprite(Direction direction, Vector2 bodyPosition) {
+			Sprite sprite = new Sprite(animation.getKeyFrame(progress));
+			int i = animation.getKeyFrameIndex(progress);
+			sprite.setSize(direction.isBackward() ? -getSize(i, 0) : getSize(i, 0), getSize(i, 1));
+			sprite.setPosition(direction.isBackward()
+            	? bodyPosition.x - getPos(i, 0)
+            	: bodyPosition.x + getPos(i, 0),
+            	 bodyPosition.y + getPos(i, 1));
+			return sprite;
+		}
+		
+		private float getPos(int id, int dir) {
+			return frames.get(id).position.get(dir);
+		}
+		
+		private float getSize(int id, int dir) {
+			return frames.get(id).size.get(dir);
+		}
         
         private int getBounds(int id, int bound) {
             return frames.get(id).bounds.get(bound);
@@ -70,6 +105,6 @@ public class EntityAnimation {
     
     public class AnimationFrame {
         public ArrayList<Integer> bounds;
-        public ArrayList<Float> size;
+        public ArrayList<Float> size, position;
     }
 }

@@ -9,7 +9,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.google.gson.Gson;
+import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.data.PlayerConfigData;
 import com.mrboomdev.platformer.entity.EntityConfig.Stats;
 
@@ -55,8 +57,6 @@ public abstract class Entity {
     
     public void usePower(Vector2 power) {
         if(isDead) return;
-        float speed = Math.max(Math.abs(power.x), Math.abs(power.y));
-        //configNew.animation.setAnimation((speed > 3) ? "run" : "walk");
         body.setLinearVelocity(power.limit(5));
     }
     
@@ -76,8 +76,11 @@ public abstract class Entity {
     
     public void draw(SpriteBatch batch) {
         if(isDead) return;
-        configNew.body.direction.setFrom(body.getLinearVelocity().x);
-        configNew.body.draw(batch, body.getPosition());
+		Vector2 power = body.getLinearVelocity();
+        configNew.body.direction.setFrom(power.x);
+		float speed = Math.max(Math.abs(power.x), Math.abs(power.y));
+        configNew.animation.setAnimation((speed < .2f) ? "idle" : ((speed > 3) ? "run" : "walk"));
+        if(MainGame.getInstance().newCharacterAnimations) configNew.body.draw(batch, body.getPosition());
     }
     
     public void attack(Vector2 power) {

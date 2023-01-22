@@ -1,22 +1,21 @@
 package com.mrboomdev.platformer;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.widget.Toast;
 import android.util.Log;
+import android.widget.EditText;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.mrboomdev.platformer.AndroidAnalytics;
 import com.itsaky.androidide.logsender.LogSender;
-import com.mrboomdev.platformer.MainGame;
-import com.mrboomdev.platformer.NativeContainer;
-import com.mrboomdev.platformer.ReactActivity;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
-import com.mrboomdev.platformer.BuildConfig;
 
 public class AndroidLauncher extends AndroidApplication implements NativeContainer {
     private FirebaseAnalytics analytics;

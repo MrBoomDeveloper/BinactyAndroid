@@ -1,6 +1,7 @@
 {
   "name": "Klarrie",
   "description": "Default character",
+  "version": 2,
   "bodyPath": "body.json",
   "animationPath": "animation.json",
   "stats": {

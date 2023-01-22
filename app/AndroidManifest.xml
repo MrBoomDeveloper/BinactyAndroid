@@ -27,6 +27,7 @@
         
         <activity android:name=".DebugStartGameActivity"
             android:label="Platformer Debug"
+            android:theme="@style/Material"
             android:exported="true"
             android:screenOrientation="landscape">
             <intent-filter>

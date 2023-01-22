@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
+import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.util.Direction;
 
 @Deprecated
@@ -74,13 +75,19 @@ public class PlayerEntity extends Entity {
     @Deprecated
     public void draw(SpriteBatch batch) {
         if(isDead) return;
-        boomAnimation += Gdx.graphics.getDeltaTime();
+		if(controller != null) usePower(controller.getPower());
+        super.draw(batch);
+		
+		boomAnimation += Gdx.graphics.getDeltaTime();
         if(boomAnimation < 1) {
             boom.setCenter(body.getPosition().x, body.getPosition().y);
             boom.draw(batch);
         }
         
         this.animate();
+		
+		if(MainGame.getInstance().newCharacterAnimations) return;
+		
         float limbGap = (speed * 165);
         float limbOffset = speed * 8;
         
@@ -107,9 +114,6 @@ public class PlayerEntity extends Entity {
         config.bones.head.draw(batch, body.getPosition().add(
             new Vector2(0, animationProgress)),
             0, moveDirection);
-            
-        if(controller != null) usePower(controller.getPower());
-        super.draw(batch);
     }
     
     @Deprecated

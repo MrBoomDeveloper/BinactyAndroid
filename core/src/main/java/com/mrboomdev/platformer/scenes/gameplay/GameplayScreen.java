@@ -50,21 +50,21 @@ public class GameplayScreen extends CoreScreen {
     rayHandler.updateAndRender();
 
     batch.begin();
-    if(game.isDebug()) debugRenderer.render(world, camera.combined);
+    if(game.showBodyColissions) debugRenderer.render(world, camera.combined);
     //map.renderDebug(shapeRenderer);
     ui.render(delta);
-    Vector2 myPos = entities.get("MrBoomDev").body.getPosition();
+    Vector2 myPos = entities.get(game.nick).body.getPosition();
     ui.debugValues.setValue("MyPositionX", String.valueOf(myPos.x / 2));
     ui.debugValues.setValue("MyPositionY", String.valueOf(myPos.y / 2));
-    ui.debugValues.setValue("MyHealth", String.valueOf(entities.get("MrBoomDev").stats.health));
+    ui.debugValues.setValue("MyHealth", String.valueOf(entities.get(game.nick).stats.health));
     
     batch.end();
     
-    if(!entities.get("MrBoomDev").isDead) {
-        camera.position.set(entities.get("MrBoomDev").body.getPosition(), 0);
+    if(!entities.get(game.nick).isDead) {
+        camera.position.set(entities.get(game.nick).body.getPosition(), 0);
     }
     world.step(Math.min(delta, 1 / 60f), 6, 2);
-    entities.doAiStuff((PlayerEntity)entities.get("MrBoomDev"), map);
+    entities.doAiStuff((PlayerEntity)entities.get(game.nick), map);
   }
   
   @Override
@@ -97,15 +97,15 @@ public class GameplayScreen extends CoreScreen {
     
     entities = new EntityManager(world);
     entities.setSpawnsPositions(map.spawnPositions);
-    entities.addBots(10);
-    entities.addPlayer(new PlayerEntity("MrBoomDev", EntityManager.entitiesDirectory + "klarrie", world), ui.joystick, rayHandler);
+    entities.addBots(game.botsCount);
+    entities.addPlayer(new PlayerEntity(game.nick, EntityManager.entitiesDirectory + "klarrie", world), ui.joystick, rayHandler);
 
     Music lobbyTheme = MainGame.getInstance().asset.get("audio/music/lobby_theme.mp3", Music.class);
     lobbyTheme.setVolume(.2f);
     lobbyTheme.setLooping(true);
     lobbyTheme.play();
     
-    if(game.isDebug()) debugRenderer = new Box2DDebugRenderer();
+    if(game.showBodyColissions) debugRenderer = new Box2DDebugRenderer();
   }
 
   @Override

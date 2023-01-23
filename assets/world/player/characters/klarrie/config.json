@@ -1,12 +1,6 @@
 {
     "id": "klarrie",
 	"name": "Klarrie",
-	"description": "Это дефолтный персонаж. Все. Больше ничего я не придумал...",
-	"tag": "Default Character",
-	"hp": 100,
-	"speed": 10,
-	"shield": 1,
-	"attack": 8,
     "texture_path": "texture.png",
 	"size": [ 2, 4 ],
 

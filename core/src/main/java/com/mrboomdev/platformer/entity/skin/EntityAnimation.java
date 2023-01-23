@@ -38,6 +38,7 @@ public class EntityAnimation {
         progress += delta;
     }
     
+	@Deprecated
     public TextureRegion getFrame(String bone) {
         if(animations.get(current).containsKey(bone))
             return animations.get(current).get(bone).animation.getKeyFrame(progress, true);

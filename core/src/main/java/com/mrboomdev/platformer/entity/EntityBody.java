@@ -86,7 +86,6 @@ public class EntityBody {
 			} else {
 				AnimationObject object = animations.getFrame2(name);
 				sprite = object.getSprite(direction, bodyPosition);
-				//sprite.setRegion(animations.getFrame(name));
 			}
             sprite.draw(batch);
         }

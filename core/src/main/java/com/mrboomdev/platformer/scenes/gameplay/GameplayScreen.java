@@ -19,6 +19,7 @@ import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
+import com.mrboomdev.platformer.util.CameraUtil;
 
 public class GameplayScreen extends CoreScreen {
   private MainGame game;
@@ -53,18 +54,15 @@ public class GameplayScreen extends CoreScreen {
     if(game.showBodyColissions) debugRenderer.render(world, camera.combined);
     //map.renderDebug(shapeRenderer);
     ui.render(delta);
-    Vector2 myPos = entities.get(game.nick).body.getPosition();
-    ui.debugValues.setValue("MyPositionX", String.valueOf(myPos.x / 2));
-    ui.debugValues.setValue("MyPositionY", String.valueOf(myPos.y / 2));
-    ui.debugValues.setValue("MyHealth", String.valueOf(entities.get(game.nick).stats.health));
     
     batch.end();
     
     if(!entities.get(game.nick).isDead) {
-        camera.position.set(entities.get(game.nick).body.getPosition(), 0);
+        camera.position.set(entities.get(game.nick).body.getPosition().add(CameraUtil.getCameraShake()), 0);
     }
     world.step(Math.min(delta, 1 / 60f), 6, 2);
     entities.doAiStuff((PlayerEntity)entities.get(game.nick), map);
+    CameraUtil.update(delta);
   }
   
   @Override
@@ -87,9 +85,6 @@ public class GameplayScreen extends CoreScreen {
     rayHandler.setBlurNum(3);
     camera = new OrthographicCamera(32, 18);
 
-    ui = new GameplayUi(this);
-    Gdx.input.setInputProcessor(ui.stage);
-
     map = new MapManager();
     map.load(Gdx.files.internal("world/maps/test_01.json"));
     map.build(world, rayHandler);
@@ -98,7 +93,11 @@ public class GameplayScreen extends CoreScreen {
     entities = new EntityManager(world);
     entities.setSpawnsPositions(map.spawnPositions);
     entities.addBots(game.botsCount);
-    entities.addPlayer(new PlayerEntity(game.nick, EntityManager.entitiesDirectory + "klarrie", world), ui.joystick, rayHandler);
+    PlayerEntity player = new PlayerEntity(game.nick, EntityManager.entitiesDirectory + "klarrie", world);
+    entities.addPlayer(player, rayHandler, camera);
+        
+    ui = new GameplayUi(this, player);
+    Gdx.input.setInputProcessor(ui.stage);
 
     Music lobbyTheme = MainGame.getInstance().asset.get("audio/music/lobby_theme.mp3", Music.class);
     lobbyTheme.setVolume(.2f);

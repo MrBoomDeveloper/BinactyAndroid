@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer;
+package com.mrboomdev.platformer.react;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,9 +11,14 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.soloader.SoLoader;
+import com.mrboomdev.platformer.BuildConfig;
+import com.mrboomdev.platformer.react.ReactGame; 
+import com.mrboomdev.platformer.util.AskUtil;
 import java.util.List;
 
+@Deprecated
 public class ReactActivity extends Activity implements DefaultHardwareBackBtnHandler {
+    public static ReactActivity ctx;
     private ReactRootView root;
     private ReactInstanceManager instance;
 
@@ -23,6 +28,7 @@ public class ReactActivity extends Activity implements DefaultHardwareBackBtnHan
       SoLoader.init(this, false);
       root = new ReactRootView(this);
       List<ReactPackage> packages = new PackageList(getApplication()).getPackages();
+      packages.add(new ReactGame());
       instance = ReactInstanceManager.builder()
         .setApplication(getApplication())
         .setCurrentActivity(this)
@@ -34,13 +40,16 @@ public class ReactActivity extends Activity implements DefaultHardwareBackBtnHan
         .build();
       root.startReactApplication(instance, "GameLobbyScreen", null);
       setContentView(root);
+      ctx = this;
+      AskUtil.setContext(this);
       getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
         WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-    /*button.setOnClickListener(
-        (View view) -> {
-          finish();
-          MainGame.getInstance().toggleGameView(true);
-        });*/
+    }
+    
+    
+    
+    public static void close() {
+        ctx.finish();
     }
     
     @Override

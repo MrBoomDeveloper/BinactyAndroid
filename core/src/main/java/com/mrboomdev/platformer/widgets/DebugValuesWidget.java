@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.widgets;
 
+import com.badlogic.gdx.math.Vector2;
+import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import java.util.TreeMap;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.platformer.util.ActorUtil;
@@ -25,11 +27,6 @@ public class DebugValuesWidget extends ActorUtil {
         font = fontGenerator.generateFont(fontParameter);
     }
     
-    public DebugValuesWidget addTo(Stage stage) {
-        super.addTo(stage);
-        return this;
-    }
-    
     public void setValue(String key, String value) {
         values.put(key, value);
     }
@@ -39,6 +36,11 @@ public class DebugValuesWidget extends ActorUtil {
     super.act(delta);
     setValue("Fps", String.valueOf(Gdx.graphics.getFramesPerSecond()));
     setValue("Delta", String.valueOf(delta));
+    Vector2 pos = connectedEntity.body.getPosition();
+    setValue("MainEntityPositionX", String.valueOf(pos.x / 2));
+    setValue("MainEntityPositionY", String.valueOf(pos.y / 2));
+    setValue("MainEntityHealth", String.valueOf(connectedEntity.stats.health));
+    setValue("MainEntityAnimation", connectedEntity.configNew.animation.current);
   }
 
   @Override

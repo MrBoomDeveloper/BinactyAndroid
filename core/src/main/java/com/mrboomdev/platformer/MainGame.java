@@ -52,16 +52,11 @@ public class MainGame extends Game implements NativeContainer {
     analytics.logDebug("Start game", "MainGame.create()");
     setScreen(new SplashScreen());
   }
-  
+    
   @Override
   public void toggleGameView(boolean isActive) {
       analytics.logDebug("Game", "Toggle game view: " + (isActive ? "Active" : "Inactive"));
       container.toggleGameView(isActive);
-  }
-  
-  @Override
-  public boolean isDebug() {
-      return container.isDebug();
   }
 
   @Override

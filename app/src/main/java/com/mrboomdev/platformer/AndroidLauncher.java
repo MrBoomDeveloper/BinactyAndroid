@@ -1,21 +1,22 @@
 package com.mrboomdev.platformer;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Toast;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.google.android.material.color.DynamicColors;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.itsaky.androidide.logsender.LogSender;
+import com.mrboomdev.platformer.react.ReactActivity2;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
+import com.mrboomdev.platformer.util.AskUtil;
 
 public class AndroidLauncher extends AndroidApplication implements NativeContainer {
     private FirebaseAnalytics analytics;
@@ -52,23 +53,20 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
     @Override
     public void toggleGameView(boolean isActive) {
         if(isActive) {
+            AskUtil.setContext(this);
             if(isInitialized) {
                 Gdx.app.postRunnable(() -> {
-                    MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
+                    MainGame game = MainGame.getInstance();
+                    game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
                 });
-            } else {
-                initialize(MainGame.getInstance(new AndroidAnalytics(), this), gameConfig);
-                isInitialized = true;
+                return;
             }
-        } else {
-            Intent intent = new Intent(this, ReactActivity.class);
-            startActivity(intent);
+            initialize(MainGame.getInstance(new AndroidAnalytics(), this), gameConfig);
+            isInitialized = true;
+            return;
         }
-    }
-    
-    @Override
-    public boolean isDebug() {
-        return BuildConfig.DEBUG;
+        Intent intent = new Intent(this, ReactActivity2.class);
+        startActivity(intent);
     }
     
     @Override

@@ -20,6 +20,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.itsaky.androidide.logsender.LogSender;
+import com.mrboomdev.platformer.MainGame;
+import com.mrboomdev.platformer.scenes.charactereditor.CharacterEditorScreen;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.util.BadWordChecker;
 import java.util.regex.Pattern;
@@ -85,6 +87,11 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 				startActivity(intent);
 				finish();
 			})
+            .setNeutralButton("Open character editor (Unfinished!)", (dialogInterface, i) -> {
+                Gdx.app.postRunnable(() -> {
+                    MainGame.getInstance().setScreen(new CharacterEditorScreen());
+                });
+            })
             .setPositiveButton("Confirm", (dialogInterface, i) -> {})
             .create();
         dialog.setOnShowListener((dialogInterface) -> {
@@ -186,10 +193,5 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 	    Gdx.app.postRunnable(() -> {
 			MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
         });
-    }
-    
-    @Override
-    public boolean isDebug() {
-        return BuildConfig.DEBUG;
     }
 }

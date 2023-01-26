@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.entity;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,9 +33,9 @@ public class EntityManager {
         //TODO
     }
     
-    public void addPlayer(PlayerEntity player, Controller controller, RayHandler rayHandler) {
+    public void addPlayer(PlayerEntity player, RayHandler rayHandler, Camera camera) {
         player.setPosition(spawns.get((int) (Math.random() * spawns.size)));
-        player.controller = controller;
+        player.camera = camera;
         PointLight playerLight = new PointLight(rayHandler, 100, new Color(10, 40, 250, .7f), 10, 0, 0);
         playerLight.attachToBody(player.body);
         entities.put(player.nick, player);

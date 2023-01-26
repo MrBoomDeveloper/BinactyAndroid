@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class EntityAnimation {
-    private String current;
+    private static final float bodyWidth = 1; //TODO: Get this number from the player body
+    public String current;
+    private float speed = 1;
     public float progress;
     public HashMap<String, HashMap<String, AnimationObject>> animations;
     public HashMap<String, AnimationObject> presents;
@@ -34,8 +36,8 @@ public class EntityAnimation {
         current = animations.containsKey(name) ? name : "idle";
     }
     
-    public void update(float delta) {
-        progress += delta;
+    public void update(float speed) {
+        progress += speed;
     }
     
 	@Deprecated
@@ -60,7 +62,7 @@ public class EntityAnimation {
         public Animation<TextureRegion> animation;
         public ArrayList<AnimationFrame> frames;
         public String mode;
-        public float speed = 0.05f, offset = 0.5f, progress = 0;
+        public float speed = 0.05f, offset = 0, progress = 0;
         public String extend;
         
         public void build(HashMap<String, AnimationObject> presents, HashMap<String, PlayMode> modes, TextureRegion texture) {
@@ -68,7 +70,6 @@ public class EntityAnimation {
                 AnimationObject present = presents.get(extend);
                 if(frames == null) frames = present.frames;
                 if(speed == 999) speed = present.speed;
-                if(offset == 999) offset = present.offset;
                 if(mode == null) mode = present.mode;
             }
             if(mode == null) mode = "normal";
@@ -80,22 +81,30 @@ public class EntityAnimation {
             this.animation = new Animation<TextureRegion>(this.speed, newRegions, modes.get(mode));
         }
 		
-		public Sprite getSprite(Direction direction, Vector2 bodyPosition) {
-			Sprite sprite = new Sprite(animation.getKeyFrame(progress));
-			int i = animation.getKeyFrameIndex(progress);
-			sprite.setSize(direction.isBackward() ? -getSize(i, 0) : getSize(i, 0), getSize(i, 1));
-			sprite.setPosition(direction.isBackward()
-            	? bodyPosition.x - getPos(i, 0)
-            	: bodyPosition.x + getPos(i, 0),
-            	 bodyPosition.y + getPos(i, 1));
+		public Sprite getSprite(Direction direction, Vector2 bodyPosition, Vector2 bonePos) {
+			Sprite sprite = new Sprite(animation.getKeyFrame(progress + offset));
+			int i = animation.getKeyFrameIndex(progress + offset);
+            
+			sprite.setSize(direction.isBackward() 
+                ? -getSize(i, 0) 
+                : getSize(i, 0), 
+                getSize(i, 1));
+            
+            sprite.setPosition(direction.isBackward()
+            	? bodyPosition.x + bodyWidth - (bonePos.x + getPos(i, 0)) + (getSize(i, 0) / 8) - (bodyWidth / 1)
+            	: bodyPosition.x + bonePos.x + getPos(i, 0),
+            	 bodyPosition.y + getPos(i, 1) + bonePos.y);
+            
 			return sprite;
 		}
 		
 		private float getPos(int id, int dir) {
+            if(frames.get(id).position == null) return 0;
 			return frames.get(id).position.get(dir);
 		}
 		
 		private float getSize(int id, int dir) {
+            if(frames.get(id).size == null) return 0;
 			return frames.get(id).size.get(dir);
 		}
         

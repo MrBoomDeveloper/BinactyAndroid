@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.util.ActorUtil;
 import java.text.SimpleDateFormat;
@@ -28,10 +29,10 @@ public class GameplayUi implements CoreUi {
   private GameplayScreen gameplay;
   private float cameraZoom;
 
-  public GameplayUi(GameplayScreen screen) {
+  public GameplayUi(GameplayScreen screen, Entity entity) {
     this.gameplay = screen;
     stage = new Stage();
-    debugValues = new DebugValuesWidget().addTo(stage);
+    debugValues = (DebugValuesWidget) new DebugValuesWidget().connectToEntity(entity).addTo(stage);
     /*ActorUtil screenshot = new ActionButton()
         .toPosition(new Vector2(Gdx.graphics.getWidth() - 175, Gdx.graphics.getHeight() - 175))
         .onClick(() -> Gdx.app.exit())
@@ -46,28 +47,16 @@ public class GameplayUi implements CoreUi {
     table.right().bottom().pad(75);
 
     cameraZoom = gameplay.camera.zoom;
-    new ActionButton()
-        .onClick(
-            () -> {
+    new ActionButton().onClick(() -> {
               cameraZoom += .05f;
               gameplay.camera.zoom = cameraZoom;
-            })
-        .addTo(table);
-    new ActionButton()
-        .onClick(
-            () -> {
+            }).addTo(table);
+    new ActionButton().onClick(() -> {
               cameraZoom -= .05f;
               gameplay.camera.zoom = cameraZoom;
-            })
-        .addTo(table);
+            }).addTo(table);
 
-    table.row();
-    ActionButton button1 = new ActionButton();
-    table.add(button1).pad(15);
-    ActionButton button2 = new ActionButton();
-    table.add(button2).pad(20);
-
-    joystick = new JoystickWidget();
+    joystick = (JoystickWidget) new JoystickWidget().connectToEntity(entity);
     stage.addActor(joystick);
 
     Table table1 = new Table();
@@ -83,7 +72,6 @@ public class GameplayUi implements CoreUi {
 
     stage.addActor(table);
     stage.addListener(new ActorGestureListener() {
-
           @Override
           public void zoom(InputEvent event, float from, float to) {
             float willZoomTo = cameraZoom + ((from - to) / 1000);

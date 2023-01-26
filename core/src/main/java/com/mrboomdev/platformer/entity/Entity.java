@@ -15,7 +15,7 @@ import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.data.PlayerConfigData;
 import com.mrboomdev.platformer.entity.EntityConfig.Stats;
 
-public abstract class Entity {
+public class Entity {
     private World world;
     public boolean isDead, isDestroyed, isProjectile;
     public Controller controller;

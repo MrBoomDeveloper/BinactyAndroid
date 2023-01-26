@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.mrboomdev.platformer.entity.skin.EntityAnimation;
 import com.mrboomdev.platformer.entity.skin.EntityAnimation.AnimationObject;
 import com.mrboomdev.platformer.util.Direction;
@@ -23,6 +24,7 @@ public class EntityBody {
     public HashMap<String, Bone> bones = new HashMap<>();
     public Texture texture;
     public Direction direction = new Direction(Direction.FORWARD);
+    public Body body;
 
     public EntityBody build(String character, World world, EntityAnimation animations) {
         this.animations = animations;
@@ -58,10 +60,13 @@ public class EntityBody {
             this.texture = new TextureRegion(texture);
             this.animations = animations;
             this.textureRegion = new TextureRegion(texture, bounds.get(0), bounds.get(1), bounds.get(2), bounds.get(3));
-            sprite = new Sprite(textureRegion);
-            sprite.setSize(size.get(0), size.get(1));
-            sprite.setPosition(position.get(0), position.get(1));
-            if (animated) buildAnimations();
+            if(!animated) {
+                sprite = new Sprite(textureRegion);
+                sprite.setSize(size.get(0), size.get(1));
+                sprite.setPosition(position.get(0), position.get(1));
+                return this;
+            }
+            buildAnimations();
             return this;
         }
 
@@ -85,7 +90,7 @@ public class EntityBody {
                  	bodyPosition.y + position.get(1));
 			} else {
 				AnimationObject object = animations.getFrame2(name);
-				sprite = object.getSprite(direction, bodyPosition);
+				sprite = object.getSprite(direction, bodyPosition, new Vector2(position.get(0), position.get(1)));
 			}
             sprite.draw(batch);
         }

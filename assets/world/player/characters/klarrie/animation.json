@@ -4,20 +4,20 @@
     "legWalk": {
       "mode": "loop",
       "frames": [
-        { "bounds": [ 45,  0, 5, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [  0, 12, 5, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [  7, 12, 5, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 16, 12, 5, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 23, 12, 6, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 30, 12, 6, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 37, 12, 6, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 44, 12, 6, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [  0,  0, 5, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [  7,  0, 7, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 15,  0, 7, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 23,  0, 7, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 31,  0, 7, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] },
-        { "bounds": [ 38,  0, 6, 11 ], "size": [ 0.32, 0.5 ], "position": [ 0, -0.9 ] }
+        { "bounds": [ 45,  0, 5, 11 ], "size": [ 0.225, 0.5 ], "position": [      0, 0 ] },
+        { "bounds": [  0, 12, 5, 11 ], "size": [ 0.225, 0.5 ], "position": [      0, 0 ] },
+        { "bounds": [  7, 12, 5, 11 ], "size": [ 0.225, 0.5 ], "position": [ -0.045, 0 ] },
+        { "bounds": [ 16, 12, 5, 11 ], "size": [ 0.225, 0.5 ], "position": [ -0.045, 0 ] },
+        { "bounds": [ 23, 12, 6, 11 ], "size": [  0.27, 0.5 ], "position": [  -0.09, 0 ] },
+        { "bounds": [ 30, 12, 6, 11 ], "size": [  0.27, 0.5 ], "position": [  -0.09, 0 ] },
+        { "bounds": [ 37, 12, 6, 11 ], "size": [  0.27, 0.5 ], "position": [  -0.09, 0 ] },
+        { "bounds": [ 44, 12, 6, 11 ], "size": [  0.27, 0.5 ], "position": [ -0.045, 0 ] },
+        { "bounds": [  0,  0, 5, 11 ], "size": [ 0.225, 0.5 ], "position": [      0, 0 ] },
+        { "bounds": [  7,  0, 7, 11 ], "size": [ 0.315, 0.5 ], "position": [      0, 0 ] },
+        { "bounds": [ 15,  0, 7, 11 ], "size": [ 0.315, 0.5 ], "position": [  0.045, 0 ] },
+        { "bounds": [ 23,  0, 7, 11 ], "size": [ 0.315, 0.5 ], "position": [  0.045, 0 ] },
+        { "bounds": [ 31,  0, 7, 11 ], "size": [ 0.315, 0.5 ], "position": [  0.045, 0 ] },
+        { "bounds": [ 38,  0, 6, 11 ], "size": [  0.27, 0.5 ], "position": [  0.045, 0 ] }
       ]
     },
     
@@ -29,35 +29,26 @@
   "animations": {
     "idle": {
       "face": {
-        "frames": [{ "bounds": [ 0, 14, 6, 3 ], "size": [ 0.25, 0.13 ], "position": [ 0.03, 0.4 ] }]
+        "frames": [{ "bounds": [ 0, 14, 6, 3 ], "size": [ 0.25, 0.13 ] }]
       },
       
       "legLeft": {
-        "extend": "legWalk",
-        "frames": [{ "bounds": [ 45,  0, 5, 11 ], "size": [ 0.3, 0.5 ], "position": [ -1, -0.9 ] }]
+        "extend": "legWalk", "frames": [{ "bounds": [ 45,  0, 5, 11 ], "size": [ 0.225, 0.5 ] }]
        },
       
       "legRight": {
-        "extend": "legWalk",
-        "frames": [{ "bounds": [ 45,  0, 5, 11 ], "size": [ 0.3, 0.5 ], "position": [ 0, -0.9 ] }]
+        "extend": "legWalk", "frames": [{ "bounds": [ 45,  0, 5, 11 ], "size": [ 0.225, 0.5 ] }]
        }
     },
     
     "walk": {
-      "legRight": {
-        "extend": "legWalk",
-        "offset": 0.2,
-        "speed": 0.07
-      },
-      
-      "legLeft": {
-        "extend": "legWalk", "speed": 0.07
-      }
+       "legLeft": { "extend": "legWalk", "speed": 0.05, "offset": 0.3 },
+      "legRight": { "extend": "legWalk", "speed": 0.05 }
     },
     
     "run": {
-      "legLeft": { "extend": "legWalk", "speed": 0.04 },
-      "legRight": { "extend": "legWalk", "speed": 0.04, "offset": 0.02 }
+      "legLeft": { "extend": "legWalk", "speed": 0.025, "offset": 0.15 },
+      "legRight": { "extend": "legWalk", "speed": 0.025 }
     },
     
     "hit": {

@@ -1,16 +1,16 @@
 package com.mrboomdev.platformer.react;
 
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.MainGame;
-import com.mrboomdev.platformer.react.ReactActivity;
 import com.mrboomdev.platformer.util.Analytics;
 import com.mrboomdev.platformer.util.AskUtil;
 import com.mrboomdev.platformer.util.AskUtil.AskType;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ReactBridge extends ReactContextBaseJavaModule {
     private MainGame game;
@@ -26,22 +26,32 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     public String getName() {
         return "GameNative";
     }
-    
+	
+	@ReactMethod
+	public void getMyData(Callback callback) {
+		WritableMap data = Arguments.createMap();
+		data.putString("nick", "MrBoomDev");
+        data.putString("avatar", "klarrie");
+        data.putInt("level", 1);
+        data.putInt("progress", 0);
+        callback.invoke(data);
+	}
+	
     @ReactMethod
-    public Map<String, Object> getPlayerData(String nick) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("nick", "Player228");
-        data.put("avatar", "klarrie");
-        data.put("level", 1);
-        data.put("progress", 0);
-        return data;
+    public void getPlayerData(String nick, Callback callback) {
+        WritableMap data = Arguments.createMap();
+		data.putString("nick", "Unknown");
+        data.putString("avatar", "error");
+        data.putInt("level", 0);
+        data.putInt("progress", 0);
+        callback.invoke(data);
     }
     
     @ReactMethod
     public void play(int gamemode) {
         
     }
-    
+   
     @ReactMethod
     public void playCustom(String gamemode, String room, boolean isHost) {
         

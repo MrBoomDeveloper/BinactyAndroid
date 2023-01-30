@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.WindowInsets;
 import android.view.WindowManager;
-import com.facebook.react.PackageList;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
@@ -14,9 +13,10 @@ import com.facebook.soloader.SoLoader;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.react.ReactGame; 
 import com.mrboomdev.platformer.util.AskUtil;
+import com.facebook.react.PackageList;
+import java.util.ArrayList;
 import java.util.List;
 
-@Deprecated
 public class ReactActivity extends Activity implements DefaultHardwareBackBtnHandler {
     public static ReactActivity ctx;
     private ReactRootView root;

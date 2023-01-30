@@ -14,7 +14,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.itsaky.androidide.logsender.LogSender;
-import com.mrboomdev.platformer.react.ReactActivity2;
+import com.mrboomdev.platformer.react.ReactActivity;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.util.AskUtil;
 
@@ -65,7 +65,7 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
             isInitialized = true;
             return;
         }
-        Intent intent = new Intent(this, ReactActivity2.class);
+        Intent intent = new Intent(this, ReactActivity.class);
         startActivity(intent);
     }
     

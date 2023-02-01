@@ -14,7 +14,7 @@ public class MainGame extends Game implements NativeContainer {
   public Analytics analytics;
   public AssetManager asset;
   public String nick = "Player228";
-  public int botsCount = 0;
+  public int botsCount = 10;
   public boolean newCharacterAnimations = false;
   public boolean showBodyColissions = false;
 
@@ -23,9 +23,7 @@ public class MainGame extends Game implements NativeContainer {
   }
 
   public static MainGame getInstance(Analytics analytics, NativeContainer container) {
-    if (instance == null) {
-      instance = new MainGame(analytics, container);
-    }
+    instance = new MainGame(analytics, container);
     return instance;
   }
 

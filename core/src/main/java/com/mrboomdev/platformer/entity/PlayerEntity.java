@@ -165,7 +165,7 @@ public class PlayerEntity extends Entity {
         super.die();
         MainGame game = MainGame.getInstance();
         if(nick == game.nick) {
-            game.setScreen(new SplashScreen());
+            game.toggleGameView(false);
         }
     }
 }

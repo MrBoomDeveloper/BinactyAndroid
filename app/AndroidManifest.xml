@@ -16,6 +16,7 @@
         <activity android:name=".AndroidLauncher"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
+			android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -28,6 +29,7 @@
             android:label="Platformer Debug"
             android:theme="@style/Material"
             android:exported="true"
+			android:launchMode="singleTask"
             android:screenOrientation="landscape">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -37,10 +39,8 @@
         
         <activity android:name=".react.ReactActivity"
             android:screenOrientation="landscape"
-            android:exported="true" />
-        
-        <activity android:name=".react.ReactActivity2"
-            android:screenOrientation="landscape"
+			android:theme="@style/Material"
+			android:launchMode="singleTask"
             android:exported="true" />
         
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"

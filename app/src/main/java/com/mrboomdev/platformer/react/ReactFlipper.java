@@ -1,7 +1,7 @@
 package com.mrboomdev.platformer.react;
 
 import android.content.Context;
-import com.facebook.flipper.android.AndroidFlipperClient;
+/*import com.facebook.flipper.android.AndroidFlipperClient;
 import com.facebook.flipper.android.utils.FlipperUtils;
 import com.facebook.flipper.core.FlipperClient;
 import com.facebook.flipper.plugins.crashreporter.CrashReporterPlugin;
@@ -11,7 +11,7 @@ import com.facebook.flipper.plugins.inspector.DescriptorMapping;
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin;
 import com.facebook.flipper.plugins.network.FlipperOkhttpInterceptor;
 import com.facebook.flipper.plugins.network.NetworkFlipperPlugin;
-import com.facebook.flipper.plugins.sharedpreferences.SharedPreferencesFlipperPlugin;
+import com.facebook.flipper.plugins.sharedpreferences.SharedPreferencesFlipperPlugin;*/
 import com.facebook.react.ReactInstanceEventListener;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
@@ -21,9 +21,9 @@ import okhttp3.OkHttpClient;
 
 public class ReactFlipper {
   public static void initializeFlipper(Context context, ReactInstanceManager reactInstanceManager) {
-		if(BuildConfig.DEBUG) return;
+		if(!BuildConfig.DEBUG) return;
 		
-    if (FlipperUtils.shouldEnableFlipper(context)) {
+    /*if (FlipperUtils.shouldEnableFlipper(context)) {
       final FlipperClient client = AndroidFlipperClient.getInstance(context);
 
       client.addPlugin(new InspectorFlipperPlugin(context, DescriptorMapping.withDefaults()));
@@ -61,6 +61,6 @@ public class ReactFlipper {
       } else {
         client.addPlugin(new FrescoFlipperPlugin());
       }
-    }
+    }*/
   }
 }

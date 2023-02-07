@@ -30,7 +30,7 @@ public class AndroidAnalytics implements Analytics {
     }
     
     private String generateTag(String type, String tag, boolean isLogcat) {
-        if(isLogcat) return "_ACTION_" + type + "_" + tag;
+        if(isLogcat) return "_" + type + "_" + tag;
         return "[" + type + "_" + tag + "] ";
     }
 }

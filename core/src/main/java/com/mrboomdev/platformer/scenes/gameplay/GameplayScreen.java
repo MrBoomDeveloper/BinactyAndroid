@@ -22,12 +22,12 @@ import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
 
 public class GameplayScreen extends CoreScreen {
+	public OrthographicCamera camera;
+	public EntityManager entities;
   private MainGame game;
   private SpriteBatch batch;
   private ShapeRenderer shapeRenderer;
-  public OrthographicCamera camera;
   private MapManager map;
-  private EntityManager entities;
   private World world;
   private GameplayUi ui;
   private RayHandler rayHandler;

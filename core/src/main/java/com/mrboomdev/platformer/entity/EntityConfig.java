@@ -13,9 +13,6 @@ import com.mrboomdev.platformer.entity.skin.EntityAnimation;
 public class EntityConfig {
     private String bodyPath;
     private String animationPath;
-    public String highlight;
-    public String name = "New entity";
-    public String description = "No description.";
     public EntityAnimation animation;
     public EntityBody body;
     public Stats stats;

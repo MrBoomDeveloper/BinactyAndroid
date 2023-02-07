@@ -24,7 +24,6 @@ public class PlayerEntity extends Entity {
     private Sprite boom;
     private float boomAnimation;
     private Sound boomSound;
-    private Vector2 was_position;
     private BitmapFont font;
     private float animationProgress = 0;
     private Direction moveDirection;
@@ -41,7 +40,6 @@ public class PlayerEntity extends Entity {
         this.boom = new Sprite(new Texture(Gdx.files.internal("effects/boom.png")));
         this.boomSound = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/boom.mp3"));
         body.setUserData(this);
-        was_position = body.getPosition();
         moveDirection = new Direction(Direction.NONE);
         animationDirection = new Direction(Direction.FORWARD);
 
@@ -53,19 +51,19 @@ public class PlayerEntity extends Entity {
         fontParam.borderWidth = 1;
         fontParam.color = Color.WHITE;
         font = fontGenerator.generateFont(fontParam);
+		animate();
     }
 
     @Deprecated
     public void animate() {
-        speed =
-                Math.max(
-                        Math.abs(body.getLinearVelocity().x), Math.abs(body.getLinearVelocity().y));
+        speed = Math.max(
+        	Math.abs(body.getLinearVelocity().x), 
+			Math.abs(body.getLinearVelocity().y));
         if (speed == 0) {
             if (animationProgress > 0) animationProgress -= .01;
             return;
         }
 
-        was_position = body.getPosition();
         moveDirection.setFrom(body.getLinearVelocity().x);
 
         animationProgress += (animationDirection.isForward() ? speed : -speed) / 600;
@@ -123,16 +121,12 @@ public class PlayerEntity extends Entity {
                 animationProgress * -(limbGap) + limbOffset,
                 moveDirection);
 
-        config.bones.arm.draw(
-                batch,
-                body.getPosition()
-                        .add(
-                                new Vector2(
-                                        moveDirection.isBackward() ? .27f : -.27f,
-                                        animationProgress * 2)),
+        config.bones.arm.draw(batch,
+                body.getPosition().add(new Vector2(
+                	moveDirection.isBackward() ? .27f : -.27f,
+                    animationProgress * 2)),
                 animationProgress * -(limbGap) + limbOffset,
-                moveDirection,
-                true);
+                moveDirection, true);
 
         config.bones.head.draw(
                 batch, body.getPosition().add(new Vector2(0, animationProgress)), 0, moveDirection);
@@ -141,14 +135,7 @@ public class PlayerEntity extends Entity {
     @Deprecated
     public void drawNick(SpriteBatch batch) {
         if (isDead) return;
-        font.draw(
-                batch,
-                nick,
-                body.getPosition().x * 50 - 50,
-                body.getPosition().y * 50 + 62,
-                100,
-                Align.center,
-                true);
+        font.draw(batch, nick, body.getPosition().x * 50 - 50, body.getPosition().y * 50 + 62, 100, Align.center, true);
     }
 
     @Override
@@ -157,7 +144,7 @@ public class PlayerEntity extends Entity {
         boomSound.play(.2f);
         boom.setSize(2, 2);
         boomAnimation = 0;
-        if (camera != null) CameraUtil.setCameraShake(.5f, .5f);
+        if (camera != null) CameraUtil.setCameraShake(.2f, .5f);
     }
 
     @Override

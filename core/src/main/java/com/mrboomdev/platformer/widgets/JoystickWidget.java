@@ -108,8 +108,7 @@ public class JoystickWidget extends ActorUtil implements Controller {
     }
 
     @Override
-    public void draw(Batch batch, float opacity) {
-        super.draw(batch, opacity);
+    public void draw(Batch batch, float alpha) {
         holder.draw(batch);
         point.draw(batch);
     }

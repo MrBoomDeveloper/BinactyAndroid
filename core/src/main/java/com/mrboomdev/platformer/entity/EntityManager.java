@@ -16,6 +16,7 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.environment.MapManager;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.Collection;
 import com.mrboomdev.platformer.entity.PlayerEntity;
 import com.mrboomdev.platformer.entity.bot.BotEntity;
 
@@ -86,4 +87,8 @@ public class EntityManager {
     public Entity get(String name) {
         return entities.get(name);
     }
+	
+	public Collection<Entity> getAll() {
+		return entities.values();
+	}
 }

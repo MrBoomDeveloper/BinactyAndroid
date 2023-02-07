@@ -1,24 +1,31 @@
 {
-    "loadingScreen": {
-        "load: [
-            { "path": "ui/banner/loading.png", "type": "texture" },
-            { "path": "audio/sounds/click.mp3", "type": "auido" }
-        ]
-    },
-    "lobbyScreen": {
-        "load": [
-            { "path": "audio/music/lobby.mp3", "type": "music" }
-        ]
-    },
-    "gameplayScreen": {
-        "load": [
-            { "path": "ui/overlay/actions.png", "type": "texture" },
-            { "path": "ui/overlay/joystick.png", "type": "texture" },
-            { "path": "audio/sounds/footstep.mp3", "type": "sound" },
-            { "path": "audio/sounds/run.mp3", "type": "sound" }
-        ],
-        "unload": [
-            "ui/banner/loading.png"
-        ]
+	"scenes": {
+    	"LOADING": {
+        	"load": [
+            	{ "path": "ui/banner/loading.png", "type": "texture" },
+            	{ "path": "etc/blank.png", "type": "texture" }
+        	]
+    	},
+    	"LOBBY": {
+        	"load": [
+            	{ "path": "audio/music/lobby_theme.mp3", "type": "music" }
+        	]
+    	},
+    	"GAMEPLAY": {
+        	"load": [
+            	{ "path": "ui/overlay/big_elements.png", "type": "texture" },
+            	{ "path": "ui/overlay/attack.png", "type": "texture" },
+            	{ "path": "ui/overlay/shield.png", "type": "texture" },
+            	{ "path": "ui/overlay/dash.png", "type": "texture" },
+            	{ "path": "ui/overlay/shoot.png", "type": "texture" },
+            	{ "path": "effects/boom.png", "type": "texture" },
+            	{ "path": "audio/sounds/boom.mp3", "type": "sound" },
+            	{ "path": "font/roboto-medium.ttf", "as": "robotoMedium", "type": "font", "size": 12 },
+            	{ "path": "font/gilroy-bold.ttf", "as": "gilroyBold", "type": "font", "size": 12 }
+        	],
+        	"unload": [
+            	"ui/banner/loading.png"
+        	]
+        }
     }
 }

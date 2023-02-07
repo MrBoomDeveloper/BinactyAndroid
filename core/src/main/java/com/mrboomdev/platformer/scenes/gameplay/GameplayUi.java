@@ -1,17 +1,11 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mrboomdev.platformer.entity.Entity;
-import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
-import com.mrboomdev.platformer.util.ActorUtil;
 import java.text.SimpleDateFormat;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
@@ -33,58 +27,52 @@ public class GameplayUi implements CoreUi {
     this.gameplay = screen;
     stage = new Stage();
     debugValues = (DebugValuesWidget) new DebugValuesWidget().connectToEntity(entity).addTo(stage);
-    /*ActorUtil screenshot = new ActionButton()
-        .toPosition(new Vector2(Gdx.graphics.getWidth() - 175, Gdx.graphics.getHeight() - 175))
-        .onClick(() -> Gdx.app.exit())
-        .addTo(stage);
-    ActorUtil pause = new ActionButton()
-        .toPosition(new Vector2(Gdx.graphics.getWidth() - 335, Gdx.graphics.getHeight() - 175))
-        .onClick(() -> System.exit(0))
-        .addTo(stage);*/
-
-    Table table = new Table();
-    table.setFillParent(true);
-    table.right().bottom().pad(75);
-
-    cameraZoom = gameplay.camera.zoom;
-    new ActionButton().onClick(() -> {
-              cameraZoom += .05f;
-              gameplay.camera.zoom = cameraZoom;
-            }).addTo(table);
-    new ActionButton().onClick(() -> {
-              cameraZoom -= .05f;
-              gameplay.camera.zoom = cameraZoom;
-            }).addTo(table);
-
+		
+	for(int i = 0; i < 2; i++) {
+		final int a = i;
+		new ActionButton(a == 0 ? "ui/overlay/attack.png" : "ui/overlay/dash.png").toPosition(new Vector2(
+				Gdx.graphics.getWidth() - ActionButton.size - 100,
+				a * ActionButton.size * 1.4f + 150))
+			.onClick(() -> {
+				if(a == 0) entity.attack();
+				if(a == 1) entity.dash();
+			})
+			.addTo(stage);
+	}
+		
+	for(int i = 0; i < 2; i++) {
+		final int a = i;
+		new ActionButton(a == 0 ? "ui/overlay/shield.png" : "ui/overlay/shoot.png").toPosition(new Vector2(
+				Gdx.graphics.getWidth() - (ActionButton.size * 2) - 150,
+				a * ActionButton.size * 1.4f + 100))
+			.onClick(() -> {
+				if(a == 0) entity.shield();
+				if(a == 1) entity.shoot();
+			})
+			.addTo(stage);
+	}
+		
     joystick = (JoystickWidget) new JoystickWidget().connectToEntity(entity);
     stage.addActor(joystick);
-
-    Table table1 = new Table();
-    table.setFillParent(true);
-    table1.right().bottom();
-    ActionButton button3 = new ActionButton();
-    table1.add(button3);
-    stage.addActor(table1);
 
     timer = new TextWidget(Gdx.files.internal("font/gilroy-bold.ttf"), 60);
     timer.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 75);
     stage.addActor(timer);
 
-    stage.addActor(table);
+	cameraZoom = gameplay.camera.zoom;
     stage.addListener(new ActorGestureListener() {
           @Override
           public void zoom(InputEvent event, float from, float to) {
             float willZoomTo = cameraZoom + ((from - to) / 1000);
-            debugValues.setValue("wiilZoomTo", willZoomTo + "");
-            debugValues.setValue("cameraZoom", cameraZoom + "");
-            if (willZoomTo < 0.2f) return;
-            if (willZoomTo > 1.5f) return;
+            debugValues.setValue("CameraZoomNext", String.valueOf(willZoomTo));
+            debugValues.setValue("CameraZoomCurrent", String.valueOf(cameraZoom));
+            if (willZoomTo < 0.2f || willZoomTo > 1.5f) return;
             gameplay.camera.zoom = willZoomTo;
           }
 
           @Override
-          public void touchDown(InputEvent arg0, float arg1, float arg2, int arg3, int arg4) {
-            super.touchDown(arg0, arg1, arg2, arg3, arg4);
+          public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            super.touchDown(event, x, y, pointer, button);
             cameraZoom = gameplay.camera.zoom;
           }
         });
@@ -100,8 +88,10 @@ public class GameplayUi implements CoreUi {
     timer.setText(dateFormat.format((int) time));
     debugValues.setValue("TimeLeft", String.valueOf(time));
 
-    if (time <= 0) {
-      System.exit(0);
+    if(time <= 0) {
+      for(Entity entity : gameplay.entities.getAll()) {
+		  entity.die();
+	  }
     }
   }
 

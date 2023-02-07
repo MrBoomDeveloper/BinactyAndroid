@@ -16,14 +16,17 @@ import com.mrboomdev.platformer.entity.data.PlayerConfigData;
 import com.mrboomdev.platformer.entity.EntityConfig.Stats;
 
 public class Entity {
-    private World world;
-    public boolean isDead, isDestroyed, isProjectile;
+	public static final float dashDelay = .25f;
+    public boolean isDead, isDestroyed, canWalk;
     public Controller controller;
     public Body body;
     public PlayerConfigData config;
     public EntityConfig configNew;
     public Stats stats;
     public String character;
+    private World world;
+	private Vector2 wasPower = new Vector2();
+	private float dashProgress;
     
     public Entity(String character, World world) {
         this(character, world, new Vector2(0, 0));
@@ -55,40 +58,58 @@ public class Entity {
         shape.dispose();
     }
     
-    public void usePower(Vector2 power) {
+    public void attack() {
+        body.setAngularDamping(50);
+    }
+	
+	public void shoot() {
+        body.setAngularVelocity(50);
+    }
+	
+	public void dash() {
+		if(!canWalk) return;
+		dashProgress = 0;
+        canWalk = false;
+		body.setLinearVelocity(wasPower.scl(100).limit(18));
+    }
+	
+	public void shield() {
+        
+    }
+	
+	public void draw(SpriteBatch batch) {
         if(isDead) return;
-        body.setLinearVelocity(power.limit(5));
+		dashProgress += Gdx.graphics.getDeltaTime();
+		Vector2 power = body.getLinearVelocity();
+        configNew.body.direction.setFrom(wasPower.x);
+		float speed = Math.max(Math.abs(power.x), Math.abs(power.y));
+        configNew.animation.setAnimation((speed < .2f) ? "idle" : ((speed > 3) ? "run" : "walk"));
+		if(dashProgress > dashDelay) canWalk = true;
+        if(MainGame.getInstance().newCharacterAnimations) configNew.body.draw(batch, body.getPosition());
     }
-    
-    public void setController(Controller controller) {
-        this.controller = controller;
-    }
-    
-    public void gainDamage(int damage) {
+	
+	public void gainDamage(int damage) {
         stats.health -= damage;
         if(stats.health <= 0) die();
     }
-    
-    public void die() {
+	
+	public void die() {
         if(isDead) return;
         isDead = true;
     }
-    
-    public void draw(SpriteBatch batch) {
-        if(isDead) return;
-		Vector2 power = body.getLinearVelocity();
-        configNew.body.direction.setFrom(power.x);
-		float speed = Math.max(Math.abs(power.x), Math.abs(power.y));
-        configNew.animation.setAnimation((speed < .2f) ? "idle" : ((speed > 3) ? "run" : "walk"));
-        if(MainGame.getInstance().newCharacterAnimations) configNew.body.draw(batch, body.getPosition());
-    }
-    
-    public void attack(Vector2 power) {
-        throw new RuntimeException("Method not done yet.");
+	
+	public void usePower(Vector2 power) {
+        if(isDead || !canWalk) return;
+        body.setLinearVelocity(power.limit(5));
+		if(!power.isZero()) wasPower = power;
     }
     
     public void setPosition(Vector2 position) {
         if(isDead) return;
         body.setTransform(position, 0);
+    }
+	
+	public void setController(Controller controller) {
+        this.controller = controller;
     }
 }

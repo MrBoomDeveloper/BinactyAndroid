@@ -57,8 +57,7 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
         if (isActive) {
             AskUtil.setContext(this);
             if (isInitialized) {
-                Gdx.app.postRunnable(
-                        () -> {
+                Gdx.app.postRunnable(() -> {
                             MainGame game = MainGame.getInstance();
                             game.nick = prefs.getString("nick", "Player");
                             game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
@@ -85,7 +84,7 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
                 toggleGameView(true);
                 break;
             default:
-                Log.d("AndroidLauncher", "Unknown intent");
+                Log.e("AndroidLauncher", "Unknown intent");
                 break;
         }
     }

@@ -1,8 +1,6 @@
 package com.mrboomdev.platformer;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,8 +18,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.itsaky.androidide.logsender.LogSender;
-import com.mrboomdev.platformer.MainGame;
-import com.mrboomdev.platformer.scenes.charactereditor.CharacterEditorScreen;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.util.BadWordChecker;
 import java.util.regex.Pattern;
@@ -44,20 +40,14 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 		gameConfig.useImmersiveMode = true;
 		gameConfig.useAccelerometer = false;
 		gameConfig.useCompass = false;
+		gameConfig.useGyroscope = false;
+		initialize(MainGame.getInstance(new AndroidAnalytics(), this), gameConfig);
 		
         prefs = getSharedPreferences("Save", Context.MODE_PRIVATE);
-        if(!getIntent().getBooleanExtra("reopen", false)) showDialog();
-		toggleGameView(true);
-		
-		MainGame game = MainGame.getInstance();
-		game.nick = prefs.getString("nick", "Player228");
-		game.newCharacterAnimations = prefs.getBoolean("newCharacterAnimations", true);
-		game.showBodyColissions = prefs.getBoolean("showBodyColissions", false);
-		game.botsCount = prefs.getInt("botsCount", 0);
-		
 		Gson gson = new Gson();
-		badWords = gson.fromJson(Gdx.files.internal("world/player/blacklist.json").readString(), String[].class);
-		
+		//badWords = gson.fromJson(Gdx.files.internal("world/player/blacklist.json").readString(), String[].class);
+		badWords = new String[]{};
+		showDialog();
 	}
     
     private void showDialog() {
@@ -78,20 +68,9 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
         
         AlertDialog dialog = new MaterialAlertDialogBuilder(this)
 			.setTitle("PlatformerDebug Config")
-            .setMessage("The game will remember the text that you'll pass here, but dialog will show again. \nPlease join my Discord server, to see the development process & other funny things!")
+            .setMessage("The game will remember the text that you'll pass here, but dialog will show again.")
             .setCancelable(false)
             .setView(view)
-			.setNegativeButton("Join Discord!", (dialogInterface, i) -> {
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(Uri.parse("https://discord.gg/uCUp8TSCvw"));
-				startActivity(intent);
-				finish();
-			})
-            .setNeutralButton("Open character editor (Unfinished!)", (dialogInterface, i) -> {
-                Gdx.app.postRunnable(() -> {
-                    MainGame.getInstance().setScreen(new CharacterEditorScreen());
-                });
-            })
             .setPositiveButton("Confirm", (dialogInterface, i) -> {})
             .create();
         dialog.setOnShowListener((dialogInterface) -> {
@@ -119,10 +98,8 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 				    editor.putBoolean("newCharacterAnimations", animationsBox.isChecked());
 					editor.putBoolean("showBodyColissions", colissionsBox.isChecked());
 					editor.commit();
-                    Intent intent = new Intent(this, DebugStartGameActivity.class);
-                    intent.putExtra("reopen", true);
-                    startActivity(intent);
-                    finish();
+							
+					toggleGameView(false);
                     dialog.dismiss();
                 }
             });
@@ -179,19 +156,13 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
     
     @Override
     public void toggleGameView(boolean isActive) {
-        if(isActive) {
-            if(!isInitialized) {
-                initialize(MainGame.getInstance(new AndroidAnalytics(), this), gameConfig);
-                isInitialized = true;
-                return;
-            }
-            Gdx.app.postRunnable(() -> {
-			    MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
-            });
-            return;
-        }
-	    Gdx.app.postRunnable(() -> {
-			MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
+        Gdx.app.postRunnable(() -> {
+            MainGame game = MainGame.getInstance();
+			game.nick = prefs.getString("nick", "Player228");
+			game.newCharacterAnimations = prefs.getBoolean("newCharacterAnimations", true);
+			game.showBodyColissions = prefs.getBoolean("showBodyColissions", false);
+			game.botsCount = prefs.getInt("botsCount", 0);
+            game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
         });
     }
 }

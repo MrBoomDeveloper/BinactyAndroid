@@ -30,27 +30,26 @@ public class DebugValuesWidget extends ActorUtil {
     public void setValue(String key, String value) {
         values.put(key, value);
     }
-
-  @Override
-  public void act(float delta) {
-    super.act(delta);
-    setValue("Fps", String.valueOf(Gdx.graphics.getFramesPerSecond()));
-    setValue("Delta", String.valueOf(delta));
-    Vector2 pos = connectedEntity.body.getPosition();
-    setValue("MainEntityPositionX", String.valueOf(pos.x / 2));
-    setValue("MainEntityPositionY", String.valueOf(pos.y / 2));
-    setValue("MainEntityHealth", String.valueOf(connectedEntity.stats.health));
-    setValue("MainEntityAnimation", connectedEntity.configNew.animation.current);
-  }
-
-  @Override
-  public void draw(Batch batch, float opacity) {
-    super.draw(batch, opacity);
-    StringBuilder builder = new StringBuilder();
-    for(Entry entry : values.entrySet()) {
-        builder.append(entry.getKey() + ": ");
-        builder.append(entry.getValue() + "\n");
-    }
-    font.draw(batch, builder.toString(), 25, Gdx.graphics.getHeight() - 25);
-  }
+	
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+		setValue("Screen Fps", String.valueOf(Gdx.graphics.getFramesPerSecond()));
+		setValue("Screen Delta", String.valueOf(delta));
+		Vector2 pos = connectedEntity.body.getPosition();
+		setValue("Player Position", "[ " + (pos.x / 2) + " : " + (pos.y / 2) + " ]");
+		setValue("Player Health", String.valueOf(connectedEntity.stats.health));
+		setValue("Player Animation", connectedEntity.configNew.animation.current);
+	}
+	
+	@Override
+	public void draw(Batch batch, float opacity) {
+		super.draw(batch, opacity);
+		StringBuilder builder = new StringBuilder();
+		for(Entry entry : values.entrySet()) {
+			builder.append(entry.getKey() + ": ");
+			builder.append(entry.getValue() + "\n");
+		}
+		font.draw(batch, builder.toString(), getX(), getY() - 25);
+	}
 }

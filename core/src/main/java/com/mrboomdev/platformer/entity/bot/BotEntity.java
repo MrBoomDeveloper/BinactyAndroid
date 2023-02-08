@@ -25,6 +25,7 @@ public class BotEntity extends PlayerEntity {
           String playerTextPosition = PositionPoint.toText(player.body.getPosition());
           if(map.aiZones.containsKey(playerTextPosition)) {
             GraphPath<FreePosition> path = map.positionGraph.findPath(map.aiZones.get(botTextPosition), map.aiZones.get(playerTextPosition));
+			shoot();
             try {
               power = new Vector2(path.get(2).x, path.get(2).y).sub(body.getPosition()).scl(10).limit(4);
             } catch(Exception e) {try {
@@ -33,12 +34,13 @@ public class BotEntity extends PlayerEntity {
           }
        }
        
-       body.setLinearVelocity(power.scl(2).limit(4));
+       usePower(power.scl(2).limit(4).scl(stats.speed));
        if(distance > 10) {
-           body.setLinearVelocity(new Vector2(0, 0));
+           usePower(new Vector2(0, 0).scl(stats.speed));
        } else if(distance < 3) {
            power = player.body.getPosition().sub(body.getPosition());
-           body.setLinearVelocity(power.scl(2).limit(4));
+           usePower(power.scl(2).limit(4).scl(stats.speed));
+			shoot();
        }
     }
 }

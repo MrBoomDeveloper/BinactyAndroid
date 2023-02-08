@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -51,7 +52,6 @@ public class PlayerEntity extends Entity {
         fontParam.borderWidth = 1;
         fontParam.color = Color.WHITE;
         font = fontGenerator.generateFont(fontParam);
-		animate();
     }
 
     @Deprecated
@@ -75,9 +75,9 @@ public class PlayerEntity extends Entity {
     }
 
     public void draw(SpriteBatch batch) {
+		super.draw(batch);
         if (isDead) return;
         if (controller != null) usePower(controller.getPower());
-        super.draw(batch);
 
         boomAnimation += Gdx.graphics.getDeltaTime();
         if (boomAnimation < 1) {
@@ -137,6 +137,19 @@ public class PlayerEntity extends Entity {
         if (isDead) return;
         font.draw(batch, nick, body.getPosition().x * 50 - 50, body.getPosition().y * 50 + 62, 100, Align.center, true);
     }
+	
+	public void drawNick(SpriteBatch batch, Camera camera) {
+		if (isDead) return;
+		Vector2 proportion = new Vector2(
+			(Gdx.graphics.getWidth() / camera.viewportWidth) / 2,
+			(Gdx.graphics.getHeight() / camera.viewportHeight) / 2
+		);
+		font.getData().setScale(.8f, .8f);
+        font.draw(batch, nick,
+			body.getPosition().x * proportion.x,
+			body.getPosition().y * proportion.y,
+		100, Align.center, true);
+	}
 
     @Override
     public void gainDamage(int damage) {

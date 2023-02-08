@@ -14,8 +14,15 @@ import com.google.gson.Gson;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.data.PlayerConfigData;
 import com.mrboomdev.platformer.entity.EntityConfig.Stats;
+import com.mrboomdev.platformer.projectile.ProjectileBullet;
+import com.mrboomdev.platformer.projectile.ProjectileManager;
+import com.mrboomdev.platformer.projectile.ProjectileBullet.ProjectileStats;
 
 public class Entity {
+	private World world;
+	private Vector2 wasPower = new Vector2();
+	private float dashProgress;
+	private ProjectileManager projectileManager;
 	public static final float dashDelay = .25f;
     public boolean isDead, isDestroyed, canWalk;
     public Controller controller;
@@ -24,9 +31,6 @@ public class Entity {
     public EntityConfig configNew;
     public Stats stats;
     public String character;
-    private World world;
-	private Vector2 wasPower = new Vector2();
-	private float dashProgress;
     
     public Entity(String character, World world) {
         this(character, world, new Vector2(0, 0));
@@ -36,13 +40,12 @@ public class Entity {
         Gson gson = new Gson();
         this.world = world;
         this.character = character;
-        this.configNew = gson.fromJson(Gdx.files.internal(character + "/manifest.json").readString(), 
+        this.configNew = gson.fromJson(Gdx.files.internal(character + "/manifest.json").readString(),
             EntityConfig.class).build(character, world);
-        this.stats = configNew.stats.cpy();
-        
+        this.stats = configNew.stats;
         
         config = gson.fromJson(
-            Gdx.files.internal(character + "/config.json").readString(), 
+            Gdx.files.internal(character + "/config.json").readString(),
             PlayerConfigData.class).init();
         
         BodyDef bodyDef = new BodyDef();
@@ -54,16 +57,21 @@ public class Entity {
         shape.setAsBox(0.5f, 0.9f);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        Fixture fixture = body.createFixture(fixtureDef);
+        body.createFixture(fixtureDef);
         shape.dispose();
+		
+		projectileManager = new ProjectileManager(world)
+			.setOwner(this)
+			.setBulletConfig(new ProjectileStats(25, 25))
+			.setAttackConfig();
     }
     
     public void attack() {
-        body.setAngularDamping(50);
+        projectileManager.attack();
     }
 	
 	public void shoot() {
-        body.setAngularVelocity(50);
+        projectileManager.shoot(configNew.body.direction.isForward() ? new Vector2(5, 0) : new Vector2(-5, 0));
     }
 	
 	public void dash() {
@@ -74,11 +82,12 @@ public class Entity {
     }
 	
 	public void shield() {
-        
+        gainDamage(-999);
     }
 	
 	public void draw(SpriteBatch batch) {
-        if(isDead) return;
+		this.clearTrash();
+        if(isDestroyed) return;
 		dashProgress += Gdx.graphics.getDeltaTime();
 		Vector2 power = body.getLinearVelocity();
         configNew.body.direction.setFrom(wasPower.x);
@@ -86,6 +95,7 @@ public class Entity {
         configNew.animation.setAnimation((speed < .2f) ? "idle" : ((speed > 3) ? "run" : "walk"));
 		if(dashProgress > dashDelay) canWalk = true;
         if(MainGame.getInstance().newCharacterAnimations) configNew.body.draw(batch, body.getPosition());
+		projectileManager.render(batch);
     }
 	
 	public void gainDamage(int damage) {
@@ -98,9 +108,17 @@ public class Entity {
         isDead = true;
     }
 	
+	public void clearTrash() {
+		projectileManager.clearTrash();
+		if(isDead && !isDestroyed) {
+			world.destroyBody(body);
+			isDestroyed = true;
+        }
+	}
+	
 	public void usePower(Vector2 power) {
         if(isDead || !canWalk) return;
-        body.setLinearVelocity(power.limit(5));
+        body.setLinearVelocity(power.limit(5).scl(stats.speed));
 		if(!power.isZero()) wasPower = power;
     }
     

@@ -5,10 +5,10 @@
   "bodyPath": "body.json",
   "animationPath": "animation.json",
   "stats": {
-    "health": 100,
-    "damage": 4,
-    "speed": 7,
-    "shield": 5,
-    "stamina": 25
+    "health": 250,
+    "damage": 20,
+    "speed": 1.2,
+    "shield": 50,
+    "stamina": 10
   }
 }

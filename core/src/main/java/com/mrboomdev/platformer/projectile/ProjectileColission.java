@@ -24,11 +24,21 @@ public class ProjectileColission implements ContactListener {
             player.gainDamage(player2.stats.damage);
         }
         
-        if(me.getUserData() instanceof ProjectileBullet && enemy.getUserData() instanceof Block) {
-            ProjectileBullet bullet = (ProjectileBullet)me.getUserData();
-            ((Entity)enemy.getUserData()).gainDamage(bullet.stats.damage);
-            bullet.gainDamage(999);
+        if(me.getUserData() instanceof ProjectileBullet && enemy.getUserData() instanceof Entity) {
+			ProjectileBullet bullet = (ProjectileBullet)me.getUserData();
+			Entity player2 = (Entity)enemy.getUserData();
+			if(bullet.owner == player2) return;
+            player2.gainDamage(bullet.stats.damage);
         }
+		
+		if(me.getUserData() instanceof ProjectileBullet && (
+		  enemy.getUserData() instanceof Entity || 
+		  enemy.getUserData() instanceof Block || 
+		  enemy.getUserData() instanceof ProjectileBullet)
+		) {
+			ProjectileBullet bullet = (ProjectileBullet)me.getUserData();
+			bullet.deactivate();
+		}
     }
 
     @Override

@@ -1,4 +1,5 @@
 package com.mrboomdev.platformer.util;
+import com.badlogic.gdx.math.Vector2;
 
 public class Direction {
     public static final int NONE = 0;
@@ -9,6 +10,10 @@ public class Direction {
     public Direction(int direction) {
         current = direction;
     }
+	
+	public Direction(float lookAt) {
+		setFrom(lookAt);
+	}
     
     public Direction reverse() {
         return new Direction(current == 1 ? 2 : 1);

@@ -19,9 +19,25 @@
             	{ "path": "ui/overlay/dash.png", "type": "texture" },
             	{ "path": "ui/overlay/shoot.png", "type": "texture" },
             	{ "path": "effects/boom.png", "type": "texture" },
+                { "path": "world/player/weapon/projectile/bullet_fire.png", "type": "texture" },
             	{ "path": "audio/sounds/boom.mp3", "type": "sound" },
-            	{ "path": "font/roboto-medium.ttf", "as": "robotoMedium", "type": "font", "size": 12 },
-            	{ "path": "font/gilroy-bold.ttf", "as": "gilroyBold", "type": "font", "size": 12 }
+            	{ 
+                	"path": "font/roboto-medium.ttf",
+                    "font": {
+                    	"size": 12,
+                        "color": { values: [255, 255, 255, 1] }
+                    },
+                    "type": "font"
+                }, { 
+                	"path": "font/gilroyBold.ttf",
+                    "font": {
+                		"size": 60,
+                        "color": { values: [255, 255, 255, 1] },
+                        "borderColor": { values: [0, 0, 0, 1] },
+                        "borderSize": 2
+                	},
+                    "type": "font"
+                }
         	],
         	"unload": [
             	"ui/banner/loading.png"

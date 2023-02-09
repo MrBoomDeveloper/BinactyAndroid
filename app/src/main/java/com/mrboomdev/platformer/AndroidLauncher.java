@@ -4,16 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
-import android.window.OnBackInvokedDispatcher;
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.google.android.material.color.DynamicColors;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -64,8 +57,7 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
         if (isActive) {
             AskUtil.setContext(this);
             if (isInitialized) {
-                Gdx.app.postRunnable(
-                        () -> {
+                Gdx.app.postRunnable(() -> {
                             MainGame game = MainGame.getInstance();
                             game.nick = prefs.getString("nick", "Player");
                             game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
@@ -83,17 +75,20 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-		if(intent.getStringExtra("state") == null) return;
-		switch(intent.getStringExtra("state")) {
-			case "nickSetupFinish":
-				toggleGameView(false);
-				break;
-			case "play":
-				toggleGameView(true);
-				break;
-			default:
-				Log.d("AndroidLauncher", "Unknown intent");
-				break;
-		}
+        if (intent.getStringExtra("state") == null) return;
+        switch (intent.getStringExtra("state")) {
+            case "nickSetupFinish":
+                toggleGameView(false);
+                break;
+            case "play":
+                toggleGameView(true);
+                break;
+            default:
+                Log.e("AndroidLauncher", "Unknown intent");
+                break;
+        }
     }
+
+    @Override
+    public void onBackPressed() {}
 }

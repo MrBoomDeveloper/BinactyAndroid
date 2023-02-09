@@ -1,6 +1,5 @@
 {
-    "id": "klarrie",
-	"name": "Klarrie",
+	"id": "klarrie",
     "texture_path": "texture.png",
 	"size": [ 2, 4 ],
 

@@ -7,10 +7,13 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.google.gson.Gson;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
+import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
+import com.mrboomdev.platformer.scenes.loading.LoadingFiles.File;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 
 public class LoadingScreen extends CoreScreen {
@@ -49,14 +52,12 @@ public class LoadingScreen extends CoreScreen {
                     Gdx.app.exit();
                 });
                 creator.start();
-                asset.load("ui/overlay/big_elements.png", Texture.class);
-                asset.load("audio/music/lobby_theme.mp3", Music.class);
-                asset.load("effects/boom.png", Texture.class);
-                asset.load("audio/sounds/boom.mp3", Sound.class);
-                asset.load("etc/blank.png", Texture.class);
                 break;
         }
-        asset.finishLoading();
+		
+		Gson gson = new Gson();
+		LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
+		files.loadToManager(asset, loadScene.name());
     }
 
     @Override
@@ -71,7 +72,6 @@ public class LoadingScreen extends CoreScreen {
         
         batch.begin();
         banner.draw(batch);
-        System.out.println(asset.getProgress());
         batch.end();
     }
     

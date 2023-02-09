@@ -7,28 +7,41 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.environment.Block;
+import com.mrboomdev.platformer.projectile.ProjectileAttack;
 import com.mrboomdev.platformer.projectile.ProjectileBullet;
 
 public class ProjectileColission implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         if(contact.getFixtureA() == null || contact.getFixtureB() == null) return;
-        onCollide(contact.getFixtureA().getBody(), contact.getFixtureB().getBody());
-        onCollide(contact.getFixtureB().getBody(), contact.getFixtureA().getBody());
+        onCollide(contact.getFixtureA().getBody().getUserData(), contact.getFixtureB().getBody().getUserData());
+        onCollide(contact.getFixtureB().getBody().getUserData(), contact.getFixtureA().getBody().getUserData());
     }
     
-    public void onCollide(Body me, Body enemy) {
-        if(me.getUserData() instanceof Entity && enemy.getUserData() instanceof Entity) {
-            Entity player = (Entity)me.getUserData();
-            Entity player2 = (Entity)enemy.getUserData();
-            player.gainDamage(player2.stats.damage);
+    public void onCollide(Object me, Object enemy) {
+        if(me instanceof ProjectileBullet && enemy instanceof Entity) {
+			ProjectileBullet bullet = (ProjectileBullet)me;
+			Entity player2 = (Entity)enemy;
+			if(bullet.owner == player2) return;
+            player2.gainDamage(bullet.stats.damage);
         }
-        
-        if(me.getUserData() instanceof ProjectileBullet && enemy.getUserData() instanceof Block) {
-            ProjectileBullet bullet = (ProjectileBullet)me.getUserData();
-            ((Entity)enemy.getUserData()).gainDamage(bullet.stats.damage);
-            bullet.gainDamage(999);
-        }
+		
+		if(me instanceof ProjectileAttack && enemy instanceof Entity) {
+			ProjectileAttack attack = (ProjectileAttack)me;
+			if(attack.owner == enemy) return;
+			((Entity)enemy).gainDamage(attack.stats.damage);
+			attack.isEnded = true;
+		}
+		
+		if(me instanceof ProjectileBullet && (
+		  enemy instanceof Entity ||
+		  enemy instanceof Block ||
+		  enemy instanceof ProjectileBullet ||
+		  enemy instanceof ProjectileAttack)
+		) {
+			ProjectileBullet bullet = (ProjectileBullet)me;
+			bullet.deactivate();
+		}
     }
 
     @Override

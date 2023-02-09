@@ -17,9 +17,9 @@
     
     "options": {
         "enableDeath": false,
-        "session_duration": 6,
-        "hide_gui": false,
-        "exclude_gamemodes": ["*"]
+        "sessionDuration": 6,
+        "guiFlags": ["hideAttack"],
+        "excludeGamemodes": ["*"]
     },
 	
     "load": ["air", "wall", "floor", "game_machine", "barrier", "wall_last", "door", "wall_top", "pizza", "gift", "plush_danya", "chair", "table", "stage"],

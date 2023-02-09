@@ -3,43 +3,41 @@ package com.mrboomdev.platformer.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.data.PlayerConfigData;
-import com.mrboomdev.platformer.entity.EntityConfig.Stats;
+import com.mrboomdev.platformer.projectile.ProjectileManager;
+import com.mrboomdev.platformer.projectile.ProjectileBullet.ProjectileStats;
+import com.mrboomdev.platformer.projectile.ProjectileAttack.AttackStats;
 
-public class Entity {
-    private World world;
-    public boolean isDead, isDestroyed, isProjectile;
+public class Entity extends EntityAbstract {
+	private float dashProgress;
+	public ProjectileManager projectileManager;
+	public static final float dashDelay = .25f;
     public Controller controller;
-    public Body body;
     public PlayerConfigData config;
     public EntityConfig configNew;
-    public Stats stats;
     public String character;
+	public boolean canWalk;
     
     public Entity(String character, World world) {
         this(character, world, new Vector2(0, 0));
     }
     
     public Entity(String character, World world, Vector2 position) {
-        Gson gson = new Gson();
-        this.world = world;
+		super(world);
+		Gson gson = new Gson();
         this.character = character;
-        this.configNew = gson.fromJson(Gdx.files.internal(character + "/manifest.json").readString(), 
+        this.configNew = gson.fromJson(Gdx.files.internal(character + "/manifest.json").readString(),
             EntityConfig.class).build(character, world);
-        this.stats = configNew.stats.cpy();
-        
+        this.stats = configNew.stats;
         
         config = gson.fromJson(
-            Gdx.files.internal(character + "/config.json").readString(), 
+            Gdx.files.internal(character + "/config.json").readString(),
             PlayerConfigData.class).init();
         
         BodyDef bodyDef = new BodyDef();
@@ -51,44 +49,79 @@ public class Entity {
         shape.setAsBox(0.5f, 0.9f);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        Fixture fixture = body.createFixture(fixtureDef);
+        body.createFixture(fixtureDef);
         shape.dispose();
+		
+		projectileManager = new ProjectileManager(world)
+			.setOwner(this)
+			.setBulletConfig(new ProjectileStats()
+				.setDamage(25)
+				.setAmount(100, 10)
+				.setSpeed(25)
+				.setRandom(1)
+				.setDelay(.2f)
+				.setReloadTime(1)
+			).setAttackConfig(new AttackStats()
+				.setDamage(75)
+				.setDelay(.4f)
+				.setDuration(1));
     }
     
-    public void usePower(Vector2 power) {
-        if(isDead) return;
-        body.setLinearVelocity(power.limit(5));
+    public void attack() {
+        projectileManager.attack();
     }
-    
-    public void setController(Controller controller) {
-        this.controller = controller;
+	
+	public void shoot() {
+        projectileManager.shoot(configNew.body.direction.isForward() ? new Vector2(5, 0) : new Vector2(-5, 0));
     }
-    
-    public void gainDamage(int damage) {
-        stats.health -= damage;
-        if(stats.health <= 0) die();
+	
+	public void dash() {
+		if(!canWalk) return;
+		dashProgress = 0;
+        canWalk = false;
+		body.setLinearVelocity(wasPower.scl(100).limit(18));
     }
-    
-    public void die() {
-        if(isDead) return;
-        isDead = true;
+	
+	public void shield() {
+        gainDamage(-999);
     }
-    
-    public void draw(SpriteBatch batch) {
-        if(isDead) return;
+	
+	@Override
+	public void draw(SpriteBatch batch) {
+		this.clearTrash();
+        if(isDestroyed) return;
+		dashProgress += Gdx.graphics.getDeltaTime();
 		Vector2 power = body.getLinearVelocity();
-        configNew.body.direction.setFrom(power.x);
+        configNew.body.direction = getDirection();
 		float speed = Math.max(Math.abs(power.x), Math.abs(power.y));
         configNew.animation.setAnimation((speed < .2f) ? "idle" : ((speed > 3) ? "run" : "walk"));
+		if(dashProgress > dashDelay) canWalk = true;
         if(MainGame.getInstance().newCharacterAnimations) configNew.body.draw(batch, body.getPosition());
+		projectileManager.render(batch);
     }
-    
-    public void attack(Vector2 power) {
-        throw new RuntimeException("Method not done yet.");
+	
+	public void gainDamage(int damage) {
+        stats.health -= damage;
+        if(stats.health <= 0 || stats.health > 5000) die();
     }
+	
+	public void clearTrash() {
+		projectileManager.clearTrash();
+		if(isDead) destroy();
+	}
     
     public void setPosition(Vector2 position) {
         if(isDead) return;
         body.setTransform(position, 0);
     }
+	
+	@Deprecated
+	public void setController(Controller controller) {
+        this.controller = controller;
+    }
+	
+	@Override
+	public void usePower(Vector2 power) {
+		if(canWalk) super.usePower(power);
+	}
 }

@@ -1,18 +1,10 @@
 package com.mrboomdev.platformer.react;
 
-import android.window.OnBackInvokedDispatcher;
-import androidx.activity.OnBackPressedCallback;
-import androidx.activity.OnBackPressedDispatcher;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
 import com.mrboomdev.platformer.AndroidLauncher;
 import android.content.Intent;
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.WindowInsets;
 import android.view.WindowManager;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
@@ -21,16 +13,13 @@ import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.soloader.SoLoader;
 import com.mrboomdev.platformer.BuildConfig;
-import com.mrboomdev.platformer.react.ReactGame;
 import com.mrboomdev.platformer.util.AskUtil;
 import com.facebook.react.PackageList;
 import com.mrboomdev.platformer.util.StateUtil;
 import com.mrboomdev.platformer.AndroidLauncher;
-import java.util.ArrayList;
 import java.util.List;
 
-public class ReactActivity extends AppCompatActivity
-        implements DefaultHardwareBackBtnHandler {
+public class ReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
     private ReactRootView root;
     private ReactInstanceManager instance;
     private SharedPreferences prefs;
@@ -62,7 +51,7 @@ public class ReactActivity extends AppCompatActivity
                         WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                         WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-    prefs = getSharedPreferences("Save", 0);
+        prefs = getSharedPreferences("Save", 0);
         if (!prefs.getBoolean("isNickSetup", false)) {
             AskUtil.ask(
                     AskUtil.AskType.SETUP_NICK,
@@ -78,4 +67,7 @@ public class ReactActivity extends AppCompatActivity
 
     @Override
     public void invokeDefaultOnBackPressed() {}
+
+    @Override
+    public void onBackPressed() {}
 }

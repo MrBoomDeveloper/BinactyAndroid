@@ -16,6 +16,7 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.environment.MapManager;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.Collection;
 import com.mrboomdev.platformer.entity.PlayerEntity;
 import com.mrboomdev.platformer.entity.bot.BotEntity;
 
@@ -62,10 +63,6 @@ public class EntityManager {
     public void render(SpriteBatch batch, OrthographicCamera camera) {
         for(Entity entity : entities.values()) {
             entity.draw(batch);
-            if(entity.isDead && !entity.isDestroyed) {
-                world.destroyBody(entity.body);
-                entity.isDestroyed = true;
-            }
         }
         
         batch.setProjectionMatrix(batch.getProjectionMatrix().cpy().scale(.02f, .02f, 1));
@@ -86,4 +83,8 @@ public class EntityManager {
     public Entity get(String name) {
         return entities.get(name);
     }
+	
+	public Collection<Entity> getAll() {
+		return entities.values();
+	}
 }

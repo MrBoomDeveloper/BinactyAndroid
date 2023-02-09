@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -24,7 +25,6 @@ public class PlayerEntity extends Entity {
     private Sprite boom;
     private float boomAnimation;
     private Sound boomSound;
-    private Vector2 was_position;
     private BitmapFont font;
     private float animationProgress = 0;
     private Direction moveDirection;
@@ -41,7 +41,6 @@ public class PlayerEntity extends Entity {
         this.boom = new Sprite(new Texture(Gdx.files.internal("effects/boom.png")));
         this.boomSound = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/boom.mp3"));
         body.setUserData(this);
-        was_position = body.getPosition();
         moveDirection = new Direction(Direction.NONE);
         animationDirection = new Direction(Direction.FORWARD);
 
@@ -57,15 +56,14 @@ public class PlayerEntity extends Entity {
 
     @Deprecated
     public void animate() {
-        speed =
-                Math.max(
-                        Math.abs(body.getLinearVelocity().x), Math.abs(body.getLinearVelocity().y));
+        speed = Math.max(
+        	Math.abs(body.getLinearVelocity().x), 
+			Math.abs(body.getLinearVelocity().y));
         if (speed == 0) {
             if (animationProgress > 0) animationProgress -= .01;
             return;
         }
 
-        was_position = body.getPosition();
         moveDirection.setFrom(body.getLinearVelocity().x);
 
         animationProgress += (animationDirection.isForward() ? speed : -speed) / 600;
@@ -77,9 +75,9 @@ public class PlayerEntity extends Entity {
     }
 
     public void draw(SpriteBatch batch) {
+		super.draw(batch);
         if (isDead) return;
         if (controller != null) usePower(controller.getPower());
-        super.draw(batch);
 
         boomAnimation += Gdx.graphics.getDeltaTime();
         if (boomAnimation < 1) {
@@ -123,16 +121,12 @@ public class PlayerEntity extends Entity {
                 animationProgress * -(limbGap) + limbOffset,
                 moveDirection);
 
-        config.bones.arm.draw(
-                batch,
-                body.getPosition()
-                        .add(
-                                new Vector2(
-                                        moveDirection.isBackward() ? .27f : -.27f,
-                                        animationProgress * 2)),
+        config.bones.arm.draw(batch,
+                body.getPosition().add(new Vector2(
+                	moveDirection.isBackward() ? .27f : -.27f,
+                    animationProgress * 2)),
                 animationProgress * -(limbGap) + limbOffset,
-                moveDirection,
-                true);
+                moveDirection, true);
 
         config.bones.head.draw(
                 batch, body.getPosition().add(new Vector2(0, animationProgress)), 0, moveDirection);
@@ -141,15 +135,21 @@ public class PlayerEntity extends Entity {
     @Deprecated
     public void drawNick(SpriteBatch batch) {
         if (isDead) return;
-        font.draw(
-                batch,
-                nick,
-                body.getPosition().x * 50 - 50,
-                body.getPosition().y * 50 + 62,
-                100,
-                Align.center,
-                true);
+        font.draw(batch, nick, body.getPosition().x * 50 - 50, body.getPosition().y * 50 + 62, 100, Align.center, true);
     }
+	
+	public void drawNick(SpriteBatch batch, Camera camera) {
+		if (isDead) return;
+		Vector2 proportion = new Vector2(
+			(Gdx.graphics.getWidth() / camera.viewportWidth) / 2,
+			(Gdx.graphics.getHeight() / camera.viewportHeight) / 2
+		);
+		font.getData().setScale(.8f, .8f);
+        font.draw(batch, nick,
+			body.getPosition().x * proportion.x,
+			body.getPosition().y * proportion.y,
+		100, Align.center, true);
+	}
 
     @Override
     public void gainDamage(int damage) {
@@ -157,7 +157,7 @@ public class PlayerEntity extends Entity {
         boomSound.play(.2f);
         boom.setSize(2, 2);
         boomAnimation = 0;
-        if (camera != null) CameraUtil.setCameraShake(.5f, .5f);
+        if (camera != null) CameraUtil.setCameraShake(.2f, .5f);
     }
 
     @Override

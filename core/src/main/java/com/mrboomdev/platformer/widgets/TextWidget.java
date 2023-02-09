@@ -9,40 +9,25 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
+import com.mrboomdev.platformer.MainGame;
 
 public class TextWidget extends Actor {
     private GlyphLayout glyph;
     private BitmapFont font;
     private String text = "";
     
-    public TextWidget(FileHandle file, int size) {
-        this(file, size, Color.WHITE);
-    }
-    
-    public TextWidget(FileHandle file, int size, Color color) {
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(file);
-        FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
-        fontParameter.size = size;
-        fontParameter.borderColor = Color.BLACK;
-        fontParameter.borderWidth = 3;
-        fontParameter.color = color;
-        font = fontGenerator.generateFont(fontParameter);
-        glyph = new GlyphLayout(font, text);
+    public TextWidget(String fontName) {
+        this.font = MainGame.getInstance().asset.get(fontName, BitmapFont.class);
+		glyph = new GlyphLayout(font, text);
     }
     
     public void setText(String text) {
         this.text = text;
         this.glyph.setText(font, text);
     }
-
-  @Override
-  public void act(float delta) {
-    super.act(delta);
-  }
-
-  @Override
-  public void draw(Batch batch, float opacity) {
-    super.draw(batch, opacity);
-    font.draw(batch, glyph, getX() - (glyph.width / 2), getY());
-  }
+	
+	@Override
+	public void draw(Batch batch, float opacity) {
+		font.draw(batch, glyph, getX() - (glyph.width / 2), getY());
+	}
 }

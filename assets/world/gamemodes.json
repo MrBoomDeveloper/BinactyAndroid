@@ -1,0 +1,44 @@
+{
+	"categories": {
+		"event": {
+			"halloween": {
+				"title": "Halloween Event!",
+				"description": "bruh.",
+				"banner": "../../banner/gamemode/halloween.jpg",
+				"maps": ["test/void"],
+				"conditions": {
+					"minLevel": 2,
+					"achievments": ["multiplayer"],
+					"defaultBehavior": "lock"
+				}
+			},
+			
+			"christmas": {
+				"title": "Christmas Event!"
+			}
+		},
+		
+		"multiplayer": {
+			"tutorial": {
+				"title": "Tutorial",
+				"conditions": {
+					"maxLevel": 2,
+					"defaultBehavior": "hide"
+				}
+			},
+			
+			"hunt": {
+				"title": "Hunt"
+			},
+			
+			"battle_royale": {
+				"title": "Battle Royale",
+				"maps": ["multiplayer"],
+				"conditions": {
+					"achievments": ["multiplayer"],
+					"defaultBehavior": "lock"
+				}
+			}
+		}
+	}
+}

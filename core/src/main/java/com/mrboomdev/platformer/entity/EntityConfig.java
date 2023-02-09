@@ -13,9 +13,6 @@ import com.mrboomdev.platformer.entity.skin.EntityAnimation;
 public class EntityConfig {
     private String bodyPath;
     private String animationPath;
-    public String highlight;
-    public String name = "New entity";
-    public String description = "No description.";
     public EntityAnimation animation;
     public EntityBody body;
     public Stats stats;
@@ -32,18 +29,8 @@ public class EntityConfig {
     public class Stats {
         public int health = 100;
         public int damage = 10;
-        public int speed = 5;
         public int shield = 0;
         public int stamina = 10;
-        
-        public Stats cpy() {
-            return new Stats() {
-                int health = this.health;
-                int damage = this.damage;
-                int speed = this.speed;
-                int shield = this.shield;
-                int stamina = this.stamina;
-            };
-        }
+		public float speed = 1;
     }
 }

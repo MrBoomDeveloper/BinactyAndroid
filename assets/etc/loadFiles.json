@@ -19,6 +19,7 @@
             	{ "path": "ui/overlay/dash.png", "type": "texture" },
             	{ "path": "ui/overlay/shoot.png", "type": "texture" },
             	{ "path": "effects/boom.png", "type": "texture" },
+                { "path": "effects/attack.png", "type": "texture" },
                 { "path": "world/player/weapon/projectile/bullet_fire.png", "type": "texture" },
             	{ "path": "audio/sounds/boom.mp3", "type": "sound" },
             	{ 

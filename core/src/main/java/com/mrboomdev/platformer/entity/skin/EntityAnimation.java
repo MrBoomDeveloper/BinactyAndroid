@@ -62,7 +62,7 @@ public class EntityAnimation {
         public Animation<TextureRegion> animation;
         public ArrayList<AnimationFrame> frames;
         public String mode;
-        public float speed = 0.05f, offset = 0, progress = 0;
+        public float speed = 0.05f, offset, progress;
         public String extend;
         
         public void build(HashMap<String, AnimationObject> presents, HashMap<String, PlayMode> modes, TextureRegion texture) {
@@ -78,7 +78,7 @@ public class EntityAnimation {
             for(int i = 0; i < frames.size(); i++) {
                 newRegions.add(new TextureRegion(texture, getBounds(i, 0), getBounds(i, 1), getBounds(i, 2), getBounds(i, 3)));
             }
-            this.animation = new Animation<TextureRegion>(this.speed, newRegions, modes.get(mode));
+            this.animation = new Animation<>(this.speed, newRegions, modes.get(mode));
         }
 		
 		public Sprite getSprite(Direction direction, Vector2 bodyPosition, Vector2 bonePos) {

@@ -1,8 +1,6 @@
-###### Documentation was written only for Russian, please use Google Translate.
-### Об проекте
-Данную игру я разрабатываю, дабы отточить свои навыки в архитектуре, дизайне и других сферах.
+# About the project
 Здесь когда-нибудь будет сюдет, хорошая графика, оптимизация.
-По сюжету богатые люди заскучали и решили сыграть в игру. Игра, в которой главная цель насладиться смертью других. Кого-то охватывает страх, отчаяние, уныние, а кто-то уже сошел с ума и воцаряер хаос.
+По сюжету богатые люди заскучали и решили сыграть в игру. Игра, в которой главная цель насладиться смертью других. Кого-то охватывает страх, отчаяние, уныние, а кто-то уже сошел с ума и воцаряет хаос.
 ### Plans
 - Gameplay:
   - Advanced bots ai:
@@ -17,7 +15,7 @@
   - More characters:
     - More animations
     - More skins
-  - Actions (Attack, dash, shoot, heal, super)
+  - Actions (Attack, shield)
   - Effects (Fire, boom and etc.)
   - Sounds (Footsteps, effects and etc.)
 - Multiplayer mode:
@@ -32,7 +30,6 @@
   - Dialogs
   - Ending
 - Fancy react menu:
-  - Main screen
   - Shop screen
   - Achievments screen
   - Settings screen:
@@ -64,8 +61,7 @@
   - Account sync
   - Leaderboard
   - Friends system
-### Сторонние ссылки
+### External links:
 https://gamejolt.com/games/actionplatformer/670228
-### Сборка проектa
-Внимание! Данный проект не соберется, если вы скачали лишь данный репозиторий. Вам необходимо именно скачать MrBoomDeveloper/PlatformerReact, ведь именно там хранятся зависимости для сборки проекта.
-Данный же репозиторий лишь является ядром проекта.
+# Project build
+Внимание! Данный проект не соберется, если вы скопировали лишь этот репозиторий. Вам необходимо именно сфоркать MrBoomDeveloper/PlatformerReact, ведь там хранятся зависимости ReactNative.

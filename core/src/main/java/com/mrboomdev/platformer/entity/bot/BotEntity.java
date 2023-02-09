@@ -36,7 +36,7 @@ public class BotEntity extends PlayerEntity {
        
        usePower(power.scl(2).limit(4).scl(stats.speed));
        if(distance > 10) {
-           usePower(new Vector2(0, 0).scl(stats.speed));
+           usePower(new Vector2(0, 0));
        } else if(distance < 3) {
            power = player.body.getPosition().sub(body.getPosition());
            usePower(power.scl(2).limit(4).scl(stats.speed));

@@ -7,17 +7,17 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mrboomdev.platformer.entity.Entity;
-import com.mrboomdev.platformer.util.ActorUtil;
+import com.mrboomdev.platformer.entity.character.CharacterEntity;
 
 public abstract class ActorUtil extends Actor {
-    public Entity connectedEntity;
+    public CharacterEntity connectedEntity;
 
     public ActorUtil toPosition(Vector2 position) {
         setPosition(position.x, position.y);
         return this;
     }
     
-    public ActorUtil connectToEntity(Entity entity) {
+    public ActorUtil connectToEntity(CharacterEntity entity) {
         connectedEntity = entity;
         return this;
     }

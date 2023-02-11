@@ -14,6 +14,9 @@ public abstract class EntityAbstract {
 	public Stats stats;
 	public boolean isDestroyed, isDead;
 	
+	public EntityAbstract() {}
+	
+	@Deprecated
 	public EntityAbstract(World world) {
 		this.world = world;
 	}
@@ -31,11 +34,27 @@ public abstract class EntityAbstract {
 		isDestroyed = true;
 	}
 	
+	@Deprecated
 	public void usePower(Vector2 power) {
         if(isDead) return;
         body.setLinearVelocity(power.limit(5).scl(stats.speed));
-		if(!power.isZero()) wasPower = power;
+		if(!power.isZero()) wasPower = power.cpy();
     }
+	
+	public void usePower(Vector2 power, float speed, boolean isBot) {
+        if(isDead) return;
+        body.setLinearVelocity(isBot
+			? power.limit(5).scl(speed).add(getRandomVector2(10))
+			:  power.limit(5).scl(speed));
+		if(!power.isZero()) wasPower = power.cpy();
+    }
+	
+	private Vector2 getRandomVector2(float range) {
+		return new Vector2(
+			(float)(Math.random() * range) - (range / 2),
+			(float)(Math.random() * range) - (range / 2)
+		);
+	}
 	
 	public Direction getDirection() {
 		return new Direction(wasPower.x);

@@ -13,6 +13,7 @@ import com.mrboomdev.platformer.environment.PositionGraph;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 import com.mrboomdev.platformer.environment.Block;
 import com.mrboomdev.platformer.environment.MapData;
+import com.mrboomdev.platformer.entity.EntityManager.Spawn;
 import java.lang.reflect.Type;
 import java.util.Map;
 import com.badlogic.gdx.Gdx;
@@ -28,7 +29,7 @@ public class MapManager {
     private MapData data;
     private Bounds cameraBounds;
     private Vector2 cameraStart, cameraEnd;
-    public Array<Vector2> spawnPositions = new Array<Vector2>();
+    public Array<Spawn> spawnPositions = new Array<>();
     public HashMap<String, FreePosition> aiZones = new HashMap<>();
     public PositionGraph positionGraph;
     

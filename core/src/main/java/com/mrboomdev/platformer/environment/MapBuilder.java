@@ -18,6 +18,7 @@ import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.environment.path.PositionPoint;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
+import com.mrboomdev.platformer.entity.EntityManager.Spawn;
 import java.util.Map;
 
 public class MapBuilder {
@@ -51,7 +52,7 @@ public class MapBuilder {
                     
                 if(special == null) continue;
                 if(special.equals("spawn_position")) {
-                    manager.spawnPositions.add(new Vector2(y * 2, x * 2));
+                    manager.spawnPositions.add(new Spawn(y * 2, x * 2));
                     manager.aiZones.put(PositionPoint.toText(
                         new Vector2(y * 2, x * 2)), new FreePosition(y * 2, x * 2));
                 }

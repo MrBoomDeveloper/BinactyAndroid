@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.entity.EntityAbstract;
 
 public class ProjectileAttack {
 	private Texture texture;
@@ -23,11 +24,11 @@ public class ProjectileAttack {
 	private Animation<TextureRegion> animation;
 	private float animationProgress;
 	private World world;
-	public Entity owner;
+	public EntityAbstract owner;
 	public boolean isEnded;
 	public AttackStats stats;
 	
-	public ProjectileAttack(World world, Entity owner, AttackStats stats) {
+	public ProjectileAttack(World world, EntityAbstract owner, AttackStats stats) {
 		this.world = world;
 		this.owner = owner;
 		this.stats = stats;

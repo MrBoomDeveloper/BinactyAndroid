@@ -19,6 +19,7 @@ import com.mrboomdev.platformer.scenes.splash.SplashScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.Direction;
 
+@Deprecated
 public class PlayerEntity extends Entity {
     public Camera camera;
     public String nick;
@@ -32,20 +33,13 @@ public class PlayerEntity extends Entity {
     private float speed;
 
     public PlayerEntity(String name, String character, World world) {
-        this(name, character, world, new Vector2(0, 0));
-    }
-
-    public PlayerEntity(String name, String character, World world, Vector2 position) {
-        super(character, world, position);
+        super(character, world);
         this.nick = name;
-        this.boom = new Sprite(new Texture(Gdx.files.internal("effects/boom.png")));
-        this.boomSound = Gdx.audio.newSound(Gdx.files.internal("audio/sounds/boom.mp3"));
         body.setUserData(this);
         moveDirection = new Direction(Direction.NONE);
         animationDirection = new Direction(Direction.FORWARD);
 
-        FreeTypeFontGenerator fontGenerator =
-                new FreeTypeFontGenerator(Gdx.files.internal("font/roboto-medium.ttf"));
+        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto-medium.ttf"));
         FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
         fontParam.size = 12;
         fontParam.borderColor = Color.BLACK;
@@ -57,7 +51,7 @@ public class PlayerEntity extends Entity {
     @Deprecated
     public void animate() {
         speed = Math.max(
-        	Math.abs(body.getLinearVelocity().x), 
+        	Math.abs(body.getLinearVelocity().x),
 			Math.abs(body.getLinearVelocity().y));
         if (speed == 0) {
             if (animationProgress > 0) animationProgress -= .01;
@@ -78,12 +72,6 @@ public class PlayerEntity extends Entity {
 		super.draw(batch);
         if (isDead) return;
         if (controller != null) usePower(controller.getPower());
-
-        boomAnimation += Gdx.graphics.getDeltaTime();
-        if (boomAnimation < 1) {
-            boom.setCenter(body.getPosition().x, body.getPosition().y);
-            boom.draw(batch);
-        }
 
         this.animate();
 
@@ -138,6 +126,7 @@ public class PlayerEntity extends Entity {
         font.draw(batch, nick, body.getPosition().x * 50 - 50, body.getPosition().y * 50 + 62, 100, Align.center, true);
     }
 	
+	@Deprecated
 	public void drawNick(SpriteBatch batch, Camera camera) {
 		if (isDead) return;
 		Vector2 proportion = new Vector2(
@@ -154,9 +143,6 @@ public class PlayerEntity extends Entity {
     @Override
     public void gainDamage(int damage) {
         super.gainDamage(damage);
-        boomSound.play(.2f);
-        boom.setSize(2, 2);
-        boomAnimation = 0;
         if (camera != null) CameraUtil.setCameraShake(.2f, .5f);
     }
 

@@ -10,6 +10,7 @@ import com.mrboomdev.platformer.environment.FreePosition;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.environment.path.PositionPoint;
 
+@Deprecated
 public class BotEntity extends PlayerEntity {
     public BotEntity(String name, String character, World world) {
         super(name, character, world);

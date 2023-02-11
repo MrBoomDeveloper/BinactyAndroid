@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.widgets;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import java.util.TreeMap;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,13 +19,7 @@ public class DebugValuesWidget extends ActorUtil {
     private TreeMap<String, String> values = new TreeMap<>();
     
     public DebugValuesWidget() {
-        FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/roboto-medium.ttf"));
-        FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
-        fontParameter.size = 14;
-        fontParameter.color = Color.WHITE;
-        fontParameter.borderColor = Color.BLACK;
-        fontParameter.borderWidth = 1;
-        font = fontGenerator.generateFont(fontParameter);
+		font = MainGame.getInstance().asset.get("debug.ttf", BitmapFont.class);
     }
     
     public void setValue(String key, String value) {
@@ -33,18 +28,15 @@ public class DebugValuesWidget extends ActorUtil {
 	
 	@Override
 	public void act(float delta) {
-		super.act(delta);
 		setValue("Screen Fps", String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		setValue("Screen Delta", String.valueOf(delta));
 		Vector2 pos = connectedEntity.body.getPosition();
 		setValue("Player Position", "[ " + (pos.x / 2) + " : " + (pos.y / 2) + " ]");
-		setValue("Player Health", String.valueOf(connectedEntity.stats.health));
-		setValue("Player Animation", connectedEntity.configNew.animation.current);
+		setValue("Player Health", String.valueOf(connectedEntity.config.stats.health));
 	}
 	
 	@Override
-	public void draw(Batch batch, float opacity) {
-		super.draw(batch, opacity);
+	public void draw(Batch batch, float alpha) {
 		StringBuilder builder = new StringBuilder();
 		for(Entry entry : values.entrySet()) {
 			builder.append(entry.getKey() + ": ");

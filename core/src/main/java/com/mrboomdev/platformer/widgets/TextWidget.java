@@ -27,7 +27,7 @@ public class TextWidget extends Actor {
     }
 	
 	@Override
-	public void draw(Batch batch, float opacity) {
+	public void draw(Batch batch, float alpha) {
 		font.draw(batch, glyph, getX() - (glyph.width / 2), getY());
 	}
 }

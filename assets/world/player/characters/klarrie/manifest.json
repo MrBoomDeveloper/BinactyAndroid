@@ -1,14 +1,15 @@
 {
-  "name": "Klarrie",
-  "description": "Default character",
-  "version": 2,
-  "bodyPath": "body.json",
-  "animationPath": "animation.json",
-  "stats": {
-    "health": 250,
-    "damage": 20,
-    "speed": 1.2,
-    "shield": 50,
-    "stamina": 10
-  }
+	"id": "klarrie",
+	"name": "Klarrie",
+	"description": "Default character",
+	"version": 3,
+	"skin": "skin.json",
+	"bodySize": [ 1.1, 1.8 ],
+	"stats": {
+		"health": 250,
+		"damage": 20,
+		"speed": 1.2,
+		"shield": 50,
+		"stamina": 10
+	}
 }

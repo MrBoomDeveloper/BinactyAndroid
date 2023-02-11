@@ -28,7 +28,7 @@ public class Entity extends EntityAbstract {
         this(character, world, new Vector2(0, 0));
     }
     
-    public Entity(String character, World world, Vector2 position) {
+    private Entity(String character, World world, Vector2 position) {
 		super(world);
 		Gson gson = new Gson();
         this.character = character;
@@ -52,8 +52,7 @@ public class Entity extends EntityAbstract {
         body.createFixture(fixtureDef);
         shape.dispose();
 		
-		projectileManager = new ProjectileManager(world)
-			.setOwner(this)
+		projectileManager = new ProjectileManager(world, this)
 			.setBulletConfig(new ProjectileStats()
 				.setDamage(25)
 				.setAmount(100, 10)

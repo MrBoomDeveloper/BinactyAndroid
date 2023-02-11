@@ -13,16 +13,6 @@ import java.util.ArrayList;
 public class LoadingFiles {
 	public HashMap<String, Scene> scenes;
 	
-	public class Scene {
-		public ArrayList<File> load = new ArrayList<>();
-		public ArrayList<String> unload = new ArrayList<>();
-	}
-	
-	public class File {
-		public String path, type;
-		public Font font;
-	}
-	
 	public void loadToManager(AssetManager manager, String scene) {
 		for(File file : scenes.get(scene).load) {
 			if(file.type.equals("texture")) {
@@ -43,9 +33,19 @@ public class LoadingFiles {
 				if(file.font.borderColor != null) {
 					param.fontParameters.borderColor = file.font.borderColor.getColor();
 				}
-				manager.load(file.path, BitmapFont.class, param);
+				manager.load(file.as, BitmapFont.class, param);
 			}
 		}
+	}
+	
+	public class Scene {
+		public ArrayList<File> load = new ArrayList<>();
+		public ArrayList<String> unload = new ArrayList<>();
+	}
+	
+	public class File {
+		public String path, as, type;
+		public Font font;
 	}
 	
 	public class Font {

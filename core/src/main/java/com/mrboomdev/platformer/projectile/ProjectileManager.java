@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.projectile.ProjectileAttack.AttackStats;
 import com.mrboomdev.platformer.projectile.ProjectileBullet.ProjectileStats;
 
@@ -17,15 +18,11 @@ public class ProjectileManager {
 	private Array<ProjectileBullet> bullets = new Array<>();
 	private Array<ProjectileAttack> attacks = new Array<>();
 	public float reloadProgress, delayProgress, attackDelayProgress;
-	public Entity owner;
+	public EntityAbstract owner;
 	
-	public ProjectileManager(World world) {
+	public ProjectileManager(World world, EntityAbstract owner) {
 		this.world = world;
-	}
-    
-    public ProjectileManager setOwner(Entity owner) {
 		this.owner = owner;
-		return this;
     }
 	
 	public ProjectileManager setBulletConfig(ProjectileStats stats) {

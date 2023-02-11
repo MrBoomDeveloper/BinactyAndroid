@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityBody;
+import com.mrboomdev.platformer.entity.character.CharacterConfig;
 import com.mrboomdev.platformer.entity.skin.EntityAnimation;
 
 public class EntityConfig {
@@ -26,7 +27,7 @@ public class EntityConfig {
         return this;
     }
     
-    public class Stats {
+    public static class Stats {
         public int health = 100;
         public int damage = 10;
         public int shield = 0;

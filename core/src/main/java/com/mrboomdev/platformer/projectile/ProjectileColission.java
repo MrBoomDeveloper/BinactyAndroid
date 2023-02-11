@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.Block;
 import com.mrboomdev.platformer.projectile.ProjectileAttack;
 import com.mrboomdev.platformer.projectile.ProjectileBullet;
@@ -33,8 +34,25 @@ public class ProjectileColission implements ContactListener {
 			attack.isEnded = true;
 		}
 		
+		if(enemy instanceof CharacterEntity) {
+			if(me instanceof ProjectileBullet) {
+				ProjectileBullet bullet = (ProjectileBullet)me;
+				CharacterEntity player2 = (CharacterEntity)enemy;
+				if(bullet.owner == player2) return;
+            	player2.gainDamage(bullet.stats.damage);
+        	}
+		
+			if(me instanceof ProjectileAttack) {
+				ProjectileAttack attack = (ProjectileAttack)me;
+				if(attack.owner == enemy) return;
+				((CharacterEntity)enemy).gainDamage(attack.stats.damage);
+				attack.isEnded = true;
+			}
+		}
+		
 		if(me instanceof ProjectileBullet && (
 		  enemy instanceof Entity ||
+		  enemy instanceof CharacterEntity ||
 		  enemy instanceof Block ||
 		  enemy instanceof ProjectileBullet ||
 		  enemy instanceof ProjectileAttack)

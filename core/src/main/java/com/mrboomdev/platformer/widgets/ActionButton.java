@@ -13,12 +13,12 @@ import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ActionButton extends ActorUtil {
-  public static final int size = 115;
-  public static final float defaultOpacity = .1f,
-							activeOpacity = .07f,
-							iconDefaultOpacity = .8f,
-							iconActiveOpacity = .5f;
-  private Sprite sprite, icon;
+	public static final int size = 115;
+	public static final float defaultOpacity = .1f;
+	public static final float activeOpacity = .07f;
+	public static final float iconDefaultOpacity = .8f;
+	public static final float iconActiveOpacity = .5f;
+	private Sprite sprite, icon;
 
   public ActionButton(String file) {
     AssetManager asset = MainGame.getInstance().asset;
@@ -48,15 +48,13 @@ public class ActionButton extends ActorUtil {
 
   @Override
   public void act(float delta) {
-    super.act(delta);
     sprite.setPosition(getX(), getY());
 	icon.setCenter(getX() + (size / 2), getY() + (size / 2));
   }
 
-  @Override
-  public void draw(Batch batch, float opacity) {
-    super.draw(batch, opacity);
-    sprite.draw(batch);
-	icon.draw(batch);
-  }
+	@Override
+	public void draw(Batch batch, float alpha) {
+		sprite.draw(batch);
+		icon.draw(batch);
+	}
 }

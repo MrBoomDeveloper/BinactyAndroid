@@ -1,14 +1,12 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import java.text.SimpleDateFormat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
@@ -19,12 +17,12 @@ public class GameplayUi implements CoreUi {
 	private float time = 360000;
 	private TextWidget timer;
 	private GameplayScreen gameplay;
+	private JoystickWidget joystick;
 	private float cameraZoom;
 	public Stage stage;
-	public JoystickWidget joystick;
 	public DebugValuesWidget debugValues;
 	
-	public GameplayUi(GameplayScreen screen, Entity entity) {
+	public GameplayUi(GameplayScreen screen, CharacterEntity entity) {
 		this.gameplay = screen;
 		stage = new Stage();
 		debugValues = (DebugValuesWidget) new DebugValuesWidget()
@@ -38,7 +36,7 @@ public class GameplayUi implements CoreUi {
 					Gdx.graphics.getWidth() - ActionButton.size - 100,
 					a * ActionButton.size * 1.4f + 150))
 				.onClick(() -> {
-					if(a == 0) entity.attack();
+					if(a == 0) entity.attack(Vector2.Zero);
 					if(a == 1) entity.dash();
 				})
 				.addTo(stage);
@@ -51,8 +49,8 @@ public class GameplayUi implements CoreUi {
 					Gdx.graphics.getWidth() - (ActionButton.size * 2) - 150,
 					a * ActionButton.size * 1.4f + 100))
 				.onClick(() -> {
-					if(a == 0) entity.shield();
-					if(a == 1) entity.shoot();
+					//if(a == 0) entity.shield();
+					if(a == 1) entity.shoot(Vector2.Zero);
 				})
 				.addTo(stage);
 		}
@@ -60,7 +58,7 @@ public class GameplayUi implements CoreUi {
 		joystick = (JoystickWidget) new JoystickWidget().connectToEntity(entity);
 		stage.addActor(joystick);
 		
-		timer = new TextWidget("font/gilroyBold.ttf");
+		timer = new TextWidget("timer.ttf");
 		timer.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 75);
 		stage.addActor(timer);
 		
@@ -68,6 +66,7 @@ public class GameplayUi implements CoreUi {
 		stage.addListener(new ActorGestureListener() {
 			@Override
 			public void zoom(InputEvent event, float from, float to) {
+				if(joystick.isActive) return;
 				float willZoomTo = cameraZoom + ((from - to) / 1000);
 				debugValues.setValue("Screen Zoom Next", String.valueOf(willZoomTo));
 				debugValues.setValue("Screen Zoom Current", String.valueOf(cameraZoom));
@@ -78,6 +77,7 @@ public class GameplayUi implements CoreUi {
 			@Override
 			public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchDown(event, x, y, pointer, button);
+				if(joystick.isActive) return;
 				cameraZoom = gameplay.camera.zoom;
 			}
 		});
@@ -94,7 +94,7 @@ public class GameplayUi implements CoreUi {
 		debugValues.setValue("Session Time Left", String.valueOf(time));
 		
 		if(time <= 0) {
-			for(Entity entity : gameplay.entities.getAll()) {
+			for(CharacterEntity entity : gameplay.entities.getAllCharacters()) {
 				entity.die();
 			}
 		}

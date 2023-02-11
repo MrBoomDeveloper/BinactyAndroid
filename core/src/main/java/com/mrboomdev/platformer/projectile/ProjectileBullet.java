@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.util.Direction;
 
 public class ProjectileBullet {
@@ -21,10 +22,10 @@ public class ProjectileBullet {
     private Sprite sprite;
     private Vector2 power;
     public ProjectileStats stats;
-    public Entity owner;
+    public EntityAbstract owner;
     public boolean isDied;
 
-    public ProjectileBullet(World world, Entity owner, ProjectileStats stats, Vector2 power) {
+    public ProjectileBullet(World world, EntityAbstract owner, ProjectileStats stats, Vector2 power) {
         this.world = world;
         this.owner = owner;
         this.power = power;

@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.PlayerEntity;
+import com.mrboomdev.platformer.entity.bot.BotBrain;
+import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
@@ -56,11 +58,10 @@ public class GameplayScreen extends CoreScreen {
 		ui.render(delta);
 		batch.end();
 		
-		if(!entities.get(game.nick).isDead) {
-			camera.position.set(entities.get(game.nick).body.getPosition().add(CameraUtil.getCameraShake()), 0);
+		if(!entities.getCharacter(game.nick).isDead) {
+			camera.position.set(entities.getCharacter(game.nick).body.getPosition().add(CameraUtil.getCameraShake()), 0);
 		}
 		world.step(Math.min(delta, 1 / 60f), 6, 2);
-		entities.doAiStuff((PlayerEntity)entities.get(game.nick), map);
 		CameraUtil.update(delta);
 	}
 	
@@ -89,11 +90,15 @@ public class GameplayScreen extends CoreScreen {
 		map.build(world, rayHandler);
 		map.setCamera(camera);
 		
-		entities = new EntityManager(world);
+		entities = new EntityManager(world, rayHandler);
 		entities.setSpawnsPositions(map.spawnPositions);
 		entities.addBots(game.botsCount);
-		PlayerEntity player = new PlayerEntity(game.nick, EntityManager.entitiesDirectory + "klarrie", world);
-		entities.addPlayer(player, rayHandler, camera);
+		
+		CharacterEntity player = new CharacterEntity(game.nick)
+			.setConfigFromJson(Gdx.files.internal(EntityManager.entitiesDirectory + "klarrie" + "/manifest.json").readString())
+			.create(world);
+		entities.addCharacter(player);
+		entities.setMain(player);
 		
 		ui = new GameplayUi(this, player);
 		Gdx.input.setInputProcessor(ui.stage);

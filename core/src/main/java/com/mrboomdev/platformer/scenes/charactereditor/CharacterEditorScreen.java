@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.scenes.charactereditor;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -22,18 +23,13 @@ public class CharacterEditorScreen extends CoreScreen {
   @Override
   public void show() {
     world = new World(new Vector2(0, 0), true);
-    entities = new EntityManager(world);
+    entities = new EntityManager(world, new RayHandler(world));
     game = MainGame.getInstance();
     batch = new SpriteBatch();
     ui = new CharacterEditorUi();
     Gdx.input.setInputProcessor(ui.stage);
-    Entity entity = new Entity(EntityManager.entitiesDirectory + "klarrie", world, new Vector2(0, 0));
-    /*entities.addPlayer((PlayerEntity)entity, new Controller() { 
-        @Override
-        public Vector2 getPower() {
-            return new Vector2(0, 0);
-        }
-    });*/
+    PlayerEntity entity = new PlayerEntity("Your nickanme", EntityManager.entitiesDirectory + "klarrie", world);
+    /*entities.addPlayer((PlayerEntity)entity, new Controller());*/
   }
 
   @Override

@@ -86,13 +86,7 @@ public class CharacterEntity extends EntityAbstract {
 		if(isDead && !isDestroyed) destroy();
 		
 		if(isDestroyed) return;
-		projectileManager.clearTrash();
 		skin.draw(batch, body.getPosition(), getDirection());
-		projectileManager.render(batch);
-		font.draw(batch, name,
-			body.getPosition().x - 1,
-			body.getPosition().y + (config.bodySize[1] / 2) + .4f,
-			2, Align.center, false);
 		
 		dashProgress += Gdx.graphics.getDeltaTime();
 		dashReloadProgress += Gdx.graphics.getDeltaTime();
@@ -102,6 +96,15 @@ public class CharacterEntity extends EntityAbstract {
 		}
 		
 		if(brain != null) brain.update();
+	}
+	
+	public void drawProjectiles(SpriteBatch batch) {
+		projectileManager.render(batch);
+		if(isDead) return;
+		font.draw(batch, name,
+			body.getPosition().x - 1,
+			body.getPosition().y + (config.bodySize[1] / 2) + .4f,
+			2, Align.center, false);
 	}
 
 	public void attack(Vector2 power) {

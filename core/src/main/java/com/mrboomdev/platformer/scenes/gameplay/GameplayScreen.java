@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -14,7 +15,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.EntityManager;
-import com.mrboomdev.platformer.entity.PlayerEntity;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.MapLayer;
@@ -59,7 +59,11 @@ public class GameplayScreen extends CoreScreen {
 		batch.end();
 		
 		if(!entities.getCharacter(game.nick).isDead) {
-			camera.position.set(entities.getCharacter(game.nick).body.getPosition().add(CameraUtil.getCameraShake()), 0);
+			Vector2 playerPosition = entities.getCharacter(game.nick).body.getPosition();
+			Vector2 position = new Vector2(camera.position.x, camera.position.y);
+			position.x += (playerPosition.x - position.x) * .1f;
+			position.y += (playerPosition.y - position.y) * .1f;
+			camera.position.set(position.add(CameraUtil.getCameraShake()), 0);
 		}
 		world.step(Math.min(delta, 1 / 60f), 6, 2);
 		CameraUtil.update(delta);
@@ -99,6 +103,7 @@ public class GameplayScreen extends CoreScreen {
 			.create(world);
 		entities.addCharacter(player);
 		entities.setMain(player);
+		camera.position.set(player.body.getPosition(), 0);
 		
 		ui = new GameplayUi(this, player);
 		Gdx.input.setInputProcessor(ui.stage);

@@ -14,12 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.mrboomdev.platformer.MainGame;
-import com.mrboomdev.platformer.entity.Controller;
-import com.mrboomdev.platformer.entity.Entity;
-import com.mrboomdev.platformer.entity.PlayerEntity;
 import com.mrboomdev.platformer.util.ActorUtil;
 
-public class JoystickWidget extends ActorUtil implements Controller {
+public class JoystickWidget extends ActorUtil {
 	private Sprite holder, point;
 	private int usedPointer = 999;
 	private Vector2 touchPosition;

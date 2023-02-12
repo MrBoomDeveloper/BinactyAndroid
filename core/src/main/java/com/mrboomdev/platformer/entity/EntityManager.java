@@ -14,11 +14,9 @@ import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.MapManager;
-import com.mrboomdev.platformer.online.OnlinePlayer;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Collection;
-import com.mrboomdev.platformer.entity.bot.BotEntity;
 
 public class EntityManager {
     private World world;
@@ -39,8 +37,11 @@ public class EntityManager {
 	}
 	
 	public void setMain(CharacterEntity character) {
-		if(mainLight == null)
+		if(mainLight == null) {
 			mainLight = new PointLight(rayHandler, 100, new Color(10, 40, 250, .7f), 10, 0, 0);
+			mainLight.setSoftnessLength(1);
+			mainLight.setContactFilter((short) 0, (short) 0, (short) 0);
+		}
 		mainLight.attachToBody(character.body);
 	}
     
@@ -68,6 +69,9 @@ public class EntityManager {
     public void render(SpriteBatch batch, OrthographicCamera camera) {
 		for(CharacterEntity entity : characters.values()) {
             entity.draw(batch);
+        }
+		for(CharacterEntity entity : characters.values()) {
+            entity.drawProjectiles(batch);
         }
     }
 	

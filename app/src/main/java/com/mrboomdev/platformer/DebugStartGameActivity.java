@@ -57,14 +57,11 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 		
 		EditText input = view.findViewById(R.id.input);
 		input.setText(prefs.getString("nick", "Player228"));
-		input.selectAll();
 		EditText bots = view.findViewById(R.id.bots);
-		bots.setText(String.valueOf(prefs.getInt("botsCount", 0)));
+		bots.setText(String.valueOf(prefs.getInt("botsCount", 2)));
 		
 		CheckBox colissionsBox = view.findViewById(R.id.colissions);
 		colissionsBox.setChecked(prefs.getBoolean("showBodyColissions", false));
-		CheckBox animationsBox = view.findViewById(R.id.animations);
-		animationsBox.setChecked(prefs.getBoolean("newCharacterAnimations", true));
 		
 		AlertDialog dialog = new MaterialAlertDialogBuilder(this)
 			.setTitle("PlatformerDebug Config")
@@ -94,7 +91,6 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 					SharedPreferences.Editor editor = prefs.edit();
 					editor.putString("nick", text);
 					editor.putInt("botsCount", Integer.parseInt(bots.getText().toString()));
-					editor.putBoolean("newCharacterAnimations", animationsBox.isChecked());
 					editor.putBoolean("showBodyColissions", colissionsBox.isChecked());
 					editor.commit();
 							
@@ -158,9 +154,8 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 		Gdx.app.postRunnable(() -> {
 			MainGame game = MainGame.getInstance();
 			game.nick = prefs.getString("nick", "Player228");
-			game.newCharacterAnimations = prefs.getBoolean("newCharacterAnimations", true);
 			game.showBodyColissions = prefs.getBoolean("showBodyColissions", false);
-			game.botsCount = prefs.getInt("botsCount", 0);
+			game.botsCount = prefs.getInt("botsCount", 2);
 			game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
 		});
 	}

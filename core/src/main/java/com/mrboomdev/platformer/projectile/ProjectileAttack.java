@@ -24,8 +24,9 @@ public class ProjectileAttack {
 	private Animation<TextureRegion> animation;
 	private float animationProgress;
 	private World world;
+	private boolean isForward;
 	public EntityAbstract owner;
-	public boolean isEnded;
+	public boolean isEnded, isDead;
 	public AttackStats stats;
 	
 	public ProjectileAttack(World world, EntityAbstract owner, AttackStats stats) {
@@ -38,21 +39,21 @@ public class ProjectileAttack {
 		sprite = new Sprite(texture);
 		
 		TextureRegion[] animationFrames = new TextureRegion[]{
-			new TextureRegion(texture, 0, 0, 5, 5),
-			new TextureRegion(texture, 5, 0, 5, 5),
-			new TextureRegion(texture, 10, 0, 5, 5),
-			new TextureRegion(texture, 0, 5, 5, 5),
-			new TextureRegion(texture, 5, 5, 5, 5),
-			new TextureRegion(texture, 10, 5, 5, 5),
-			new TextureRegion(texture, 0, 10, 5, 5),
-			new TextureRegion(texture, 5, 10, 5, 5),
-			new TextureRegion(texture, 10, 10, 5, 5)
+			new TextureRegion(texture, 0, 0, 8, 8),
+			new TextureRegion(texture, 8, 0, 8, 8),
+			new TextureRegion(texture, 16, 0, 8, 8),
+			new TextureRegion(texture, 24, 0, 8, 8),
+			new TextureRegion(texture, 32, 0, 8, 8),
+			new TextureRegion(texture, 40, 0, 8, 8),
+			new TextureRegion(texture, 48, 0, 8, 8),
+			new TextureRegion(texture, 56, 0, 8, 8)
 		};
-		animation = new Animation<>(.2f, animationFrames);
+		animation = new Animation<>(.04f, animationFrames);
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.KinematicBody;
-		bodyDef.position.set(owner.body.getPosition().add(owner.getDirection().isForward() ? 0.75f : -0.75f, 0));
+		isForward = owner.getDirection().isForward();
+		bodyDef.position.set(owner.body.getPosition().add(isForward ? 0.75f : -0.75f, 0));
 		body = world.createBody(bodyDef);
 		
 		PolygonShape shape = new PolygonShape();
@@ -66,11 +67,14 @@ public class ProjectileAttack {
 	
 	public void draw(SpriteBatch batch) {
 		if(isEnded) return;
-		if(animationProgress > stats.duration) isEnded = true;
+		if(animationProgress > animation.getAnimationDuration()) {
+			isEnded = true;
+			isDead = true;
+		}
 		
 		animationProgress += Gdx.graphics.getDeltaTime();
 		sprite.set(new Sprite(animation.getKeyFrame(animationProgress)));
-		sprite.setSize(1, 1);
+		sprite.setSize(isForward ? 1 : -1, 1);
 		sprite.setCenter(body.getPosition().x, body.getPosition().y);
 		sprite.draw(batch);
 	}

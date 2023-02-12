@@ -68,7 +68,7 @@ public class ProjectileManager {
 			}
 		}
 		for(ProjectileAttack attack : attacks) {
-			if(attack.isEnded) {
+			if(attack.isDead && attack.isEnded) {
 				attack.destroy();
 				attacks.removeValue(attack, true);
 			}

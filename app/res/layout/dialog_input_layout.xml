@@ -40,12 +40,5 @@
 		 android:layout_width="match_parent"
 		 android:id="@+id/colissions"
 		 android:text="Show body colissions" />
-
-	<CheckBox
-		 android:layout_height="wrap_content"
-		 android:layout_width="match_parent"
-		 android:layout_marginTop="10dp"
-		 android:id="@+id/animations"
-		 android:text="Enable new character animation instead of doll-like. (Experimental!)" />
-
+	
 </LinearLayout>

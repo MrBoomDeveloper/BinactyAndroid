@@ -21,7 +21,6 @@ public class MainGame extends Game implements NativeContainer {
 	public AssetManager asset;
 	public String nick = "Player228";
 	public int botsCount = 10;
-	public boolean newCharacterAnimations;
 	public boolean showBodyColissions;
 	
 	public static MainGame getInstance() {

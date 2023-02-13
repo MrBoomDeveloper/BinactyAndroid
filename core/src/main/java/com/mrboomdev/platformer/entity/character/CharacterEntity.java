@@ -12,12 +12,12 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.MainGame;
+import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.projectile.*;
 import com.mrboomdev.platformer.util.CameraUtil;
 
 public class CharacterEntity extends EntityAbstract {
-	private static final float dashDuration = .25f, dashDelay = 1.5f;
 	private BitmapFont font;
 	private ProjectileManager projectileManager;
 	private boolean isDashing;
@@ -52,14 +52,14 @@ public class CharacterEntity extends EntityAbstract {
 		
 		projectileManager = new ProjectileManager(world, this)
 			.setBulletConfig(new ProjectileBullet.ProjectileStats()
-				.setDamage(25)
+				.setDamage(15)
 				.setAmount(100, 10)
 				.setSpeed(25)
 				.setRandom(1)
 				.setDelay(.2f)
 				.setReloadTime(1)
 			).setAttackConfig(new ProjectileAttack.AttackStats()
-				.setDamage(75)
+				.setDamage(50)
 				.setDelay(.4f)
 				.setDuration(1));
 		
@@ -69,8 +69,9 @@ public class CharacterEntity extends EntityAbstract {
 	public CharacterEntity setConfigFromJson(String json) {
 		Gson gson = new Gson();
 		config = gson.fromJson(json, CharacterConfig.class).build();
-		skin = gson.fromJson(Gdx.files.internal("world/player/characters/" + config.id + "/" + config.skin)
-			.readString(), CharacterSkin.class).build();
+		skin = gson.fromJson(Entity.getInternal(Entity.CHARACTER, config.id, config.skin)
+			.readString(), CharacterSkin.class).build(config.id);
+		
 		return this;
 	}
 	
@@ -90,7 +91,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		dashProgress += Gdx.graphics.getDeltaTime();
 		dashReloadProgress += Gdx.graphics.getDeltaTime();
-		if(isDashing && dashProgress > dashDuration) {
+		if(isDashing && dashProgress > Entity.DASH_DURATION) {
 			isDashing = false;
 			dashReloadProgress = 0;
 		}
@@ -116,7 +117,7 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void dash() {
-		if(isDashing || dashReloadProgress < dashDelay) return;
+		if(isDashing || dashReloadProgress < Entity.DASH_DELAY) return;
 		dashProgress = 0;
         isDashing = true;
 		body.setLinearVelocity(wasPower.scl(100).limit(18));
@@ -124,7 +125,7 @@ public class CharacterEntity extends EntityAbstract {
 	
 	public void gainDamage(int damage) {
 		config.stats.health -= damage;
-		if(config.stats.health < 0) die();
+		if(config.stats.health <= 0) die();
 		MainGame game = MainGame.getInstance();
         if(name == game.nick) CameraUtil.setCameraShake(.2f, .5f);
 	}
@@ -132,7 +133,11 @@ public class CharacterEntity extends EntityAbstract {
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
 		if(isDashing) return;
-		super.usePower(power, speed, isBot);
+		if(getSpeed(power) > speed * 4) {
+			super.usePower(power.scl(100), speed, isBot);
+		} else {
+			super.usePower(power.scl(100), speed / 2, isBot);
+		}
 	}
 	
 	@Override

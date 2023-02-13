@@ -15,6 +15,8 @@ import com.mrboomdev.platformer.scenes.splash.SplashScreen;
 import com.mrboomdev.platformer.util.Analytics;
 
 public class MainGame extends Game implements NativeContainer {
+	public static final int SCREEN_INSET = 60;
+	
 	private static MainGame instance;
 	private NativeContainer container;
 	public Analytics analytics;

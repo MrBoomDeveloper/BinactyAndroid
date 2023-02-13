@@ -4,6 +4,7 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -11,9 +12,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-// import com.mrboomdev.platformer.util.anime.AnimeManual;
 import com.badlogic.gdx.utils.ScreenUtils;
+//import com.crashinvaders.vfx.effects.
 import com.mrboomdev.platformer.MainGame;
+import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
@@ -22,6 +24,8 @@ import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
+//import com.crashinvaders.vfx.VfxManager;
+// import com.mrboomdev.platformer.util.anime.AnimeManual;
 
 public class GameplayScreen extends CoreScreen {
 	public OrthographicCamera camera;
@@ -34,6 +38,7 @@ public class GameplayScreen extends CoreScreen {
 	private GameplayUi ui;
 	private RayHandler rayHandler;
 	private Box2DDebugRenderer debugRenderer;
+	//private VfxManager vfx;
 	// private AnimeManual anime;
 	
 	@Override
@@ -76,6 +81,8 @@ public class GameplayScreen extends CoreScreen {
 		shapeRenderer = new ShapeRenderer();
 		Box2D.init();
 		
+		//vfx = new VfxManager(Pixmap.Format.RGBA8888);
+		
 		// anime = new AnimeManual();
 		// anime.addEntity(shapeRenderer);
 		/*anime.setUpdateListener((ShapeRenderer shapeRenderer) -> {
@@ -99,8 +106,9 @@ public class GameplayScreen extends CoreScreen {
 		entities.addBots(game.botsCount);
 		
 		CharacterEntity player = new CharacterEntity(game.nick)
-			.setConfigFromJson(Gdx.files.internal(EntityManager.entitiesDirectory + "klarrie" + "/manifest.json").readString())
+			.setConfigFromJson(Entity.getInternal(Entity.CHARACTER, "klarrie","manifest.json").readString())
 			.create(world);
+		
 		entities.addCharacter(player);
 		entities.setMain(player);
 		camera.position.set(player.body.getPosition(), 0);

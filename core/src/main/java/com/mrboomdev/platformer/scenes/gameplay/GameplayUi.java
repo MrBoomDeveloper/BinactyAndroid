@@ -3,7 +3,9 @@ package com.mrboomdev.platformer.scenes.gameplay;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.widgets.StatBarWidget;
 import java.text.SimpleDateFormat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,6 +14,7 @@ import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import com.mrboomdev.platformer.widgets.ActionButton;
 import com.mrboomdev.platformer.widgets.TextWidget;
+import com.mrboomdev.platformer.widgets.StatBarWidget.Track;
 
 public class GameplayUi implements CoreUi {
 	private float time = 360000;
@@ -26,7 +29,7 @@ public class GameplayUi implements CoreUi {
 		this.gameplay = screen;
 		stage = new Stage();
 		debugValues = (DebugValuesWidget) new DebugValuesWidget()
-			.toPosition(new Vector2(25, Gdx.graphics.getHeight() - 150))
+			.toPosition(new Vector2(25, Gdx.graphics.getHeight() - 200))
 			.connectToEntity(entity).addTo(stage);
 		
 		for(int i = 0; i < 2; i++) {
@@ -57,6 +60,15 @@ public class GameplayUi implements CoreUi {
 		
 		joystick = (JoystickWidget) new JoystickWidget().connectToEntity(entity);
 		stage.addActor(joystick);
+		
+		for(int i = 0; i < 2; i++) {
+			new StatBarWidget(i == 0 ? Track.HEALTH : Track.STAMINA)
+				.toPosition(new Vector2(MainGame.SCREEN_INSET,
+					Gdx.graphics.getHeight() - MainGame.SCREEN_INSET
+						- (i == 0 ? StatBarWidget.SIZE : StatBarWidget.SIZE * 2.25f)))
+				.connectToEntity(entity)
+				.addTo(stage);
+		}
 		
 		timer = new TextWidget("timer.ttf");
 		timer.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 75);
@@ -91,7 +103,6 @@ public class GameplayUi implements CoreUi {
 		time -= delta * 1000;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
 		timer.setText(dateFormat.format((int) time));
-		debugValues.setValue("Session Time Left", String.valueOf(time));
 		
 		if(time <= 0) {
 			for(CharacterEntity entity : gameplay.entities.getAllCharacters()) {

@@ -40,7 +40,7 @@ public class EntityManager {
 		if(mainLight == null) {
 			mainLight = new PointLight(rayHandler, 100, new Color(10, 40, 250, .7f), 10, 0, 0);
 			mainLight.setSoftnessLength(1);
-			mainLight.setContactFilter((short) 0, (short) 0, (short) 0);
+			mainLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
 		}
 		mainLight.attachToBody(character.body);
 	}

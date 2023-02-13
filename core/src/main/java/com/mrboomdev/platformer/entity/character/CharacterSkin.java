@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.google.gson.annotations.SerializedName;
+import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.util.Direction;
 import java.util.HashMap;
 import static com.mrboomdev.platformer.entity.character.CharacterSkin.CharacterAnimation.*;
@@ -54,8 +55,8 @@ public class CharacterSkin {
 		sprite.draw(batch);
 	}
 	
-	public CharacterSkin build() {
-		Texture texture = new Texture(Gdx.files.internal("world/player/characters/klarrie/skin.png"));
+	public CharacterSkin build(String name) {
+		Texture texture = new Texture(Entity.getInternal(Entity.CHARACTER, name, "skin.png"));
 		for(HashMap.Entry<CharacterAnimation, AnimationObject> entry : serailizedAnimations.entrySet()) {
 			AnimationObject object = entry.getValue();
 			Sprite[] sprites = new Sprite[object.frames.length];

@@ -14,6 +14,8 @@
 		"GAMEPLAY": {
 			"load": [
 				{ "path": "ui/overlay/big_elements.png", "type": "texture" },
+				{ "path": "ui/overlay/generalIcons.png", "type": "texture" },
+				{ "path": "ui/overlay/statsIcons.png", "type": "texture" },
 				{ "path": "ui/overlay/attack.png", "type": "texture" },
 				{ "path": "ui/overlay/shield.png", "type": "texture" },
 				{ "path": "ui/overlay/dash.png", "type": "texture" },
@@ -47,6 +49,15 @@
 						"color": { values: [255, 255, 255, 1] },
 						"borderColor": { values: [0, 0, 0, 1] },
 						"borderSize": 1
+					},
+					"type": "font"
+				}, {
+					"path": "font/productSansBlack.ttf", "as": "statBarWidget.ttf",
+					"font": {
+						"size": 20,
+						"color": { values: [255, 255, 255, 1] },
+						"borderColor": { values: [0, 0, 0, 1] },
+						"borderSize": 2
 					},
 					"type": "font"
 				}

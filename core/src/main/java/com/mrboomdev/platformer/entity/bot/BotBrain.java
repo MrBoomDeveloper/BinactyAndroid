@@ -11,10 +11,14 @@ public class BotBrain extends CharacterBrain {
 	private EntityManager entityManager;
 	private CharacterEntity targetCharacter = null;
 	private float attackReloadProgress, attackReloadDuration;
+	private float shootReloadProgress, shootReloadDuration;
+	private float dashReloadProgress, dashReloadDuration;
 	
 	public BotBrain(EntityManager entityManager) {
 		this.entityManager = entityManager;
 		attackReloadDuration = (float)(Math.random() * 1);
+		shootReloadDuration = (float)(Math.random() * .4f);
+		dashReloadDuration = (float)(Math.random() * 1);
 	}
 	
 	@Override
@@ -23,7 +27,7 @@ public class BotBrain extends CharacterBrain {
 		if(targetCharacter != null) {
 			float distance = targetCharacter.body.getPosition().dst(entity.body.getPosition());
 			if(distance > 12) {
-				entity.usePower(Vector2.Zero, 0, false);
+				explore();
 			} else {
 				if(distance < 1.9f) {
 					if(attackReloadProgress > attackReloadDuration) {
@@ -35,16 +39,35 @@ public class BotBrain extends CharacterBrain {
 						attackReloadProgress += Gdx.graphics.getDeltaTime();
 					}
 				} else {
-					entity.shoot(Vector2.Zero);
-					entity.dash();
+					if(shootReloadProgress > shootReloadDuration) {
+						entity.shoot(Vector2.Zero);
+						shootReloadProgress = 0;
+						shootReloadDuration = (float)(Math.random() * .4f);
+					} else {
+						shootReloadProgress += Gdx.graphics.getDeltaTime();
+					}
+					if(dashReloadProgress > dashReloadDuration) {
+						entity.dash();
+						dashReloadProgress = 0;
+						dashReloadDuration = (float)(Math.random() * 1);
+					} else {
+						dashReloadProgress += Gdx.graphics.getDeltaTime();
+					}
 				}
 				entity.usePower(targetCharacter.body.getPosition()
 					.sub(entity.body.getPosition()).scl(25),
 					entity.config.stats.speed, true);
 			}
 		} else {
-			entity.usePower(Vector2.Zero, 0, false);
+			explore();
 		}
+	}
+	
+	private void explore() {
+		entity.usePower(new Vector2(
+			(float)(Math.random() * 100) - 50,
+			(float)(Math.random() * 100) - 50
+		), entity.config.stats.speed, false);
 	}
 	
 	private void setTargetEntity() {

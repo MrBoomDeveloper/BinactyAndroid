@@ -1,42 +1,42 @@
 {
-    "null": { "colission": false },
-    "air": { "colission": false },
-    "barrier": { "size": [2, 2], "offset_bounds": [ 0, 0, 0, -1 ] },
-    "ai_zone": { "colission": false, "special": "ai_zone" },
-    "spawn_position": { "colission": false, "special": "spawn_position" },
-    
-    "floor": { "texture": "floor/blue.png", "size": [2, 2] },
-    "wall": { "texture": "wall/front.png", "size": [2, 3.8] },
-    "wall_top": { "texture": "wall/top.png", "size": [2, 3.8] },
-    "wall_last": { "texture": "wall/front.png", "size": [2, 3.8], "offset": [0, 1], "offset_bounds": [ 0, 0, 0, 1 ] },
-    "door": { "texture": "door/default.png", "size": [2, 3] },
-    
-    "chair": { "texture": "chair.png", "size": [ 1.8, 2.0 ], "colission": false },
-    "pizza": { "texture": "pizza.png", "size": [ 1, 1 ], "offset": [ 0.4, 3 ], "colission": false },
-    "poster": { "texture": "poster.png", "size": [ 1, 1.1 ], "offset": [ 0.4, 3 ], "colission": false },
-    "gift": { "texture": "gift.png", "size": [ 1, 1 ], "offset_bounds": [ -0.5, -0.5, 0, 0.5 ] },
-    "plush_danya": { "texture": "plush_danya.png", "size": [ 1, 1.3 ], "offset_bounds": [ -0.5, -0.4, 0, 0.4 ] },
-    
-    "table": { "texture": "table.png", "size": [ 4.5, 2.5 ], "offset_bounds": [ 1.2, 0, 0, 0 ] },
-    "stage": { "texture": "stage.png", "size": [ 8, 3 ], "offset": [ 0, 0.2 ], "offset_bounds": [ 3, -0.4, 0, -0.8 ] },
-    
-    "game_machine": {
-        "texture": "game_machine.png",
-        "size": [1.9, 3.5],
-        "offset_bounds": [ 0, 0.2, 0, -0.2 ],
-        "lights": {
-            "distance": 2,
-            "offset": [0, -1],
-            "color": { "values": [255, 255, 255, 0.9] }
-        }
-    },
-    "tv": {
-        "texture": "tv/0.png",
-        "size": [1, 1],
-        "lights": {
-            "distance": 2,
-            "offset": [0, -1],
-            "color": { "values": [255, 255, 255, 0.9] }
-        }
-    }
+	"air": { "colission": false },
+	"barrier": { "size": [2, 2], "offset_bounds": [ 0, 0, 0, -1 ] },
+	"ai_zone": { "colission": false, "special": "ai_zone" },
+	"spawn_position": { "colission": false, "special": "spawn_position" },
+	
+	"floor": { "texture": "floor/blue.png", "size": [2, 2] },
+	"wall": { "texture": "wall/front.png", "size": [2, 3.8] },
+	"wall_top": { "texture": "wall/top.png", "size": [2, 3.8] },
+	"wall_last": { "texture": "wall/front.png", "size": [2, 3.8], "offset": [0, 1], "offset_bounds": [ 0, 0, 0, 1 ] },
+	"door": { "texture": "door/default.png", "size": [2, 3] },
+	
+	"chair": { "texture": "chair.png", "size": [ 1.8, 2.0 ], "ignoreLights": true },
+	"pizza": { "texture": "pizza.png", "size": [ 1, 1 ], "offset": [ 0.4, 3 ], "colission": false },
+	"poster": { "texture": "poster.png", "size": [ 1, 1.1 ], "offset": [ 0.4, 3 ], "colission": false },
+	"gift": { "texture": "gift.png", "size": [ 1, 1 ], "offset_bounds": [ -0.5, -0.5, 0, 0.5 ], "ignoreLights": true },
+	"plush_danya": { "texture": "plush_danya.png", "size": [ 1, 1.3 ], "offset_bounds": [ -0.5, -0.4, 0, 0.4 ], "ignoreLights": true },
+	
+	"table": { "texture": "table.png", "size": [ 4.5, 2.5 ], "offset_bounds": [ 1.2, 0.4, 0, -0.4 ], "ignoreLights": true },
+	"stage": { "texture": "stage.png", "size": [ 8, 4 ], "offset": [ 0, 0.2 ], "offset_bounds": [ 3, -0.4, 0, -0.8 ] },
+	
+	"game_machine": {
+		"texture": "game_machine.png",
+		"size": [1.9, 3.5],
+		"offset_bounds": [ 0, 0.2, 0, -0.2 ],
+		"lights": {
+			"distance": 2,
+			"offset": [0, -1],
+			"color": { "values": [255, 255, 255, 0.9] }
+		}
+	},
+	"tv": {
+		"texture": "tv/0.png",
+		"ignoreLights": true,
+		"size": [1, 1],
+		"lights": {
+			"distance": 2,
+			"offset": [0, -1],
+			"color": { "values": [255, 255, 255, 0.9] }
+		}
+	}
 }

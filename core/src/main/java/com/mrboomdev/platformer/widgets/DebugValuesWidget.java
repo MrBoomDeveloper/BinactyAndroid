@@ -32,7 +32,6 @@ public class DebugValuesWidget extends ActorUtil {
 		setValue("Screen Delta", String.valueOf(delta));
 		Vector2 pos = connectedEntity.body.getPosition();
 		setValue("Player Position", "[ " + (pos.x / 2) + " : " + (pos.y / 2) + " ]");
-		setValue("Player Health", String.valueOf(connectedEntity.config.stats.health));
 	}
 	
 	@Override

@@ -3,29 +3,29 @@ package com.mrboomdev.platformer.environment;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mrboomdev.platformer.environment.MapBuilder;
+import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 
 public class Block {
-    private final int tileSize = 2;
+    private static final float tileSize = 2;
     private Sprite sprite;
+	private boolean ignoreLights;
     public String special;
     public float[] size = {2, 2};
     public float[] offset = {0, 0};
     public String texture;
     public boolean colission = true;
-    public float[] offset_bounds;
+    public float[] offset_bounds = {0, 0, 0, 0};
     public Light lights;
     
     public Block init() {
@@ -43,27 +43,24 @@ public class Block {
     public String build(Vector2 position, World world, RayHandler rayHandler) {
         if(colission) {
             BodyDef bodyDef = new BodyDef();
-            if(offset_bounds != null) {
-                bodyDef.position.set(
-                    position.x + offset_bounds[0],
-                    position.y + offset_bounds[1]
-                        + ((size[1] - tileSize) / 2) + .4f);
-            } else {
-                bodyDef.position.set(position.x,
-                    position.y + ((size[1] - tileSize) / 2) + .4f);
-            }
-                
+			bodyDef.position.set(position.add(offset_bounds[0],
+				offset_bounds[1] + ((size[1] - tileSize) / 2) + .4f));
+			
             Body body = world.createBody(bodyDef);
             body.setUserData(this);
+			FixtureDef fixtureDef = new FixtureDef();
             PolygonShape polygon = new PolygonShape();
-            if(offset_bounds != null) {
-                polygon.setAsBox(
-                    size[0] / 2 + offset_bounds[2],
-                    size[1] / 2 + offset_bounds[3] - .4f);
-            } else {
-                polygon.setAsBox(size[0] / 2, size[1] / 2 - .4f);
-            }
-            body.createFixture(polygon, 0);
+			polygon.setAsBox(
+				size[0] / 2 + offset_bounds[2],
+				size[1] / 2 + offset_bounds[3] - .4f);
+			
+			fixtureDef.shape = polygon;
+			fixtureDef.filter.categoryBits = Entity.BLOCK;
+			fixtureDef.filter.maskBits = (short)(ignoreLights
+				? (Entity.CHARACTER | Entity.BULLET)
+				: (Entity.CHARACTER | Entity.BULLET | Entity.LIGHT));
+			
+            body.createFixture(fixtureDef);
             polygon.dispose();
             
             if(lights != null) {
@@ -72,8 +69,8 @@ public class Block {
                     lights.color.getColor(),
                     lights.distance, 0, 0);
                     
-                light.attachToBody(body, 
-                    lights.offset[0], 
+                light.attachToBody(body,
+                    lights.offset[0],
                     lights.offset[1]);
             }
         }

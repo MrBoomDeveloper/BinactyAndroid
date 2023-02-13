@@ -14,13 +14,6 @@ public abstract class EntityAbstract {
 	public Stats stats;
 	public boolean isDestroyed, isDead;
 	
-	public EntityAbstract() {}
-	
-	@Deprecated
-	public EntityAbstract(World world) {
-		this.world = world;
-	}
-	
 	public abstract void draw(SpriteBatch batch);
 	
 	public void die() {
@@ -34,12 +27,12 @@ public abstract class EntityAbstract {
 		isDestroyed = true;
 	}
 	
-	@Deprecated
-	public void usePower(Vector2 power) {
-        if(isDead) return;
-        body.setLinearVelocity(power.limit(5).scl(stats.speed));
-		if(!power.isZero()) wasPower = power.cpy();
-    }
+	public float getSpeed(Vector2 power) {
+		return Math.max(
+			Math.abs(power.x),
+			Math.abs(power.y)
+		);
+	}
 	
 	public void usePower(Vector2 power, float speed, boolean isBot) {
         if(isDead) return;

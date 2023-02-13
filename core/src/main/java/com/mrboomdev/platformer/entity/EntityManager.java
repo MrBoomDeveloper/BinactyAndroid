@@ -22,6 +22,7 @@ public class EntityManager {
     private World world;
 	private RayHandler rayHandler;
 	private PointLight mainLight;
+	private EntityPresets presets = new EntityPresets();
 	private Array<Spawn> spawns = new Array<>();
     public static final String entitiesDirectory = "world/player/characters/";
 	public HashMap<String, CharacterEntity> characters = new HashMap<>();
@@ -45,25 +46,24 @@ public class EntityManager {
 		mainLight.attachToBody(character.body);
 	}
     
-    public void addBots(int count) {
-        Gson gson = new Gson();
-        String[] botsNicknames = gson.fromJson(Gdx.files.internal("world/player/bots.json").readString(), String[].class);
-        HashSet<String> bots = new HashSet<>();
-        while(bots.size() < count) {
-            bots.add(botsNicknames[(int) (Math.random() * botsNicknames.length)]);
-        }
-        for(String name : bots) {
-			CharacterEntity bot = new CharacterEntity(name)
-				.setConfigFromJson(Gdx.files.internal(EntityManager.entitiesDirectory + "klarrie" + "/manifest.json").readString())
+    public EntityManager addBots(int count) {
+        for(int i = 0; i < count; i++) {
+			CharacterEntity bot = presets.getRandomCharacter()
 				.setBrain(new BotBrain(this))
 				.create(world);
-			
             addCharacter(bot);
         }
+		return this;
     }
+	
+	public EntityManager addPresets(EntityPresets presets) {
+		this.presets = presets;
+		return this;
+	}
     
-    public void setSpawnsPositions(Array<Spawn> spawns) {
+    public EntityManager setSpawnsPositions(Array<Spawn> spawns) {
         this.spawns = spawns;
+		return this;
     }
     
     public void render(SpriteBatch batch, OrthographicCamera camera) {

@@ -1,0 +1,15 @@
+{
+	"id": "amogus",
+	"name": "Amogus",
+	"description": "SUS",
+	"version": 3,
+	"skin": "skin.json",
+	"bodySize": [ 1.5, 1.5 ],
+	"stats": {
+		"health": 75,
+		"damage": 75,
+		"speed": .5,
+		"shield": 50,
+		"stamina": 100
+	}
+}

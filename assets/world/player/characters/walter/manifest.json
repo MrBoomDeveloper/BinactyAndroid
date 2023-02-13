@@ -1,0 +1,15 @@
+{
+	"id": "walter",
+	"name": "Walter White",
+	"description": "Yo Mr.White!",
+	"version": 3,
+	"skin": "skin.json",
+	"bodySize": [ 1, 2 ],
+	"stats": {
+		"health": 500,
+		"damage": 25,
+		"speed": 1,
+		"shield": 50,
+		"stamina": 100
+	}
+}

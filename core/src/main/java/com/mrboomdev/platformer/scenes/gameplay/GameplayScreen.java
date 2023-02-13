@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityManager;
+import com.mrboomdev.platformer.entity.EntityPresets;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.MapLayer;
@@ -101,9 +102,10 @@ public class GameplayScreen extends CoreScreen {
 		map.build(world, rayHandler);
 		map.setCamera(camera);
 		
-		entities = new EntityManager(world, rayHandler);
-		entities.setSpawnsPositions(map.spawnPositions);
-		entities.addBots(game.botsCount);
+		entities = new EntityManager(world, rayHandler)
+			.setSpawnsPositions(map.spawnPositions)
+			.addPresets(EntityPresets.getInternal())
+			.addBots(game.botsCount);
 		
 		CharacterEntity player = new CharacterEntity(game.nick)
 			.setConfigFromJson(Entity.getInternal(Entity.CHARACTER, "klarrie","manifest.json").readString())

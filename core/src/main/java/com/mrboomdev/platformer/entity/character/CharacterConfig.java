@@ -13,7 +13,7 @@ public class CharacterConfig {
 	
 	public static class Stats {
 		public int health, maxHealth;
-		public int stamina, maxStamina;
+		public float stamina, maxStamina;
 		public float speed, shield;
 		public int damage;
 	}

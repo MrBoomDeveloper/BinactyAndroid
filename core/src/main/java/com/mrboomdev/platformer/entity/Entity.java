@@ -24,4 +24,11 @@ public class Entity {
 		if(type == WEAPON) dir = "weapon/";
 		return Gdx.files.internal(internalDirectory + dir + name + "/" + path);
 	}
+	
+	public enum Animation {
+		IDLE, BORED,
+		WALK, RUN, DASH,
+		ATTACK, SHOOT,
+		DAMAGE, DEATH
+	}
 }

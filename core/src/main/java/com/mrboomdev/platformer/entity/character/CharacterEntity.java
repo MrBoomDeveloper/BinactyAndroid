@@ -16,12 +16,14 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.projectile.*;
 import com.mrboomdev.platformer.util.CameraUtil;
+import static com.mrboomdev.platformer.entity.Entity.Animation.*;
 
 public class CharacterEntity extends EntityAbstract {
 	private BitmapFont font;
 	private ProjectileManager projectileManager;
 	private boolean isDashing;
 	private float dashProgress, dashReloadProgress;
+	public CharacterConfig.Stats stats;
 	public CharacterBrain brain;
 	public CharacterSkin skin;
 	public CharacterConfig config;
@@ -71,7 +73,7 @@ public class CharacterEntity extends EntityAbstract {
 		config = gson.fromJson(json, CharacterConfig.class).build();
 		skin = gson.fromJson(Entity.getInternal(Entity.CHARACTER, config.id, config.skin)
 			.readString(), CharacterSkin.class).build(config.id);
-		
+		stats = config.stats;
 		return this;
 	}
 	
@@ -89,13 +91,14 @@ public class CharacterEntity extends EntityAbstract {
 		if(isDestroyed) return;
 		skin.draw(batch, body.getPosition(), getDirection());
 		
+		stats.stamina = Math.min(stats.maxStamina, stats.stamina + .1f);
+		
 		dashProgress += Gdx.graphics.getDeltaTime();
 		dashReloadProgress += Gdx.graphics.getDeltaTime();
 		if(isDashing && dashProgress > Entity.DASH_DURATION) {
 			isDashing = false;
 			dashReloadProgress = 0;
 		}
-		
 		if(brain != null) brain.update();
 	}
 	
@@ -117,7 +120,9 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void dash() {
+		if(stats.stamina < 40) return;
 		if(isDashing || dashReloadProgress < Entity.DASH_DELAY) return;
+		config.stats.stamina -= 40;
 		dashProgress = 0;
         isDashing = true;
 		body.setLinearVelocity(wasPower.scl(100).limit(18));
@@ -132,10 +137,23 @@ public class CharacterEntity extends EntityAbstract {
 	
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
-		if(isDashing) return;
-		if(getSpeed(power) > speed * 4) {
-			super.usePower(power.scl(100), speed, isBot);
+		if(isDashing) {
+			skin.setAnimation(DASH);
+			return;
+		}
+		if(power.isZero() || speed == 0) {
+			skin.setAnimation(IDLE);
+			super.usePower(Vector2.Zero, 0, false);
+		} else if(getSpeed(power) > speed * 4) {
+			skin.setAnimation(RUN);
+			stats.stamina = Math.max(stats.stamina - .12f, 0);
+			if(stats.stamina > 5) {
+				super.usePower(power.scl(100), speed, isBot);
+			} else {
+				super.usePower(power, speed / 2, isBot);
+			}
 		} else {
+			skin.setAnimation(WALK);
 			super.usePower(power.scl(100), speed / 2, isBot);
 		}
 	}

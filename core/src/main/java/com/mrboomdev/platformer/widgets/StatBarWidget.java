@@ -73,7 +73,7 @@ public class StatBarWidget extends ActorUtil {
 				result = stats.health + " / " + stats.maxHealth;
 				break;
 			case STAMINA:
-				result = stats.stamina + " / " + stats.maxStamina;
+				result = (int)stats.stamina + " / " + (int)stats.maxStamina;
 				break;
 		}
 		return result;

@@ -12,18 +12,20 @@ import com.google.gson.annotations.SerializedName;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.util.Direction;
 import java.util.HashMap;
-import static com.mrboomdev.platformer.entity.character.CharacterSkin.CharacterAnimation.*;
+import com.mrboomdev.platformer.entity.Entity;
+import static com.mrboomdev.platformer.entity.Entity.Animation.*;
 
 public class CharacterSkin {
-	private HashMap<CharacterAnimation, Animation<Sprite>> animations = new HashMap<>();
-	private CharacterAnimation currentAnimation;
+	private HashMap<Entity.Animation, Animation<Sprite>> animations = new HashMap<>();
+	private Entity.Animation currentAnimation;
 	private Sprite sprite;
 	private float animationProgress;
 	
 	@SerializedName("skin")
-	private HashMap<CharacterAnimation, AnimationObject> serailizedAnimations;
+	private HashMap<Entity.Animation, AnimationObject> serailizedAnimations;
 	
-	public void setAnimation(CharacterAnimation animation) {
+	public void setAnimation(Entity.Animation animation) {
+		if(animation == currentAnimation) return;
 		if(animations.containsKey(animation)) {
 			currentAnimation = animation;
 		} else {
@@ -35,7 +37,7 @@ public class CharacterSkin {
 					setAnimation(animations.containsKey(WALK) ? WALK : IDLE);
 					break;
 				case DASH:
-					setAnimation(animations.containsKey(RUN) ? RUN : IDLE);
+					setAnimation(animations.containsKey(DASH) ? DASH : (animations.containsKey(RUN) ? RUN : WALK));
 					break;
 				default:
 					setAnimation(IDLE);
@@ -57,7 +59,7 @@ public class CharacterSkin {
 	
 	public CharacterSkin build(String name) {
 		Texture texture = new Texture(Entity.getInternal(Entity.CHARACTER, name, "skin.png"));
-		for(HashMap.Entry<CharacterAnimation, AnimationObject> entry : serailizedAnimations.entrySet()) {
+		for(HashMap.Entry<Entity.Animation, AnimationObject> entry : serailizedAnimations.entrySet()) {
 			AnimationObject object = entry.getValue();
 			Sprite[] sprites = new Sprite[object.frames.length];
 			for(int i = 0; i < object.frames.length; i++) {
@@ -72,17 +74,6 @@ public class CharacterSkin {
 		}
 		setAnimation(IDLE);
 		return this;
-	}
-	
-	public enum CharacterAnimation {
-		IDLE,
-		WALK,
-		RUN,
-		DASH,
-		ATTACK,
-		SHOOT,
-		DAMAGE,
-		DEATH
 	}
 	
 	public class AnimationObject {

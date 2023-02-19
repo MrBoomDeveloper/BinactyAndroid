@@ -99,7 +99,6 @@ android {
             if (abi != null) {
                 output.versionCodeOverride = defaultConfig.versionCode * 1000 + versionCodes.get(abi)
             }
-
         }
     }
 }

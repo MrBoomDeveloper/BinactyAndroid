@@ -28,9 +28,13 @@ public class GameplayUi implements CoreUi {
 	public GameplayUi(GameplayScreen screen, CharacterEntity entity) {
 		this.gameplay = screen;
 		stage = new Stage();
+		
 		debugValues = (DebugValuesWidget) new DebugValuesWidget()
-			.toPosition(new Vector2(25, Gdx.graphics.getHeight() - 200))
-			.connectToEntity(entity).addTo(stage);
+			.toPosition(new Vector2(
+				MainGame.settings.screenInset, 
+				Gdx.graphics.getHeight() - 150 - MainGame.settings.screenInset))
+			.connectToEntity(entity);
+		if(MainGame.settings.debugValues) stage.addActor(debugValues);
 		
 		for(int i = 0; i < 2; i++) {
 			final int a = i;
@@ -63,15 +67,15 @@ public class GameplayUi implements CoreUi {
 		
 		for(int i = 0; i < 2; i++) {
 			new StatBarWidget(i == 0 ? Track.HEALTH : Track.STAMINA)
-				.toPosition(new Vector2(MainGame.SCREEN_INSET,
-					Gdx.graphics.getHeight() - MainGame.SCREEN_INSET
-						- (i == 0 ? StatBarWidget.SIZE : StatBarWidget.SIZE * 2.25f)))
+				.toPosition(new Vector2(MainGame.settings.screenInset,
+					Gdx.graphics.getHeight() - MainGame.settings.screenInset
+						- (i == 0 ? StatBarWidget.SIZE : StatBarWidget.SIZE * 2.2f)))
 				.connectToEntity(entity)
 				.addTo(stage);
 		}
 		
 		timer = new TextWidget("timer.ttf");
-		timer.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - 75);
+		timer.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - MainGame.settings.screenInset);
 		stage.addActor(timer);
 		
 		cameraZoom = gameplay.camera.zoom;
@@ -93,7 +97,7 @@ public class GameplayUi implements CoreUi {
 				cameraZoom = gameplay.camera.zoom;
 			}
 		});
-	// stage.setDebugAll(true);
+		if(MainGame.settings.debugStage) stage.setDebugAll(true);
 	}
 	
 	public void render(float delta) {
@@ -104,10 +108,8 @@ public class GameplayUi implements CoreUi {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
 		timer.setText(dateFormat.format((int) time));
 		
-		if(time <= 0) {
-			for(CharacterEntity entity : gameplay.entities.getAllCharacters()) {
-				entity.die();
-			}
+		if(time <= 0) for(CharacterEntity entity : gameplay.entities.getAllCharacters()) {
+			entity.die();
 		}
 	}
 	

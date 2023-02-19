@@ -32,8 +32,8 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 	
 	@Override
 	protected void onCreate(Bundle instance) {
-		super.onCreate(instance);
 		LogSender.startLogging(this);
+		super.onCreate(instance);
 		analytics = FirebaseAnalytics.getInstance(this);
 		
 		gameConfig = new AndroidApplicationConfiguration();
@@ -41,7 +41,7 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 		gameConfig.useAccelerometer = false;
 		gameConfig.useCompass = false;
 		gameConfig.useGyroscope = false;
-		initialize(MainGame.getInstance(new AndroidAnalytics(), this), gameConfig);
+		initialize(MainGame.setInstance(new AndroidAnalytics(), this, new GameSettings()), gameConfig);
 		
 		prefs = getSharedPreferences("Save", Context.MODE_PRIVATE);
 		Gson gson = new Gson();
@@ -99,7 +99,7 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 				}
 			});
 		});
-		dialog.show();
+		//dialog.show();
 	}
 	
 	private boolean containsBadWords(String text) {
@@ -153,9 +153,6 @@ public class DebugStartGameActivity extends AndroidApplication implements Native
 	public void toggleGameView(boolean isActive) {
 		Gdx.app.postRunnable(() -> {
 			MainGame game = MainGame.getInstance();
-			game.nick = prefs.getString("nick", "Player228");
-			game.showBodyColissions = prefs.getBoolean("showBodyColissions", false);
-			game.botsCount = prefs.getInt("botsCount", 2);
 			game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
 		});
 	}

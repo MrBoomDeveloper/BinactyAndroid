@@ -15,21 +15,18 @@ import com.mrboomdev.platformer.scenes.splash.SplashScreen;
 import com.mrboomdev.platformer.util.Analytics;
 
 public class MainGame extends Game implements NativeContainer {
-	public static final int SCREEN_INSET = 60;
-	
+	public static GameSettings settings;
 	private static MainGame instance;
 	private NativeContainer container;
 	public Analytics analytics;
 	public AssetManager asset;
-	public String nick = "Player228";
-	public int botsCount = 10;
-	public boolean showBodyColissions;
 	
 	public static MainGame getInstance() {
 		return instance;
 	}
 	
-	public static MainGame getInstance(Analytics analytics, NativeContainer container) {
+	public static MainGame setInstance(Analytics analytics, NativeContainer container, GameSettings globalSettings) {
+		settings = globalSettings;
 		instance = new MainGame(analytics, container);
 		return instance;
 	}

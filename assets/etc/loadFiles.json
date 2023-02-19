@@ -2,8 +2,18 @@
 	"scenes": {
 		"LOADING": {
 			"load": [
-				{ "path": "ui/banner/loading.png", "type": "texture" },
-				{ "path": "etc/blank.png", "type": "texture" }
+				{ "path": "ui/banner/loading.jpg", "type": "texture" },
+				{ "path": "etc/blank.png", "type": "texture" },
+				{
+					"path": "font/gilroyBold.ttf", "as": "loading.ttf",
+					"font": {
+						"size": 45,
+						"color": { values: [255, 255, 255, 1] },
+						"borderSize": 3,
+						"borderColor": { values: [0, 0, 0, 1] }
+					},
+					"type": "font"
+				}
 			]
 		},
 		"LOBBY": {
@@ -54,7 +64,7 @@
 				}, {
 					"path": "font/productSansBlack.ttf", "as": "statBarWidget.ttf",
 					"font": {
-						"size": 20,
+						"size": 18,
 						"color": { values: [255, 255, 255, 1] },
 						"borderColor": { values: [0, 0, 0, 1] },
 						"borderSize": 2

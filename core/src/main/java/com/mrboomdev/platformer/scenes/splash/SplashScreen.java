@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import com.google.gson.Gson;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.MainGame;
+import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.util.Direction;
 import com.mrboomdev.platformer.util.anime.AnimeManual;
@@ -22,8 +24,10 @@ public class SplashScreen extends CoreScreen {
     
     @Override
     public void show() {
+		Gson gson = new Gson();
         asset = MainGame.getInstance().asset;
-        asset.load("ui/banner/loading.jpg", Texture.class);
+        LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
+		files.loadToManager(asset, "LOADING");
 	    batch = new SpriteBatch();
 	  
 	    logo = new Sprite(new Texture(Gdx.files.internal("ui/brand/dev_logo.png")));
@@ -56,8 +60,10 @@ public class SplashScreen extends CoreScreen {
     public void render(float delta) {
 	    Gdx.gl.glClearColor(17, 7, 31, alphaProgress);
   	  batch.begin();
-	    logo.draw(batch);
-	    gradient.draw(batch);
+		{
+			logo.draw(batch);
+	    	gradient.draw(batch);
+		}
 	    batch.end();
         anime.update(delta);
     }

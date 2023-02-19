@@ -8,8 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.react.ReactActivity;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
@@ -17,6 +16,7 @@ import com.mrboomdev.platformer.util.AskUtil;
 import com.mrboomdev.platformer.util.StateUtil;
 
 public class AndroidLauncher extends AndroidApplication implements NativeContainer {
+	private FirebaseCrashlytics crashlytics;
     private FirebaseAnalytics analytics;
     private AndroidApplicationConfiguration gameConfig;
     private SharedPreferences prefs;
@@ -28,21 +28,16 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
         LogSender.startLogging(this);
         StateUtil.addActivity("Launcher", this);
         analytics = FirebaseAnalytics.getInstance(this);
+		crashlytics = FirebaseCrashlytics.getInstance();
         prefs = getSharedPreferences("Save", 0);
-
-        Bundle bundle = new Bundle();
+		
+		if(!prefs.getBoolean("crashlytics", true) || BuildConfig.DEBUG) {
+        	crashlytics.setCrashlyticsCollectionEnabled(false);
+		}
+		Bundle bundle = new Bundle();
         bundle.putString(FirebaseAnalytics.Param.SCREEN_NAME, "Splash");
         bundle.putString(FirebaseAnalytics.Param.SCREEN_CLASS, "SplashScreen");
         analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle);
-
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings remoteConfigSettings =
-                new FirebaseRemoteConfigSettings.Builder()
-                        .setMinimumFetchIntervalInSeconds(3600)
-                        .build();
-        remoteConfig.fetchAndActivate();
-        remoteConfig.setConfigSettingsAsync(remoteConfigSettings);
-        Log.i("Firebase", remoteConfig.getString("beta_ui") + " beta_ui");
 
         gameConfig = new AndroidApplicationConfiguration();
         gameConfig.useImmersiveMode = true;
@@ -54,17 +49,24 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
 
     @Override
     public void toggleGameView(boolean isActive) {
-        if (isActive) {
+        if(isActive) {
             AskUtil.setContext(this);
-            if (isInitialized) {
+			
+			GameSettings settings = new GameSettings()
+				.setPlayerName(prefs.getString("nick", "player"))
+				.setScreenInset(prefs.getInt("inset", 60))
+				.setVolume(prefs.getInt("musicVolume", 100), prefs.getInt("soundsVolume", 100))
+				.setDebug(prefs.getBoolean("debug", false), prefs.getBoolean("debugRenderer", false), prefs.getBoolean("debugStage", false));
+			
+            if(isInitialized) {
                 Gdx.app.postRunnable(() -> {
-                            MainGame game = MainGame.getInstance();
-                            game.nick = prefs.getString("nick", "Player");
-                            game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
-                        });
+					MainGame.settings = settings;
+                	MainGame game = MainGame.getInstance();
+                    game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
+                });
                 return;
             }
-            initialize(MainGame.getInstance(new AndroidAnalytics(), this), gameConfig);
+            initialize(MainGame.setInstance(new AndroidAnalytics(), this, settings), gameConfig);
             isInitialized = true;
             return;
         }
@@ -74,7 +76,6 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
         if (intent.getStringExtra("state") == null) return;
         switch (intent.getStringExtra("state")) {
             case "nickSetupFinish":
@@ -82,9 +83,6 @@ public class AndroidLauncher extends AndroidApplication implements NativeContain
                 break;
             case "play":
                 toggleGameView(true);
-                break;
-            default:
-                Log.e("AndroidLauncher", "Unknown intent");
                 break;
         }
     }

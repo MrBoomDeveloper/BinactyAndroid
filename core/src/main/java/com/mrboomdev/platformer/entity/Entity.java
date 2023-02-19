@@ -12,7 +12,8 @@ public class Entity {
 	public static final short LIGHT = 16;
 	public static final short WEAPON = 32;
 	
-	public static final float DASH_DELAY = 1.5f;
+	public static final float DASH_COST = 30;
+	public static final float DASH_DELAY = 1f;
 	public static final float DASH_DURATION = .25f;
 	public static final float DASH_SPEED = 5;
 	

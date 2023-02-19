@@ -34,8 +34,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
         root = new ReactRootView(this);
         List<ReactPackage> packages = new PackageList(getApplication()).getPackages();
         packages.add(new ReactGame());
-        instance =
-                ReactInstanceManager.builder()
+        instance = ReactInstanceManager.builder()
                         .setApplication(getApplication())
                         .setCurrentActivity(this)
                         .setBundleAssetName("index.android.bundle")
@@ -46,28 +45,33 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
                         .build();
         root.startReactApplication(instance, "GameLobbyScreen", null);
         setContentView(root);
-        getWindow()
-                .setFlags(
+        getWindow().setFlags(
                         WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                         WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         prefs = getSharedPreferences("Save", 0);
-        if (!prefs.getBoolean("isNickSetup", false)) {
-            AskUtil.ask(
-                    AskUtil.AskType.SETUP_NICK,
-                    (data) -> {
-                        prefs.edit().putBoolean("isNickSetup", true).commit();
-                        // ((AndroidLauncher)StateUtil.getActivity("Launcher")).toggleGameView(false);
-                        Intent intent = new Intent(this, AndroidLauncher.class);
-                        intent.putExtra("state", "nickSetupFinish");
-                        startActivity(intent);
-                    });
+        if(!prefs.getBoolean("isNickSetup", false)) {
+            AskUtil.ask(AskUtil.AskType.SETUP_NICK, (data) -> {
+            	prefs.edit().putBoolean("isNickSetup", true).commit();
+                Intent intent = new Intent(this, AndroidLauncher.class);
+                intent.putExtra("state", "nickSetupFinish");
+                startActivity(intent);
+            });
         }
     }
 
     @Override
-    public void invokeDefaultOnBackPressed() {}
-
-    @Override
-    public void onBackPressed() {}
+    public void invokeDefaultOnBackPressed() {
+		StateUtil.getActivity("Launcher").finish();
+		finish();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if(instance != null) {
+			instance.onBackPressed();
+		} else {
+			invokeDefaultOnBackPressed();
+		}
+	}
 }

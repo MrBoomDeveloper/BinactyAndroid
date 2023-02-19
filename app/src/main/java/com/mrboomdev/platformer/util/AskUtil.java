@@ -20,13 +20,12 @@ import com.mrboomdev.platformer.R;
 public class AskUtil {
     public static SharedPreferences prefs;
     private static Activity context;
-    private static AlertDialog alert;
-	private static AskType currentDialog = AskType.EMPTY;
+	private static AskType currentDialog = null;
     
     public enum AskType {
         SETUP_NICK,
         UPDATE,
-		EMPTY
+		REQUEST_CLOSE
     }
     
     public static void setContext(Activity activity) {
@@ -36,11 +35,13 @@ public class AskUtil {
     
     public static void ask(AskType type, AskCallback callback) {
 		if(type == currentDialog) return;
-		context.runOnUiThread(() -> showDialog(type, callback));
+		context.runOnUiThread(() -> {
+			createDialog(type, callback).show();
+		});
 		currentDialog = type;
     }
 	
-	private static void showDialog(AskType type, AskCallback callback) {
+	private static AlertDialog createDialog(AskType type, AskCallback callback) {
         DynamicColors.applyToActivityIfAvailable(context);
         LayoutInflater inflater = context.getLayoutInflater();
         AlertDialog.Builder builder = new MaterialAlertDialogBuilder(context);
@@ -54,7 +55,7 @@ public class AskUtil {
                 builder.setTitle("Welcome to Action Platformer!");
                 builder.setMessage("(Game name will be changed in the future :/)\n Enter here your nickname. Please dont put here any bad words. Thanks :)");
                 builder.setPositiveButton("Confirm", (dialogInterface, i) -> {});
-                alert = builder.setView(view).create();
+                final AlertDialog alert = builder.setView(view).create();
             	alert.setOnShowListener((dialogInterface) -> {
             		Button confirm = alert.getButton(AlertDialog.BUTTON_POSITIVE);
             		input.requestFocus();
@@ -80,11 +81,31 @@ public class AskUtil {
                 		}
 					});
         		});
-                break;
-            case UPDATE:
-                break;
+				return alert;
+			
+            case REQUEST_CLOSE:
+				currentDialog = null;
+                return builder.setTitle("Close the game")
+					.setMessage("Are you sure want to close the game? We will miss you.")
+					.setNegativeButton("Stay here", (dialoginterface, i) -> {
+						dialoginterface.dismiss();
+					})
+                	.setPositiveButton("Close", (dialogInterface, i) -> {
+						callback.callbacked(true);
+					})
+					.setCancelable(true)
+					.create();
+			
+			case UPDATE:
+				return builder.setTitle("Update the game")
+					.setMessage("Hey, there is a new update is out! Go and check it now.")
+					.setPositiveButton("Update", (dialoginterface, i) -> {
+						callback.callbacked(true);
+					}).create();
+			
+			default:
+				return null;
         }
-        alert.show();
 	}
 	
 	public interface AskCallback {

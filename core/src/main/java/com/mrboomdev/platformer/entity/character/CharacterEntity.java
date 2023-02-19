@@ -23,6 +23,8 @@ public class CharacterEntity extends EntityAbstract {
 	private ProjectileManager projectileManager;
 	private boolean isDashing;
 	private float dashProgress, dashReloadProgress;
+	private float staminaReloadMultiply;
+	private boolean isRunning;
 	public CharacterConfig.Stats stats;
 	public CharacterBrain brain;
 	public CharacterSkin skin;
@@ -91,10 +93,11 @@ public class CharacterEntity extends EntityAbstract {
 		if(isDestroyed) return;
 		skin.draw(batch, body.getPosition(), getDirection());
 		
-		stats.stamina = Math.min(stats.maxStamina, stats.stamina + .1f);
+		stats.stamina = Math.min(stats.maxStamina, isRunning ? stats.stamina : stats.stamina + staminaReloadMultiply);
 		
 		dashProgress += Gdx.graphics.getDeltaTime();
 		dashReloadProgress += Gdx.graphics.getDeltaTime();
+		staminaReloadMultiply = Math.min(.3f, staminaReloadMultiply * 1.02f);
 		if(isDashing && dashProgress > Entity.DASH_DURATION) {
 			isDashing = false;
 			dashReloadProgress = 0;
@@ -120,11 +123,12 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void dash() {
-		if(stats.stamina < 40) return;
+		if(stats.stamina < Entity.DASH_COST) return;
 		if(isDashing || dashReloadProgress < Entity.DASH_DELAY) return;
-		config.stats.stamina -= 40;
+		config.stats.stamina -= Entity.DASH_COST;
 		dashProgress = 0;
         isDashing = true;
+		staminaReloadMultiply = .05f;
 		body.setLinearVelocity(wasPower.scl(100).limit(18));
 	}
 	
@@ -132,27 +136,32 @@ public class CharacterEntity extends EntityAbstract {
 		config.stats.health -= damage;
 		if(config.stats.health <= 0) die();
 		MainGame game = MainGame.getInstance();
-        if(name == game.nick) CameraUtil.setCameraShake(.2f, .5f);
+        if(name == MainGame.settings.playerName) CameraUtil.setCameraShake(.2f, .5f);
 	}
 	
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
 		if(isDashing) {
+			isRunning = true;
 			skin.setAnimation(DASH);
 			return;
 		}
 		if(power.isZero() || speed == 0) {
+			isRunning = false;
 			skin.setAnimation(IDLE);
 			super.usePower(Vector2.Zero, 0, false);
-		} else if(getSpeed(power) > speed * 4) {
+		} else if(getSpeed(power) > speed * 6) {
+			isRunning = true;
 			skin.setAnimation(RUN);
-			stats.stamina = Math.max(stats.stamina - .12f, 0);
+			stats.stamina = Math.max(stats.stamina - .05f, 0);
+			staminaReloadMultiply = .05f;
 			if(stats.stamina > 5) {
 				super.usePower(power.scl(100), speed, isBot);
 			} else {
 				super.usePower(power, speed / 2, isBot);
 			}
 		} else {
+			isRunning = false;
 			skin.setAnimation(WALK);
 			super.usePower(power.scl(100), speed / 2, isBot);
 		}
@@ -162,7 +171,7 @@ public class CharacterEntity extends EntityAbstract {
 	public void die() {
 		super.die();
 		MainGame game = MainGame.getInstance();
-        if(name == game.nick) {
+        if(name == MainGame.settings.playerName) {
             game.toggleGameView(false);
         }
 	}

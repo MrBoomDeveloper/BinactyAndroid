@@ -14,7 +14,8 @@ public class StatBarWidget extends ActorUtil {
 	private Track track;
 	private Sprite iconSprite, barSprite, progressSprite;
 	private BitmapFont font;
-	public static final int SIZE = 60;
+	private float currentProgress;
+	public static final int SIZE = 55;
 	
 	public StatBarWidget(Track track) {
 		this.track = track;
@@ -33,22 +34,21 @@ public class StatBarWidget extends ActorUtil {
 				break;
 		}
 		barSprite = new Sprite(texture, 25, 10, 24, 6);
-		barSprite.setSize(200, SIZE - 10);
-		progressSprite.setSize(180, SIZE - 30);
+		barSprite.setSize(200, SIZE - 8);
 		font = asset.get("statBarWidget.ttf", BitmapFont.class);
 	}
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
-		progressSprite.setPosition(getX() + SIZE / 2 + 10, getY() + 5 + 10);
-		progressSprite.setSize(getProgress() * 1.8f, SIZE - 30);
+		progressSprite.setPosition(getX() + SIZE / 2 + 10, getY() + 5 + 8);
+		progressSprite.setSize(getProgress() * 1.8f, SIZE - 20);
 		progressSprite.draw(batch);
 		barSprite.setPosition(getX() + SIZE / 2, getY() + 5);
 		barSprite.draw(batch);
 		iconSprite.setPosition(getX() + (track == Track.HEALTH ? 0 : 6.5f), getY());
 		iconSprite.draw(batch);
 		
-		font.draw(batch, getData(), getX() + SIZE / 2, getY() + 37, 200, Align.center, false);
+		font.draw(batch, getData(), getX() + SIZE / 2, getY() + 35, 200, Align.center, false);
 	}
 	
 	private float getProgress() {
@@ -62,21 +62,21 @@ public class StatBarWidget extends ActorUtil {
 				result = stats.stamina * 100 / stats.maxStamina;
 				break;
 		}
+		result = currentProgress + (result - currentProgress) * .2f;
+		currentProgress = result;
 		return result;
 	}
 	
 	private String getData() {
 		CharacterConfig.Stats stats = connectedEntity.config.stats;
-		String result = "0 / 0";
 		switch(track) {
 			case HEALTH:
-				result = stats.health + " / " + stats.maxHealth;
-				break;
+				return stats.health + " / " + stats.maxHealth;
 			case STAMINA:
-				result = (int)stats.stamina + " / " + (int)stats.maxStamina;
-				break;
+				return (int)stats.stamina + " / " + (int)stats.maxStamina;
+			default:
+				return "0 / 0";
 		}
-		return result;
 	}
 	
 	public enum Track {

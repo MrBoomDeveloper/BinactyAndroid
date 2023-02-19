@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.gson.Gson;
@@ -22,11 +23,7 @@ public class LoadingScreen extends CoreScreen {
     private AssetManager asset;
     private Sprite banner;
     private SpriteBatch batch;
-
-    public enum LoadScene {
-        LOBBY,
-        GAMEPLAY
-    }
+	private BitmapFont font;
 
     public LoadingScreen(LoadScene scene) {
         this.loadScene = scene;
@@ -34,8 +31,9 @@ public class LoadingScreen extends CoreScreen {
         this.asset = game.asset;
         this.batch = new SpriteBatch();
         this.banner = new Sprite(asset.get("ui/banner/loading.jpg", Texture.class));
-        banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        banner.setCenter(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.banner.setCenter(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		this.font = asset.get("loading.ttf", BitmapFont.class);
     }
 
     @Override
@@ -62,21 +60,32 @@ public class LoadingScreen extends CoreScreen {
 
     @Override
     public void render(float delta) {
-        if(asset.update(17)) {
+        batch.begin();
+		{
+			banner.draw(batch);
+			StringBuilder builder = new StringBuilder("Loading: ");
+			builder.append((int)(asset.getProgress() * 100));
+			builder.append("%");
+			font.draw(batch, builder.toString(), 50, 75);
+		}
+        batch.end();
+		
+		if(asset.update(17)) {
             switch(loadScene) {
                 case GAMEPLAY:
                     game.setScreen(new GameplayScreen());
                     break;
             }
         }
-        
-        batch.begin();
-        banner.draw(batch);
-        batch.end();
     }
     
     @Override
     public void dispose() {
         batch.dispose();
+    }
+	
+	public enum LoadScene {
+        LOBBY,
+        GAMEPLAY
     }
 }

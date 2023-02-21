@@ -1,0 +1,39 @@
+{
+	"atmosphere": {
+		"color": [ 200, 200, 200, 1 ],
+		"music": [ "calm_ambient.mp3", "lobby.mp3" ],
+		"tiles": [ "core" ]
+	},
+	
+	"rules": {
+		"worldborder": [ -10, -10, 10, 10 ],
+		"cameraBorder": [ -50, -50, 50, 50 ]
+	},
+	
+	"tiles": [
+		{
+			"name": "floor",
+			"style": "blue",
+			"layer": 0,
+			"position": [ 0, 0 ]
+		},
+		{
+			"name": "floor",
+			"style": "blue",
+			"layer": 0,
+			"position": [ 1, 1 ]
+		},
+		{
+			"name": "wall",
+			"style": "front",
+			"layer": 1,
+			"position": [ 1, 2 ]
+		},
+		{
+			"name": "spawn",
+			"layer": 2,
+			"priority": 1,
+			"position": [ 1, 1 ]
+		}
+	]
+}

@@ -1,43 +1,44 @@
 {
 	"categories": {
-		"event": {
-			"halloween": {
-				"title": "Halloween Event!",
-				"description": "bruh.",
-				"banner": "../../banner/gamemode/halloween.jpg",
-				"maps": ["test/void"],
-				"conditions": {
-					"minLevel": 2,
-					"achievments": ["multiplayer"],
-					"defaultBehavior": "lock"
+		"special": {
+			"fnaf": {
+				"name": "Freddy Fazbear's Pizza",
+				"banner": "addon/fnafBanner.jpg",
+				"tags": [ "Official", "Dark" ],
+				"maps": ["addon/fnafMap.json"],
+				"logic": "fnafGamemode.json",
+				"description": "Let's get back to the pizzeria of our beloved bear and meet old friends!",
+				"author": {
+					"name": "MrBoomDev",
+					"icon": "./icons/mrboomdev.jpg",
+					"url": "https://mrboomdev.ru"
 				}
-			},
-			
-			"christmas": {
-				"title": "Christmas Event!"
 			}
 		},
 		
-		"multiplayer": {
+		"normal": {
+			"hunt": {
+				"title": "Hunt",
+				"description": "4 Hunters vs 1 Survivor",
+				"banner": "hunt.jpg",
+				"maps": [
+					"internal/hunt1.json",
+					"internal/hunt2.json",
+					"internal/hunt3.json"
+				]
+			}
+		},
+		
+		"other": {
 			"tutorial": {
 				"title": "Tutorial",
-				"conditions": {
-					"maxLevel": 2,
-					"defaultBehavior": "hide"
-				}
+				"banner": "other/tutorial.jpg"
 			},
 			
-			"hunt": {
-				"title": "Hunt"
-			},
-			
-			"battle_royale": {
-				"title": "Battle Royale",
-				"maps": ["multiplayer"],
-				"conditions": {
-					"achievments": ["multiplayer"],
-					"defaultBehavior": "lock"
-				}
+			"creator": {
+				"title": "Map Creator",
+				"banner": "other/creator.jpg",
+				"specialBehaviour": "creator"
 			}
 		}
 	}

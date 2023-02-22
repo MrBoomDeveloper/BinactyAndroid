@@ -2,8 +2,6 @@ package com.mrboomdev.platformer.scenes.loading;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,11 +9,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.environment.EnvironmentCreator;
+import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
-import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
-import com.mrboomdev.platformer.scenes.loading.LoadingFiles.File;
-import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
+import com.mrboomdev.platformer.util.FileUtil;
+import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.*;
 
 public class LoadingScreen extends CoreScreen {
     private MainGame game;
@@ -24,6 +22,9 @@ public class LoadingScreen extends CoreScreen {
     private Sprite banner;
     private SpriteBatch batch;
 	private BitmapFont font;
+	private EnvironmentCreator environmentCreator;
+	private EnvironmentManager environment;
+	private LoadStep loadStep = PREPAIRING;
 
     public LoadingScreen(LoadScene scene) {
         this.loadScene = scene;
@@ -40,44 +41,58 @@ public class LoadingScreen extends CoreScreen {
     public void show() {
         switch(loadScene) {
             case LOBBY:
+				loadOtherResources();
                 MainGame.getInstance().toggleGameView(false);
                 break;
+			
             case GAMEPLAY:
-                EnvironmentCreator creator = new EnvironmentCreator(world -> {
-                    game.analytics.logInfo("WorldStatus", "Successfully created world!");
-                }, exception -> {
-                    game.analytics.logError("WorldStatus", "An exception has occured while creating a world.");
-                    Gdx.app.exit();
-                });
-                creator.start();
+				new EnvironmentCreator()
+					.setGamemode(new FileUtil("world/packs/fnaf/gamemode.json", FileUtil.Source.INTERNAL))
+					.setMap(new FileUtil("world/packs/fnaf/maps/fnafMap1.json", FileUtil.Source.INTERNAL))
+					.onCreate(manager -> {
+						this.environment = manager;
+						loadOtherResources();
+					}).create();
+					loadStep = MAP;
                 break;
         }
-		
+    }
+	
+	private void loadOtherResources() {
 		Gson gson = new Gson();
 		LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
 		files.loadToManager(asset, loadScene.name());
-    }
+		this.loadStep = RESOURCES;
+	}
 
     @Override
     public void render(float delta) {
         batch.begin();
 		{
 			banner.draw(batch);
-			StringBuilder builder = new StringBuilder("Loading: ");
-			builder.append((int)(asset.getProgress() * 100));
-			builder.append("%");
-			font.draw(batch, builder.toString(), 50, 75);
+			font.draw(batch, getStatus(), 50, 75);
 		}
         batch.end();
 		
-		if(asset.update(17)) {
+		if(asset.update(17) && loadStep == RESOURCES) {
             switch(loadScene) {
                 case GAMEPLAY:
-                    game.setScreen(new GameplayScreen());
+                    game.setScreen(new GameplayScreen(environment));
                     break;
             }
         }
     }
+	
+	private String getStatus() {
+		switch(loadStep) {
+			case MAP:
+				return "Building the map...";
+			case RESOURCES:
+				return "Loading resources...";
+			default:
+				return "Prepairing...";
+		}
+	}
     
     @Override
     public void dispose() {
@@ -88,4 +103,10 @@ public class LoadingScreen extends CoreScreen {
         LOBBY,
         GAMEPLAY
     }
+	
+	public enum LoadStep {
+		PREPAIRING,
+		MAP,
+		RESOURCES
+	}
 }

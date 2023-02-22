@@ -7,37 +7,35 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.ScreenUtils;
-//import com.crashinvaders.vfx.effects.
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.EntityPresets;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
-//import com.crashinvaders.vfx.VfxManager;
-//import com.mrboomdev.platformer.util.anime.AnimeManual;
 
 public class GameplayScreen extends CoreScreen {
 	public OrthographicCamera camera;
 	public EntityManager entities;
+	public EnvironmentManager environment;
 	private MainGame game;
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
 	private MapManager map;
-	private World world;
 	private GameplayUi ui;
 	private RayHandler rayHandler;
 	private Box2DDebugRenderer debugRenderer;
-	//private VfxManager vfx;
-	// private AnimeManual anime;
+	
+	public GameplayScreen(EnvironmentManager manager) {
+		this.environment = manager;
+	}
 	
 	@Override
 	public void render(float delta) {
@@ -49,6 +47,7 @@ public class GameplayScreen extends CoreScreen {
 		{
 			map.render(batch, MapLayer.BACKGROUND);
 			map.render(batch, MapLayer.FOREGROUND);
+			environment.render(batch);
 			entities.render(batch, camera);
 		}
 		batch.end();
@@ -56,8 +55,7 @@ public class GameplayScreen extends CoreScreen {
 		rayHandler.updateAndRender();
 		batch.begin();
 		{
-			if(MainGame.settings.debugRenderer) debugRenderer.render(world, camera.combined);
-			//map.renderDebug(shapeRenderer);
+			if(MainGame.settings.debugRenderer) debugRenderer.render(environment.world, camera.combined);
 			ui.render(delta);
 		}
 		batch.end();
@@ -69,7 +67,7 @@ public class GameplayScreen extends CoreScreen {
 				camera.position.y + (playerPosition.y - camera.position.y) * .1f
 			), 0);
 		}
-		world.step(Math.min(delta, 1 / 60f), 6, 2);
+		environment.world.step(Math.min(delta, 1 / 60f), 6, 2);
 		CameraUtil.update(delta);
 	}
 	
@@ -78,34 +76,26 @@ public class GameplayScreen extends CoreScreen {
 		game = MainGame.getInstance();
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
-		Box2D.init();
 		
-		// anime = new AnimeManual();
-		// anime.addEntity(shapeRenderer);
-		/*anime.setUpdateListener((ShapeRenderer shapeRenderer) -> {
-			
-		});*/
-		
-		world = new World(new Vector2(0, 0), true);
-		world.setContactListener(new ProjectileColission());
-		rayHandler = new RayHandler(world);
+		environment.world.setContactListener(new ProjectileColission());
+		rayHandler = new RayHandler(environment.world);
 		rayHandler.setAmbientLight(0, 0, 0, .1f);
 		rayHandler.setBlurNum(3);
 		camera = new OrthographicCamera(32, 18);
 		
 		map = new MapManager();
 		map.load(Gdx.files.internal("world/maps/test_01.json"));
-		map.build(world, rayHandler);
+		map.build(environment.world, rayHandler);
 		map.setCamera(camera);
 		
-		entities = new EntityManager(world, rayHandler)
+		entities = new EntityManager(environment.world, rayHandler)
 			.setSpawnsPositions(map.spawnPositions)
 			.addPresets(EntityPresets.getInternal())
 			.addBots(MainGame.settings.botsCount);
 		
 		CharacterEntity player = new CharacterEntity(MainGame.settings.playerName)
 			.setConfigFromJson(Entity.getInternal(Entity.CHARACTER, "klarrie","manifest.json").readString())
-			.create(world);
+			.create(environment.world);
 		
 		entities.addCharacter(player);
 		entities.setMain(player);

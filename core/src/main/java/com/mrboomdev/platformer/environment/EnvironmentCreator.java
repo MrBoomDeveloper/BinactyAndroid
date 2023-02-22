@@ -1,45 +1,44 @@
 package com.mrboomdev.platformer.environment;
 
 import com.badlogic.gdx.Gdx;
+import com.google.gson.Gson;
+import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.util.FileUtil;
 
 public class EnvironmentCreator {
-	private onCreate createHandler;
-	private onException exceptionHandler;
+	private EnvironmentManager manager;
+	private onCreateListener createListener;
+	private FileUtil gamemodeFile, mapFile;
 	
 	public EnvironmentCreator() {
-		
+		this.manager = new EnvironmentManager();
 	}
 	
-	public EnvironmentCreator setGamemode(String path, FileUtil.SourceType sourceType) {
+	public EnvironmentCreator setGamemode(FileUtil file) {
+		this.gamemodeFile = file;
 		return this;
 	}
 	
-	public EnvironmentCreator(onCreate createHandler, onException exceptionHandler) {
-		this.createHandler = createHandler;
-		this.exceptionHandler = exceptionHandler;
-	}
-
-	@Override
-	public void run() {
-		try {
-			sleep(25);
-			sleep(25);
-			sleep(25);
-			sleep(25);
-			sleep(25);
-		} catch(InterruptedException e) {
-			e.printStackTrace();
-			Gdx.app.postRunnable(() -> exceptionHandler.exception(e));
-		}
-		Gdx.app.postRunnable(() -> createHandler.create(this));
+	public EnvironmentCreator setMap(FileUtil file) {
+		this.mapFile = file;
+		return this;
 	}
 	
-	public interface onCreate {
-		public void create(EnvironmentCreator environment);
+	public EnvironmentCreator onCreate(onCreateListener listener) {
+		this.createListener = listener;
+		return this;
 	}
 	
-	public interface onException {
-		public void exception(Exception e);
+	public void create() {
+		new Thread(() -> {
+			Gson gson = new Gson();
+			manager.map = gson.fromJson(mapFile.readString(), EnvironmentMap.class)
+				.build(manager.world, mapFile);
+			createListener.created(manager);
+		}).start();
+	}
+	
+	public interface onCreateListener {
+		void created(EnvironmentManager manager);
 	}
 }

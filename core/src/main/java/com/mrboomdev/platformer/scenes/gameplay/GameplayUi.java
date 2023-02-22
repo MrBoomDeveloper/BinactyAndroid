@@ -1,8 +1,10 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.widgets.StatBarWidget;
@@ -97,6 +99,18 @@ public class GameplayUi implements CoreUi {
 				cameraZoom = gameplay.camera.zoom;
 			}
 		});
+		
+		stage.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if(MainGame.settings.enableEditor) {
+					Vector3 gamePosition = gameplay.camera.unproject(new Vector3(x, Gdx.graphics.getHeight() - y, 0));
+					float[] roundPosition = {Math.round(gamePosition.x), Math.round(gamePosition.y), 0};
+					screen.environment.map.addTile("wall", roundPosition, 1);
+				}
+			}
+		});
+		
 		if(MainGame.settings.debugStage) stage.setDebugAll(true);
 	}
 	

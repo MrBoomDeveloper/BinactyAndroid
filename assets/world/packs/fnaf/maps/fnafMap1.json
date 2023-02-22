@@ -1,0 +1,44 @@
+{
+	"atmosphere": {
+		"color": { "values": [ 200, 200, 200, 1 ] },
+		"music": [ "calm_ambient.mp3", "lobby.mp3" ],
+		"tiles": [ "../blocks.json" ]
+	},
+	
+	"rules": {
+		"worldborder": [ -10, -10, 10, 10 ],
+		"cameraBorder": [ -50, -50, 50, 50 ]
+	},
+	
+	"tiles": [
+		{
+			"name": "floor",
+			"layer": 0,
+			"position": [ 0, 0, 0 ]
+		}, {
+			"name": "floor",
+			"layer": 0,
+			"position": [ 2, 0, 0 ]
+		}, {
+			"name": "floor",
+			"layer": 0,
+			"position": [ 4, 0, 0 ]
+		}, {
+			"name": "floor",
+			"layer": 0,
+			"position": [ 6, 0, 0 ]
+		}, {
+			"name": "floor",
+			"layer": 0,
+			"position": [ 8, 0, 0 ]
+		}, {
+			"name": "wall",
+			"layer": 1,
+			"position": [ 0, 2, 0 ]
+		}, {
+			"name": "wall",
+			"layer": 1,
+			"position": [ 2, 2, 0 ]
+		}
+	]
+}

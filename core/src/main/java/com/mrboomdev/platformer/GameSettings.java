@@ -1,10 +1,13 @@
 package com.mrboomdev.platformer;
 
+import com.mrboomdev.platformer.util.FileUtil;
+
 public class GameSettings {
 	public String playerName = "Player";
 	public int screenInset = 60;
 	public int musicVolume = 100, soundsVolume = 100;
 	public boolean debugRenderer, debugValues, debugStage;
+	public boolean enableEditor = true;
 	public int botsCount = 8;
 	
 	public GameSettings setPlayerName(String name) {
@@ -20,6 +23,10 @@ public class GameSettings {
 	public GameSettings setVolume(int musicVolume, int soundsVolume) {
 		this.musicVolume = musicVolume;
 		this.soundsVolume = soundsVolume;
+		return this;
+	}
+	
+	public GameSettings setMode(FileUtil gamemode, FileUtil map, boolean enableEditor) {
 		return this;
 	}
 	

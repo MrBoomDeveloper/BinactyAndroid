@@ -9,8 +9,6 @@ plugins {
 }
 
 def enableSeparateBuildPerCPUArchitecture = false
-def enableProguardInReleaseBuilds = false
-def jscFlavor = 'org.webkit:android-jsc:+'
 
 def reactNativeArchitectures() {
     def value = project.getProperties().get("reactNativeArchitectures")
@@ -32,29 +30,13 @@ android {
 			jniLibs.srcDirs = ['libs']
 		}
 	}
-    
-	packagingOptions {
-		// Preventing from license violations (more or less):
-		pickFirst 'META-INF/LICENSE.txt'
-		pickFirst 'META-INF/LICENSE'
-		pickFirst 'META-INF/license.txt'
-		pickFirst 'META-INF/LGPL2.1'
-		pickFirst 'META-INF/NOTICE.txt'
-		pickFirst 'META-INF/NOTICE'
-		pickFirst 'META-INF/notice.txt'
-		// Excluding unnecessary meta-data:
-		exclude 'META-INF/robovm/ios/robovm.xml'
-		exclude 'META-INF/DEPENDENCIES.txt'
-		exclude 'META-INF/DEPENDENCIES'
-		exclude 'META-INF/dependencies.txt'
-	}
-    
+	
 	defaultConfig {
 		applicationId 'com.mrboomdev.platformer'
 		minSdkVersion 25
 		targetSdkVersion 32
-		versionCode 10
-		versionName "0.2.2"
+		versionCode 11
+		versionName "0.2.3"
 		multiDexEnabled true
 	}
     
@@ -83,11 +65,16 @@ android {
 	
 	buildTypes {
         debug {
+			applicationIdSuffix ".debug"
+			versionNameSuffix "-debug"
             signingConfig signingConfigs.debug
         }
         release {
+			versionNameSuffix "-release"
+			isDebuggable = false
             signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
+            minifyEnabled true
+			shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
@@ -112,10 +99,8 @@ configurations { natives }
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
 	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-	implementation project(':core')
     implementation platform('com.google.firebase:firebase-bom:31.1.1')
     implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-config'
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
 	
@@ -137,12 +122,15 @@ dependencies {
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.flipper'
     }
-
-    if (hermesEnabled.toBoolean()) {
-        implementation("com.facebook.react:hermes-android")
-    } else {
-        implementation jscFlavor
-    }
+	implementation 'org.webkit:android-jsc:+'
+	
+	
+	implementation "com.badlogicgames.box2dlights:box2dlights:1.4"
+    implementation "com.badlogicgames.gdx:gdx-ai:1.8.1"
+	implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+	implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+	
+	api "com.badlogicgames.gdx:gdx:$gdxVersion"
 	
 	implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"

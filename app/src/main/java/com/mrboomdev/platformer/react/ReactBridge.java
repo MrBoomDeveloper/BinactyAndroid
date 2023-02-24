@@ -12,19 +12,16 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.AndroidLauncher;
 import com.mrboomdev.platformer.MainGame;
-import com.mrboomdev.platformer.util.Analytics;
+import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.AskUtil;
 import com.mrboomdev.platformer.util.StateUtil;
 import android.content.Intent;
 
 public class ReactBridge extends ReactContextBaseJavaModule {
     private MainGame game;
-    private Analytics analytics;
     
     ReactBridge(ReactApplicationContext context) {
         super(context);
-        game = MainGame.getInstance();
-        analytics = game.analytics; //FIXME
     }
 
     @Override
@@ -34,7 +31,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void setKey(String key, String value, String type) {
-		SharedPreferences prefs = StateUtil.getActivity("Launcher").getSharedPreferences("Save", 0);
+		SharedPreferences prefs = StateUtil.getActivity("React").getSharedPreferences("Save", 0);
 		switch(type) {
 			case "string":
 				prefs.edit().putString(key, value).commit();
@@ -50,7 +47,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void getKeys(ReadableArray keys, Callback callback) {
-		SharedPreferences prefs = StateUtil.getActivity("Launcher").getSharedPreferences("Save", 0);
+		SharedPreferences prefs = StateUtil.getActivity("React").getSharedPreferences("Save", 0);
 		WritableArray result = Arguments.createArray();
 		for(int i = 0; i < keys.size(); i++) {
 			ReadableMap was = keys.getMap(i);
@@ -109,17 +106,15 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void requestClose() {
 		AskUtil.ask(AskUtil.AskType.REQUEST_CLOSE, obj -> {
-			StateUtil.getActivity("Launcher").finish();
-			StateUtil.getActivity("React").finish();
+			StateUtil.getActivity("React").finishAffinity();
 		});
 	}
     
     @ReactMethod
     public void play(int gamemode) {
-        AndroidLauncher launcher = (AndroidLauncher)StateUtil.getActivity("Launcher");
 		ReactActivity react = (ReactActivity)StateUtil.getActivity("React");
 		
-		Intent intent = new Intent(react, AndroidLauncher.class);
+		Intent intent = new Intent(react, GameLauncher.class);
 		intent.putExtra("state", "play");
 		react.startActivity(intent);
     }

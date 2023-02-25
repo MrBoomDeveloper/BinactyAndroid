@@ -7,7 +7,6 @@
     - Fix movement to the space when player is near of walls
     - Stuck position escaping
     - Try to defense
-    - Random glitches to look like a human
     - Random personalities
   - More maps:
     - More blocks
@@ -15,7 +14,6 @@
   - More characters:
     - More animations
     - More skins
-  - Actions (Attack, shield)
   - Effects (Fire, boom and etc.)
   - Sounds (Footsteps, effects and etc.)
 - Multiplayer mode:
@@ -33,7 +31,6 @@
   - Shop screen
   - Achievments screen
   - Settings screen:
-    - Saving config and restoring it from storage
     - Cloud backup
   - Profile overview
     - My own profile

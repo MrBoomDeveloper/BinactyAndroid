@@ -14,7 +14,6 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.mrboomdev.platformer.AndroidLauncher;
 import com.mrboomdev.platformer.R;
 
 public class AskUtil {

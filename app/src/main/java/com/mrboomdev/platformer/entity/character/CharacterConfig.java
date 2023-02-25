@@ -1,8 +1,11 @@
 package com.mrboomdev.platformer.entity.character;
 
+import com.google.gson.annotations.SerializedName;
+
 public class CharacterConfig {
 	public String id, name, skin;
 	public float[] bodySize;
+	public float[] body3D;
 	public Stats stats;
 	
 	public CharacterConfig build() {

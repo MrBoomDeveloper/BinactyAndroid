@@ -40,7 +40,9 @@ public class GameHolder extends Game {
 	}
 	
 	public static GameHolder getInstance() {
-		instance.analytics.log("GameHolder", "getInstance");
+		if(instance == null) {
+			throw new RuntimeException("You need to set the instance first!");
+		}
 		return instance;
 	}
 	

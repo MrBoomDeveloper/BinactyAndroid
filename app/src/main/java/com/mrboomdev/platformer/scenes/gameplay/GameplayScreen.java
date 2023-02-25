@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.EntityPresets;
@@ -54,8 +53,10 @@ public class GameplayScreen extends CoreScreen {
 			entities.render(batch, camera);
 		}
 		batch.end();
-		rayHandler.setCombinedMatrix(camera);
-		rayHandler.updateAndRender();
+		if(!game.settings.debugRaysDisable) {
+			rayHandler.setCombinedMatrix(camera);
+			rayHandler.updateAndRender();
+		}
 		batch.begin();
 		{
 			if(game.settings.debugRenderer) {
@@ -83,9 +84,8 @@ public class GameplayScreen extends CoreScreen {
 		debugRenderer = new Box2DDebugRenderer();
 		
 		environment.world.setContactListener(new ProjectileColission());
-		rayHandler = new RayHandler(environment.world);
-		rayHandler.setAmbientLight(0, 0, 0, .1f);
-		rayHandler.setBlurNum(3);
+		environment.setupRayHandler();
+		rayHandler = environment.rayHandler;
 		camera = new OrthographicCamera(32, 18);
 		
 		map = new MapManager();
@@ -101,6 +101,7 @@ public class GameplayScreen extends CoreScreen {
 		CharacterEntity player = new CharacterEntity(game.settings.playerName)
 			.setConfigFromJson(Entity.getInternal(Entity.CHARACTER, "klarrie","manifest.json").readString())
 			.create(environment.world);
+		game.settings.mainPlayer = player;
 		
 		entities.addCharacter(player);
 		entities.setMain(player);
@@ -108,6 +109,7 @@ public class GameplayScreen extends CoreScreen {
 		
 		ui = new GameplayUi(this, player);
 		Gdx.input.setInputProcessor(ui.stage);
+		environment.attachUi(ui);
 		
 		Music lobbyTheme = game.assets.get("audio/music/lobby_theme.mp3", Music.class);
 		lobbyTheme.setVolume(.2f * game.settings.musicVolume / 100);

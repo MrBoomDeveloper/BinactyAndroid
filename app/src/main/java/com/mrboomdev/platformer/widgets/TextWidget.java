@@ -9,10 +9,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Align;
-import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.util.ActorUtil;
 
-public class TextWidget extends Actor {
+public class TextWidget extends ActorUtil {
+	public float opacity = 1;
     private GlyphLayout glyph;
     private BitmapFont font;
     private String text = "";
@@ -22,10 +23,18 @@ public class TextWidget extends Actor {
 		glyph = new GlyphLayout(font, text);
     }
     
-    public void setText(String text) {
+    public TextWidget setText(String text) {
         this.text = text;
         this.glyph.setText(font, text);
+		return this;
     }
+	
+	public TextWidget setOpacity(float opacity) {
+		this.opacity = opacity;
+		font.setColor(1, 1, 1, opacity);
+		glyph.setText(font, text);
+		return this;
+	}
 	
 	@Override
 	public void draw(Batch batch, float alpha) {

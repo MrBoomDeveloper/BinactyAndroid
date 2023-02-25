@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
-import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.util.Direction;
@@ -25,7 +24,7 @@ public class SplashScreen extends CoreScreen {
     @Override
     public void show() {
 		Gson gson = new Gson();
-        asset = MainGame.getInstance().asset;
+        //asset = MainGame.getInstance().assets;
         LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
 		files.loadToManager(asset, "LOADING");
 	    batch = new SpriteBatch();
@@ -42,7 +41,7 @@ public class SplashScreen extends CoreScreen {
             })
             .addTimecodeListener(2.5f, unused -> {
                 asset.finishLoading();
-                MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.LOBBY));
+                //MainGame.getInstance().setScreen(new LoadingScreen(LoadingScreen.LoadScene.LOBBY));
             })
             .setUpdateListener((float delta, Array<Object> entries) -> {
                 if(direction.isForward()) {

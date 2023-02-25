@@ -4,9 +4,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.Block;
+import com.mrboomdev.platformer.environment.EnvironmentBlock;
 import com.mrboomdev.platformer.projectile.ProjectileAttack;
 import com.mrboomdev.platformer.projectile.ProjectileBullet;
 
@@ -39,6 +41,7 @@ public class ProjectileColission implements ContactListener {
 		if(me instanceof ProjectileBullet && (
 		   enemy instanceof CharacterEntity ||
 		   enemy instanceof Block ||
+		   enemy instanceof EnvironmentBlock ||
 		   enemy instanceof ProjectileBullet ||
 		   enemy instanceof ProjectileAttack)
 		) {
@@ -49,14 +52,23 @@ public class ProjectileColission implements ContactListener {
 	
 	@Override
     public void preSolve(Contact contact, Manifold manifold) {
-		onCheckColission(contact.getFixtureA().getBody().getUserData(), contact.getFixtureB().getBody().getUserData(), contact);
-		onCheckColission(contact.getFixtureB().getBody().getUserData(), contact.getFixtureA().getBody().getUserData(), contact);
+		onCheckColission(contact.getFixtureA().getBody().getUserData(),
+			contact.getFixtureB().getBody().getUserData(), contact.getFixtureA(), contact);
+		
+		onCheckColission(contact.getFixtureB().getBody().getUserData(),
+			contact.getFixtureA().getBody().getUserData(), contact.getFixtureB(), contact);
 	}
 	
-	private void onCheckColission(Object me, Object enemy, Contact contact) {
+	private void onCheckColission(Object me, Object enemy, Fixture fixture, Contact contact) {
 		if(me instanceof ProjectileBullet || 
 		   me instanceof ProjectileAttack) {
 			contact.setEnabled(false);
+		}
+		
+		if(me instanceof CharacterEntity && enemy instanceof EnvironmentBlock) {
+			if(((CharacterEntity)me).bottomFixture != fixture) {
+				contact.setEnabled(false);
+			}
 		}
 	}
 

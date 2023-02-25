@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.widgets.StatBarWidget;
@@ -19,13 +18,12 @@ import com.mrboomdev.platformer.widgets.ActionButton;
 import com.mrboomdev.platformer.widgets.TextWidget;
 import com.mrboomdev.platformer.widgets.StatBarWidget.Track;
 
-public class GameplayUi implements CoreUi {
+public class GameplayUi extends CoreUi {
 	private float time = 360000;
 	private TextWidget timer;
 	private GameplayScreen gameplay;
 	private JoystickWidget joystick;
 	private float cameraZoom;
-	public Stage stage;
 	public DebugValuesWidget debugValues;
 	public GameHolder game = GameHolder.getInstance();
 	
@@ -116,6 +114,7 @@ public class GameplayUi implements CoreUi {
 		if(game.settings.debugStage) stage.setDebugAll(true);
 	}
 	
+	@Override
 	public void render(float delta) {
 		stage.act(delta);
 		stage.draw();
@@ -127,6 +126,7 @@ public class GameplayUi implements CoreUi {
 		if(time <= 0) for(CharacterEntity entity : gameplay.entities.getAllCharacters()) {
 			entity.die();
 		}
+		super.render(delta);
 	}
 	
 	public void dispose() {

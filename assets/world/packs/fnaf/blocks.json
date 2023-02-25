@@ -2,7 +2,8 @@
 	"wall": {
 		"texture": "tiles/wall_front.png",
 		"size": [2, 4, 0, 0],
-		"colission": [2, 4, 0, 0]
+		"colission": [2, 3.2, 0, -0.8],
+		"shadowColission": [2, 0.8, 0, 1.6]
 	},
 	
 	"floor": {

@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.mrboomdev.platformer.react.ReactActivity;
 
 public class NotificationReceiver extends FirebaseMessagingService {
 
@@ -15,7 +16,7 @@ public class NotificationReceiver extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage message) {
         super.onMessageReceived(message);
         Log.i("Firebase", "Notification received");
-        Intent intent = new Intent(this, AndroidLauncher.class);
+        Intent intent = new Intent(this, ReactActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);

@@ -1,7 +1,6 @@
 package com.mrboomdev.platformer.widgets;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import java.util.TreeMap;

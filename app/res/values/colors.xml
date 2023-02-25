@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="boom_primary">#442299</color>
+	<color name="boom_background">#11071F</color>
 </resources>

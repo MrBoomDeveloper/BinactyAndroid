@@ -1,8 +1,11 @@
 package com.mrboomdev.platformer.environment;
 
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
+import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
+import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
 import com.mrboomdev.platformer.util.FileUtil;
 
 public class EnvironmentCreator {
@@ -32,8 +35,8 @@ public class EnvironmentCreator {
 	public void create() {
 		new Thread(() -> {
 			Gson gson = new Gson();
-			manager.map = gson.fromJson(mapFile.readString(), EnvironmentMap.class)
-				.build(manager.world, mapFile);
+			manager.map = gson.fromJson(mapFile.readString(), EnvironmentMap.class).build(manager.world, mapFile);
+			manager.gamemode = new GamemodeManager(gson.fromJson(gamemodeFile.readString(), GamemodeScript.class));
 			createListener.created(manager);
 		}).start();
 	}

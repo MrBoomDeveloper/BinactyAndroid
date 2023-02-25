@@ -1,0 +1,20 @@
+package com.mrboomdev.platformer.environment.gamemode;
+
+import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class GamemodeScript {
+	public ArrayList<GamemodeFunction> start = new ArrayList<>();
+	public HashMap<Action, ArrayList<GamemodeFunction>> listeners = new HashMap<>();
+	public ArrayList<Team> teams;
+	
+	public class Team {
+		public String name = "Team";
+		public Target[] target;
+		public int count = 100;
+		public boolean strictOrder = false;
+		public boolean repeatCharacters = false;
+		public String[] forceCharacters;
+	}
+}

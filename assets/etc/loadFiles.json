@@ -5,14 +5,19 @@
 				{ "path": "ui/banner/loading.jpg", "type": "texture" },
 				{ "path": "etc/blank.png", "type": "texture" },
 				{
-					"path": "font/gilroyBold.ttf", "as": "loading.ttf",
+					"path": "font/gilroyBold.ttf", "as": "loading.ttf", "type": "font",
 					"font": {
 						"size": 45,
 						"color": { values: [255, 255, 255, 1] },
 						"borderSize": 3,
 						"borderColor": { values: [0, 0, 0, 1] }
-					},
-					"type": "font"
+					}
+				}, {
+					"path": "font/gilroyBold.ttf", "as": "title.ttf", "type": "font",
+					"font": {
+						"size": 100,
+						"color": { values: [255, 255, 255, 1] }
+					}
 				}
 			]
 		},
@@ -35,41 +40,37 @@
 				{ "path": "world/player/weapon/projectile/bullet_fire.png", "type": "texture" },
 				{ "path": "audio/sounds/boom.mp3", "type": "sound" },
 				{ 
-					"path": "font/roboto-medium.ttf", "as": "debug.ttf",
+					"path": "font/roboto-medium.ttf", "as": "debug.ttf", "type": "font",
 					"font": {
 						"size": 14,
 						"color": { values: [255, 255, 255, 1] },
 						"borderSize": 1,
 						"borderColor": { values: [0, 0, 0, 1] }
-					},
-					"type": "font"
+					}
 				}, {
-					"path": "font/roboto-medium.ttf", "as": "nick.ttf",
+					"path": "font/roboto-medium.ttf", "as": "nick.ttf", "type": "font",
 					"font": {
 						"size": 20,
 						"color": { values: [255, 255, 255, 1] },
 						"borderSize": 1,
 						"borderColor": { values: [0, 0, 0, 1] }
-					},
-					"type": "font"
+					}
 				}, {
-					"path": "font/gilroyBold.ttf", "as": "timer.ttf",
+					"path": "font/gilroyBold.ttf", "as": "timer.ttf", "type": "font",
 					"font": {
 						"size": 60,
 						"color": { values: [255, 255, 255, 1] },
 						"borderColor": { values: [0, 0, 0, 1] },
 						"borderSize": 1
-					},
-					"type": "font"
+					}
 				}, {
-					"path": "font/productSansBlack.ttf", "as": "statBarWidget.ttf",
+					"path": "font/productSansBlack.ttf", "as": "statBarWidget.ttf", "type": "font",
 					"font": {
 						"size": 18,
 						"color": { values: [255, 255, 255, 1] },
 						"borderColor": { values: [0, 0, 0, 1] },
 						"borderSize": 2
-					},
-					"type": "font"
+					}
 				}
 			],
 			"unload": [

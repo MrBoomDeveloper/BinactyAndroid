@@ -10,15 +10,12 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.mrboomdev.platformer.AndroidLauncher;
-import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.AskUtil;
 import com.mrboomdev.platformer.util.StateUtil;
 import android.content.Intent;
 
 public class ReactBridge extends ReactContextBaseJavaModule {
-    private MainGame game;
     
     ReactBridge(ReactApplicationContext context) {
         super(context);

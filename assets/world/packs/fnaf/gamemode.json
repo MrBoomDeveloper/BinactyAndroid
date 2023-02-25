@@ -1,30 +1,36 @@
 {
 	"start": [
 		{
+			"action": "FADE",
+			"options": {
+				"from": 1,
+				"direction": -1,
+				"duration": 3
+			}
+		}, {
 			"action": "TIMER_SETUP",
 			"options": {
-				"type": "clock",
-				"clockStart": [ 11, 45 ],
-				"duration": 375,
-				"speed": 1,
-				"direction": "FORWARD"
+				"timerStart": [ 11, 45 ],
+				"timerEnd": [6, 00],
+				"direction": 1
 			}
 		}, {
 			"action": "TELEPORT",
 			"options": {
-				"target": "ALL_PLAYERS",
+				"target": [ "ALL_PLAYERS" ],
 				"toSpecial": "PLAYER_SPAWN"
 			}
 		}, {
 			"action": "TELEPORT",
 			"options": {
-				"target": "ALL_BOTS",
+				"target": [ "ALL_BOTS" ],
 				"toSpecial": "BOT_SPAWN"
 			}
 		}, {
-			"action": "TITLE",
+			"action": "TITLE", "isLong": true,
 			"options": {
-				"text": "SURVIVE THE NIGHT"
+				"text": "SURVIVE THE NIGHT",
+				"duration": 4
 			}
 		}
 	],
@@ -44,10 +50,10 @@
 		"DEATH": [{
 			"action": "GAME_OVER",
 			"conditions": {
-				"target": "ALL_PLAYERS"
+				"target": [ "ALL_PLAYERS" ]
 			},
 			"options": {
-				"winners": "ALL_BOTS"
+				"target": [ "ALL_BOTS" ]
 			}
 		}]
 	},
@@ -55,12 +61,13 @@
 	"teams": [
 		{
 			"name": "Guard",
-			"target": "ALL_PLAYERS"
+			"target": [ "ALL_PLAYERS" ],
 			"count": 1
 		}, {
 			"name": "Animatronics",
-			"target": "ALL_BOTS",
+			"target": [ "ALL_BOTS" ],
 			"count": 4,
+			"strictOrder": true,
 			"repeatCharacters": false,
 			"forceCharacters": [
 				"freddy",

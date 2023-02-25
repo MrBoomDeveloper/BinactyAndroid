@@ -1,10 +1,11 @@
 package com.mrboomdev.platformer.util;
+
 import com.badlogic.gdx.math.Vector2;
 
 public class Direction {
     public static final int NONE = 0;
     public static final int FORWARD = 1;
-    public static final int BACKWARD = 2;
+    public static final int BACKWARD = -1;
     public int current = NONE;
         
     public Direction(int direction) {
@@ -16,7 +17,7 @@ public class Direction {
 	}
     
     public Direction reverse() {
-        return new Direction(current == 1 ? 2 : 1);
+        return new Direction(current == FORWARD ? BACKWARD : FORWARD);
     }
     
     public void setFrom(float x) {

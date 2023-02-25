@@ -9,7 +9,7 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission;
 import com.itsaky.androidide.logsender.LogSender;
-import com.mrboomdev.platformer.AndroidLauncher;
+import com.mrboomdev.platformer.react.ReactActivity;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class ExternalHandlerActivity extends Activity {
         reader.close();
         stream.close();
         Log.d(tag, builder.toString());
-        Intent intent = new Intent(this, AndroidLauncher.class);
+        Intent intent = new Intent(this, ReactActivity.class);
         intent.putExtra("loadFile", true);
         intent.putExtra("fileContent", builder.toString());
         startActivity(intent);

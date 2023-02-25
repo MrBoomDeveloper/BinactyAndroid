@@ -6,12 +6,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
 import com.google.gson.Gson;
-import com.mrboomdev.platformer.MainGame;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -26,6 +27,7 @@ public class CharacterEntity extends EntityAbstract {
 	private float dashProgress, dashReloadProgress;
 	private float staminaReloadMultiply;
 	private boolean isRunning;
+	public Fixture bottomFixture;
 	public CharacterConfig.Stats stats;
 	public CharacterBrain brain;
 	public CharacterSkin skin;
@@ -41,19 +43,31 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public CharacterEntity create(World world) {
+		if(config.body3D == null) {
+			config.body3D = new float[]{config.bodySize[0], config.bodySize[1], 0, 0};
+		}
+		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
-		
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(config.bodySize[0] / 2, config.bodySize[1] / 2);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		
+		PolygonShape shape3D = new PolygonShape();
+		shape3D.setAsBox(config.body3D[0] / 2, config.body3D[1] / 2,
+			new Vector2(config.body3D[2], config.body3D[3]), 0);
+		FixtureDef fixture3D = new FixtureDef();
+		fixture3D.shape = shape3D;
+		
 		this.world = world;
 		this.body = world.createBody(bodyDef);
 		body.createFixture(fixtureDef);
+		bottomFixture = body.createFixture(fixture3D);
 		body.setUserData(this);
+		
 		shape.dispose();
+		shape3D.dispose();
 		
 		projectileManager = new ProjectileManager(world, this)
 			.setBulletConfig(new ProjectileBullet.ProjectileStats()

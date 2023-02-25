@@ -71,7 +71,6 @@ android {
         }
         release {
 			versionNameSuffix "-release"
-			isDebuggable = false
             signingConfig signingConfigs.debug
             minifyEnabled true
 			shrinkResources true

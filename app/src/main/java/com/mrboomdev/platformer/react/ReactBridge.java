@@ -101,18 +101,60 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     }
 	
 	@ReactMethod
+	public void getGamemodes(Callback callback) {
+		WritableMap map = Arguments.createMap();
+		WritableArray special = Arguments.createArray();
+		WritableArray other = Arguments.createArray();
+		
+		for(int i = 0; i < 10; i++) {
+			WritableMap fnaf = Arguments.createMap();
+			fnaf.putString("name", "Test Gamemode #" + i);
+			fnaf.putString("key", "fnaf" + i);
+			fnaf.putString("author", "MrBoomDev");
+			special.pushMap(fnaf);
+		}
+		
+		for(int i = 0; i < 10; i++) {
+			WritableMap test = Arguments.createMap();
+			test.putString("name", "Test gamemode #" + i);
+			test.putString("key", "halloween" + i);
+			test.putString("author", "MrBoomDev");
+			other.pushMap(test);
+		}
+		
+		map.putArray("special", special);
+		map.putArray("other", other);
+		callback.invoke(map);
+	}
+	
+	@ReactMethod
+	public void getMissions(Callback callback) {
+		WritableArray missions = Arguments.createArray();
+		WritableMap mission = Arguments.createMap();
+		mission.putString("name", "Find The Capybara");
+		mission.putString("description", "The Legendary Animal is hidden somewhere. Find it!");
+		mission.putDouble("progress", 0);
+		mission.putDouble("progressMax", 1);
+		callback.invoke(missions);
+	}
+	
+	@ReactMethod
 	public void requestClose() {
 		AskUtil.ask(AskUtil.AskType.REQUEST_CLOSE, obj -> {
 			StateUtil.getActivity("React").finishAffinity();
 		});
 	}
+	
+	@ReactMethod
+	public void finish(String activity) {
+		StateUtil.getActivity(activity).finish();
+	}
     
     @ReactMethod
-    public void play(int gamemode) {
+    public void play(String gamemode) {
 		ReactActivity react = (ReactActivity)StateUtil.getActivity("React");
-		
 		Intent intent = new Intent(react, GameLauncher.class);
-		intent.putExtra("state", "play");
+		intent.putExtra("gamemode", gamemode);
 		react.startActivity(intent);
     }
    

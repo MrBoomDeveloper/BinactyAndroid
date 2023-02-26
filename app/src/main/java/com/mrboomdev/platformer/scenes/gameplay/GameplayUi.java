@@ -19,8 +19,6 @@ import com.mrboomdev.platformer.widgets.TextWidget;
 import com.mrboomdev.platformer.widgets.StatBarWidget.Track;
 
 public class GameplayUi extends CoreUi {
-	private float time = 360000;
-	private TextWidget timer;
 	private GameplayScreen gameplay;
 	private JoystickWidget joystick;
 	private float cameraZoom;
@@ -76,10 +74,6 @@ public class GameplayUi extends CoreUi {
 				.addTo(stage);
 		}
 		
-		timer = new TextWidget("timer.ttf");
-		timer.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - game.settings.screenInset);
-		stage.addActor(timer);
-		
 		cameraZoom = gameplay.camera.zoom;
 		stage.addListener(new ActorGestureListener() {
 			@Override
@@ -118,14 +112,9 @@ public class GameplayUi extends CoreUi {
 	public void render(float delta) {
 		stage.act(delta);
 		stage.draw();
-		
-		time -= delta * 1000;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
-		timer.setText(dateFormat.format((int) time));
-		
-		if(time <= 0) for(CharacterEntity entity : gameplay.entities.getAllCharacters()) {
+		/*if(time <= 0) for(CharacterEntity entity : gameplay.entities.getAllCharacters()) {
 			entity.die();
-		}
+		}*/
 		super.render(delta);
 	}
 	

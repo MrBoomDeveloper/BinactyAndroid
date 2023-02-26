@@ -25,6 +25,11 @@
             </intent-filter>
 		</activity>
 		
+		<activity android:name=".react.ReactGameOverActivity"
+            android:screenOrientation="landscape"
+			android:theme="@style/Material"
+            android:exported="false" />
+		
 		<activity android:name=".game.GameLauncher"
             android:screenOrientation="landscape"
 			android:theme="@style/Material"

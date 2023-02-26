@@ -2,52 +2,46 @@
 	"start": [
 		{
 			"action": "FADE",
+			"speed": 0.5, "duration": 2,
 			"options": {
-				"from": 1,
-				"direction": -1,
-				"duration": 3
+				"from": 1, "to": 0
 			}
 		}, {
 			"action": "TIMER_SETUP",
 			"options": {
-				"timerStart": [ 11, 45 ],
-				"timerEnd": [6, 00],
+				"time": 360,
 				"direction": 1
 			}
 		}, {
-			"action": "TELEPORT",
+			"action": "TELEPORT", //TODO
 			"options": {
 				"target": [ "ALL_PLAYERS" ],
-				"toSpecial": "PLAYER_SPAWN"
+				"toTarget": "PLAYER_SPAWN"
 			}
 		}, {
-			"action": "TELEPORT",
+			"action": "TELEPORT", //TODO
 			"options": {
 				"target": [ "ALL_BOTS" ],
-				"toSpecial": "BOT_SPAWN"
+				"toTarget": "BOT_SPAWN"
 			}
 		}, {
-			"action": "TITLE", "isLong": true,
+			"action": "TITLE",
+			"isLong": true, "duration": 4,
 			"options": {
-				"text": "SURVIVE THE NIGHT",
-				"duration": 4
+				"text": "SURVIVE THE NIGHT"
 			}
 		}
 	],
 	
 	"listeners": {
-		"TIMER_HOUR_CHANGE": [{
-				"action": "GAME_OVER",
-				"conditions": {
-					"timerTime": [ 6, 00 ]
-				},
-				
-				"options": {
-					"winners": [ "ALL_PLAYERS" ]
-				}
+		"TIMER_END": [{
+			"action": "GAME_OVER",
+			"options": {
+				"winners": [ "ALL_PLAYERS" ]
+			}
 		}],
 		
-		"DEATH": [{
+		"DEATH": [{ //TODO
 			"action": "GAME_OVER",
 			"conditions": {
 				"target": [ "ALL_PLAYERS" ]
@@ -58,7 +52,7 @@
 		}]
 	},
 	
-	"teams": [
+	"teams": [ //TODO
 		{
 			"name": "Guard",
 			"target": [ "ALL_PLAYERS" ],

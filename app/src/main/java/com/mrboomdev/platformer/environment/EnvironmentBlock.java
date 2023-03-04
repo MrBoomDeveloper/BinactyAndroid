@@ -27,12 +27,6 @@ public class EnvironmentBlock {
 	@SerializedName("texture") public String texturePath;
 	private Light light;
 	private Body body;
-	public String parentPath;
-	
-	public EnvironmentBlock init(String parentPath) {
-		this.parentPath = parentPath;
-		return this;
-	}
 	
 	public void build(World world, Vector2 position) {
 		BodyDef bodyDef = new BodyDef();
@@ -95,7 +89,6 @@ public class EnvironmentBlock {
 		copy.shadowColission = shadowColission;
 		copy.size = size;
 		copy.texturePath = texturePath;
-		copy.parentPath = parentPath;
 		copy.sprite = new Sprite(sprite);
 		return copy;
 	}

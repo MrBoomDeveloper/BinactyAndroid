@@ -13,7 +13,7 @@ public class EnvironmentCreator {
 	private EnvironmentManager manager;
 	private onCreateListener createListener;
 	private FileUtil gamemodeFile, mapFile;
-	private Status status = Status.BUILDING_MAP;
+	private Status status = PREPAIRING;
 	
 	public EnvironmentCreator() {
 		this.manager = new EnvironmentManager();
@@ -37,22 +37,32 @@ public class EnvironmentCreator {
 	public EnvironmentCreator create() {
 		Gson gson = new Gson();
 		new Thread(() -> {
-			manager.map = gson.fromJson(mapFile.readString(), EnvironmentMap.class).build(manager.world, mapFile, () -> {
-				manager.gamemode = new GamemodeManager(gson.fromJson(gamemodeFile.readString(), GamemodeScript.class));
-				manager.gamemode.loadResources(() -> {
-					createListener.created(manager);
-				});
-			});
+			manager.map = gson.fromJson(mapFile.readString(), EnvironmentMap.class)
+				.build(manager.world, mapFile, () -> loadGamemode());
+			status = BUILDING_MAP;
 		}).start();
 		return this;
 	}
 	
+	private void loadGamemode() {
+		Gson gson = new Gson();
+		manager.gamemode = new GamemodeManager(
+			gson.fromJson(gamemodeFile.readString(), GamemodeScript.class)
+		).build(gamemodeFile, () -> {
+			createListener.created(manager);
+			status = DONE;
+		});
+		
+		this.status = LOADING_GAMEMODE_RESOURCES;
+	}
+	
 	public String getStatus() {
-		if(status == BUILDING_MAP && manager.map != null) {
+		if(status == BUILDING_MAP) {
 			manager.map.ping();
 			return "Building the map...";
 		}
 		if(status == LOADING_GAMEMODE_RESOURCES) {
+			manager.gamemode.ping();
 			return "Loading gamemode resources...";
 		}
 		return status.name();
@@ -63,6 +73,7 @@ public class EnvironmentCreator {
 	}
 	
 	public enum Status {
+		PREPAIRING,
 		BUILDING_MAP,
 		LOADING_GAMEMODE_RESOURCES,
 		DONE

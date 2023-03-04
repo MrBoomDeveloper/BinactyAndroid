@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.scenes.loading;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -8,31 +9,35 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.ColorUtil;
+import com.mrboomdev.platformer.util.FileUtil;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+import javax.crypto.interfaces.PBEKey;
 
 public class LoadingFiles {
 	public HashMap<String, Scene> scenes;
 	
 	public void loadToManager(AssetManager manager, String scene) {
-		LoadingFiles.loadToManager(scenes.get(scene).load, manager);
+		LoadingFiles.loadToManager(scenes.get(scene).load, "", manager);
 	}
 	
-	public static void loadToManager(List<File> files, AssetManager manager) {
+	public static void loadToManager(List<File> files, String source, AssetManager manager) {
 		for(File file : files) {
+			String path = source + file.path;
+			
 			if(file.type.equals("texture")) {
-				manager.load(file.path, Texture.class);
+				manager.load(path, Texture.class);
 			}
 			if(file.type.equals("music")) {
-				manager.load(file.path, Music.class);
+				manager.load(path, Music.class);
 			}
 			if(file.type.equals("sound")) {
-				manager.load(file.path, Sound.class);
+				manager.load(path, Sound.class);
 			}
 			if(file.type.equals("font")) {
 				FreeTypeFontLoaderParameter param = new FreeTypeFontLoaderParameter();
-				param.fontFileName = file.path;
+				param.fontFileName = path;
 				param.fontParameters.size = file.font.size;
 				param.fontParameters.color = file.font.color.getColor();
 				param.fontParameters.borderWidth = file.font.borderSize;

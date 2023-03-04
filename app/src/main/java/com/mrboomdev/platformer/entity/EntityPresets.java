@@ -15,20 +15,11 @@ public class EntityPresets {
 	private Array<String> names = new Array<>();
 	
 	public CharacterEntity getRandomCharacter() {
-		return new CharacterEntity(getRandomName())
+		return new CharacterEntity(names.random())
 			.setConfig(new FileUtil(
 				EntityManager.entitiesDirectory, FileUtil.Source.INTERNAL)
 				.goTo(characters.random())
 		);
-	}
-	
-	public String getRandomName() {
-		if(names.notEmpty()) {
-			String result = names.random();
-			names.removeValue(result, true);
-			return result;
-		}
-		return "Player" + (int)(Math.random() * 9999);
 	}
 	
 	public EntityPresets merge(EntityPresets presets) {

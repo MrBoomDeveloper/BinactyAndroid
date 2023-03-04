@@ -48,16 +48,17 @@ public class EnvironmentMap {
 		
 		TypeToken<HashMap<String, EnvironmentBlock>> type = new TypeToken<>(){};
 		for(String pack : atmosphere.tiles) {
-			blocks = gson.fromJson(Gdx.files.internal(source.concatPath(pack)).readString(), type);
-			blocks.values().forEach(block -> block.init(source.getParentPath()));
+			blocks = gson.fromJson(source.goTo(pack).readString(), type);
 		}
 		
 		ArrayList<LoadingFiles.File> files = new ArrayList<>();
 		for(EnvironmentBlock block : blocks.values()) {
-			files.add(new LoadingFiles.File(source.getParent().goTo(block.texturePath).path, "texture"));
+			files.add(new LoadingFiles.File(source.getParent().getParent().goTo(block.texturePath).getPath(), "texture"));
 		}
-		LoadingFiles.loadToManager(files, assets);
-		status = Status.LOADING_RESOURCES;
+		Gdx.app.postRunnable(() -> {
+			LoadingFiles.loadToManager(files, "", assets);
+			status = Status.LOADING_RESOURCES;
+		});
 		return this;
 	}
 	
@@ -81,7 +82,7 @@ public class EnvironmentMap {
 	
 	private void buildTerrain() {
 		for(EnvironmentBlock block : blocks.values()) {
-			block.setTexture(assets.get(source.getParent().goTo(block.texturePath).path));
+			block.setTexture(assets.get(source.getParent().getParent().goTo(block.texturePath).getPath()));
 		}
 		
 		for(Tile tile : tiles) {

@@ -11,6 +11,7 @@ import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
+import com.mrboomdev.platformer.util.FileUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
 import java.text.SimpleDateFormat;
@@ -26,23 +27,32 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 	private TextWidget title, timer;
 	private FadeWidget fade;
 	private GameHolder game = GameHolder.getInstance();
-	private boolean isFirstDraw = true;
 	private boolean isTimerSetup, isTimerEnd;
 	private float time, timerSpeed;
+	private Status status = Status.PREPAIRING;
+	private Runnable buildCompletedCallback;
 	
 	public GamemodeManager(GamemodeScript script) {
 		this.script = script;
 		script.start.forEach(function -> stack.add(new StackOperation(function)));
 	}
 	
-	private void firstDraw() {
-		isFirstDraw = false;
+	public GamemodeManager build(FileUtil source, Runnable callback) {
+		LoadingFiles.loadToManager(script.load, source.getParent().getPath(), game.assets);
+		this.buildCompletedCallback = callback;
+		status = Status.LOADING_RESOURCES;
+		return this;
+	}
+	
+	public void ping() {
+		if(status == Status.LOADING_RESOURCES && game.assets.update(17)) {
+			buildCompletedCallback.run();
+			status = Status.DONE;
+		}
 	}
 	
 	@Override
 	public void drawUi() {
-		if(isFirstDraw) firstDraw();
-		
 		stack.forEach(operation -> {
 			var function = operation.function;
 			operation.progress += Gdx.graphics.getDeltaTime();
@@ -99,15 +109,6 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 			.addTo(stage);
 	}
 	
-	public GamemodeManager loadResources(Runnable callback) {
-		Array<LoadingFiles.File> files = new Array<>();
-		for(LoadingFiles.File file : files) {
-			
-		}
-		callback.run();
-		return this;
-	}
-	
 	private void updateTimer(float delta) {
 		if(!isTimerSetup || isTimerEnd) return;
 		
@@ -130,5 +131,11 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 		public StackOperation(GamemodeFunction function) {
 			this.function = function;
 		}
+	}
+	
+	private enum Status {
+		PREPAIRING,
+		LOADING_RESOURCES,
+		DONE
 	}
 }

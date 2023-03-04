@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.google.gson.annotations.SerializedName;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.util.Direction;
+import com.mrboomdev.platformer.util.FileUtil;
 import java.util.HashMap;
 import com.mrboomdev.platformer.entity.Entity;
 import static com.mrboomdev.platformer.entity.Entity.Animation.*;
@@ -23,6 +24,9 @@ public class CharacterSkin {
 	
 	@SerializedName("skin")
 	private HashMap<Entity.Animation, AnimationObject> serailizedAnimations;
+	
+	@SerializedName("texture")
+	private String texturePath = "skin.png";
 	
 	public void setAnimation(Entity.Animation animation) {
 		if(animation == currentAnimation) return;
@@ -37,7 +41,7 @@ public class CharacterSkin {
 					setAnimation(animations.containsKey(WALK) ? WALK : IDLE);
 					break;
 				case DASH:
-					setAnimation(animations.containsKey(DASH) ? DASH : (animations.containsKey(RUN) ? RUN : WALK));
+					setAnimation(animations.containsKey(DASH) ? DASH : IDLE);
 					break;
 				default:
 					setAnimation(IDLE);
@@ -57,8 +61,8 @@ public class CharacterSkin {
 		sprite.draw(batch);
 	}
 	
-	public CharacterSkin build(String name) {
-		Texture texture = new Texture(Entity.getInternal(Entity.CHARACTER, name, "skin.png"));
+	public CharacterSkin build(FileUtil file) {
+		Texture texture = new Texture(file.goTo(texturePath).getHandle());
 		for(HashMap.Entry<Entity.Animation, AnimationObject> entry : serailizedAnimations.entrySet()) {
 			AnimationObject object = entry.getValue();
 			Sprite[] sprites = new Sprite[object.frames.length];

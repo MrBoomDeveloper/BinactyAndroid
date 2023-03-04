@@ -21,6 +21,7 @@ import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.util.FileUtil;
 
 public class GameplayScreen extends CoreScreen {
 	public OrthographicCamera camera;
@@ -99,8 +100,11 @@ public class GameplayScreen extends CoreScreen {
 			.addBots(5);
 		
 		CharacterEntity player = new CharacterEntity(game.settings.playerName)
-			.setConfigFromJson(Entity.getInternal(Entity.CHARACTER, "klarrie","manifest.json").readString())
+			.setConfig(new FileUtil(
+				EntityManager.entitiesDirectory + "klarrie",
+				FileUtil.Source.INTERNAL))
 			.create(environment.world);
+		
 		game.settings.mainPlayer = player;
 		
 		entities.addCharacter(player);
@@ -110,11 +114,6 @@ public class GameplayScreen extends CoreScreen {
 		ui = new GameplayUi(this, player);
 		Gdx.input.setInputProcessor(ui.stage);
 		environment.attachUi(ui);
-		
-		Music lobbyTheme = game.assets.get("audio/music/lobby_theme.mp3", Music.class);
-		lobbyTheme.setVolume(.2f * game.settings.musicVolume / 100);
-		lobbyTheme.setLooping(true);
-		lobbyTheme.play();
 	}
 	
 	@Override

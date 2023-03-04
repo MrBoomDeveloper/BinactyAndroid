@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.util.FileUtil;
 import java.util.HashMap;
 
 public class EntityPresets {
@@ -15,7 +16,10 @@ public class EntityPresets {
 	
 	public CharacterEntity getRandomCharacter() {
 		return new CharacterEntity(getRandomName())
-			.setConfigFromJson(Gdx.files.internal(EntityManager.entitiesDirectory + characters.random() + "/manifest.json").readString());
+			.setConfig(new FileUtil(
+				EntityManager.entitiesDirectory, FileUtil.Source.INTERNAL)
+				.goTo(characters.random())
+		);
 	}
 	
 	public String getRandomName() {

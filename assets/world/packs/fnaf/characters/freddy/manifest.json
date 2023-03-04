@@ -1,0 +1,15 @@
+{
+	"id": "freddy",
+	"name": "Freddy Fazbear",
+	"description": "Is this a bite 87!?",
+	"version": 3,
+	"skin": "skin.json",
+	"bodySize": [ 1, 2 ],
+	"stats": {
+		"health": 500,
+		"damage": 25,
+		"speed": 1,
+		"shield": 50,
+		"stamina": 100
+	}
+}

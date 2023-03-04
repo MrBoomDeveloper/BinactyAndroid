@@ -1,4 +1,8 @@
 {
+	"load": [
+		{ "path": "music/dark_ambient.ogg", "type": "music" }
+	],
+	
 	"start": [
 		{
 			"action": "FADE",
@@ -30,6 +34,12 @@
 			"options": {
 				"text": "SURVIVE THE NIGHT"
 			}
+		}, {
+			"action": "PLAY_MUSIC",
+			"options": {
+				"queue": ["music/dark_ambient.ogg"],
+				"mode": "QUEUE_LOOP"
+			}
 		}
 	],
 	
@@ -49,6 +59,10 @@
 			"options": {
 				"target": [ "ALL_BOTS" ]
 			}
+		}],
+		
+		"GAME_OVER": [{
+			"action": "STOP_MUSIC"
 		}]
 	},
 	

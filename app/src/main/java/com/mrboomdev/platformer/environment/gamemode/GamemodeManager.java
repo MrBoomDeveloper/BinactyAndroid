@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
+import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
 import java.text.SimpleDateFormat;
@@ -95,6 +97,15 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 		title = (TextWidget) new TextWidget("title.ttf").setOpacity(0)
 			.toPosition(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 50))
 			.addTo(stage);
+	}
+	
+	public GamemodeManager loadResources(Runnable callback) {
+		Array<LoadingFiles.File> files = new Array<>();
+		for(LoadingFiles.File file : files) {
+			
+		}
+		callback.run();
+		return this;
 	}
 	
 	private void updateTimer(float delta) {

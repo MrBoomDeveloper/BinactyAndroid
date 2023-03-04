@@ -1,4 +1,6 @@
 {
+	"texture": "skin.png",
+	
 	"skin": {
 		"IDLE": {
 			"delay": 0.2,

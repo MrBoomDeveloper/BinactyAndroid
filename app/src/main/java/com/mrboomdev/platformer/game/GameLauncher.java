@@ -43,4 +43,7 @@ public class GameLauncher extends AndroidApplication {
 		isFinished = true;
 		finish();
 	}
+	
+	@Override
+	public void onBackPressed() {}
 }

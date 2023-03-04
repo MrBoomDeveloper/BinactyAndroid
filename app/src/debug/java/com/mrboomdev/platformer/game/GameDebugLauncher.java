@@ -26,6 +26,11 @@ public class GameDebugLauncher extends GameLauncher {
 	}
 	
 	@Override
+	public void onBackPressed() {
+		menu.destroy();
+	}
+	
+	@Override
 	public void exit() {
 		Gdx.app.postRunnable(() -> {
 			var game = GameHolder.getInstance();

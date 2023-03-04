@@ -15,7 +15,9 @@ public class GamemodeFunction {
 		public float from, to;
 		public Target[] target;
 		public Target toTarget;
+		public Mode mode;
 		public String text = "Hello, World!";
+		public String[] queue;
 	}
 	
 	public class Conditions {
@@ -27,15 +29,23 @@ public class GamemodeFunction {
 		TIMER_SETUP, TIMER_END,
 		TELEPORT,
 		TITLE, FADE,
-		GAME_OVER, DEATH
+		GAME_OVER, DEATH,
+		PLAY_MUSIC, STOP_MUSIC
+	}
+	
+	public enum Mode {
+		QUEUE_LOOP
 	}
 	
 	public enum Target {
 		EVERYONE,
 		ALL_PLAYERS,
-		PLAYER_SPAWN,
-		BOT_SPAWN,
 		ALL_BOTS,
-		MAIN_PLAYER
+		
+		MAIN_PLAYER,
+		ANY_PLAYER,
+		
+		PLAYER_SPAWN,
+		BOT_SPAWN
 	}
 }

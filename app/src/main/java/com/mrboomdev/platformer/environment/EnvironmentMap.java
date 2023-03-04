@@ -2,12 +2,17 @@ package com.mrboomdev.platformer.environment;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mrboomdev.platformer.environment.EnvironmentBlock;
+import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.FileUtil;
 import java.util.ArrayList;
@@ -20,8 +25,12 @@ public class EnvironmentMap {
 	public RayHandler rayHandler;
 	public ArrayList<Tile> tiles = new ArrayList<>();
 	private HashMap<String, EnvironmentBlock> blocks = new HashMap<>();
+	private LoadingFiles loadFiles;
 	private FileUtil source;
 	private World world;
+	private Runnable buildCallback;
+	private AssetManager assets;
+	private Status status = Status.PREPAIRING;
 	
 	public void render(SpriteBatch batch) {
 		Collections.sort(tiles);
@@ -30,20 +39,25 @@ public class EnvironmentMap {
 		}
 	}
 	
-	public EnvironmentMap build(World world, FileUtil source) {
+	public EnvironmentMap build(World world, FileUtil source, Runnable callback) {
+		Gson gson = new Gson();
 		this.world = world;
 		this.source = source;
+		this.buildCallback = callback;
+		this.assets = GameHolder.getInstance().assets;
 		
-		Gson gson = new Gson();
 		TypeToken<HashMap<String, EnvironmentBlock>> type = new TypeToken<>(){};
 		for(String pack : atmosphere.tiles) {
 			blocks = gson.fromJson(Gdx.files.internal(source.concatPath(pack)).readString(), type);
 			blocks.values().forEach(block -> block.init(source.getParentPath()));
 		}
-		for(Tile tile : tiles) {
-			tile.block = blocks.get(tile.name).cpy();
-			tile.build(world);
+		
+		ArrayList<LoadingFiles.File> files = new ArrayList<>();
+		for(EnvironmentBlock block : blocks.values()) {
+			files.add(new LoadingFiles.File(source.getParent().goTo(block.texturePath).path, "texture"));
 		}
+		LoadingFiles.loadToManager(files, assets);
+		status = Status.LOADING_RESOURCES;
 		return this;
 	}
 	
@@ -56,6 +70,27 @@ public class EnvironmentMap {
 		tile.layer = layer;
 		tile.build(world);
 		tiles.add(tile);
+	}
+	
+	public void ping() {
+		if(status == Status.LOADING_RESOURCES && assets.update(17)) {
+			buildTerrain();
+			status = Status.BUILDING_BLOCKS;
+		}
+	}
+	
+	private void buildTerrain() {
+		for(EnvironmentBlock block : blocks.values()) {
+			block.setTexture(assets.get(source.getParent().goTo(block.texturePath).path));
+		}
+		
+		for(Tile tile : tiles) {
+			tile.block = blocks.get(tile.name).cpy();
+			tile.build(world);
+		}
+		
+		status = Status.DONE;
+		buildCallback.run();
 	}
 	
 	public class Tile implements Comparable<Tile> {
@@ -97,5 +132,12 @@ public class EnvironmentMap {
 	public class Rules {
 		public float[] worldBorder = {-1000, -1000, 1000, 1000};
 		public float[] cameraBorder = {-1000, -1000, 1000, 1000};
+	}
+	
+	private enum Status {
+		PREPAIRING,
+		LOADING_RESOURCES,
+		BUILDING_BLOCKS,
+		DONE
 	}
 }

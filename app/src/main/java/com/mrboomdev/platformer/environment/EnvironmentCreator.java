@@ -6,12 +6,14 @@ import com.google.gson.Gson;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
+import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.*;
 import com.mrboomdev.platformer.util.FileUtil;
 
 public class EnvironmentCreator {
 	private EnvironmentManager manager;
 	private onCreateListener createListener;
 	private FileUtil gamemodeFile, mapFile;
+	private Status status = Status.BUILDING_MAP;
 	
 	public EnvironmentCreator() {
 		this.manager = new EnvironmentManager();
@@ -32,16 +34,37 @@ public class EnvironmentCreator {
 		return this;
 	}
 	
-	public void create() {
+	public EnvironmentCreator create() {
+		Gson gson = new Gson();
 		new Thread(() -> {
-			Gson gson = new Gson();
-			manager.map = gson.fromJson(mapFile.readString(), EnvironmentMap.class).build(manager.world, mapFile);
-			manager.gamemode = new GamemodeManager(gson.fromJson(gamemodeFile.readString(), GamemodeScript.class));
-			createListener.created(manager);
+			manager.map = gson.fromJson(mapFile.readString(), EnvironmentMap.class).build(manager.world, mapFile, () -> {
+				manager.gamemode = new GamemodeManager(gson.fromJson(gamemodeFile.readString(), GamemodeScript.class));
+				manager.gamemode.loadResources(() -> {
+					createListener.created(manager);
+				});
+			});
 		}).start();
+		return this;
+	}
+	
+	public String getStatus() {
+		if(status == BUILDING_MAP && manager.map != null) {
+			manager.map.ping();
+			return "Building the map...";
+		}
+		if(status == LOADING_GAMEMODE_RESOURCES) {
+			return "Loading gamemode resources...";
+		}
+		return status.name();
 	}
 	
 	public interface onCreateListener {
 		void created(EnvironmentManager manager);
+	}
+	
+	public enum Status {
+		BUILDING_MAP,
+		LOADING_GAMEMODE_RESOURCES,
+		DONE
 	}
 }

@@ -19,6 +19,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.*;
 import com.mrboomdev.platformer.util.CameraUtil;
 import static com.mrboomdev.platformer.entity.Entity.Animation.*;
+import com.mrboomdev.platformer.util.FileUtil;
 
 public class CharacterEntity extends EntityAbstract {
 	private BitmapFont font;
@@ -85,11 +86,19 @@ public class CharacterEntity extends EntityAbstract {
 		return this;
 	}
 	
-	public CharacterEntity setConfigFromJson(String json) {
+	public CharacterEntity setConfig(FileUtil file) {
 		Gson gson = new Gson();
-		config = gson.fromJson(json, CharacterConfig.class).build();
-		skin = gson.fromJson(Entity.getInternal(Entity.CHARACTER, config.id, config.skin)
-			.readString(), CharacterSkin.class).build(config.id);
+		
+		config = gson.fromJson(
+			file.goTo("manifest.json").readString(),
+			CharacterConfig.class)
+		.build();
+		
+		skin = gson.fromJson(
+			file.goTo("skin.json").readString(),
+			CharacterSkin.class)
+		.build(file);
+		
 		stats = config.stats;
 		return this;
 	}

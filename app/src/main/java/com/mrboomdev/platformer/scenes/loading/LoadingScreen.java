@@ -45,7 +45,7 @@ public class LoadingScreen extends CoreScreen {
                 break;
 			
             case GAMEPLAY:
-				new EnvironmentCreator()
+				environmentCreator = new EnvironmentCreator()
 					.setGamemode(new FileUtil("world/packs/fnaf/gamemode.json", FileUtil.Source.INTERNAL))
 					.setMap(new FileUtil("world/packs/fnaf/maps/fnafMap1.json", FileUtil.Source.INTERNAL))
 					.onCreate(manager -> {
@@ -85,7 +85,7 @@ public class LoadingScreen extends CoreScreen {
 	private String getStatus() {
 		switch(loadStep) {
 			case MAP:
-				return "Building the map...";
+				return environmentCreator.getStatus();
 			case RESOURCES:
 				return "Loading resources...";
 			default:

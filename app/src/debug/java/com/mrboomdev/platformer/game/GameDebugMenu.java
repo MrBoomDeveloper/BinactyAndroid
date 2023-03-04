@@ -26,6 +26,7 @@ public class GameDebugMenu {
 	private static boolean isMenuOpened = false;
 	private WindowManager wm;
 	private SharedPreferences prefs;
+	private View myView;
 	private Context context;
 	
 	public GameDebugMenu(Context context) {
@@ -50,7 +51,7 @@ public class GameDebugMenu {
 			PixelFormat.TRANSPARENT);
 			
 		wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-		final View myView = ((Activity)context).getLayoutInflater().inflate(R.layout.dev_menu_layout, null);
+		myView = ((Activity)context).getLayoutInflater().inflate(R.layout.dev_menu_layout, null);
 		
 		LinearLayout hold = myView.findViewById(R.id.holder);
 		ScrollView menu = myView.findViewById(R.id.menu);
@@ -89,8 +90,8 @@ public class GameDebugMenu {
 		params.y = 0;
 		
 		menuTrigger.setOnClickListener(button -> {
-			this.isMenuOpened = this.isMenuOpened ? false : true;
-			menu.setVisibility(this.isMenuOpened ? View.VISIBLE : View.GONE);
+			isMenuOpened = isMenuOpened ? false : true;
+			menu.setVisibility(isMenuOpened ? View.VISIBLE : View.GONE);
 			((Button)button).setText(isMenuOpened ? "Hide DevMenu" : "Show DevMenu");
 		});
 		wm.addView(myView, params);
@@ -101,12 +102,16 @@ public class GameDebugMenu {
 		isMenuCreated = true;
 	}
 	
+	public void destroy() {
+		((Activity)context).finishAffinity();
+		wm.removeView(myView);
+		isMenuCreated = false;
+	}
+	
 	private void setupButtonTriggers(View view, GameSettings settings) {
 		Button closeGameButton = view.findViewById(R.id.closeGameButton);
 		closeGameButton.setOnClickListener(button -> {
-			((Activity)context).finishAffinity();
-			wm.removeView(view);
-			isMenuCreated = false;
+			this.destroy();
 		});
 		
 		Button gainHealthButton = view.findViewById(R.id.gainHealthButton);

@@ -62,13 +62,6 @@ public class EnvironmentBlock {
 			shadowShape.dispose();
 		}
 		shape.dispose();
-		
-		Gdx.app.postRunnable(() -> {
-			if(texturePath != null) {
-				sprite = new Sprite(new Texture(Gdx.files.internal(parentPath + texturePath)));
-				sprite.setSize(size[0], size[1]);
-			}
-		});
 	}
 	
 	public void setupRayHandler(RayHandler rayHandler) {
@@ -82,6 +75,11 @@ public class EnvironmentBlock {
                 light.position[0],
                 light.position[1]);
         }
+	}
+	
+	public void setTexture(Texture texture) {
+		sprite = new Sprite(texture);
+		sprite.setSize(size[0], size[1]);
 	}
 	
 	public void draw(SpriteBatch batch) {
@@ -98,6 +96,7 @@ public class EnvironmentBlock {
 		copy.size = size;
 		copy.texturePath = texturePath;
 		copy.parentPath = parentPath;
+		copy.sprite = new Sprite(sprite);
 		return copy;
 	}
 	

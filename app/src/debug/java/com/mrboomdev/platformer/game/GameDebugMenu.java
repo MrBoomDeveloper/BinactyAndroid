@@ -110,15 +110,11 @@ public class GameDebugMenu {
 	
 	private void setupButtonTriggers(View view, GameSettings settings) {
 		Button closeGameButton = view.findViewById(R.id.closeGameButton);
-		closeGameButton.setOnClickListener(button -> {
-			this.destroy();
-		});
+		closeGameButton.setOnClickListener(button -> this.destroy());
 		
 		Button gainHealthButton = view.findViewById(R.id.gainHealthButton);
 		gainHealthButton.setOnClickListener(button -> {
-			try {
-				 settings.mainPlayer.gainDamage(-1000);
-			} catch(Exception e) {}
+			 settings.mainPlayer.gainDamage(-1000);
 		});
 		
 		Button gameOverButton = view.findViewById(R.id.gameOverButton);
@@ -138,6 +134,14 @@ public class GameDebugMenu {
 		lightsSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
 			settings.debugRaysDisable = isActive;
 			prefs.edit().putBoolean("debugRaysDisable", isActive).apply();
+		});
+		
+		Switch editorSwitch = view.findViewById(R.id.editorSwitch);
+		editorSwitch.setChecked(settings.enableEditor);
+		editorSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
+			settings.enableEditor = isActive;
+			prefs.edit().putBoolean("forceEditor", isActive).commit();
+			((GameDebugLauncher)context).exit();
 		});
 	}
 }

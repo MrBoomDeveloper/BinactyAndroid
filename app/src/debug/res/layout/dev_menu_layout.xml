@@ -46,6 +46,13 @@
 				 android:layout_marginTop="16dp"
 				 android:id="@+id/lightsSwitch"
 				 android:text="Disable Box2D Lights" />
+			
+			<Switch
+				 android:layout_height="wrap_content"
+				 android:layout_width="match_parent"
+				 android:layout_marginTop="16dp"
+				 android:id="@+id/editorSwitch"
+				 android:text="Force level editor" />
 
 			<Button
 				 android:layout_height="40dp"

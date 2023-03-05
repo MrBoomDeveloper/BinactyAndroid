@@ -2,14 +2,12 @@ package com.mrboomdev.platformer.scenes.gameplay;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.EntityPresets;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
@@ -18,7 +16,6 @@ import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
@@ -61,9 +58,8 @@ public class GameplayScreen extends CoreScreen {
 		}
 		batch.begin();
 		{
-			if(game.settings.debugRenderer) {
+			if(game.settings.debugRenderer)
 				debugRenderer.render(environment.world, camera.combined);
-			}
 			ui.render(delta);
 		}
 		batch.end();

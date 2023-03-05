@@ -151,7 +151,7 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 				Gdx.graphics.getHeight() - game.settings.screenInset))
 			.addTo(stage);
 		
-		fade = (FadeWidget) new FadeWidget(0).addTo(stage);
+		fade = (FadeWidget) new FadeWidget(script.options.initialFade).addTo(stage);
 		
 		title = (TextWidget) new TextWidget("title.ttf").setOpacity(0)
 			.toPosition(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 50))

@@ -10,6 +10,7 @@ public class GamemodeScript {
 	public ArrayList<GamemodeFunction> start = new ArrayList<>();
 	public HashMap<Action, ArrayList<GamemodeFunction>> listeners = new HashMap<>();
 	public ArrayList<Team> teams;
+	public GamemodeOptions options;
 	
 	public class Team {
 		public String name = "Team";
@@ -18,5 +19,9 @@ public class GamemodeScript {
 		public boolean strictOrder = false;
 		public boolean repeatCharacters = false;
 		public String[] forceCharacters;
+	}
+	
+	public class GamemodeOptions {
+		public float initialFade = 0;
 	}
 }

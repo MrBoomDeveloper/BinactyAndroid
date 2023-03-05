@@ -16,6 +16,16 @@ public abstract class ActorUtil extends Actor {
         setPosition(position.x, position.y);
         return this;
     }
+	
+	public ActorUtil toPosition(float x, float y) {
+        setPosition(x, y);
+        return this;
+    }
+	
+	public ActorUtil toSize(float width, float height) {
+		setSize(width, height);
+		return this;
+	}
     
     public ActorUtil connectToEntity(CharacterEntity entity) {
         connectedEntity = entity;

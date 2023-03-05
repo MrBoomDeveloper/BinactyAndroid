@@ -49,7 +49,7 @@ public class GameplayUi extends CoreUi {
 				.addTo(stage);
 		}
 		
-		for(int i = 0; i < 2; i++) {
+		for(int i = 1; i < 2; i++) {
 			final int a = i;
 			new ActionButton(a == 0 ? "ui/overlay/shield.png" : "ui/overlay/shoot.png")
 				.toPosition(new Vector2(
@@ -104,17 +104,12 @@ public class GameplayUi extends CoreUi {
 				}
 			}
 		});
-		
-		if(game.settings.debugStage) stage.setDebugAll(true);
 	}
 	
 	@Override
 	public void render(float delta) {
 		stage.act(delta);
 		stage.draw();
-		/*if(time <= 0) for(CharacterEntity entity : gameplay.entities.getAllCharacters()) {
-			entity.die();
-		}*/
 		super.render(delta);
 	}
 	

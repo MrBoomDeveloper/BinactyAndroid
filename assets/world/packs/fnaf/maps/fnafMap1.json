@@ -1,7 +1,6 @@
 {
 	"atmosphere": {
-		"color": { "values": [ 200, 200, 200, 1 ] },
-		"music": [ "calm_ambient.mp3", "lobby.mp3" ],
+		"color": { "values": [ 0, 0, 0, .1 ] },
 		"tiles": [ "../../blocks.json" ]
 	},
 	

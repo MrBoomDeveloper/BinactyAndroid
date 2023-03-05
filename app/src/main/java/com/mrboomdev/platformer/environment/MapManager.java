@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.Array;
 import com.google.gson.reflect.TypeToken;
 import com.mrboomdev.platformer.environment.FreePosition;
 import com.mrboomdev.platformer.environment.PositionGraph;
-import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 import com.mrboomdev.platformer.environment.Block;
 import com.mrboomdev.platformer.environment.MapData;
 import com.mrboomdev.platformer.entity.EntityManager.Spawn;
@@ -27,7 +26,6 @@ public class MapManager {
     private Camera camera;
     private MapBuilder builder;
     private MapData data;
-    private Bounds cameraBounds;
     private Vector2 cameraStart, cameraEnd;
     public Array<Spawn> spawnPositions = new Array<>();
     public HashMap<String, FreePosition> aiZones = new HashMap<>();
@@ -64,8 +62,7 @@ public class MapManager {
     }
 	
 	public void render(SpriteBatch batch, MapLayer layer) {
-        updateCameraBounds();
-        builder.render(layer, batch, cameraBounds);
+        builder.render(layer, batch);
 	}
     
     public void renderDebug(ShapeRenderer shapeRenderer) {
@@ -79,14 +76,5 @@ public class MapManager {
     
     public void setCamera(Camera camera) {
         this.camera = camera;
-    }
-    
-    public void updateCameraBounds() {
-        cameraBounds = new Bounds(
-            camera.position.x - (camera.viewportWidth / 2),
-            camera.position.y - (camera.viewportHeight / 2),
-            camera.position.x + (camera.viewportWidth / 2),
-            camera.position.y + (camera.viewportHeight / 2)
-        );
     }
 }

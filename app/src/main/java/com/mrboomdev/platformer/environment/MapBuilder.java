@@ -17,7 +17,6 @@ import com.mrboomdev.platformer.environment.FreePosition;
 import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.environment.path.PositionPoint;
-import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 import com.mrboomdev.platformer.entity.EntityManager.Spawn;
 import java.util.Map;
 
@@ -64,7 +63,7 @@ public class MapBuilder {
         }
     }
     
-    public void render(MapLayer layer, SpriteBatch batch, Bounds cameraBounds) {
+    public void render(MapLayer layer, SpriteBatch batch) {
         int[][] tiles = (layer == MapLayer.FOREGROUND
             ? mapTiles.foreground
             : mapTiles.background);
@@ -72,8 +71,7 @@ public class MapBuilder {
         for(int y = tiles.length - 1; y >= 0; y--) {
             for(int x = 0; x < tiles[y].length; x++) {
                 blocks.get(tiles[y][x]).render(
-                    new Vector2(x * tileSize, y * tileSize),
-                    cameraBounds, batch);
+                    new Vector2(x * tileSize, y * tileSize), batch);
             }
         }
         

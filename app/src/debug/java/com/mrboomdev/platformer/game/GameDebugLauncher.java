@@ -7,6 +7,7 @@ import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
+import com.mrboomdev.platformer.util.AudioUtil;
 
 public class GameDebugLauncher extends GameLauncher {
 	private GameDebugMenu menu;
@@ -32,6 +33,7 @@ public class GameDebugLauncher extends GameLauncher {
 	
 	@Override
 	public void exit() {
+		AudioUtil.clear();
 		Gdx.app.postRunnable(() -> {
 			var game = GameHolder.getInstance();
 			game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));

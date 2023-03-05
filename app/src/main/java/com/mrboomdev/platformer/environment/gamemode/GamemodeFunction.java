@@ -1,7 +1,5 @@
 package com.mrboomdev.platformer.environment.gamemode;
 
-import com.mrboomdev.platformer.util.Direction;
-
 public class GamemodeFunction {
 	public Action action;
 	public Options options;
@@ -9,20 +7,24 @@ public class GamemodeFunction {
 	public boolean isLong = false;
 	public float delay, duration, speed = 1;
 	
-	public class Options {
+	public GamemodeFunction(Action action, Options options, Conditions conditions) {
+		this.action = action;
+		this.options = options;
+		this.conditions = conditions;
+	}
+	
+	public static class Options {
 		public float time = 300;
 		public int direction;
 		public float from, to;
-		public Target[] target;
-		public Target toTarget;
+		public Target target, toTarget;
 		public Mode mode;
 		public String text = "Hello, World!";
 		public String[] queue;
 	}
 	
 	public class Conditions {
-		public int timerHour = 999;
-		public Target[] target;
+		public Target target;
 	}
 	
 	public enum Action {
@@ -44,6 +46,7 @@ public class GamemodeFunction {
 		
 		MAIN_PLAYER,
 		ANY_PLAYER,
+		ANY_BOT,
 		
 		PLAYER_SPAWN,
 		BOT_SPAWN

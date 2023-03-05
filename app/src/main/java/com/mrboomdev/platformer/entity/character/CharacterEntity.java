@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.Align;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
+import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
+import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.*;
 import com.mrboomdev.platformer.util.CameraUtil;
@@ -178,7 +180,7 @@ public class CharacterEntity extends EntityAbstract {
 		} else if(getSpeed(power) > speed * 6) {
 			isRunning = true;
 			skin.setAnimation(RUN);
-			stats.stamina = Math.max(stats.stamina - .05f, 0);
+			stats.stamina = Math.max(stats.stamina - .02f, 0);
 			staminaReloadMultiply = .05f;
 			if(stats.stamina > 5) {
 				super.usePower(power.scl(100), speed, isBot);
@@ -196,8 +198,11 @@ public class CharacterEntity extends EntityAbstract {
 	public void die() {
 		super.die();
 		var game = GameHolder.getInstance();
-        if(name == game.settings.playerName) {
-            game.launcher.exit();
-        }
+		var gamemode = GamemodeManager.instance;
+		var deathOptions = new GamemodeFunction.Options();
+		deathOptions.target = name == game.settings.playerName
+			? GamemodeFunction.Target.MAIN_PLAYER
+			: GamemodeFunction.Target.ANY_BOT;
+		gamemode.runFunction(new GamemodeFunction(GamemodeFunction.Action.DEATH, deathOptions, null));
 	}
 }

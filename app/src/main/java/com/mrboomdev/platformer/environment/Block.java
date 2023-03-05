@@ -14,7 +14,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.util.ColorUtil;
-import com.mrboomdev.platformer.util.SizeUtil.Bounds;
 
 public class Block {
     private static final float tileSize = 2;
@@ -77,14 +76,7 @@ public class Block {
         return special;
     }
     
-    public void render(Vector2 position, Bounds bounds, SpriteBatch batch) {
-        if(position.x - (size[0] / 2) > bounds.toX ||
-            position.x + (size[0] / 2) < bounds.fromX ||
-            position.y - (size[1] / 2) > bounds.toY ||
-            position.y + size[1] < bounds.fromY) {
-                return;
-        }
-        
+    public void render(Vector2 position, SpriteBatch batch) {
         if(sprite != null) {
             batch.draw(sprite, position.x - (tileSize / 2) + offset[0], 
                 position.y - (tileSize / 2) + offset[1], 

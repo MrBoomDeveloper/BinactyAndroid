@@ -30,7 +30,7 @@ public class EnvironmentManager {
 	
 	public void setupRayHandler() {
 		rayHandler = new RayHandler(world);
-		rayHandler.setAmbientLight(0, 0, 0, .1f);
+		rayHandler.setAmbientLight(map.atmosphere.color.getColor());
 		rayHandler.setBlurNum(3);
 		
 		for(EnvironmentMap.Tile tile : map.tiles) {

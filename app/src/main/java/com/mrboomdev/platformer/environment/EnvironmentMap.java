@@ -126,7 +126,6 @@ public class EnvironmentMap {
 	
 	public class Atmosphere {
 		public ColorUtil color;
-		public String[] music;
 		public String[] tiles;
 	}
 	

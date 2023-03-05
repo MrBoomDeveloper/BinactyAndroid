@@ -16,6 +16,7 @@ import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
+import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
@@ -113,6 +114,10 @@ public class GameplayScreen extends CoreScreen {
 		
 		ui = new GameplayUi(this, player);
 		Gdx.input.setInputProcessor(ui.stage);
+		if(game.settings.enableEditor) {
+			EditorManager editor = new EditorManager();
+			ui.attachLayerDrawer(editor);
+		}
 		environment.attachUi(ui);
 	}
 	

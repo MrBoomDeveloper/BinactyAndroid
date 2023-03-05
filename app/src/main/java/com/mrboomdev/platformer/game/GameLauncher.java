@@ -1,7 +1,6 @@
 package com.mrboomdev.platformer.game;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -9,6 +8,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.react.ReactGameOverActivity;
+import com.mrboomdev.platformer.util.AudioUtil;
 
 public class GameLauncher extends AndroidApplication {
 	private FirebaseAnalytics analytics;
@@ -38,6 +38,7 @@ public class GameLauncher extends AndroidApplication {
 	
 	public void exit() {
 		if(isFinished) return;
+		AudioUtil.clear();
 		Intent intent = new Intent(this, ReactGameOverActivity.class);
 		startActivity(intent);
 		isFinished = true;

@@ -1,16 +1,19 @@
 package com.mrboomdev.platformer.environment.gamemode;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
+import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.FileUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
@@ -31,15 +34,19 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 	private float time, timerSpeed;
 	private Status status = Status.PREPAIRING;
 	private Runnable buildCompletedCallback;
+	private FileUtil source;
+	public static GamemodeManager instance;
 	
 	public GamemodeManager(GamemodeScript script) {
 		this.script = script;
-		script.start.forEach(function -> stack.add(new StackOperation(function)));
+		script.start.forEach(function -> stack.add(new StackOperation(function, null)));
+		instance = this;
 	}
 	
 	public GamemodeManager build(FileUtil source, Runnable callback) {
 		LoadingFiles.loadToManager(script.load, source.getParent().getPath(), game.assets);
 		this.buildCompletedCallback = callback;
+		this.source = source;
 		status = Status.LOADING_RESOURCES;
 		return this;
 	}
@@ -51,15 +58,57 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 		}
 	}
 	
+	public void runFunction(GamemodeFunction function) {
+		stack.add(new StackOperation(function, function));
+	}
+	
+	private void triggerListeners(GamemodeFunction function) {
+		if(script.listeners.containsKey(function.action)) {
+			script.listeners.get(function.action).forEach(listener -> {
+				stack.add(new StackOperation(listener, function));
+			});
+		}
+	}
+	
+	private boolean resolveConditions(StackOperation operation) {
+		if(operation.function.conditions == null) return true;
+		var conditions = operation.function.conditions;
+		
+		if(operation.caller != null) {
+			var caller = operation.caller;
+			if(conditions.target != null && (conditions.target != caller.options.target)) return false;
+		}
+		return true;
+	}
+	
 	@Override
 	public void drawUi() {
-		stack.forEach(operation -> {
+		List<StackOperation> oldStack = new ArrayList<>(stack);
+		for(StackOperation operation : oldStack) {
+			triggerListeners(operation.function);
+		}
+		
+		for(var operation : stack) {
 			var function = operation.function;
 			operation.progress += Gdx.graphics.getDeltaTime();
-			game.analytics.log("Gamemode", "Do operation: " + function.action.name());
+			if(!resolveConditions(operation)) continue;
+			
 			switch(function.action) {
 				case GAME_OVER:
 					game.launcher.exit();
+					break;
+					
+				case PLAY_MUSIC:
+					Array<Music> musicQueue = new Array<>();
+					var assets = GameHolder.getInstance().assets;
+					for(String track : function.options.queue) {
+						musicQueue.add(assets.get(source.getParent().goTo(track).getPath()));
+					}
+					AudioUtil.playMusic(musicQueue, 100);
+					break;
+					
+				case STOP_MUSIC:
+					AudioUtil.stopMusic();
 					break;
 					
 				case TIMER_SETUP:
@@ -83,7 +132,7 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 					if(title.opacity <= 0) operation.isFinished = true;
 					break;
 			}
-		});
+		}
 		
 		stack = stack.stream().filter(operation -> {
 			return (operation.progress < operation.function.duration ||
@@ -112,14 +161,13 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 	private void updateTimer(float delta) {
 		if(!isTimerSetup || isTimerEnd) return;
 		
-		time = Math.max(0, time - delta * timerSpeed);
+		time = Math.max(0, time - (delta * timerSpeed));
 		SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
 		timer.setText(dateFormat.format(time * 1000));
 		
 		if(time == 0) {
 			isTimerEnd = true;
-			script.listeners.getOrDefault(Action.TIMER_END, new ArrayList<>())
-				.forEach(function -> stack.add(new StackOperation(function)));
+			runFunction(new GamemodeFunction(Action.TIMER_END, null, null));
 		}
 	}
 	
@@ -127,9 +175,11 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 		public float progress = 0;
 		public boolean isFinished = false;
 		public GamemodeFunction function;
+		public GamemodeFunction caller;
 		
-		public StackOperation(GamemodeFunction function) {
+		public StackOperation(GamemodeFunction function, GamemodeFunction caller) {
 			this.function = function;
+			this.caller = caller;
 		}
 	}
 	

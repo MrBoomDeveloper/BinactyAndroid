@@ -13,7 +13,7 @@ public class GamemodeScript {
 	
 	public class Team {
 		public String name = "Team";
-		public Target[] target;
+		public Target target;
 		public int count = 100;
 		public boolean strictOrder = false;
 		public boolean repeatCharacters = false;

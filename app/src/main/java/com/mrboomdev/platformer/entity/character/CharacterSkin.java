@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.google.gson.annotations.SerializedName;
 import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.Direction;
 import com.mrboomdev.platformer.util.FileUtil;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ public class CharacterSkin {
 	private Entity.Animation currentAnimation;
 	private Sprite sprite;
 	private float animationProgress;
+	private int lastframeIndex;
 	
 	@SerializedName("skin")
 	private HashMap<Entity.Animation, AnimationObject> serailizedAnimations;
@@ -52,13 +55,23 @@ public class CharacterSkin {
 	}
 	
 	public void draw(SpriteBatch batch, Vector2 position, Direction direction) {
+		var activeAnimation = animations.get(currentAnimation);
 		animationProgress += Gdx.graphics.getDeltaTime();
-		sprite = new Sprite(animations.get(currentAnimation).getKeyFrame(animationProgress, true));
+		
+		sprite = new Sprite(activeAnimation.getKeyFrame(animationProgress, true));
 		sprite.setSize(
 			direction.isForward() ? sprite.getWidth() : -sprite.getWidth(),
 			sprite.getHeight());
 		sprite.setCenter(position.x, position.y);
 		sprite.draw(batch);
+		
+		int frameIndex = activeAnimation.getKeyFrameIndex(animationProgress);
+		if(frameIndex == 4 && frameIndex != lastframeIndex &&
+		  (currentAnimation == WALK || currentAnimation == RUN)) {
+			var assets = GameHolder.getInstance().assets;
+			AudioUtil.play3DSound(assets.get("audio/sounds/step.mp3"), .2f, 15, position);
+		}
+		lastframeIndex = frameIndex;
 	}
 	
 	public CharacterSkin build(FileUtil file) {
@@ -74,6 +87,7 @@ public class CharacterSkin {
 				sprites[i] = sprite;
 			}
 			Animation<Sprite> animation = new Animation<>(object.delay, sprites);
+			animation.setPlayMode(Animation.PlayMode.LOOP);
 			animations.put(entry.getKey(), animation);
 		}
 		setAnimation(IDLE);

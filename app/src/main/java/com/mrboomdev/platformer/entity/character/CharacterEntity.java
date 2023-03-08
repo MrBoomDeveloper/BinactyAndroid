@@ -46,9 +46,8 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public CharacterEntity create(World world) {
-		if(config.body3D == null) {
+		if(config.body3D == null)
 			config.body3D = new float[]{config.bodySize[0], config.bodySize[1], 0, 0};
-		}
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;

@@ -19,6 +19,7 @@ import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.*;
+import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
 import static com.mrboomdev.platformer.entity.Entity.Animation.*;
 import com.mrboomdev.platformer.util.FileUtil;
@@ -145,16 +146,24 @@ public class CharacterEntity extends EntityAbstract {
 	
 	public void shoot(Vector2 power) {
 		projectileManager.shoot(getDirection().isForward() ? new Vector2(5, 0) : new Vector2(-5, 0));
+		AssetManager assets = GameHolder.getInstance().assets;
+		AudioUtil.play3DSound(assets.get("audio/sounds/shot.wav"), .3f, 15, body.getPosition());
 	}
 	
 	public void dash() {
 		if(stats.stamina < Entity.DASH_COST) return;
 		if(isDashing || dashReloadProgress < Entity.DASH_DELAY) return;
+		
 		config.stats.stamina -= Entity.DASH_COST;
 		dashProgress = 0;
         isDashing = true;
 		staminaReloadMultiply = .05f;
+		
+		if(wasPower.isZero()) wasPower = new Vector2(5, 0);
 		body.setLinearVelocity(wasPower.scl(100).limit(18));
+		AssetManager assets = GameHolder.getInstance().assets;
+		AudioUtil.play3DSound(assets.get("audio/sounds/dash.wav"), .1f, 10, body.getPosition());
+		
 	}
 	
 	public void gainDamage(int damage) {

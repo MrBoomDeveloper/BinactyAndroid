@@ -66,7 +66,7 @@ public class CharacterSkin {
 		sprite.draw(batch);
 		
 		int frameIndex = activeAnimation.getKeyFrameIndex(animationProgress);
-		if(frameIndex == 4 && frameIndex != lastframeIndex &&
+		if((frameIndex == 1 || frameIndex == 6) && frameIndex != lastframeIndex &&
 		  (currentAnimation == WALK || currentAnimation == RUN)) {
 			var assets = GameHolder.getInstance().assets;
 			AudioUtil.play3DSound(assets.get("audio/sounds/step.mp3"), .2f, 15, position);

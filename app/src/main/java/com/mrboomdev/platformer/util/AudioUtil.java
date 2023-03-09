@@ -41,7 +41,9 @@ public class AudioUtil {
 	}
 	
 	public static void play3DSound(Sound sound, float volume, float power, Vector2 position) {
-		sound.play(getVolume(position, power) * volume * soundVolume);
+		float resultVolume = getVolume(position, power) * volume * soundVolume;
+		if(resultVolume <= 0) return;
+		sound.play(resultVolume);
 	}
 	
 	private static float getVolume(Vector2 position, float power) {

@@ -1,9 +1,12 @@
 package com.mrboomdev.platformer.game;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidAudio;
+import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.BuildConfig;
@@ -34,6 +37,11 @@ public class GameLauncher extends AndroidApplication {
 		initialize(GameHolder.setInstance(this,
 			GameSettings.getFromSharedPreferences(prefs),
 			new GameAnalytics(analytics)));
+	}
+	
+	@Override
+	public AndroidAudio createAudio(Context context, AndroidApplicationConfiguration config) {
+		return new AsynchronousAndroidAudio(context, config);
 	}
 	
 	public void exit() {

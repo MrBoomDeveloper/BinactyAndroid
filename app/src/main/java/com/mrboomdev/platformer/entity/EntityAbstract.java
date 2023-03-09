@@ -5,13 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.util.Direction;
-import com.mrboomdev.platformer.entity.EntityConfig.Stats;
 
 public abstract class EntityAbstract {
 	public World world;
 	public Vector2 wasPower = new Vector2();
 	public Body body;
-	public Stats stats;
 	public boolean isDestroyed, isDead;
 	
 	public abstract void draw(SpriteBatch batch);

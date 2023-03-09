@@ -18,15 +18,6 @@ public class Entity {
 	public static final float DASH_DURATION = .25f;
 	public static final float DASH_SPEED = 5;
 	
-	public static final String internalDirectory = "world/player/";
-	
-	public static FileHandle getInternal(short type, String name, String path) {
-		String dir = "";
-		if(type == CHARACTER) dir = "characters/";
-		if(type == WEAPON) dir = "weapon/";
-		return Gdx.files.internal(internalDirectory + dir + name + "/" + path);
-	}
-	
 	public enum Animation {
 		IDLE, BORED,
 		WALK, RUN, DASH,

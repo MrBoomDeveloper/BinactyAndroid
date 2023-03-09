@@ -37,6 +37,8 @@
 				{ "path": "effects/attack.png", "type": "texture" },
 				{ "path": "world/player/weapon/projectile/bullet_fire.png", "type": "texture" },
 				{ "path": "audio/sounds/step.mp3", "type": "sound" },
+				{ "path": "audio/sounds/dash.wav", "type": "sound" },
+				{ "path": "audio/sounds/shot.wav", "type": "sound" },
 				{ 
 					"path": "font/roboto-medium.ttf", "as": "debug.ttf", "type": "font",
 					"font": {

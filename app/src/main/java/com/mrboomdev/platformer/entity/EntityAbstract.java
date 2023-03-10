@@ -15,9 +15,9 @@ public abstract class EntityAbstract {
 	public abstract void draw(SpriteBatch batch);
 	
 	public void die() {
-        if(isDead) return;
-        isDead = true;
-    }
+		if(isDead) return;
+		isDead = true;
+	}
 	
 	public void destroy() {
 		if(isDestroyed) return;
@@ -33,12 +33,12 @@ public abstract class EntityAbstract {
 	}
 	
 	public void usePower(Vector2 power, float speed, boolean isBot) {
-        if(isDead) return;
-        body.setLinearVelocity(isBot
+		if(isDead) return;
+		body.setLinearVelocity(isBot
 			? power.limit(5).scl(speed).add(getRandomVector2(10))
 			:  power.limit(5).scl(speed));
 		if(!power.isZero()) wasPower = power.cpy();
-    }
+	}
 	
 	private Vector2 getRandomVector2(float range) {
 		return new Vector2(

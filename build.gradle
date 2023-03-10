@@ -1,51 +1,51 @@
 buildscript {
-    ext {
-        buildToolsVersion = "32.0.0"
-        minSdkVersion = 21
-        compileSdkVersion = 32
-        targetSdkVersion = 32
+	ext {
+		buildToolsVersion = "32.0.0"
+		minSdkVersion = 21
+		compileSdkVersion = 32
+		targetSdkVersion = 32
 		ndkVersion = "23.1.7779620"
-    }
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        google()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:$androidPluginVersion'
-        classpath 'com.google.gms:google-services:4.3.13'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
-        classpath 'com.facebook.react:react-native-gradle-plugin'
-    }
+	}
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		google()
+		maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:$androidPluginVersion'
+		classpath 'com.google.gms:google-services:4.3.13'
+		classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
+		classpath 'com.facebook.react:react-native-gradle-plugin'
+	}
 }
 
 allprojects {
-    apply plugin: 'eclipse'
-    apply plugin: 'idea'
-    repositories {
-        google()
-        maven { url 'https://www.jitpack.io' }
-    }
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+	repositories {
+		google()
+		maven { url 'https://www.jitpack.io' }
+	}
 }
 
 configure(subprojects - project(':app')) {
-    apply plugin: 'java-library'
-    sourceCompatibility = 11.0
-    compileJava {
-        options.incremental = true
-    }
+	apply plugin: 'java-library'
+	sourceCompatibility = 11.0
+	compileJava {
+		options.incremental = true
+	}
 }
 
 subprojects {
-    version = '0.0.1-SNAPSHOT'
-    ext.appName = '$project_name'
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-        maven { url 'https://jitpack.io' }
-    }
+	version = '0.0.1-SNAPSHOT'
+	ext.appName = '$project_name'
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+		maven { url 'https://jitpack.io' }
+	}
 }
 
 eclipse.project.name = '$project_name' + '-parent'

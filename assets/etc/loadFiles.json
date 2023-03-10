@@ -2,7 +2,7 @@
 	"scenes": {
 		"LOADING": {
 			"load": [
-				{ "path": "ui/banner/loading.jpg", "type": "texture" },
+				{ "path": "world/packs/fnaf/src/banner.png", "type": "texture" },
 				{ "path": "etc/blank.png", "type": "texture" },
 				{
 					"path": "font/gilroyBold.ttf", "as": "loading.ttf", "type": "font",
@@ -74,7 +74,7 @@
 				}
 			],
 			"unload": [
-				"ui/banner/loading.png"
+				"world/packs/fnaf/src/banner.png"
 			]
 		}
 	}

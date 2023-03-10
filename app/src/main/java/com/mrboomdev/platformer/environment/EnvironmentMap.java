@@ -22,15 +22,15 @@ import java.util.Collections;
 public class EnvironmentMap {
 	public Atmosphere atmosphere;
 	public Rules rules;
-	public RayHandler rayHandler;
+	public transient RayHandler rayHandler;
 	public ArrayList<Tile> tiles = new ArrayList<>();
-	private HashMap<String, EnvironmentBlock> blocks = new HashMap<>();
-	private LoadingFiles loadFiles;
-	private FileUtil source;
-	private World world;
-	private Runnable buildCallback;
-	private AssetManager assets;
-	private Status status = Status.PREPAIRING;
+	private transient HashMap<String, EnvironmentBlock> blocks = new HashMap<>();
+	private transient LoadingFiles loadFiles;
+	private transient FileUtil source;
+	private transient World world;
+	private transient Runnable buildCallback;
+	private transient AssetManager assets;
+	private transient Status status = Status.PREPAIRING;
 	
 	public void render(SpriteBatch batch) {
 		Collections.sort(tiles);
@@ -98,7 +98,7 @@ public class EnvironmentMap {
 		public String name, style;
 		public int layer;
 		public float[] position;
-		public EnvironmentBlock block;
+		public transient EnvironmentBlock block;
 		
 		public void draw(SpriteBatch batch) {
 			block.draw(batch);

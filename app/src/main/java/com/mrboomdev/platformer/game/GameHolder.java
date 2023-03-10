@@ -4,12 +4,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.google.gson.Gson;
+import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 
@@ -18,6 +20,8 @@ public class GameHolder extends Game {
 	public GameSettings settings;
 	public GameAnalytics analytics;
 	public AssetManager assets;
+	public AssetManager externalAssets;
+	public EnvironmentManager environment;
 	private static GameHolder instance;
 	
 	@Override
@@ -51,23 +55,38 @@ public class GameHolder extends Game {
 		this.launcher = launcher;
 		this.settings = settings;
 		this.analytics = analytics;
-		this.assets = new AssetManager() {
-			@Override
-			public synchronized <T extends Object> void load(String file, Class<T> fileClass) {
-				analytics.log("Assets", "Load file: " + file);
-				super.load(file, fileClass);
-			}
-		};
-		
-		FileHandleResolver resolver = new InternalFileHandleResolver();
-		assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-		assets.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+		this.assets = new Assets(analytics, new InternalFileHandleResolver());
+		this.externalAssets = new Assets(analytics, new ExternalFileHandleResolver());
 	}
 	
 	@Override
 	public void dispose() {
 		analytics.log("GameHolder", "dispose");
 		assets.clear();
+		externalAssets.clear();
 		super.dispose();
+	}
+	
+	private class Assets extends AssetManager {
+		private GameAnalytics analytics;
+		
+		public Assets(GameAnalytics analytics, FileHandleResolver resolver) {
+			super(resolver);
+			this.analytics = analytics;
+			
+			setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+			setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
+			
+			setErrorListener((asset, throwable) -> {
+				analytics.error("Assets", "Failed to load asset: " + asset.fileName + ", of type: " + asset.type.getName());
+				throw new RuntimeException(throwable);
+			});
+		}
+		
+		@Override
+		public synchronized <T extends Object> void load(String file, Class<T> fileClass) {
+			analytics.log("Assets", "Load file: " + file);
+			super.load(file, fileClass);
+		}
 	}
 }

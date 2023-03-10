@@ -19,22 +19,22 @@ import java.util.HashMap;
 import java.util.Collection;
 
 public class EntityManager {
-    private World world;
+	private World world;
 	private RayHandler rayHandler;
 	private PointLight mainLight;
 	private EntityPresets presets = new EntityPresets();
 	private Array<Spawn> spawns = new Array<>();
-    public static final String entitiesDirectory = "world/player/characters/";
+	public static final String entitiesDirectory = "world/player/characters/";
 	public HashMap<String, CharacterEntity> characters = new HashMap<>();
 	
 	public EntityManager(World world, RayHandler rayHandler) {
-        this.world = world;
+		this.world = world;
 		this.rayHandler = rayHandler;
-    }
+	}
 	
 	public void addCharacter(CharacterEntity character) {
 		character.body.setTransform(getFreeSpawn(), 0);
-        characters.put(character.name, character);
+		characters.put(character.name, character);
 	}
 	
 	public void setMain(CharacterEntity character) {
@@ -45,39 +45,39 @@ public class EntityManager {
 		}
 		mainLight.attachToBody(character.body);
 	}
-    
-    public EntityManager addBots(int count) {
-        for(int i = 0; i < count; i++) {
+	
+	public EntityManager addBots(int count) {
+		for(int i = 0; i < count; i++) {
 			CharacterEntity bot = presets.getRandomCharacter()
 				.setBrain(new BotBrain(this))
 				.create(world);
-            addCharacter(bot);
-        }
+			addCharacter(bot);
+		}
 		return this;
-    }
+	}
 	
 	public EntityManager addPresets(EntityPresets presets) {
 		this.presets = presets;
 		return this;
 	}
-    
-    public EntityManager setSpawnsPositions(Array<Spawn> spawns) {
-        this.spawns = spawns;
+	
+	public EntityManager setSpawnsPositions(Array<Spawn> spawns) {
+		this.spawns = spawns;
 		return this;
-    }
-    
-    public void render(SpriteBatch batch, OrthographicCamera camera) {
+	}
+	
+	public void render(SpriteBatch batch, OrthographicCamera camera) {
 		for(CharacterEntity entity : characters.values()) {
-            entity.draw(batch);
-        }
+			entity.draw(batch);
+		}
 		for(CharacterEntity entity : characters.values()) {
-            entity.drawProjectiles(batch);
-        }
-    }
+			entity.drawProjectiles(batch);
+		}
+	}
 	
 	public CharacterEntity getCharacter(String name) {
-        return characters.get(name);
-    }
+		return characters.get(name);
+	}
 	
 	public Array<CharacterEntity> getAllCharacters() {
 		Array<CharacterEntity> entities = new Array<>();

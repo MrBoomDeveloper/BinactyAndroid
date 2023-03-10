@@ -156,7 +156,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		config.stats.stamina -= Entity.DASH_COST;
 		dashProgress = 0;
-        isDashing = true;
+		isDashing = true;
 		staminaReloadMultiply = .05f;
 		
 		if(wasPower.isZero()) wasPower = new Vector2(5, 0);
@@ -169,7 +169,7 @@ public class CharacterEntity extends EntityAbstract {
 	public void gainDamage(int damage) {
 		config.stats.health -= damage;
 		if(config.stats.health <= 0) die();
-        if(name == GameHolder.getInstance().settings.playerName) {
+		if(name == GameHolder.getInstance().settings.playerName) {
 			CameraUtil.setCameraShake(.2f, .5f);
 		}
 	}

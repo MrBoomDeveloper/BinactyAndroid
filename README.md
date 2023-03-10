@@ -15,7 +15,6 @@
     - More animations
     - More skins
   - Effects (Fire, boom and etc.)
-  - Sounds (Footsteps, effects and etc.)
 - Multiplayer mode:
   - Room hosting
   - Room joining
@@ -30,8 +29,6 @@
 - Fancy react menu:
   - Shop screen
   - Achievments screen
-  - Settings screen:
-    - Cloud backup
   - Profile overview
     - My own profile
     - Other's players profiles

@@ -26,13 +26,13 @@ public class GameLauncher extends AndroidApplication {
 		
 		var prefs = getSharedPreferences("Save", 0);
 		if(!prefs.getBoolean("crashlytics", true) || BuildConfig.DEBUG) {
-        	crashlytics.setCrashlyticsCollectionEnabled(false);
+			crashlytics.setCrashlyticsCollectionEnabled(false);
 		}
 		
 		var config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
-        config.useAccelerometer = false;
-        config.useCompass = false;
+		config.useAccelerometer = false;
+		config.useCompass = false;
 		
 		initialize(GameHolder.setInstance(this,
 			GameSettings.getFromSharedPreferences(prefs),

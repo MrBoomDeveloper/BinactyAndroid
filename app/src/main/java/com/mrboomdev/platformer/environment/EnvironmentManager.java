@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.environment.EnvironmentMap;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
+import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 
 public class EnvironmentManager {
@@ -18,6 +19,7 @@ public class EnvironmentManager {
 	public EnvironmentManager() {
 		Box2D.init();
 		world = new World(new Vector2(0, 0), true);
+		GameHolder.getInstance().environment = this;
 	}
 	
 	public void render(SpriteBatch batch) {

@@ -5,9 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.mrboomdev.platformer.environment.editor.widgets.GridWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -17,12 +15,13 @@ public class GridWidget extends ActorUtil {
     private float gap;
 	private float currentScroll, maxScroll;
 	private float r, g, b, a = 0;
-	private int rows, columns, lastRow, lastColumn;
-	private boolean isHorizontal = false;
+	private int rows, columns;
+	private boolean isHorizontal = true;
 	private ShapeRenderer shape;
 
-    public GridWidget(float gap) {
+    public GridWidget(float gap, boolean isHorizontal) {
         this.gap = gap;
+		this.isHorizontal = isHorizontal;
 		this.shape = new ShapeRenderer();
         this.addListener(new InputListener() {
 			@Override
@@ -47,6 +46,12 @@ public class GridWidget extends ActorUtil {
         return this;
     }
 	
+	public GridWidget setCount(int columns, int rows) {
+		this.columns = columns;
+		this.rows = rows;
+		return this;
+	}
+	
 	public GridWidget setBackground(float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
@@ -55,15 +60,36 @@ public class GridWidget extends ActorUtil {
 		return this;
 	}
 
-    public GridWidget add(ActorUtil widget) {
-        widgets.addLast(widget);
+    public GridWidget add(ActorUtil... widgets) {
+		for(var widget : widgets) {
+			this.widgets.addLast(widget);
+		}
         return this;
     }
 
     @Override
     public void act(float delta) {
+		int lastColumn = 0, lastRow = 0;
+		
 		for(int i = 0; i < widgets.size(); i++) {
-			widgets.get(i).setPosition(0, 0);
+			var widget = widgets.get(i);
+			float x = 0, y = 0;
+			
+			if(isHorizontal) {
+				x = widget.getWidth() * lastColumn + gap * lastColumn;
+				y = widget.getHeight() * lastRow + gap * lastRow;
+				
+				if(lastColumn < (columns - 1)) {
+					lastColumn++;
+				} else {
+					lastColumn = 0;
+					lastRow++;
+				}
+			} else {
+				throw new RuntimeException("Vertical GridWidget isn't supported yet.");
+			}
+			
+			widget.setPosition(getX() + x, getY() + getHeight() - widget.getHeight() - y);
 		}
 	}
 

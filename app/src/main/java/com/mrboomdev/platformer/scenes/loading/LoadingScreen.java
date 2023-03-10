@@ -30,7 +30,7 @@ public class LoadingScreen extends CoreScreen {
         this.loadScene = scene;
         this.asset = game.assets;
         this.batch = new SpriteBatch();
-        this.banner = new Sprite(asset.get("ui/banner/loading.jpg", Texture.class));
+        this.banner = new Sprite(asset.get("world/packs/fnaf/src/banner.png", Texture.class));
         this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.banner.setCenter(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		this.font = asset.get("loading.ttf", BitmapFont.class);

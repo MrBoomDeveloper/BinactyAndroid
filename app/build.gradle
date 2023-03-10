@@ -2,91 +2,94 @@ import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
-    id 'com.android.application'
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
-	id 'com.facebook.react'
+	id "com.android.application"
+	id "com.google.gms.google-services"
+	id "com.google.firebase.crashlytics"
+	id "com.facebook.react"
 }
 
 def enableSeparateBuildPerCPUArchitecture = false
 
 def reactNativeArchitectures() {
-    def value = project.getProperties().get("reactNativeArchitectures")
-    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+	def value = project.getProperties().get("reactNativeArchitectures")
+	return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
 android {
-	namespace 'com.mrboomdev.platformer'
-    ndkVersion rootProject.ext.ndkVersion
-    compileSdkVersion rootProject.ext.compileSdkVersion
+	namespace "com.mrboomdev.platformer"
+	ndkVersion rootProject.ext.ndkVersion
+	compileSdkVersion rootProject.ext.compileSdkVersion
+	
 	sourceSets {
 		main {
-			manifest.srcFile 'AndroidManifest.xml'
-			java.srcDirs = ['src/main/java']
-			aidl.srcDirs = ['src/main/java']
-			renderscript.srcDirs = ['src/main/java']
-			res.srcDirs = ['res']
-			assets.srcDirs = ['../assets']
-			jniLibs.srcDirs = ['libs']
+			manifest.srcFile "AndroidManifest.xml"
+			java.srcDirs = ["src/main/java"]
+			aidl.srcDirs = ["src/main/java"]
+			renderscript.srcDirs = ["src/main/java"]
+			res.srcDirs = ["res"]
+			assets.srcDirs = ["../assets"]
+			jniLibs.srcDirs = ["libs"]
 		}
 	}
 	
 	defaultConfig {
-		applicationId 'com.mrboomdev.platformer'
+		applicationId "com.mrboomdev.platformer"
 		minSdkVersion 25
 		targetSdkVersion 32
 		versionCode 11
 		versionName "0.2.3"
 		multiDexEnabled true
 	}
-    
-    splits {
-        abi {
-            reset()
-            enable enableSeparateBuildPerCPUArchitecture
-            universalApk false
-            include (*reactNativeArchitectures())
-        }
-    }
-    signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-        }
-    }
-    
+	
+	splits {
+		abi {
+			reset()
+			enable enableSeparateBuildPerCPUArchitecture
+			universalApk false
+			include (*reactNativeArchitectures())
+		}
+	}
+	
+	signingConfigs {
+		debug {
+			storeFile file("debug.keystore")
+			storePassword "android"
+			keyAlias "androiddebugkey"
+			keyPassword "android"
+		}
+	}
+	
 	compileOptions {
-        sourceCompatibility "11.0"
+		sourceCompatibility "11.0"
 		targetCompatibility "11.0"
 		coreLibraryDesugaringEnabled true
 	}
 	
 	buildTypes {
-        debug {
+		debug {
 			applicationIdSuffix ".debug"
 			versionNameSuffix "-debug"
-            signingConfig signingConfigs.debug
-        }
-        release {
+			signingConfig signingConfigs.debug
+		}
+		
+		release {
 			versionNameSuffix "-release"
-            signingConfig signingConfigs.debug
-            minifyEnabled false
+			signingConfig signingConfigs.debug
+			minifyEnabled false
 			shrinkResources false
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-        }
-    }
-    
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
-            def abi = output.getFilter(OutputFile.ABI)
-            if (abi != null) {
-                output.versionCodeOverride = defaultConfig.versionCode * 1000 + versionCodes.get(abi)
-            }
-        }
-    }
+			proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+		}
+	}
+	
+	applicationVariants.all { variant ->
+		variant.outputs.each { output ->
+			def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+			def abi = output.getFilter(OutputFile.ABI)
+			if (abi != null) {
+				output.versionCodeOverride = defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+			}
+		}
+	}
 }
 
 repositories {
@@ -96,61 +99,59 @@ repositories {
 configurations { natives }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-	coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-    implementation platform('com.google.firebase:firebase-bom:31.1.1')
-    implementation 'com.google.firebase:firebase-crashlytics'
-    implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-analytics'
+	implementation fileTree(dir: "libs", include: ["*.jar"])
+	coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:1.1.5"
+	implementation platform("com.google.firebase:firebase-bom:31.1.1")
+	implementation "com.google.firebase:firebase-crashlytics"
+	implementation "com.google.firebase:firebase-messaging"
+	implementation "com.google.firebase:firebase-analytics"
 	
 	implementation "com.google.code.gson:gson:2.10";
 	
-	implementation 'com.google.android.material:material:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    
-    implementation("com.facebook.react:react-android")
+	implementation "com.google.android.material:material:1.7.0"
+	implementation "androidx.appcompat:appcompat:1.5.0"
+	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+	
+	implementation("com.facebook.react:react-android")
 
-    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
-        exclude group:'com.facebook.fbjni'
-    }
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
-        exclude group:'com.facebook.flipper'
-        exclude group:'com.squareup.okhttp3', module:'okhttp'
-    }
-    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
-        exclude group:'com.facebook.flipper'
-    }
-	implementation 'org.webkit:android-jsc:+'
+	debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
+		exclude group:"com.facebook.fbjni"
+	}
+	debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+		exclude group:"com.facebook.flipper"
+		exclude group:"com.squareup.okhttp3", module:"okhttp"
+	}
+	debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
+		exclude group:"com.facebook.flipper"
+	}
+	implementation "org.webkit:android-jsc:+"
 	
-	
+	api "com.badlogicgames.gdx:gdx:$gdxVersion"
 	implementation "com.badlogicgames.box2dlights:box2dlights:1.4"
-    implementation "com.badlogicgames.gdx:gdx-ai:1.8.1"
+	implementation "com.badlogicgames.gdx:gdx-ai:1.8.1"
 	implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
 	implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 	
-	api "com.badlogicgames.gdx:gdx:$gdxVersion"
-	
 	implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
-    natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
 
-    natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-armeabi-v7a"
+	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-arm64-v8a"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-x86"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-x86_64"
 	 
-    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
-    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
-    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
-    natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
+	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
+	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
+	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
+	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 }
 
 task copyDownloadableDepsToLibs(type: Copy) {
-    from configurations.implementation
-    into 'libs'
+	from configurations.implementation
+	into "libs"
 }
 
 task copyAndroidNatives() {
@@ -162,27 +163,27 @@ task copyAndroidNatives() {
 		file("libs/x86/").mkdirs()
 		
 		configurations.getByName("natives").copy().files.each { jar ->
-    	    def outputDir = null
-    	    if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
-    	    if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
-    	    if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
-    	    if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
-    	    if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
-    	    if(outputDir != null) {
-    	        copy {
-    	            from zipTree(jar)
-    	            into outputDir
-    	            include "*.so"
-    	        }
-    	    }
-    	}
+			def outputDir = null
+			if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
+			if(jar.name.endsWith("natives-armeabi-v7a.jar")) outputDir = file("libs/armeabi-v7a")
+			if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
+			if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
+			if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+			if(outputDir != null) {
+				copy {
+					from zipTree(jar)
+					into outputDir
+					include "*.so"
+				}
+			}
+		}
 	}
 }
 
 tasks.whenTaskAdded { packageTask ->
-  if (packageTask.name.contains("package")) {
-    packageTask.dependsOn 'copyAndroidNatives'
-  }
+	if (packageTask.name.contains("package")) {
+		packageTask.dependsOn "copyAndroidNatives"
+	}
 }
 
 task run(type: Exec) {
@@ -193,7 +194,7 @@ task run(type: Exec) {
 		localProperties.withInputStream { instr ->
 			properties.load(instr)
 		}
-		def sdkDir = properties.getProperty('sdk.dir')
+		def sdkDir = properties.getProperty("sdk.dir")
 		if (sdkDir) {
 			path = sdkDir
 		} else {
@@ -204,7 +205,7 @@ task run(type: Exec) {
 	}
 
 	def adb = path + "/platform-tools/adb"
-	commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.mrboomdev.platformer/com.mrboomdev.platformer.AndroidLauncher'
+	commandLine "$adb", "shell", "am", "start", "-n", "com.mrboomdev.platformer/com.mrboomdev.platformer.AndroidLauncher"
 }
 
 eclipse.project.name = "Platformer" + "-android"

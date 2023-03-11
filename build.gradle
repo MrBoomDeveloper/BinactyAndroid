@@ -25,6 +25,7 @@ allprojects {
 	apply plugin: 'idea'
 	repositories {
 		google()
+		mavenCentral()
 		maven { url 'https://www.jitpack.io' }
 	}
 }

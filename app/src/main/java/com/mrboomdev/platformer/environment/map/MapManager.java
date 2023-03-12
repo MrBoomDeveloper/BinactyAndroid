@@ -6,9 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import com.mrboomdev.platformer.environment.EnvironmentBlock;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.ColorUtil;
@@ -28,14 +26,13 @@ public class MapManager {
 	private Runnable buildCallback;
 	private AssetManager assets;
 	private Status status = Status.PREPAIRING;
-	
-	@SerializedName("tiles")
-	public ArrayList<MapObject<MapObject>> objects = new ArrayList<>();
+	public ArrayList<MapObject> objects = new ArrayList<>();
+	private ArrayList<MapTile> tiles = new ArrayList<>();
 	
 	public void render(SpriteBatch batch) {
 		Collections.sort(objects);
-		for(MapObject tile : objects) {
-			tile.draw(batch);
+		for(MapObject object : objects) {
+			object.draw(batch);
 		}
 	}
 	
@@ -48,7 +45,7 @@ public class MapManager {
 		
 		for(String pack : atmosphere.tiles) {
 			var type = new TypeToken<HashMap<String, MapTile>>(){}.getType();
-			tilesPresets.putAll(gson.fromJson(source.goTo(pack).readString(), type));
+			tilesPresets.putAll(gson.fromJson(source.getParent().goTo(pack).readString(), type));
 		}
 		
 		ArrayList<LoadingFiles.File> files = new ArrayList<>();
@@ -65,8 +62,8 @@ public class MapManager {
 	public void addTile(String name, float[] position, int layer) {
 		MapTile tile = new MapTile();
 		//tile.block = blocks.get(name).cpy();
-		position[0] = (int)(position[0]);
-		position[1] = (int)(position[1]);
+		position[0] = Math.round(position[0]);
+		position[1] = Math.round(position[1]);
 		//tile.position = position;
 		//tile.layer = layer;
 		//tile.build(world);
@@ -74,7 +71,7 @@ public class MapManager {
 	}
 	
 	public void ping() {
-		if(status == Status.LOADING_RESOURCES && assets.update(17)) {
+		if(assets.update(17) && status == Status.LOADING_RESOURCES) {
 			buildTerrain();
 			status = Status.BUILDING_BLOCKS;
 		}
@@ -82,13 +79,13 @@ public class MapManager {
 	
 	private void buildTerrain() {
 		for(var tile : tilesPresets.values()) {
-			//tile.setTexture(assets.get(source.getParent().getParent().goTo(tile.texturePath).getPath()));
+			tile.setTexture(assets.get(source.getParent().getParent().goTo(tile.texturePath).getPath()));
 		}
 		
-		for(var object : objects) {
-			var tile = (MapTile)object;
-			//tile.block = blocks.get(tile.name).cpy();
-			//tile.build(world);
+		for(var tile : tiles) {
+			tile.copyData(tilesPresets.get(tile.name));
+			tile.build(world);
+			objects.add(tile);
 		}
 		
 		status = Status.DONE;

@@ -54,11 +54,12 @@ public class Block {
 				size[1] / 2 + offset_bounds[3] - .4f);
 			
 			fixtureDef.shape = polygon;
-			fixtureDef.filter.categoryBits = Entity.BLOCK;
-			fixtureDef.filter.maskBits = (short)(ignoreLights
-				? (Entity.CHARACTER | Entity.BULLET)
-				: (Entity.CHARACTER | Entity.BULLET | Entity.LIGHT));
-			
+			fixtureDef.filter.categoryBits = Entity.BLOCK | Entity.TILE_BOTTOM;
+			if(ignoreLights) {
+				fixtureDef.filter.maskBits = Entity.CHARACTER | Entity.CHARACTER_BOTTOM | Entity.BULLET;
+			} else {
+				fixtureDef.filter.maskBits = Entity.CHARACTER | Entity.CHARACTER_BOTTOM | Entity.BULLET | Entity.LIGHT;
+			}
             body.createFixture(fixtureDef);
             polygon.dispose();
             

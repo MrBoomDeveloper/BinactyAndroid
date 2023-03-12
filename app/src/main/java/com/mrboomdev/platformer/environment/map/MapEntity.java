@@ -4,8 +4,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 
-public class MapEntity implements MapObject<MapObject> {
+public class MapEntity extends MapObject {
     private EntityAbstract entity;
+	private int layer;
 	
 	public MapEntity(EntityAbstract entity) {
 		this.entity = entity;
@@ -25,14 +26,14 @@ public class MapEntity implements MapObject<MapObject> {
     public Vector2 getPosition() {
         return entity.body.getPosition();
     }
+	
+	@Override
+	public int getLayer() {
+		return layer;
+	}
 
     @Override
     public void remove() {
 		//TODO
-	}
-
-    @Override
-    public int compareTo(MapObject object) {
-		return Math.round(object.getPosition().x - getPosition().x);
 	}
 }

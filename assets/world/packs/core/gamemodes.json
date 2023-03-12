@@ -1,0 +1,15 @@
+{
+	"special": [
+
+	],
+	
+	"other": [
+		{
+			"name": "Test Level",
+			"author": "MrBoomDev",
+			"description": "This was made to test the core mechanics of the game",
+			"path": "../fnaf/gamemode.json",
+			"maps": [ "../fnaf/maps/fnafMap1.json" ]
+		}
+	]
+}

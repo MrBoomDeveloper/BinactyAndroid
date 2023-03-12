@@ -1,0 +1,11 @@
+{
+	"special": [
+		{
+			"name": "Five Nights at Freddy's",
+			"author": "MrBoomDev",
+			"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food! The main attraction is Freddy Fazbear, of course; and his two friends. They are animatronic robots, programmed to please the crowds!",
+			"path": "gamemode.json",
+			"maps": [ "maps/fnafMap1.json" ]
+		}
+	]
+}

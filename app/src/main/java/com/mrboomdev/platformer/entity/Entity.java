@@ -4,14 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 public class Entity {
-	public static final short NONE = 0;
-	public static final short CHARACTER = 1;
-	public static final short BLOCK = 2;
-	public static final short BULLET = 4;
-	public static final short ATTACK = 8;
-	public static final short LIGHT = 16;
-	public static final short WEAPON = 32;
-	public static final short CHARACTER_BOTTOM = 64;
+	public static final short NONE = 0,
+							  CHARACTER = 1,
+							  BLOCK = 2,
+							  BULLET = 4,
+							  ATTACK = 8,
+							  LIGHT = 16,
+							  WEAPON = 32,
+							  CHARACTER_BOTTOM = 64,
+							  TILE_BOTTOM = 128;
 	
 	public static final float DASH_COST = 30;
 	public static final float DASH_DELAY = 1f;

@@ -44,8 +44,10 @@ public class ProjectileBullet {
         sprite.setSize(0.25f, 0.25f);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
+		fixtureDef.filter.categoryBits = Entity.BULLET;
+		fixtureDef.filter.maskBits = Entity.CHARACTER | Entity.TILE_BOTTOM;
+		
         body.createFixture(fixtureDef);
-
         shape.dispose();
         body.setUserData(this);
         body.setLinearVelocity(power.scl(100).limit(stats.speed).add(

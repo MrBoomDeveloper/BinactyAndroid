@@ -7,6 +7,7 @@ import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
 import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.*;
+import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.util.FileUtil;
 
 public class EnvironmentCreator {
@@ -37,7 +38,7 @@ public class EnvironmentCreator {
 	public EnvironmentCreator create() {
 		Gson gson = new Gson();
 		new Thread(() -> {
-			manager.map = gson.fromJson(mapFile.readString(), EnvironmentMap.class)
+			manager.map = gson.fromJson(mapFile.readString(), MapManager.class)
 				.build(manager.world, mapFile, () -> loadGamemode());
 			status = BUILDING_MAP;
 		}).start();

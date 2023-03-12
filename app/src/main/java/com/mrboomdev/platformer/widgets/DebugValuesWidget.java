@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.widgets;
 
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
@@ -16,10 +17,12 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 public class DebugValuesWidget extends ActorUtil {
     private BitmapFont font;
+	private GlyphLayout glyph;
     private TreeMap<String, String> values = new TreeMap<>();
     
     public DebugValuesWidget() {
 		font = GameHolder.getInstance().assets.get("debug.ttf", BitmapFont.class);
+		glyph = new GlyphLayout(font, "DEBUG WIDGET WAITING FOR UPDATES");
     }
     
     public void setValue(String key, String value) {
@@ -41,6 +44,7 @@ public class DebugValuesWidget extends ActorUtil {
 			builder.append(entry.getKey() + ": ");
 			builder.append(entry.getValue() + "\n");
 		}
-		font.draw(batch, builder.toString(), getX(), getY() - 25);
+		glyph.setText(font, builder.toString());
+		font.draw(batch, glyph, getX(), getY() - glyph.height);
 	}
 }

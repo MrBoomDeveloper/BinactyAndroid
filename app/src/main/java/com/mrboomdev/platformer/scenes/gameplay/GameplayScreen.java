@@ -71,8 +71,7 @@ public class GameplayScreen extends CoreScreen {
 				camera.position.y + (playerPosition.y - camera.position.y) * .1f
 			), 0);
 		}
-		environment.world.step(Math.min(delta, 1 / 60f), 6, 2);
-		CameraUtil.update(delta);
+		environment.update(delta);
 	}
 	
 	@Override
@@ -115,6 +114,7 @@ public class GameplayScreen extends CoreScreen {
 			ui.attachLayerDrawer(editor);
 		}
 		environment.attachUi(ui);
+		environment.start(ui.stage);
 	}
 	
 	@Override

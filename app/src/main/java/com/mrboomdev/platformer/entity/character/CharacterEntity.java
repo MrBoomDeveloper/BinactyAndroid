@@ -52,16 +52,21 @@ public class CharacterEntity extends EntityAbstract {
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
+		
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(config.bodySize[0] / 2, config.bodySize[1] / 2);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
+		fixtureDef.filter.categoryBits = Entity.CHARACTER;
+		fixtureDef.filter.maskBits = Entity.ATTACK | Entity.BULLET;
 		
 		PolygonShape shape3D = new PolygonShape();
 		shape3D.setAsBox(config.body3D[0] / 2, config.body3D[1] / 2,
 			new Vector2(config.body3D[2], config.body3D[3]), 0);
 		FixtureDef fixture3D = new FixtureDef();
 		fixture3D.shape = shape3D;
+		fixture3D.filter.categoryBits = Entity.CHARACTER_BOTTOM;
+		fixture3D.filter.maskBits = Entity.TILE_BOTTOM | Entity.CHARACTER_BOTTOM;
 		
 		this.world = world;
 		this.body = world.createBody(bodyDef);

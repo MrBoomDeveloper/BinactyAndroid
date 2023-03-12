@@ -29,12 +29,13 @@ public class GameplayUi extends CoreUi {
 		this.gameplay = screen;
 		stage = new Stage();
 		
+		//TODO: REMOVE AFTER DONE REFACTOR
 		debugValues = (DebugValuesWidget) new DebugValuesWidget()
 			.toPosition(new Vector2(
 				game.settings.screenInset,
 				Gdx.graphics.getHeight() - 150 - game.settings.screenInset))
 			.connectToEntity(entity);
-		if(game.settings.debugValues) stage.addActor(debugValues);
+		if(game.settings.debugValues) //stage.addActor(debugValues);
 		
 		for(int i = 0; i < 2; i++) {
 			final int a = i;

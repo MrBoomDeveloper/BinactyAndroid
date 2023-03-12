@@ -70,6 +70,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 			newMap.putString("id", key);
 			newMap.putString("title", was.getString("title"));
 			newMap.putString("type", was.getString("type"));
+			if(was.hasKey("max")) newMap.putInt("max", was.getInt("max"));
 			if(was.hasKey("description")) newMap.putString("description", was.getString("description"));
 			
 			switch(was.getString("type")) {
@@ -167,10 +168,14 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
     
     @ReactMethod
-    public void play(String id) {
+    public void play(ReadableMap data) {
 		ReactActivity react = (ReactActivity)StateUtil.getActivity("React");
 		Intent intent = new Intent(react, GameLauncher.class);
-		intent.putExtra("gamemode", id);
+		if(data.hasKey("enableEditor")) intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
+		if(data.hasKey("gamemodePath")) intent.putExtra("gamemodePath", data.getBoolean("gamemodePath"));
+		if(data.hasKey("gamemodeSource")) intent.putExtra("gamemodeSource", data.getBoolean("gamemodeSource"));
+		if(data.hasKey("mapPath")) intent.putExtra("mapPath", data.getBoolean("mapPath"));
+		if(data.hasKey("mapSource")) intent.putExtra("mapSource", data.getBoolean("mapSource"));
 		react.startActivity(intent);
     }
 }

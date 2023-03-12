@@ -97,12 +97,12 @@ public class CharacterEntity extends EntityAbstract {
 		Gson gson = new Gson();
 		
 		config = gson.fromJson(
-			file.goTo("manifest.json").readString(),
+			file.goTo("manifest.json").readString(true),
 			CharacterConfig.class)
 		.build();
 		
 		skin = gson.fromJson(
-			file.goTo("skin.json").readString(),
+			file.goTo("skin.json").readString(true),
 			CharacterSkin.class)
 		.build(file);
 		

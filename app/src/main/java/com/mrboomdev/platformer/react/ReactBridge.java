@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.react;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -10,17 +11,21 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.mrboomdev.platformer.environment.pack.PackGamemodes;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.AskUtil;
 import com.mrboomdev.platformer.util.StateUtil;
 import android.content.Intent;
+import java.util.ArrayList;
 
 public class ReactBridge extends ReactContextBaseJavaModule {
 	private SharedPreferences prefs;
+	private Activity activity;
     
     public ReactBridge(ReactApplicationContext context) {
         super(context);
-		this.prefs = StateUtil.getActivity("React").getSharedPreferences("Save", 0);
+		this.activity = StateUtil.getActivity("React");
+		this.prefs = activity.getSharedPreferences("Save", 0);
     }
 
     @Override
@@ -118,6 +123,8 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void getGamemodes(Callback callback) {
+		PackGamemodes gamemodes = PackGamemodes.scan(activity);
+		
 		WritableMap map = Arguments.createMap();
 		WritableArray special = Arguments.createArray();
 		WritableArray other = Arguments.createArray();
@@ -156,6 +163,11 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
+	public void getPacks(Callback callback) {
+		
+	}
+	
+	@ReactMethod
 	public void requestClose() {
 		AskUtil.ask(AskUtil.AskType.REQUEST_CLOSE, obj -> {
 			StateUtil.getActivity("React").finishAffinity();
@@ -171,7 +183,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     public void play(ReadableMap data) {
 		ReactActivity react = (ReactActivity)StateUtil.getActivity("React");
 		Intent intent = new Intent(react, GameLauncher.class);
-		if(data.hasKey("enableEditor")) intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
+		intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
 		if(data.hasKey("gamemodePath")) intent.putExtra("gamemodePath", data.getBoolean("gamemodePath"));
 		if(data.hasKey("gamemodeSource")) intent.putExtra("gamemodeSource", data.getBoolean("gamemodeSource"));
 		if(data.hasKey("mapPath")) intent.putExtra("mapPath", data.getBoolean("mapPath"));

@@ -34,9 +34,10 @@ public class GameLauncher extends AndroidApplication {
 		config.useAccelerometer = false;
 		config.useCompass = false;
 		
-		initialize(GameHolder.setInstance(this,
-			GameSettings.getFromSharedPreferences(prefs),
-			new GameAnalytics(analytics)));
+		var settings = GameSettings.getFromSharedPreferences(prefs);
+		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
+		
+		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
 	}
 	
 	@Override

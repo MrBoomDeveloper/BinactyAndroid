@@ -45,7 +45,7 @@ public class MapManager {
 		
 		for(String pack : atmosphere.tiles) {
 			var type = new TypeToken<HashMap<String, MapTile>>(){}.getType();
-			tilesPresets.putAll(gson.fromJson(source.getParent().goTo(pack).readString(), type));
+			tilesPresets.putAll(gson.fromJson(source.getParent().goTo(pack).readString(true), type));
 		}
 		
 		ArrayList<LoadingFiles.File> files = new ArrayList<>();

@@ -21,7 +21,10 @@ public class FileUtil {
 		this(path, source, false);
 	}
 	
-	public String readString() {
+	public String readString(boolean isGdxThread) {
+		if(!isGdxThread) {
+			
+		}
 		return getHandle().readString();
 	}
 	

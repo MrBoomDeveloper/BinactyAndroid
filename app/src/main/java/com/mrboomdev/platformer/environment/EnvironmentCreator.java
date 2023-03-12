@@ -38,7 +38,7 @@ public class EnvironmentCreator {
 	public EnvironmentCreator create() {
 		Gson gson = new Gson();
 		new Thread(() -> {
-			manager.map = gson.fromJson(mapFile.readString(), MapManager.class)
+			manager.map = gson.fromJson(mapFile.readString(true), MapManager.class)
 				.build(manager.world, mapFile, () -> loadGamemode());
 			status = BUILDING_MAP;
 		}).start();
@@ -48,7 +48,7 @@ public class EnvironmentCreator {
 	private void loadGamemode() {
 		Gson gson = new Gson();
 		manager.gamemode = new GamemodeManager(
-			gson.fromJson(gamemodeFile.readString(), GamemodeScript.class)
+			gson.fromJson(gamemodeFile.readString(true), GamemodeScript.class)
 		).build(gamemodeFile, () -> {
 			createListener.created(manager);
 			status = DONE;

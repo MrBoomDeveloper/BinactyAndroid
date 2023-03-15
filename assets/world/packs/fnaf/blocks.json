@@ -6,6 +6,13 @@
 		"shadowColission": [2, 0.8, 0, 1.6]
 	},
 	
+	"wallSide": {
+		"texture": "tiles/wall_side.png",
+		"size": [2, 4, 0, 0],
+		"colission": [2, 3.2, 0, -0.8],
+		"shadowColission": [2, 1, 0, 1.5]
+	},
+	
 	"floor": {
 		"texture": "tiles/floor.png",
 		"size": [2, 2, 0, 0]
@@ -13,13 +20,103 @@
 	
 	"guardTable": {
 		"texture": "tiles/guard_table.png",
-		"size": [2, 1.5, 0, 0],
-		"colission": [2, 1.5, 0, 0]
+		"size": [4, 2, 0, 0],
+		"colission": [4, 2, 0, 0]
 	},
 	
 	"pirateBay": {
 		"texture": "tiles/pirate_bay.png",
-		"size": [3, 3, 0, 0],
-		"colission": [3, 3, 0, 0]
+		"size": [3, 4, 0, 0],
+		"colission": [3, 4, 0, 0]
+	},
+	
+	"guardChair": {
+		"texture": "tiles/guard_chair.png",
+		"size": [1.5, 2.3, 0, 0],
+		"colission": [1.5, 2.3, 0, 0]
+	},
+	
+	"chair": {
+		"texture": "tiles/chair.png",
+		"size": [1, 1.5, 0, 0],
+		"colission": [1, 1.5, 0, 0]
+	},
+	
+	"soundBooster": {
+		"texture": "tiles/sound_booster.png",
+		"size": [1, 1.2, 0, 0],
+		"colission": [1, 1.2, 0, 0]
+	},
+	
+	"robotDesk": {
+		"texture": "tiles/robot_desk.png",
+		"size": [2, 3, 0, 0],
+		"colission": [2, 3, 0, 0]
+	},
+	
+	"robotShelf": {
+		"texture": "tiles/robot_shelf.png",
+		"size": [5, 3, 0, 0],
+		"colission": [5, 3, 0, 0]
+	},
+	
+	"gift": {
+		"texture": "tiles/gift.png",
+		"size": [1, 1, 0, 0],
+		"colission": [1, 1, 0, 0]
+	},
+	
+	"tip": {
+		"texture": "tiles/tip.png",
+		"size": [.7, .7, 0, 0]
+	},
+	
+	"stage": {
+		"texture": "tiles/stage.png",
+		"size": [8, 4, 0, 0],
+		"colission": [8, 4, 0, 0]
+	},
+	
+	"pizza": {
+		"texture": "tiles/pizza.png",
+		"size": [1, 1, 0, 0]
+	},
+	
+	"sun": {
+		"texture": "tiles/sun.png",
+		"size": [1, 1, 0, 0]
+	},
+	
+	"gameMachine": {
+		"texture": "tiles/game_machine.png",
+		"size": [1.8, 3, 0, 0],
+		"colission": [1.8, 3, 0, 0],
+		"light": {
+			"distance": 2,
+			"offset": [0, 0],
+			"color": { "values": [255, 255, 255, 0.9] }
+		}
+	},
+	
+	"table": {
+		"texture": "tiles/table.png",
+		"size": [2, 4.5, 0, 0],
+		"colission": [2, 4.5, 0, 0]
+	},
+	
+	"clean": {
+		"texture": "tiles/clean.png",
+		"size": [.5, 1.2, 0, 0],
+		"colission": [.5, 1.2, 0, 0]
+	},
+	
+	"cloud": {
+		"texture": "tiles/cloud.png",
+		"size": [3, 2, 0, 0]
+	},
+	
+	"poster": {
+		"texture": "tiles/poster.png",
+		"size": [1, 1, 0, 0]
 	}
 }

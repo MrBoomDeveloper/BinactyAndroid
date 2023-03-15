@@ -1,8 +1,10 @@
 package com.mrboomdev.platformer.util;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -27,6 +29,22 @@ public abstract class ActorUtil extends Actor {
 		return this;
 	}
 	
+	public ActorUtil connectToScroller(Scrollable scroller) {
+		this.addListener(new InputListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int poiner, int button) {
+				scroller.startScroll(x, y);
+				return true;
+			}
+				
+			@Override
+			public void touchDragged(InputEvent event, float x, float y, int pointer) {
+				scroller.handleScroll(x, y);
+			}
+		});
+		return this;
+	}
+	
 	public ActorUtil connectToEntity(CharacterEntity entity) {
 		connectedEntity = entity;
 		return this;
@@ -45,12 +63,7 @@ public abstract class ActorUtil extends Actor {
 	public ActorUtil onClick(onClickListener listener) {
 		this.addListener(new ClickListener() {
 			@Override
-			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
-
-			@Override
-			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+			public void clicked(InputEvent event, float x, float y) {
 				listener.clicked();
 			}
 		});
@@ -59,5 +72,10 @@ public abstract class ActorUtil extends Actor {
 
 	public interface onClickListener {
 		void clicked();
+	}
+	
+	public interface Scrollable {
+		void startScroll(float x, float y);
+		void handleScroll(float x, float y);
 	}
 }

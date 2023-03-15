@@ -9,11 +9,12 @@ import com.mrboomdev.platformer.util.ActorUtil;
 import java.util.LinkedList;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GridWidget extends ActorUtil {
+public class GridWidget extends ActorUtil implements ActorUtil.Scrollable {
     public LinkedList<ActorUtil> widgets = new LinkedList<>();
     private boolean isScrollable = false;
     private float gap;
-	private float currentScroll, maxScroll;
+	private float scrollX, scrollY, maxScroll;
+	private float lastX, lastY;
 	private float r, g, b, a = 0;
 	private int rows, columns;
 	private boolean isHorizontal = true;
@@ -23,22 +24,7 @@ public class GridWidget extends ActorUtil {
         this.gap = gap;
 		this.isHorizontal = isHorizontal;
 		this.shape = new ShapeRenderer();
-        this.addListener(new InputListener() {
-			@Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-            	return true;
-            }
-
-            @Override
-            public void touchDragged(InputEvent event, float x, float y, int pointer) {
-				
-			}
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				
-			}
-        });
+		this.connectToScroller(this);
     }
 
     public GridWidget setScrollable(boolean isScrollable) {
@@ -66,6 +52,22 @@ public class GridWidget extends ActorUtil {
 		}
         return this;
     }
+	
+	@Override
+	public void startScroll(float x, float y) {
+		if(!isScrollable) return;
+		lastX = x;
+		lastY = y;
+	}
+	
+	@Override
+	public void handleScroll(float x, float y) {
+		if(!isHorizontal) scrollX = Math.max(scrollX + x - lastX, 0);
+		if(isHorizontal) scrollY = Math.max(scrollY + y - lastY, 0);
+					
+		lastX = x;
+		lastY = y;
+	}
 
     @Override
     public void act(float delta) {
@@ -89,7 +91,7 @@ public class GridWidget extends ActorUtil {
 				throw new RuntimeException("Vertical GridWidget isn't supported yet.");
 			}
 			
-			widget.setPosition(getX() + x, getY() + getHeight() - widget.getHeight() - y);
+			widget.setPosition(getX() + x + scrollX, getY() + getHeight() - widget.getHeight() - y + scrollY);
 		}
 	}
 

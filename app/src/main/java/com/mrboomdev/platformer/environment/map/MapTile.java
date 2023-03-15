@@ -11,6 +11,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.environment.map.MapTile;
@@ -18,20 +20,23 @@ import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.FileUtil;
 
 public class MapTile extends MapObject {
-	public String name;
-	public int layer;
-	public float[] position;
+	@SerializedName("texture") public String texturePath;
+	@Expose public String name;
+	@Expose public int layer;
+	@Expose public float[] position;
+	private Light light;
+	public float[] size;
+	public float[] colission;
+	public float[] shadowColission;
 	public Sprite sprite;
     private Body body;
-	private Light light;
-	private float[] size;
-	private float[] colission;
-	private float[] shadowColission;
 	private FileUtil.Source source;
-	@SerializedName("texture") public String texturePath;
+	private boolean isDestroyed;
+	private PointLight pointLight;
 	
 	@Override
 	public void draw(SpriteBatch batch) {
+		if(isDestroyed) return;
 		sprite.draw(batch);
 	}
 	
@@ -44,7 +49,6 @@ public class MapTile extends MapObject {
 		
 		if(colission != null) {
 			bodyDef.position.add(colission[2], colission[3]);
-			
 			FixtureDef fixtureDef = new FixtureDef();
 			PolygonShape shape = new PolygonShape();
 			shape.setAsBox(colission[0] / 2, colission[1] / 2,
@@ -82,11 +86,15 @@ public class MapTile extends MapObject {
     }
 
     @Override
-    public void remove() {}
+    public void remove() {
+		body.getWorld().destroyBody(body);
+		if(pointLight != null) pointLight.remove();
+	}
 	
 	public void copyData(MapTile tile) {
 		if(tile.colission != null) colission = tile.colission;
 		if(tile.shadowColission != null) shadowColission = tile.shadowColission;
+		if(tile.light != null) light = tile.light;
 		size = tile.size;
 		texturePath = tile.texturePath;
 		sprite = new Sprite(tile.sprite);
@@ -94,12 +102,12 @@ public class MapTile extends MapObject {
 	
 	public void setupRayHandler(RayHandler rayHandler) {
 		if(light != null) {
-			PointLight pointLight = new PointLight(
+			this.pointLight = new PointLight(
 				rayHandler, 6,
 				light.color.getColor(),
 				light.distance, 0, 0);
                     
-            pointLight.attachToBody(body,
+            this.pointLight.attachToBody(body,
                 light.offset[0],
                 light.offset[1]);
         }
@@ -121,7 +129,7 @@ public class MapTile extends MapObject {
 	
 	public class Light {
 		public ColorUtil color;
-		public float distance;
-		public float[] offset;
+		public float distance = 5;
+		public float[] offset = {0, 0};
 	}
 }

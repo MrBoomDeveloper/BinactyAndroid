@@ -42,7 +42,7 @@ public class GameplayUi extends CoreUi {
 			new ActionButton(a == 0 ? "ui/overlay/attack.png" : "ui/overlay/dash.png")
 				.toPosition(new Vector2(
 					Gdx.graphics.getWidth() - ActionButton.size - 100,
-					a * ActionButton.size * 1.4f + 150))
+					a * ActionButton.size * 1.4f + 100))
 				.onClick(() -> {
 					if(a == 0) entity.attack(Vector2.Zero);
 					if(a == 1) entity.dash();
@@ -55,7 +55,7 @@ public class GameplayUi extends CoreUi {
 			new ActionButton(a == 0 ? "ui/overlay/shield.png" : "ui/overlay/shoot.png")
 				.toPosition(new Vector2(
 					Gdx.graphics.getWidth() - (ActionButton.size * 2) - 150,
-					a * ActionButton.size * 1.4f + 100))
+					a * ActionButton.size * 1.4f + 50))
 				.onClick(() -> {
 					//if(a == 0) entity.shield();
 					if(a == 1) entity.shoot(Vector2.Zero);
@@ -92,17 +92,6 @@ public class GameplayUi extends CoreUi {
 				super.touchDown(event, x, y, pointer, button);
 				if(joystick.isActive) return;
 				cameraZoom = gameplay.camera.zoom;
-			}
-		});
-		
-		stage.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				if(game.settings.enableEditor) {
-					Vector3 gamePosition = gameplay.camera.unproject(new Vector3(x, Gdx.graphics.getHeight() - y, 0));
-					float[] roundPosition = {Math.round(gamePosition.x), Math.round(gamePosition.y), 0};
-					screen.environment.map.addTile("wall", roundPosition, 1);
-				}
 			}
 		});
 	}

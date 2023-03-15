@@ -13,6 +13,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.environment.pack.PackGamemodes;
 import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.ui.react.ReactActivity;
 import com.mrboomdev.platformer.util.AskUtil;
 import com.mrboomdev.platformer.util.StateUtil;
 import android.content.Intent;
@@ -24,7 +25,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     
     public ReactBridge(ReactApplicationContext context) {
         super(context);
-		this.activity = StateUtil.getActivity("React");
+		this.activity = ReactActivity.instance;
 		this.prefs = activity.getSharedPreferences("Save", 0);
     }
 
@@ -170,7 +171,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void requestClose() {
 		AskUtil.ask(AskUtil.AskType.REQUEST_CLOSE, obj -> {
-			StateUtil.getActivity("React").finishAffinity();
+			activity.finishAffinity();
 		});
 	}
 	
@@ -181,13 +182,12 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     
     @ReactMethod
     public void play(ReadableMap data) {
-		ReactActivity react = (ReactActivity)StateUtil.getActivity("React");
-		Intent intent = new Intent(react, GameLauncher.class);
+		Intent intent = new Intent(activity, GameLauncher.class);
 		intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
 		if(data.hasKey("gamemodePath")) intent.putExtra("gamemodePath", data.getBoolean("gamemodePath"));
 		if(data.hasKey("gamemodeSource")) intent.putExtra("gamemodeSource", data.getBoolean("gamemodeSource"));
 		if(data.hasKey("mapPath")) intent.putExtra("mapPath", data.getBoolean("mapPath"));
 		if(data.hasKey("mapSource")) intent.putExtra("mapSource", data.getBoolean("mapSource"));
-		react.startActivity(intent);
+		activity.startActivity(intent);
     }
 }

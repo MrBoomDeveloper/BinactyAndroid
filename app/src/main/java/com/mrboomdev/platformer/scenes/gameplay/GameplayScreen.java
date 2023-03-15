@@ -84,6 +84,7 @@ public class GameplayScreen extends CoreScreen {
 		environment.setupRayHandler();
 		rayHandler = environment.rayHandler;
 		camera = new OrthographicCamera(32, 18);
+		environment.camera = camera;
 		
 		map = new MapManager();
 		map.load(Gdx.files.internal("world/maps/test_01.json"));

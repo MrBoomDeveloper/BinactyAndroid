@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.game;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowInsets;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
@@ -38,6 +39,7 @@ public class GameLauncher extends AndroidApplication {
 		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
 		
 		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
+		getWindow().getInsetsController().hide(WindowInsets.Type.navigationBars());
 	}
 	
 	@Override

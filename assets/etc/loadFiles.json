@@ -30,6 +30,7 @@
 			"load": [
 				{ "path": "ui/overlay/big_elements.png", "type": "texture" },
 				{ "path": "ui/overlay/generalIcons.png", "type": "texture" },
+				{ "path": "ui/overlay/large_icons.png", "type": "texture" },
 				{ "path": "ui/overlay/statsIcons.png", "type": "texture" },
 				{ "path": "ui/overlay/attack.png", "type": "texture" },
 				{ "path": "ui/overlay/dash.png", "type": "texture" },

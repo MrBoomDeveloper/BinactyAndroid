@@ -1,11 +1,13 @@
 package com.mrboomdev.platformer.environment.editor.widgets;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ButtonWidget extends ActorUtil {
     private String text;
+	private Sprite sprite;
 	private ShapeRenderer shape;
 
     public ButtonWidget(String text) {
@@ -13,6 +15,13 @@ public class ButtonWidget extends ActorUtil {
 		this.shape = new ShapeRenderer();
 		this.setSize(200, 100);
     }
+	
+	public ButtonWidget(Sprite sprite) {
+		this.sprite = new Sprite(sprite);
+		this.shape = new ShapeRenderer();
+		this.setSize(200, 100);
+		this.sprite.setSize(getWidth(), getHeight());
+	}
 
     @Override
     public void draw(Batch batch, float alpha) {
@@ -22,5 +31,9 @@ public class ButtonWidget extends ActorUtil {
 		shape.rect(getX(), getY(), getWidth(), getHeight());
 		shape.end();
 		batch.begin();
+		if(sprite != null) {
+			sprite.setCenter(getX() + getWidth() / 2, getY() + getHeight() / 2);
+			sprite.draw(batch);
+		}
     }
 }

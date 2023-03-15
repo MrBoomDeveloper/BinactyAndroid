@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.environment;
 
 import box2dLight.RayHandler;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
@@ -16,6 +17,7 @@ import com.mrboomdev.platformer.util.CameraUtil;
 
 public class EnvironmentManager {
 	public MapManager map;
+	public Camera camera;
 	public GamemodeManager gamemode;
 	public RayHandler rayHandler;
 	public World world;
@@ -57,6 +59,7 @@ public class EnvironmentManager {
 		rayHandler = new RayHandler(world);
 		rayHandler.setAmbientLight(map.atmosphere.color.getColor());
 		rayHandler.setBlurNum(3);
+		map.rayHandler = rayHandler;
 		
 		for(var object : map.objects) {
 			if(!(object instanceof MapTile)) continue;

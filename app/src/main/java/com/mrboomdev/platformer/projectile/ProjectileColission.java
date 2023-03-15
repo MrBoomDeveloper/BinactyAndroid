@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.Block;
 import com.mrboomdev.platformer.environment.map.MapTile;
+import com.mrboomdev.platformer.game.GameHolder;
 
 public class ProjectileColission implements ContactListener {
 
@@ -66,6 +67,9 @@ public class ProjectileColission implements ContactListener {
     }
 
     private void onCheckColission(Object me, Object enemy, Fixture fixture, Contact contact) {
+		var game = GameHolder.getInstance();
+		if(game.settings.mainPlayer == me && game.settings.enableEditor) contact.setEnabled(false);
+		
         if (me instanceof ProjectileBullet || me instanceof ProjectileAttack) {
             contact.setEnabled(false);
         }

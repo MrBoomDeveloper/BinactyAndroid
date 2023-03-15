@@ -15,6 +15,7 @@ import com.facebook.react.bridge.Promise;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mrboomdev.platformer.R;
+import com.mrboomdev.platformer.ui.react.ReactActivity;
 
 public class AskUtil {
     public static SharedPreferences prefs;

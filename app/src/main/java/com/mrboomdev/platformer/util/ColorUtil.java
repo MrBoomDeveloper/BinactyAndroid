@@ -1,9 +1,10 @@
 package com.mrboomdev.platformer.util;
 
 import com.badlogic.gdx.graphics.Color;
+import com.google.gson.annotations.Expose;
 
 public class ColorUtil {
-    public float[] values;
+    @Expose public float[] values;
     
     public ColorUtil(float... values) {
         this.values = values;

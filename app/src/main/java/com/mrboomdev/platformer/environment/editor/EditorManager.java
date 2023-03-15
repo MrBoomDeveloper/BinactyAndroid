@@ -15,6 +15,7 @@ import com.mrboomdev.platformer.environment.editor.widgets.GridWidget;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
+import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget.NewButtonWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
 import java.util.HashMap;
 
@@ -38,13 +39,6 @@ public class EditorManager implements CoreUi.UiDrawer {
 			});
 		tileSetter.setZIndex(0);
 		
-		var actionsGrid = (GridWidget)new GridWidget(25, true)
-			.setBackground(0, 0, 0, .5f)
-			.setCount(999, 1)
-			.toSize(800, 200)
-			.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - 200 - game.settings.screenInset)
-			.addTo(stage);
-		
 		var tilesGrid = (GridWidget)new GridWidget(15, true)
 			.setBackground(0, 0, 0, .5f)
 			.setScrollable(true)
@@ -53,22 +47,26 @@ public class EditorManager implements CoreUi.UiDrawer {
 			.toPosition(Gdx.graphics.getWidth() - 400 - game.settings.screenInset, game.settings.screenInset)
 			.addTo(stage);
 		
-		var exitButton = (ButtonWidget)new ButtonWidget("Exit")
-			.onClick(() -> game.launcher.exit())
-			.addTo(stage);
-		
-		var saveButton = (ButtonWidget)new ButtonWidget("Save")
-			.onClick(() -> {
-				Gson gson = new GsonBuilder()
-					.excludeFieldsWithoutExposeAnnotation()
-					.create();
+		{
+			var exitButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
+				.setText("Exit", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> game.launcher.exit())
+				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - 200 - game.settings.screenInset)
+				.addTo(stage);
+			
+			var saveButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
+				.setText("Save to Android/data", game.assets.get("bulletButton.ttf"))
+				.toPosition(game.settings.screenInset + 150, Gdx.graphics.getHeight() - 200 - game.settings.screenInset)
+				.onClick(() -> {
+					Gson gson = new GsonBuilder()
+						.excludeFieldsWithoutExposeAnnotation()
+						.create();
 				
-				var map = game.environment.map;
-				Gdx.files.external("test.json").writeString(gson.toJson(map), false);
-			})
-			.addTo(stage);
-		
-		actionsGrid.add(exitButton, saveButton);
+					var map = game.environment.map;
+					Gdx.files.external("test.json").writeString(gson.toJson(map), false);
+				})
+				.addTo(stage);
+		}
 		
 		for(HashMap.Entry<String, MapTile> tile : game.environment.map.tilesPresets.entrySet()) {
 			var placeTileButton = (ButtonWidget)new ButtonWidget(tile.getValue().sprite)
@@ -85,6 +83,8 @@ public class EditorManager implements CoreUi.UiDrawer {
 			.connectToScroller(tilesGrid)
 			.addTo(stage);
 		tilesGrid.add(eraserButton);
+		
+		stage.setDebugAll(true);
 	}
 
     @Override

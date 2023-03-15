@@ -16,7 +16,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ButtonWidget extends ActorUtil {
-	private ShapeRenderer shapeRenderer;
+	private ShapeRenderer shape;
 	private Sprite backgroundImage, foregroundImage;
 	private float foregroundWidth, foregroundHeight;
 	private BitmapFont font;
@@ -30,21 +30,31 @@ public class ButtonWidget extends ActorUtil {
 
 	public ButtonWidget(Style style) {
 		this.style = style;
-		this.shapeRenderer = new ShapeRenderer();
+		this.shape = new ShapeRenderer();
 		this.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				if(foregroundImage != null) foregroundImage.setAlpha(activeForegroundOpacity);
-				backgroundImage.setAlpha(activeBackgroundOpacity);
+				if(backgroundImage != null) backgroundImage.setAlpha(activeBackgroundOpacity);
 				return true;
 			}
 			
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 				if(foregroundImage != null) foregroundImage.setAlpha(inactiveForegroundOpacity);
-				backgroundImage.setAlpha(inactiveBackgroundOpacity);
+				if(backgroundImage != null) backgroundImage.setAlpha(inactiveBackgroundOpacity);
 			}
 		});
+		
+		switch(style) {
+			case BULLET:
+				setHeight(50);
+				break;
+			case CARD:
+				setHeight(75);
+				setWidth(60);
+				break;
+		}
 	}
 	
 	public ButtonWidget setBackgroundImage(Texture texture) {
@@ -66,34 +76,49 @@ public class ButtonWidget extends ActorUtil {
 		this.glyph = new GlyphLayout(font, text);
 		return this;
 	}
-	
-	@Override
-	public void act(float delta) {
-		switch(style) {
-			case BULLET:
-				break;
-			case CARD:
-				break;
-		}
-	}
 
 	@Override
 	public void draw(Batch batch, float alpha) {
+		float[] textPosition = new float[2];
 		switch(style) {
 			case BULLET:
+				if(foregroundImage != null) {
+					textPosition[0] = getHeight() / 2 + 10;
+				} else {
+					setWidth(getHeight() * 2 + glyph.width);
+					textPosition[0] = getWidth() / 2 - glyph.width / 2;
+				}
+				textPosition[1] = getHeight() / 2 + glyph.height / 2;
+				{
+					batch.end();
+					shape.begin(ShapeRenderer.ShapeType.Filled);
+					shape.setColor(1, 1, 1, 1);
+					shape.circle(getX() + getHeight() / 2, getY() + getHeight() / 2, getHeight() / 2);
+					shape.circle(getX() + getWidth() - getHeight() / 2, getY() + getHeight() / 2, getHeight() / 2);
+					shape.rect(getX() + getHeight() / 2, getY(), getWidth() - getHeight(), getHeight());
+					shape.end();
+					batch.begin();
+				}
 				break;
 			case CARD:
+				
 				break;
 		}
 		
 		if(backgroundImage != null) backgroundImage.draw(batch);
 		if(foregroundImage != null) foregroundImage.draw(batch);
-		if(font != null) font.draw(batch, glyph, 0, 0);
+		if(font != null) font.draw(batch, glyph, getX() + textPosition[0], getY() + textPosition[1]);
 	}
 	
 	public enum Style {
 		BULLET,
 		CARD,
 		TAB
+	}
+	
+	public static class NewButtonWidget extends ButtonWidget {
+		public NewButtonWidget(Style style) {
+			super(style);
+		}
 	}
 }

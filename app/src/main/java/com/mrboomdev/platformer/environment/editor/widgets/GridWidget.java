@@ -55,13 +55,13 @@ public class GridWidget extends ActorUtil implements ActorUtil.Scrollable {
 	
 	@Override
 	public void startScroll(float x, float y) {
-		if(!isScrollable) return;
 		lastX = x;
 		lastY = y;
 	}
 	
 	@Override
 	public void handleScroll(float x, float y) {
+		if(!isScrollable) return;
 		if(!isHorizontal) scrollX = Math.max(scrollX + x - lastX, 0);
 		if(isHorizontal) scrollY = Math.max(scrollY + y - lastY, 0);
 					

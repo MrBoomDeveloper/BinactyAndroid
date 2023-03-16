@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowInsets;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
@@ -37,9 +40,12 @@ public class GameLauncher extends AndroidApplication {
 		
 		var settings = GameSettings.getFromSharedPreferences(prefs);
 		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
-		
 		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
-		getWindow().getInsetsController().hide(WindowInsets.Type.navigationBars());
+		
+		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+		windowController.hide(WindowInsetsCompat.Type.systemBars());
+		windowController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
 	}
 	
 	@Override

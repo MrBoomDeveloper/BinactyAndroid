@@ -2,6 +2,9 @@ package com.mrboomdev.platformer.game;
 
 import android.os.Bundle;
 import android.view.WindowInsets;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import com.badlogic.gdx.Gdx;
 import com.google.android.material.color.DynamicColors;
 import com.itsaky.androidide.logsender.LogSender;
@@ -19,7 +22,11 @@ public class GameDebugLauncher extends GameLauncher {
 		super.onCreate(bundle);
 		menu = new GameDebugMenu(this);
 		DynamicColors.applyToActivityIfAvailable(this);
-		getWindow().getInsetsController().hide(WindowInsets.Type.navigationBars());
+		
+		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+		windowController.hide(WindowInsetsCompat.Type.systemBars());
+		windowController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
 	}
 	
 	@Override

@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
@@ -39,6 +42,10 @@ public class ReactGameOverActivity extends AppCompatActivity {
 		
         root.startReactApplication(instance, "GameOverScreen", null);
         setContentView(root);
-        getWindow().getInsetsController().hide(WindowInsets.Type.navigationBars());
+		
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+		windowController.hide(WindowInsetsCompat.Type.systemBars());
+		windowController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
     }
 }

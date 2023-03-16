@@ -175,8 +175,8 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void finish(String activity) {
-		if(activity == "React") ReactActivity.instance.finish();
-		if(activity == "GameOver") ReactGameOverActivity.activity.finish();
+		if(activity.equals("React")) ReactActivity.instance.finish();
+		if(activity.equals("GameOver")) ReactGameOverActivity.activity.finish();
 	}
     
     @ReactMethod

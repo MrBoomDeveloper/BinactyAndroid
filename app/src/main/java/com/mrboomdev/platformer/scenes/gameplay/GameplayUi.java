@@ -1,21 +1,17 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.widgets.StatBarWidget;
-import java.text.SimpleDateFormat;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import com.mrboomdev.platformer.widgets.ActionButton;
-import com.mrboomdev.platformer.widgets.TextWidget;
 import com.mrboomdev.platformer.widgets.StatBarWidget.Track;
 
 public class GameplayUi extends CoreUi {

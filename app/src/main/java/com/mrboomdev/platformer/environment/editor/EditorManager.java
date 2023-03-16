@@ -22,6 +22,7 @@ import java.util.HashMap;
 public class EditorManager implements CoreUi.UiDrawer {
     private UiState editorVisibility = UiState.COLLAPSED;
 	public static String current = "wall";
+	public static int layer = 1;
 
     @Override
     public void setupStage(Stage stage) {
@@ -34,7 +35,7 @@ public class EditorManager implements CoreUi.UiDrawer {
 				public void clicked(InputEvent event, float x, float y) {
 					Vector3 gamePosition = game.environment.camera.unproject(new Vector3(x, Gdx.graphics.getHeight() - y, 0));
 					float[] roundPosition = {Math.round(gamePosition.x), Math.round(gamePosition.y), 0};
-					game.environment.map.addTile(EditorManager.current, roundPosition, 1);
+					game.environment.map.addTile(EditorManager.current, roundPosition, EditorManager.layer);
 				}
 			});
 		tileSetter.setZIndex(0);
@@ -68,6 +69,15 @@ public class EditorManager implements CoreUi.UiDrawer {
 				.addTo(stage);
 		}
 		
+		for(int i = -1; i < 3; i++) {
+			final int a = i;
+			var layerButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
+				.setText("Use layer " + i, game.assets.get("bulletButton.ttf"))
+				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() / 2 - i * 75 + 50)
+				.onClick(() -> layer = a)
+				.addTo(stage);
+		}
+		
 		for(HashMap.Entry<String, MapTile> tile : game.environment.map.tilesPresets.entrySet()) {
 			var placeTileButton = (ButtonWidget)new ButtonWidget(tile.getValue().sprite)
 				.onClick(() -> current = tile.getKey())
@@ -84,7 +94,7 @@ public class EditorManager implements CoreUi.UiDrawer {
 			.addTo(stage);
 		tilesGrid.add(eraserButton);
 		
-		stage.setDebugAll(true);
+		//stage.setDebugAll(true);
 	}
 
     @Override

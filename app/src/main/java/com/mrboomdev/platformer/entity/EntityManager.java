@@ -2,21 +2,16 @@ package com.mrboomdev.platformer.entity;
 
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
-import com.mrboomdev.platformer.environment.MapManager;
-import java.util.HashSet;
+import com.mrboomdev.platformer.game.GameHolder;
 import java.util.HashMap;
-import java.util.Collection;
 
 public class EntityManager {
 	private World world;
@@ -33,8 +28,12 @@ public class EntityManager {
 	}
 	
 	public void addCharacter(CharacterEntity character) {
-		character.body.setTransform(getFreeSpawn(), 0);
 		characters.put(character.name, character);
+		if(character == GameHolder.getInstance().settings.mainPlayer) {
+			character.body.setTransform(22, -14, 0);
+			return;
+		}
+		character.body.setTransform(getFreeSpawn(), 0);
 	}
 	
 	public void setMain(CharacterEntity character) {

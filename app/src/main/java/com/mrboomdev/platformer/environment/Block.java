@@ -29,12 +29,7 @@ public class Block {
     
     public Block init() {
         if(texture == null) return this;
-        try {
-            sprite = new Sprite(new Texture(Gdx.files.internal("world/blocks/" + texture)));
-        } catch(Exception e) {
-            sprite = new Sprite(new Texture(Gdx.files.internal("world/blocks/error.png")));
-            e.printStackTrace();
-        }
+        sprite = new Sprite(new Texture(Gdx.files.internal("world/blocks/" + texture)));
         sprite.setSize(size[0], size[1]);
         return this;
     }

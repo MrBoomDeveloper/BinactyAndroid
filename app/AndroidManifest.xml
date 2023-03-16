@@ -39,7 +39,7 @@
 			android:label="Developer Settings"
 			android:exported="false"/>
 			
-		<activity android:name=".ExternalHandlerActivity"
+		<activity android:name=".ui.external.FileHandler"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
@@ -55,7 +55,7 @@
 			</intent-filter>
 		</activity>
 		
-		<service android:name=".NotificationReceiver"
+		<service android:name=".ui.external.NotificationReceiver"
 			android:exported="true">
 			<intent-filter>
 				<action android:name="com.google.firebase.MESSAGING_EVENT"/>

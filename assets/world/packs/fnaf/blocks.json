@@ -20,8 +20,8 @@
 	
 	"guardTable": {
 		"texture": "tiles/guard_table.png",
-		"size": [4, 2, 0, 0],
-		"colission": [4, 2, 0, 0]
+		"size": [6, 3, 0, 0],
+		"colission": [6, 3, 0, 0]
 	},
 	
 	"pirateBay": {
@@ -106,8 +106,14 @@
 	
 	"clean": {
 		"texture": "tiles/clean.png",
-		"size": [.5, 1.2, 0, 0],
-		"colission": [.5, 1.2, 0, 0]
+		"size": [.6, 1.5, 0, 0],
+		"colission": [.6, 1.5, 0, 0]
+	},
+	
+	"shelf": {
+		"texture": "tiles/shelf.png",
+		"size": [1, 5, 0, 0],
+		"colission": [1, 5, 0, 0]
 	},
 	
 	"cloud": {
@@ -118,5 +124,16 @@
 	"poster": {
 		"texture": "tiles/poster.png",
 		"size": [1, 1, 0, 0]
+	},
+	
+	"tvsSide": {
+		"texture": "tiles/tvs_side.png",
+		"size": [.5, 2, 0, 0],
+		"colission": [.5, 2, 0, 0]
+	},
+	
+	"star": {
+		"texture": "tiles/star.png",
+		"size": [.4, 1, 0, 0]
 	}
 }

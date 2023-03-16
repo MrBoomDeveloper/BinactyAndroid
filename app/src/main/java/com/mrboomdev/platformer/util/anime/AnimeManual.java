@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.HashMap;
 import com.badlogic.gdx.utils.Array;
 
+@Deprecated
 public class AnimeManual {
     private UpdateListener listener;
     private Array<Object> entities;

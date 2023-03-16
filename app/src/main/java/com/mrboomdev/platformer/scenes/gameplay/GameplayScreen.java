@@ -12,7 +12,6 @@ import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.EntityPresets;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
-import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -46,8 +45,7 @@ public class GameplayScreen extends CoreScreen {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		batch.begin();
 		{
-			map.render(batch, MapLayer.BACKGROUND);
-			map.render(batch, MapLayer.FOREGROUND);
+			map.render(batch);
 			environment.render(batch);
 			entities.render(batch, camera);
 		}
@@ -103,7 +101,6 @@ public class GameplayScreen extends CoreScreen {
 			.create(environment.world);
 		
 		game.settings.mainPlayer = player;
-		
 		entities.addCharacter(player);
 		entities.setMain(player);
 		camera.position.set(player.body.getPosition(), 0);

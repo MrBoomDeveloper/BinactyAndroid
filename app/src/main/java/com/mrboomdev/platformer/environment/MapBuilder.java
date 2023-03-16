@@ -13,16 +13,12 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.mrboomdev.platformer.environment.FreePosition;
-import com.mrboomdev.platformer.environment.MapLayer;
 import com.mrboomdev.platformer.environment.MapManager;
-import com.mrboomdev.platformer.environment.path.PositionPoint;
 import com.mrboomdev.platformer.entity.EntityManager.Spawn;
 import java.util.Map;
 
 public class MapBuilder {
     private Array<Block> blocks = new Array<>();
-    private Sprite shadow;
     private MapData.Tiles mapTiles;
     private final int tileSize = 2;
     private MapManager manager;
@@ -30,10 +26,6 @@ public class MapBuilder {
     public MapBuilder(MapData.Tiles tiles, MapManager manager) {
         this.mapTiles = tiles;
         this.manager = manager;
-        this.shadow = new Sprite(new Texture(Gdx.files.internal("world/blocks/shadow.png")));
-        this.shadow.setSize(tiles.background[0].length * 2, 2);
-        this.shadow.setPosition(-1, -1);
-        this.shadow.setAlpha(.9f);
     }
     
     public void loadBlocks(String[] load, Map<String, Block> blocks) {
@@ -52,29 +44,26 @@ public class MapBuilder {
                 if(special == null) continue;
                 if(special.equals("spawn_position")) {
                     manager.spawnPositions.add(new Spawn(y * 2, x * 2));
-                    manager.aiZones.put(PositionPoint.toText(
-                        new Vector2(y * 2, x * 2)), new FreePosition(y * 2, x * 2));
-                }
-                if(special.equals("ai_zone")) {
-                    manager.aiZones.put(PositionPoint.toText(
-                        new Vector2(y * 2, x * 2)), new FreePosition(y * 2, x * 2));
                 }
             }
         }
     }
     
-    public void render(MapLayer layer, SpriteBatch batch) {
-        int[][] tiles = (layer == MapLayer.FOREGROUND
-            ? mapTiles.foreground
-            : mapTiles.background);
-            
+    public void render(SpriteBatch batch) {
+		int[][] tiles = mapTiles.background;
         for(int y = tiles.length - 1; y >= 0; y--) {
             for(int x = 0; x < tiles[y].length; x++) {
                 blocks.get(tiles[y][x]).render(
                     new Vector2(x * tileSize, y * tileSize), batch);
             }
         }
-        
-        if(layer == MapLayer.FOREGROUND) shadow.draw(batch);
+		
+        tiles = mapTiles.foreground;
+        for(int y = tiles.length - 1; y >= 0; y--) {
+            for(int x = 0; x < tiles[y].length; x++) {
+                blocks.get(tiles[y][x]).render(
+                    new Vector2(x * tileSize, y * tileSize), batch);
+            }
+        }
     }
 }

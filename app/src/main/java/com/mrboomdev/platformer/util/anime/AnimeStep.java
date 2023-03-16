@@ -2,9 +2,9 @@ package com.mrboomdev.platformer.util.anime;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+@Deprecated
 public class AnimeStep {
     
-    //TODO: move enum to a seprecate file
     public enum Type {
         FADE,
         SCALE,

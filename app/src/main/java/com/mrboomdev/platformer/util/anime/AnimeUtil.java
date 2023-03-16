@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.util.anime.AnimeStep;
 
+@Deprecated
 public class AnimeUtil {
     private Array<AnimeStep> steps = new Array<>();
     private Array<Integer> offsets = new Array<>();

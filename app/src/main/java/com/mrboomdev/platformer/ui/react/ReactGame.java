@@ -1,10 +1,9 @@
-package com.mrboomdev.platformer.react;
+package com.mrboomdev.platformer.ui.react;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.NativeModule;
-import com.mrboomdev.platformer.react.ReactBridge;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

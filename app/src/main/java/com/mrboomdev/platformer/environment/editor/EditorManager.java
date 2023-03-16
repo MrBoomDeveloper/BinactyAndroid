@@ -44,8 +44,8 @@ public class EditorManager implements CoreUi.UiDrawer {
 			.setBackground(0, 0, 0, .5f)
 			.setScrollable(true)
 			.setCount(2, 999)
-			.toSize(400, Gdx.graphics.getHeight() - (game.settings.screenInset * 2))
-			.toPosition(Gdx.graphics.getWidth() - 400 - game.settings.screenInset, game.settings.screenInset)
+			.toSize(200, Gdx.graphics.getHeight() - (game.settings.screenInset * 2))
+			.toPosition(Gdx.graphics.getWidth() - 200 - game.settings.screenInset, game.settings.screenInset)
 			.addTo(stage);
 		
 		{
@@ -64,7 +64,7 @@ public class EditorManager implements CoreUi.UiDrawer {
 						.create();
 				
 					var map = game.environment.map;
-					Gdx.files.external("test.json").writeString(gson.toJson(map), false);
+					Gdx.files.external("exportedMap.json").writeString(gson.toJson(map), false);
 				})
 				.addTo(stage);
 		}

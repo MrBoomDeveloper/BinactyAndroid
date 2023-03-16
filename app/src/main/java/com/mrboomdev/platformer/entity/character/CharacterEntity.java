@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -190,7 +189,7 @@ public class CharacterEntity extends EntityAbstract {
 			isRunning = false;
 			skin.setAnimation(IDLE);
 			super.usePower(Vector2.Zero, 0, false);
-		} else if(getSpeed(power) > speed * 6) {
+		} else if(getSpeed(power) > speed * 5) {
 			isRunning = true;
 			skin.setAnimation(RUN);
 			stats.stamina = Math.max(stats.stamina - .02f, 0);

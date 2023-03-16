@@ -6,20 +6,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ButtonWidget extends ActorUtil {
-    private String text;
 	private Sprite sprite;
 	private ShapeRenderer shape;
-
-    public ButtonWidget(String text) {
-        this.text = text;
-		this.shape = new ShapeRenderer();
-		this.setSize(200, 100);
-    }
 	
 	public ButtonWidget(Sprite sprite) {
 		this.sprite = new Sprite(sprite);
 		this.shape = new ShapeRenderer();
-		this.setSize(200, 100);
+		this.setSize(100, 100);
 		this.sprite.setSize(getWidth(), getHeight());
 	}
 

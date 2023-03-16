@@ -41,24 +41,11 @@ public class GameplayUi extends CoreUi {
 			final int a = i;
 			new ActionButton(a == 0 ? "ui/overlay/attack.png" : "ui/overlay/dash.png")
 				.toPosition(new Vector2(
-					Gdx.graphics.getWidth() - ActionButton.size - 100,
+					Gdx.graphics.getWidth() - ActionButton.size - 150,
 					a * ActionButton.size * 1.4f + 100))
 				.onClick(() -> {
 					if(a == 0) entity.attack(Vector2.Zero);
 					if(a == 1) entity.dash();
-				})
-				.addTo(stage);
-		}
-		
-		for(int i = 1; i < 2; i++) {
-			final int a = i;
-			new ActionButton(a == 0 ? "ui/overlay/shield.png" : "ui/overlay/shoot.png")
-				.toPosition(new Vector2(
-					Gdx.graphics.getWidth() - (ActionButton.size * 2) - 150,
-					a * ActionButton.size * 1.4f + 50))
-				.onClick(() -> {
-					//if(a == 0) entity.shield();
-					if(a == 1) entity.shoot(Vector2.Zero);
 				})
 				.addTo(stage);
 		}

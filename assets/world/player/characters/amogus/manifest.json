@@ -4,7 +4,8 @@
 	"description": "SUS",
 	"version": 3,
 	"skin": "skin.json",
-	"bodySize": [ 1.5, 1.5 ],
+	"bodySize": [ 1.5, 1.2 ],
+	"body3D": [ 1.5, 0.4, 0, -0.7 ],
 	"stats": {
 		"health": 75,
 		"damage": 75,

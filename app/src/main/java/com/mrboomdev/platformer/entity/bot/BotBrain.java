@@ -39,7 +39,7 @@ public class BotBrain extends CharacterBrain {
 						attackReloadProgress += Gdx.graphics.getDeltaTime();
 					}
 				} else {
-					if(shootReloadProgress > shootReloadDuration) {
+					if(shootReloadProgress > shootReloadDuration && false) {
 						entity.shoot(Vector2.Zero);
 						shootReloadProgress = 0;
 						shootReloadDuration = (float)(Math.random() * .4f);

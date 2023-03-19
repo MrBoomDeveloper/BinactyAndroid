@@ -1,7 +1,5 @@
 package com.mrboomdev.platformer.util;
 
-import com.badlogic.gdx.math.Vector2;
-
 public class Direction {
     public static final int NONE = 0;
     public static final int FORWARD = 1;

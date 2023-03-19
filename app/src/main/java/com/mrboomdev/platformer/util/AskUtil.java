@@ -1,8 +1,6 @@
 package com.mrboomdev.platformer.util;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +8,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AlertDialog;
-import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.Promise;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mrboomdev.platformer.R;
-import com.mrboomdev.platformer.ui.react.ReactActivity;
 
 public class AskUtil {
     public static SharedPreferences prefs;

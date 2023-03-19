@@ -22,9 +22,6 @@ public class FileUtil {
 	}
 	
 	public String readString(boolean isGdxThread) {
-		if(!isGdxThread) {
-			
-		}
 		return getHandle().readString();
 	}
 	

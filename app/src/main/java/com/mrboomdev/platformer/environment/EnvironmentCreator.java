@@ -1,9 +1,6 @@
 package com.mrboomdev.platformer.environment;
 
-import box2dLight.RayHandler;
-import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
-import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
 import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.*;

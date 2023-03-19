@@ -1,8 +1,5 @@
 package com.mrboomdev.platformer.entity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-
 public class Entity {
 	public static final short NONE = 0,
 							  CHARACTER = 1,

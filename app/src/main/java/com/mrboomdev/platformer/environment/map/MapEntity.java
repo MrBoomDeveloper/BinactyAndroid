@@ -2,7 +2,6 @@ package com.mrboomdev.platformer.environment.map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 
 public class MapEntity extends MapObject {

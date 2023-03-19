@@ -2,11 +2,8 @@ package com.facebook.react;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.res.Resources;
-import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainPackageConfig;
 import com.facebook.react.shell.MainReactPackage;
-import com.facebook.react.ReactNativeHost;
 import java.util.Arrays;
 import java.util.ArrayList;
 

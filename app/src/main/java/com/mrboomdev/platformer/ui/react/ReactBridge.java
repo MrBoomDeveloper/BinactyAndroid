@@ -13,7 +13,6 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.react.ReactGameOverActivity;
-import com.mrboomdev.platformer.ui.react.ReactActivity;
 import com.mrboomdev.platformer.util.AskUtil;
 import android.content.Intent;
 

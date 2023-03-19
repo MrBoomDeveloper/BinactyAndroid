@@ -54,9 +54,9 @@ public class BotBrain extends CharacterBrain {
 		if(myPoint.position.dst(targetPoint.position) > 10) {
 			if(exploreTimeoutProgress <= 0) {
 				target = graph.points.random();
-				exploreTimeoutProgress = target.getPosition().dst(entity.getPosition()) * 2;
+				exploreTimeoutProgress = Math.min(target.getPosition().dst(entity.getPosition()) * 1.2f, 10);
 			}
-			exploreTimeoutProgress =- Gdx.graphics.getDeltaTime();
+			exploreTimeoutProgress -= Gdx.graphics.getDeltaTime();
 			targetPoint = graph.findNearest(target.getPosition());
 			path = graph.findPath(myPoint, targetPoint);
 			
@@ -68,6 +68,7 @@ public class BotBrain extends CharacterBrain {
 			return;
 		}
 		
+		exploreTimeoutProgress = 0;
 		path = graph.findPath(myPoint, targetPoint);
 		goByPath(entity.stats.speed * 1.5f);
 		target = game.settings.mainPlayer;

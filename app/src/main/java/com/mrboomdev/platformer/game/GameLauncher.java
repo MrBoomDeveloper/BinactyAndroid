@@ -3,7 +3,6 @@ package com.mrboomdev.platformer.game;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowInsets;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;

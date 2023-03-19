@@ -81,7 +81,8 @@ public class GameplayScreen extends CoreScreen {
 		shapeRenderer = new ShapeRenderer();
 		debugRenderer = new Box2DDebugRenderer();
 		
-		shaders = new ShaderProgram(Gdx.files.internal("world/shaders/default/default.vert"), Gdx.files.internal("world/shaders/default/default.frag"));
+		//shaders = new ShaderProgram(Gdx.files.internal("world/shaders/default/default.vert"), Gdx.files.internal("world/shaders/default/default.frag"));
+		shaders = new ShaderProgram(Gdx.files.internal("world/shaders/test/test.vert"), Gdx.files.internal("world/shaders/test/test.frag"));
 		ShaderProgram.pedantic = false;
 		if(shaders.isCompiled()) {
 			game.analytics.log("Shaders", "Successdully compilied shaders!");

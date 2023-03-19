@@ -69,7 +69,7 @@ public class EditorManager implements CoreUi.UiDrawer {
 				.addTo(stage);
 		}
 		
-		for(int i = -1; i < 3; i++) {
+		for(int i = -1; i < 4; i++) {
 			final int a = i;
 			var layerButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
 				.setText("Use layer " + i, game.assets.get("bulletButton.ttf"))
@@ -79,7 +79,11 @@ public class EditorManager implements CoreUi.UiDrawer {
 		}
 		
 		for(HashMap.Entry<String, MapTile> tile : game.environment.map.tilesPresets.entrySet()) {
-			var placeTileButton = (ButtonWidget)new ButtonWidget(tile.getValue().sprite)
+			var tileSprite = tile.getValue().sprite != null
+				? tile.getValue().sprite
+				: tile.getValue().devSprite;
+			
+			var placeTileButton = (ButtonWidget)new ButtonWidget(tileSprite)
 				.onClick(() -> current = tile.getKey())
 				.connectToScroller(tilesGrid)
 				.addTo(stage);
@@ -88,7 +92,7 @@ public class EditorManager implements CoreUi.UiDrawer {
 			current = tile.getKey();
 		}
 		
-		var eraserButton = (ButtonWidget)new ButtonWidget(new Sprite(new Texture(Gdx.files.internal("effects/boom.png"))))
+		var eraserButton = (ButtonWidget)new ButtonWidget(new Sprite(new Texture(Gdx.files.internal("world/effects/boom.png"))))
 			.onClick(() -> current = "ERASER")
 			.connectToScroller(tilesGrid)
 			.addTo(stage);

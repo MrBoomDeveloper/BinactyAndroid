@@ -4,6 +4,7 @@ import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -21,8 +22,8 @@ import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FileUtil;
 
 public class GameplayScreen extends CoreScreen {
-	public OrthographicCamera camera;
-	public EntityManager entities;
+	public static OrthographicCamera camera;
+	public static EntityManager entities;
 	public EnvironmentManager environment;
 	private GameHolder game;
 	private SpriteBatch batch;
@@ -31,6 +32,8 @@ public class GameplayScreen extends CoreScreen {
 	private GameplayUi ui;
 	private RayHandler rayHandler;
 	private Box2DDebugRenderer debugRenderer;
+	private ShaderProgram shaders;
+	private final float cameraSpeed = .05f;
 	
 	public GameplayScreen(EnvironmentManager manager) {
 		this.environment = manager;
@@ -65,8 +68,8 @@ public class GameplayScreen extends CoreScreen {
 		if(!entities.getCharacter(playerName).isDead) {
 			Vector2 playerPosition = entities.getCharacter(playerName).body.getPosition();
 			camera.position.set(CameraUtil.getCameraShake().add(
-				camera.position.x + (playerPosition.x - camera.position.x) * .1f,
-				camera.position.y + (playerPosition.y - camera.position.y) * .1f
+				camera.position.x + (playerPosition.x - camera.position.x) * (cameraSpeed / camera.zoom),
+				camera.position.y + (playerPosition.y - camera.position.y) * (cameraSpeed / camera.zoom)
 			), 0);
 		}
 		environment.update(delta);
@@ -77,6 +80,17 @@ public class GameplayScreen extends CoreScreen {
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		debugRenderer = new Box2DDebugRenderer();
+		
+		shaders = new ShaderProgram(Gdx.files.internal("world/shaders/default/default.vert"), Gdx.files.internal("world/shaders/default/default.frag"));
+		ShaderProgram.pedantic = false;
+		if(shaders.isCompiled()) {
+			game.analytics.log("Shaders", "Successdully compilied shaders!");
+			batch.setShader(shaders);
+		} else {
+			game.analytics.error("Shaders", "Failed to compile shaders!");
+			game.analytics.error("Shaders", shaders.getLog());
+			game.launcher.exit();
+		}
 		
 		environment.world.setContactListener(new ProjectileColission());
 		environment.setupRayHandler();
@@ -120,5 +134,6 @@ public class GameplayScreen extends CoreScreen {
 		shapeRenderer.dispose();
 		rayHandler.dispose();
 		ui.dispose();
+		shaders.dispose();
 	}
 }

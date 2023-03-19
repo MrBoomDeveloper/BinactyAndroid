@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.environment.map.MapEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import java.util.HashMap;
 
@@ -29,6 +30,7 @@ public class EntityManager {
 	
 	public void addCharacter(CharacterEntity character) {
 		characters.put(character.name, character);
+		GameHolder.getInstance().environment.map.objects.add(new MapEntity(character));
 		if(character == GameHolder.getInstance().settings.mainPlayer) {
 			character.body.setTransform(22, -14, 0);
 			return;
@@ -42,7 +44,7 @@ public class EntityManager {
 			mainLight.setSoftnessLength(1);
 			mainLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
 		}
-		mainLight.attachToBody(character.body);
+		mainLight.attachToBody(character.body, character.config.lightOffset[0], character.config.lightOffset[1]);
 	}
 	
 	public EntityManager addBots(int count) {
@@ -66,9 +68,9 @@ public class EntityManager {
 	}
 	
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
-		for(CharacterEntity entity : characters.values()) {
+		/*for(CharacterEntity entity : characters.values()) {
 			entity.draw(batch);
-		}
+		}*/
 		for(CharacterEntity entity : characters.values()) {
 			entity.drawProjectiles(batch);
 		}

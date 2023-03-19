@@ -73,9 +73,6 @@ public class AskUtil {
                 		} else if(/*"containsBadWords(text)*/ false) {
 							input.setError("Please do not use bad words in your nickname.");
 						} else {
-							SharedPreferences.Editor editor = prefs.edit();
-                    		editor.putString("nick", text);
-							editor.commit();
                     		callback.callbacked(text);
 							alert.dismiss();
                 		}

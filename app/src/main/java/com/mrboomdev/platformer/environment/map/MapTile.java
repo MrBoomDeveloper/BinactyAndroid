@@ -11,16 +11,16 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.mrboomdev.platformer.entity.Entity;
-import com.mrboomdev.platformer.environment.map.MapTile;
+import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.FileUtil;
 
 public class MapTile extends MapObject {
 	@SerializedName("texture") public String texturePath;
+	@SerializedName("devTexture") public String devTexturePath;
 	@Expose public String name;
 	@Expose public int layer;
 	@Expose public float[] position;
@@ -28,16 +28,18 @@ public class MapTile extends MapObject {
 	public float[] size;
 	public float[] colission;
 	public float[] shadowColission;
-	public Sprite sprite;
+	public Sprite sprite, devSprite;
+	public FileUtil source;
     private Body body;
-	private FileUtil.Source source;
 	private boolean isDestroyed;
 	private PointLight pointLight;
+	private GameHolder game = GameHolder.getInstance();
 	
 	@Override
 	public void draw(SpriteBatch batch) {
 		if(isDestroyed) return;
-		sprite.draw(batch);
+		if(sprite != null) sprite.draw(batch);
+		if(devSprite != null) devSprite.draw(batch);
 	}
 	
 	public void build(World world) {
@@ -71,18 +73,24 @@ public class MapTile extends MapObject {
 			body.createFixture(shadowFixture);
 			shadowShape.dispose();
 		}
-		sprite.setCenter(getPosition().x, getPosition().y);
+		setPosition(getPosition());
 	}
 	
-	public void setTexture(Texture texture) {
-		sprite = new Sprite(texture);
-		sprite.setSize(size[0], size[1]);
+	public void setTexture(Texture texture, boolean isDev) {
+		if(!isDev) {
+			sprite = new Sprite(texture);
+			sprite.setSize(size[0], size[1]);
+		} else {
+			devSprite = new Sprite(texture);
+			devSprite.setSize(size[0], size[1]);
+		}
 	}
 
     @Override
     public void setPosition(Vector2 position) {
         body.setTransform(position, 0);
-		sprite.setCenter(position.x, position.y);
+		if(sprite != null) sprite.setCenter(body.getPosition().x, body.getPosition().y);
+		if(devSprite != null) devSprite.setCenter(body.getPosition().x, body.getPosition().y);
     }
 
     @Override
@@ -92,12 +100,15 @@ public class MapTile extends MapObject {
 	}
 	
 	public void copyData(MapTile tile) {
-		if(tile.colission != null) colission = tile.colission;
-		if(tile.shadowColission != null) shadowColission = tile.shadowColission;
-		if(tile.light != null) light = tile.light;
+		colission = tile.colission;
+		shadowColission = tile.shadowColission;
+		light = tile.light;
 		size = tile.size;
 		texturePath = tile.texturePath;
-		sprite = new Sprite(tile.sprite);
+		devTexturePath = tile.devTexturePath;
+		source = tile.source;
+		if(tile.sprite != null) sprite = new Sprite(tile.sprite);
+		if(tile.devSprite != null) devSprite = new Sprite(tile.devSprite);
 	}
 	
 	public void setupRayHandler(RayHandler rayHandler) {

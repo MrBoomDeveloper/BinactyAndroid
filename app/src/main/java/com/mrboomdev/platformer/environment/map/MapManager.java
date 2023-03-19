@@ -2,17 +2,15 @@ package com.mrboomdev.platformer.environment.map;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
-import com.mrboomdev.platformer.environment.map.MapObject;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.FileUtil;
@@ -31,8 +29,8 @@ public class MapManager {
 	private FileUtil source;
 	private World world;
 	private Runnable buildCallback;
-	private AssetManager assets;
 	private Status status = Status.PREPAIRING;
+	private GameHolder game = GameHolder.getInstance();
 	public Array<MapObject> pendingRemoves = new Array<>();
 	public ArrayList<MapObject> objects = new ArrayList<>();
 	
@@ -50,20 +48,33 @@ public class MapManager {
 		this.world = world;
 		this.source = source;
 		this.buildCallback = callback;
-		this.assets = GameHolder.getInstance().assets;
 		
 		for(String pack : atmosphere.tiles) {
 			var type = new TypeToken<HashMap<String, MapTile>>(){}.getType();
-			tilesPresets.putAll(gson.fromJson(source.getParent().goTo(pack).readString(true), type));
+			FileUtil path = new FileUtil(pack, FileUtil.Source.INTERNAL);
+			HashMap<String, MapTile> tilesPreset = null;
+			if(pack.startsWith("$")) {
+				path = new FileUtil("packs/" + pack.substring(1, pack.length()), FileUtil.Source.INTERNAL);
+				tilesPresets = gson.fromJson(Gdx.files.internal(path.getPath()).readString(), type);
+			} else {
+				tilesPreset = gson.fromJson(source.getParent().goTo(path.getPath()).readString(true), type);
+			}
+			for(var tile : tilesPreset.entrySet()) {
+				tile.getValue().source = path;
+			}
+			this.tilesPresets.putAll(tilesPreset);
 		}
 		
 		ArrayList<LoadingFiles.File> files = new ArrayList<>();
 		for(MapTile tile : tilesPresets.values()) {
+			if(tile.devTexturePath != null && game.settings.enableEditor) {
+				files.add(new LoadingFiles.File(source.getParent().getParent().goTo(tile.devTexturePath).getPath(), "texture"));
+			}
 			if(tile.texturePath == null) continue;
 			files.add(new LoadingFiles.File(source.getParent().getParent().goTo(tile.texturePath).getPath(), "texture"));
 		}
 		Gdx.app.postRunnable(() -> {
-			LoadingFiles.loadToManager(files, "", assets);
+			LoadingFiles.loadToManager(files, "", game.assets);
 			status = Status.LOADING_RESOURCES;
 		});
 		return this;
@@ -117,7 +128,7 @@ public class MapManager {
 	}
 	
 	public void ping() {
-		if(assets.update(17) && status == Status.LOADING_RESOURCES) {
+		if(game.assets.update(17) && status == Status.LOADING_RESOURCES) {
 			buildTerrain();
 			status = Status.BUILDING_BLOCKS;
 		}
@@ -125,7 +136,12 @@ public class MapManager {
 	
 	private void buildTerrain() {
 		for(var tile : tilesPresets.values()) {
-			tile.setTexture(assets.get(source.getParent().getParent().goTo(tile.texturePath).getPath()));
+			if(tile.devTexturePath != null && game.settings.enableEditor) {
+				tile.setTexture(game.assets.get(source.getParent().getParent().goTo(tile.devTexturePath).getPath()), true);
+			}
+			if(tile.texturePath != null) {
+				tile.setTexture(game.assets.get(source.getParent().getParent().goTo(tile.texturePath).getPath()), false);
+			}
 		}
 		
 		for(var tile : tiles) {

@@ -4,6 +4,7 @@ public class CharacterConfig {
 	public String id, name, skin;
 	public float[] bodySize;
 	public float[] body3D;
+	public float[] lightOffset = {0, 0};
 	public Stats stats;
 	
 	public CharacterConfig build() {

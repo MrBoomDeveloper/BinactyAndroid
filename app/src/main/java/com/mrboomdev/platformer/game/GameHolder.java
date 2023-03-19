@@ -64,6 +64,7 @@ public class GameHolder extends Game {
 		analytics.log("GameHolder", "dispose");
 		assets.clear();
 		externalAssets.clear();
+		environment.world.dispose();
 		super.dispose();
 	}
 	

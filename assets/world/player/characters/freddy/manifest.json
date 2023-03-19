@@ -8,9 +8,9 @@
 	"body3D": [ 1.1, 0.4, 0, -0.7 ],
 	"stats": {
 		"health": 500,
-		"damage": 25,
-		"speed": 1,
+		"damage": 50,
+		"speed": 1.2,
 		"shield": 50,
-		"stamina": 100
+		"stamina": 50
 	}
 }

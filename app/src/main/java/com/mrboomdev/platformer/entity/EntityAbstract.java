@@ -4,9 +4,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.util.Direction;
 
-public abstract class EntityAbstract {
+public abstract class EntityAbstract implements BotTarget {
 	public World world;
 	public Vector2 wasPower = new Vector2();
 	public Body body;
@@ -35,7 +36,7 @@ public abstract class EntityAbstract {
 	public void usePower(Vector2 power, float speed, boolean isBot) {
 		if(isDead) return;
 		body.setLinearVelocity(isBot
-			? power.limit(5).scl(speed).add(getRandomVector2(10))
+			? power.limit(5).scl(speed).add(getRandomVector2(5))
 			:  power.limit(5).scl(speed));
 		if(!power.isZero()) wasPower = power.cpy();
 	}
@@ -49,5 +50,10 @@ public abstract class EntityAbstract {
 	
 	public Direction getDirection() {
 		return new Direction(wasPower.x);
+	}
+	
+	@Override
+	public Vector2 getPosition() {
+		return body.getPosition();
 	}
 }

@@ -36,7 +36,7 @@ public class ProjectileAttack {
 		this.stats = stats;
 		
 		AssetManager assets = GameHolder.getInstance().assets;
-		texture = assets.get("effects/attack.png", Texture.class);
+		texture = assets.get("world/effects/attack.png", Texture.class);
 		sprite = new Sprite(texture);
 		
 		TextureRegion[] animationFrames = new TextureRegion[]{

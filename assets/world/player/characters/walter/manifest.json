@@ -7,10 +7,10 @@
 	"bodySize": [ 1.1, 1.8 ],
 	"body3D": [ 1.1, 0.4, 0, -0.7 ],
 	"stats": {
-		"health": 500,
+		"health": 100,
 		"damage": 25,
 		"speed": 1,
 		"shield": 50,
-		"stamina": 100
+		"stamina": 75
 	}
 }

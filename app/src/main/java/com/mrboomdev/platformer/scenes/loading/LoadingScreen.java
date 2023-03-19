@@ -30,7 +30,7 @@ public class LoadingScreen extends CoreScreen {
         this.loadScene = scene;
         this.asset = game.assets;
         this.batch = new SpriteBatch();
-        this.banner = new Sprite(asset.get("world/packs/fnaf/src/banner.png", Texture.class));
+        this.banner = new Sprite(asset.get("packs/fnaf/src/banner.png", Texture.class));
         this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.banner.setCenter(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		this.font = asset.get("loading.ttf", BitmapFont.class);
@@ -45,14 +45,19 @@ public class LoadingScreen extends CoreScreen {
                 break;
 			
             case GAMEPLAY:
-				environmentCreator = new EnvironmentCreator()
-					.setGamemode(new FileUtil("world/packs/fnaf/gamemode.json", FileUtil.Source.INTERNAL))
-					.setMap(new FileUtil("world/packs/fnaf/maps/fnafMap1.json", FileUtil.Source.INTERNAL))
-					.onCreate(manager -> {
-						this.environment = manager;
-						loadOtherResources();
-					}).create();
+				try {
+					environmentCreator = new EnvironmentCreator()
+						.setGamemode(new FileUtil("packs/fnaf/gamemode.json", FileUtil.Source.INTERNAL))
+						.setMap(new FileUtil("packs/fnaf/maps/fnafMap1.json", FileUtil.Source.INTERNAL))
+						.onCreate(manager -> {
+							this.environment = manager;
+							loadOtherResources();
+						}).create();
 					loadStep = MAP;
+				} catch(Exception e) {
+					game.launcher.exit();
+					e.printStackTrace();
+				}
                 break;
         }
     }

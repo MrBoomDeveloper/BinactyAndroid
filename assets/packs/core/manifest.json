@@ -1,0 +1,15 @@
+{
+	"name": "Core Pack",
+	"icon": "icon.jpg",
+	"description": "A very important pack, without which the game will not work.",
+	"required": true,
+	"author": {
+		"name": "MrBoomDev",
+		"url": "https://mrboomdev.ru",
+		"icon": "author.jpg"
+	},
+	"resources": {
+		"gamemodes": "gamemodes.json",
+		"maps": "maps.json"
+	}
+}

@@ -11,9 +11,9 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.mrboomdev.platformer.environment.pack.PackGamemodes;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.react.ReactGameOverActivity;
+import com.mrboomdev.platformer.ui.react.ReactActivity;
 import com.mrboomdev.platformer.util.AskUtil;
 import android.content.Intent;
 
@@ -96,17 +96,10 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void getMyData(Callback callback) {
 		WritableMap data = Arguments.createMap();
-		if(!AskUtil.prefs.getBoolean("isNickSetup", false)) {
-			data.putString("nick", "Player");
-        	data.putString("avatar", "klarrie");
-        	data.putInt("level", 1);
-        	data.putInt("progress", 0);
-		} else {
-			data.putString("nick", "Player");
-        	data.putString("avatar", "klarrie");
-        	data.putInt("level", 1);
-        	data.putInt("progress", 0);
-		}
+		data.putString("nick", prefs.getString("nick", "Player"));
+    	data.putString("avatar", "klarrie");
+        data.putInt("level", 1);
+        data.putInt("progress", 0);
         callback.invoke(data);
 	}
 	
@@ -122,16 +115,14 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void getGamemodes(Callback callback) {
-		PackGamemodes gamemodes = PackGamemodes.scan(activity);
-		
 		WritableMap map = Arguments.createMap();
 		WritableArray special = Arguments.createArray();
 		WritableArray other = Arguments.createArray();
 		
 		for(int i = 0; i < 5; i++) {
 			WritableMap fnaf = Arguments.createMap();
-			fnaf.putString("name", "Test Gamemode #" + i);
-			fnaf.putString("description", "Hi! I came directly from the Android!");
+			fnaf.putString("name", "Five Nights at Freddy's " + i);
+			fnaf.putString("description", "This gamemode is still under active development.");
 			fnaf.putString("key", "fnaf" + i);
 			fnaf.putString("author", "MrBoomDev");
 			special.pushMap(fnaf);
@@ -163,7 +154,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void getPacks(Callback callback) {
-		
+		callback.invoke("EMPTY");
 	}
 	
 	@ReactMethod
@@ -188,5 +179,10 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		if(data.hasKey("mapPath")) intent.putExtra("mapPath", data.getBoolean("mapPath"));
 		if(data.hasKey("mapSource")) intent.putExtra("mapSource", data.getBoolean("mapSource"));
 		activity.startActivity(intent);
+		
+		var music = ReactActivity.instance.media;
+		music.stop();
+		music.release();
+		ReactActivity.instance.media = null;
     }
 }

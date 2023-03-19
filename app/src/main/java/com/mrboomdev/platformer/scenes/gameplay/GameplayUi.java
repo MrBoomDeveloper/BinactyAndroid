@@ -36,9 +36,9 @@ public class GameplayUi extends CoreUi {
 		for(int i = 0; i < 2; i++) {
 			final int a = i;
 			new ActionButton(a == 0 ? "ui/overlay/attack.png" : "ui/overlay/dash.png")
-				.toPosition(new Vector2(
-					Gdx.graphics.getWidth() - ActionButton.size - 150,
-					a * ActionButton.size * 1.4f + 100))
+				.toPosition(
+					Gdx.graphics.getWidth() - ActionButton.size - 100,
+					a * ActionButton.size * 1.2f + 50)
 				.onClick(() -> {
 					if(a == 0) entity.attack(Vector2.Zero);
 					if(a == 1) entity.dash();

@@ -1,86 +1,86 @@
 package com.mrboomdev.platformer.entity.bot;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.character.CharacterBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.environment.path.PathGraph;
+import com.mrboomdev.platformer.environment.path.PathPoint;
+import com.mrboomdev.platformer.game.GameHolder;
 
 public class BotBrain extends CharacterBrain {
+	public GraphPath<PathPoint> path;
+	public PathGraph graph;
 	private EntityManager entityManager;
-	private CharacterEntity targetCharacter = null;
 	private float attackReloadProgress, attackReloadDuration;
-	private float shootReloadProgress, shootReloadDuration;
 	private float dashReloadProgress, dashReloadDuration;
+	private GameHolder game = GameHolder.getInstance();
+	private float exploreTimeoutProgress;
+	private BotTarget target;
 	
 	public BotBrain(EntityManager entityManager) {
 		this.entityManager = entityManager;
 		attackReloadDuration = (float)(Math.random() * 1);
-		shootReloadDuration = (float)(Math.random() * .4f);
 		dashReloadDuration = (float)(Math.random() * 1);
+		scanMap();
+	}
+	
+	public void scanMap() {
+		this.graph = new PathGraph();
+		var points = new Array<PathPoint>();
+		for(var tile : game.environment.map.tilesMap.values()) {
+			if(!tile.name.equals("triggerAi") && !tile.name.equals("triggerSpawn")) continue;
+			var point = new PathPoint(tile.getPosition());
+			this.graph.addPoint(point);
+			points.add(point);
+		}
+		
+		for(int i = 0; i < points.size; i++) {
+			for(int a = 0; a < points.size; a++) {
+				if(points.get(i).position.dst(points.get(a).position) > 2.5f) continue;
+				this.graph.connectPoints(points.get(i), points.get(a));
+			}
+		}
 	}
 	
 	@Override
 	public void update() {
-		setTargetEntity();
-		if(targetCharacter != null) {
-			float distance = targetCharacter.body.getPosition().dst(entity.body.getPosition());
-			if(distance > 12) {
-				explore();
+		var myPoint = graph.findNearest(entity.getPosition());
+		var targetPoint = graph.findNearest(game.settings.mainPlayer.getPosition());
+		
+		if(myPoint.position.dst(targetPoint.position) > 10) {
+			if(exploreTimeoutProgress <= 0) {
+				target = graph.points.random();
+				exploreTimeoutProgress = target.getPosition().dst(entity.getPosition()) * 2;
+			}
+			exploreTimeoutProgress =- Gdx.graphics.getDeltaTime();
+			targetPoint = graph.findNearest(target.getPosition());
+			path = graph.findPath(myPoint, targetPoint);
+			
+			if(myPoint != targetPoint) {
+				goByPath(entity.stats.speed);
 			} else {
-				if(distance < 1.9f) {
-					if(attackReloadProgress > attackReloadDuration) {
-						entity.attack(targetCharacter.body.getPosition()
-							.sub(entity.body.getPosition()).scl(25));
-						attackReloadProgress = 0;
-						attackReloadDuration = (float)(Math.random() * 1);
-					} else {
-						attackReloadProgress += Gdx.graphics.getDeltaTime();
-					}
-				} else {
-					if(shootReloadProgress > shootReloadDuration && false) {
-						entity.shoot(Vector2.Zero);
-						shootReloadProgress = 0;
-						shootReloadDuration = (float)(Math.random() * .4f);
-					} else {
-						shootReloadProgress += Gdx.graphics.getDeltaTime();
-					}
-					if(dashReloadProgress > dashReloadDuration) {
-						entity.dash();
-						dashReloadProgress = 0;
-						dashReloadDuration = (float)(Math.random() * 1);
-					} else {
-						dashReloadProgress += Gdx.graphics.getDeltaTime();
-					}
-				}
-				entity.usePower(targetCharacter.body.getPosition()
-					.sub(entity.body.getPosition()).scl(25),
-					entity.config.stats.speed, true);
+				entity.usePower(Vector2.Zero, 0, false);
 			}
+			return;
+		}
+		
+		path = graph.findPath(myPoint, targetPoint);
+		goByPath(entity.stats.speed * 1.5f);
+		target = game.settings.mainPlayer;
+	}
+	
+	private void goByPath(float speed) {
+		if(path.getCount() > 1) {
+			entity.usePower(path.get(1).position.sub(entity.getPosition()).scl(25), speed, true);
 		} else {
-			explore();
-		}
-	}
-	
-	private void explore() {
-		entity.usePower(new Vector2(
-			(float)(Math.random() * 100) - 50,
-			(float)(Math.random() * 100) - 50
-		), entity.config.stats.speed, false);
-	}
-	
-	private void setTargetEntity() {
-		Array<CharacterEntity> characters = entityManager.getAllCharacters();
-		for(CharacterEntity character : characters) {
-			if(character == entity || character.isDead) continue;
-			if(targetCharacter == null) targetCharacter = character;
-			float distance = entity.body.getPosition().dst(character.body.getPosition());
-			if(distance < entity.body.getPosition().dst(targetCharacter.body.getPosition())) {
-				targetCharacter = character;
+			if(target instanceof CharacterEntity) {
+				entity.attack(Vector2.Zero);
+				entity.usePower(target.getPosition().sub(entity.getPosition()), speed, true);
 			}
 		}
-		if(targetCharacter == null) return;
-		if(characters.isEmpty() || targetCharacter.isDead) targetCharacter = null;
 	}
 }

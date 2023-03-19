@@ -2,10 +2,10 @@
 	"scenes": {
 		"LOADING": {
 			"load": [
-				{ "path": "world/packs/fnaf/src/banner.png", "type": "texture" },
+				{ "path": "packs/fnaf/src/banner.png", "type": "texture" },
 				{ "path": "etc/blank.png", "type": "texture" },
 				{
-					"path": "font/gilroyBold.ttf", "as": "loading.ttf", "type": "font",
+					"path": "ui/font/gilroyBold.ttf", "as": "loading.ttf", "type": "font",
 					"font": {
 						"size": 45,
 						"color": { values: [255, 255, 255, 1] },
@@ -13,7 +13,7 @@
 						"borderColor": { values: [0, 0, 0, 1] }
 					}
 				}, {
-					"path": "font/gilroyBold.ttf", "as": "title.ttf", "type": "font",
+					"path": "ui/font/gilroyBold.ttf", "as": "title.ttf", "type": "font",
 					"font": {
 						"size": 100,
 						"color": { values: [255, 255, 255, 1] }
@@ -35,19 +35,19 @@
 				{ "path": "ui/overlay/attack.png", "type": "texture" },
 				{ "path": "ui/overlay/dash.png", "type": "texture" },
 				{ "path": "ui/overlay/shoot.png", "type": "texture" },
-				{ "path": "effects/attack.png", "type": "texture" },
+				{ "path": "world/effects/attack.png", "type": "texture" },
 				{ "path": "world/player/weapon/projectile/bullet_fire.png", "type": "texture" },
 				{ "path": "audio/sounds/step.mp3", "type": "sound" },
 				{ "path": "audio/sounds/dash.wav", "type": "sound" },
 				{ "path": "audio/sounds/shot.wav", "type": "sound" },
 				{ 
-					"path": "font/roboto-medium.ttf", "as": "bulletButton.ttf", "type": "font",
+					"path": "ui/font/roboto-medium.ttf", "as": "bulletButton.ttf", "type": "font",
 					"font": {
 						"size": 18,
 						"color": { values: [0, 0, 0, 1] }
 					}
 				}, {
-					"path": "font/roboto-medium.ttf", "as": "debug.ttf", "type": "font",
+					"path": "ui/font/roboto-medium.ttf", "as": "debug.ttf", "type": "font",
 					"font": {
 						"size": 14,
 						"color": { values: [255, 255, 255, 1] },
@@ -55,7 +55,7 @@
 						"borderColor": { values: [0, 0, 0, 1] }
 					}
 				}, {
-					"path": "font/roboto-medium.ttf", "as": "nick.ttf", "type": "font",
+					"path": "ui/font/roboto-medium.ttf", "as": "nick.ttf", "type": "font",
 					"font": {
 						"size": 20,
 						"color": { values: [255, 255, 255, 1] },
@@ -63,7 +63,7 @@
 						"borderColor": { values: [0, 0, 0, 1] }
 					}
 				}, {
-					"path": "font/gilroyBold.ttf", "as": "timer.ttf", "type": "font",
+					"path": "ui/font/gilroyBold.ttf", "as": "timer.ttf", "type": "font",
 					"font": {
 						"size": 60,
 						"color": { values: [255, 255, 255, 1] },
@@ -71,7 +71,7 @@
 						"borderSize": 1
 					}
 				}, {
-					"path": "font/productSansBlack.ttf", "as": "statBarWidget.ttf", "type": "font",
+					"path": "ui/font/productSansBlack.ttf", "as": "statBarWidget.ttf", "type": "font",
 					"font": {
 						"size": 18,
 						"color": { values: [255, 255, 255, 1] },
@@ -81,7 +81,7 @@
 				}
 			],
 			"unload": [
-				"world/packs/fnaf/src/banner.png"
+				"packs/fnaf/src/banner.png"
 			]
 		}
 	}

@@ -23,10 +23,8 @@ public class AudioUtil {
 	private static void startMusic(int repeatTimes) {
 		if(repeatTimes < 0) return;
 		Music music = musicQueue.random();
-		music.setOnCompletionListener(completedMusic -> {
-			startMusic(repeatTimes - 1);
-		});
-		music.setVolume(0.5f * musicVolume);
+		music.setOnCompletionListener(completedMusic -> startMusic(repeatTimes - 1));
+		music.setVolume(0.2f * musicVolume);
 		music.setPosition(0);
 		music.play();
 	}

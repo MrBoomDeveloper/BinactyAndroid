@@ -4,8 +4,7 @@ public class MapData {
     public String[] load;
     public Tiles tiles;
     
-    public class Tiles {
+    public static class Tiles {
         public int[][] foreground;
-        public int[][] background;
     }
 }

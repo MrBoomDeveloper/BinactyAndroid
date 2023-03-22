@@ -41,7 +41,11 @@ public class GameDebugLauncher extends GameLauncher {
 	}
 	
 	@Override
-	public void exit() {
+	public void exit(Status status) {
+		if(status == Status.CRASH || status == Status.LOBBY) {
+			finishAffinity();
+			return;
+		}
 		AudioUtil.clear();
 		Gdx.app.postRunnable(() -> {
 			var game = GameHolder.getInstance();

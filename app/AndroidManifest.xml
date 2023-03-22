@@ -25,7 +25,7 @@
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".react.ReactGameOverActivity"
+		<activity android:name=".ui.react.ReactGameOverActivity"
 			android:screenOrientation="landscape"
 			android:theme="@style/Material"
 			android:exported="false" />

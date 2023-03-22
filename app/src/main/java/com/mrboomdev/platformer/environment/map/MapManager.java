@@ -6,32 +6,36 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
-import com.google.gson.reflect.TypeToken;
+import com.mrboomdev.platformer.environment.pack.PackMap;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.FileUtil;
+import com.squareup.moshi.Json;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class MapManager {
-	@Expose public Atmosphere atmosphere;
-	@Expose public Rules rules;
-	@Expose private ArrayList<MapTile> tiles = new ArrayList<>();
-	public RayHandler rayHandler;
-	public HashMap<String, MapTile> tilesPresets = new HashMap<>();
-	public ObjectMap<String, MapTile> tilesMap = new ObjectMap<>();
-	private LoadingFiles loadFiles;
-	private FileUtil source;
-	private World world;
-	private Runnable buildCallback;
-	private Status status = Status.PREPAIRING;
-	private GameHolder game = GameHolder.getInstance();
-	public Array<MapObject> pendingRemoves = new Array<>();
-	public ArrayList<MapObject> objects = new ArrayList<>();
+	public Atmosphere atmosphere;
+	public Rules rules;
+	private List<MapTile> tiles;
+	@Json(ignore = true) public RayHandler rayHandler;
+	@Json(ignore = true) public Map<String, MapTile> tilesPresets = new HashMap<>();
+	@Json(ignore = true) public ObjectMap<String, MapTile> tilesMap = new ObjectMap<>();
+	@Json(ignore = true) private LoadingFiles loadFiles;
+	@Json(ignore = true) private FileUtil source;
+	@Json(ignore = true) private World world;
+	@Json(ignore = true) private Runnable buildCallback;
+	@Json(ignore = true) private Status status = Status.PREPAIRING;
+	@Json(ignore = true) private GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true) public Array<MapObject> pendingRemoves = new Array<>();
+	@Json(ignore = true) public ArrayList<MapObject> objects = new ArrayList<>();
 	
 	public void render(SpriteBatch batch) {
 		pendingRemoves.forEach(obj -> obj.remove());
@@ -43,39 +47,45 @@ public class MapManager {
 	}
 	
 	public MapManager build(World world, FileUtil source, Runnable callback) {
-		Gson gson = new Gson();
-		this.world = world;
-		this.source = source;
-		this.buildCallback = callback;
+		try {
+			Moshi moshi = new Moshi.Builder().build();
+			JsonAdapter<PackMap.Tiles> adapter = moshi.adapter(PackMap.Tiles.class);
+			this.world = world;
+			this.source = source;
+			this.buildCallback = callback;
 		
-		for(String pack : atmosphere.tiles) {
-			var type = new TypeToken<HashMap<String, MapTile>>(){}.getType();
-			FileUtil path = new FileUtil(pack, FileUtil.Source.INTERNAL);
-			HashMap<String, MapTile> tilesPreset = null;
-			if(pack.startsWith("$")) {
-				path = new FileUtil("packs/" + pack.substring(1, pack.length()), FileUtil.Source.INTERNAL);
-				tilesPresets = gson.fromJson(Gdx.files.internal(path.getPath()).readString(), type);
-			} else {
-				tilesPreset = gson.fromJson(source.getParent().goTo(path.getPath()).readString(true), type);
+			for(String pack : atmosphere.tiles) {
+				FileUtil path = new FileUtil(pack, FileUtil.Source.INTERNAL);
+				Map<String, MapTile> tilesPreset = null;
+				if(pack.startsWith("$")) {
+					path = new FileUtil("packs/" + pack.substring(1, pack.length()), FileUtil.Source.INTERNAL);
+					tilesPreset = adapter.fromJson(Gdx.files.internal(path.getPath()).readString()).tiles;
+				} else {
+					tilesPreset = adapter.fromJson(source.getParent().goTo(path.getPath()).readString(true)).tiles;
+				}
+				for(var tile : tilesPreset.entrySet()) {
+					tile.getValue().source = path;
+				}
+				tilesPresets.putAll(tilesPreset);
 			}
-			for(var tile : tilesPreset.entrySet()) {
-				tile.getValue().source = path;
-			}
-			this.tilesPresets.putAll(tilesPreset);
-		}
 		
-		ArrayList<LoadingFiles.File> files = new ArrayList<>();
-		for(MapTile tile : tilesPresets.values()) {
-			if(tile.devTexturePath != null && game.settings.enableEditor) {
-				files.add(new LoadingFiles.File(source.getParent().getParent().goTo(tile.devTexturePath).getPath(), "texture"));
+			ArrayList<LoadingFiles.File> files = new ArrayList<>();
+			for(MapTile tile : tilesPresets.values()) {
+				if(tile.devTexture != null && game.settings.enableEditor) {
+					files.add(new LoadingFiles.File(source.getParent().getParent().goTo(tile.devTexture).getPath(), "texture"));
+				}
+				if(tile.texture == null) continue;
+				files.add(new LoadingFiles.File(source.getParent().getParent().goTo(tile.texture).getPath(), "texture"));
 			}
-			if(tile.texturePath == null) continue;
-			files.add(new LoadingFiles.File(source.getParent().getParent().goTo(tile.texturePath).getPath(), "texture"));
+			Gdx.app.postRunnable(() -> {
+				LoadingFiles.loadToManager(files, "", game.assets);
+				status = Status.LOADING_RESOURCES;
+			});
+		} catch(Exception e) {
+			Gdx.files.external("crash.txt").writeString("Crashed while building the map.\n" + e.getMessage(), false);
+			e.printStackTrace();
+			game.launcher.exit(GameLauncher.Status.CRASH);
 		}
-		Gdx.app.postRunnable(() -> {
-			LoadingFiles.loadToManager(files, "", game.assets);
-			status = Status.LOADING_RESOURCES;
-		});
 		return this;
 	}
 	
@@ -135,11 +145,11 @@ public class MapManager {
 	
 	private void buildTerrain() {
 		for(var tile : tilesPresets.values()) {
-			if(tile.devTexturePath != null && game.settings.enableEditor) {
-				tile.setTexture(game.assets.get(source.getParent().getParent().goTo(tile.devTexturePath).getPath()), true);
+			if(tile.devTexture != null && game.settings.enableEditor) {
+				tile.setTexture(game.assets.get(source.getParent().getParent().goTo(tile.devTexture).getPath()), true);
 			}
-			if(tile.texturePath != null) {
-				tile.setTexture(game.assets.get(source.getParent().getParent().goTo(tile.texturePath).getPath()), false);
+			if(tile.texture != null) {
+				tile.setTexture(game.assets.get(source.getParent().getParent().goTo(tile.texture).getPath()), false);
 			}
 		}
 		
@@ -154,14 +164,14 @@ public class MapManager {
 		buildCallback.run();
 	}
 	
-	public class Atmosphere {
-		@Expose public ColorUtil color;
-		@Expose public String[] tiles;
+	public static class Atmosphere {
+		public ColorUtil color;
+		public String[] tiles;
 	}
 	
-	public class Rules {
-		@Expose public float[] worldBorder = {-1000, -1000, 1000, 1000};
-		@Expose public float[] cameraBorder = {-1000, -1000, 1000, 1000};
+	public static class Rules {
+		public float[] worldBorder = {-1000, -1000, 1000, 1000};
+		public float[] cameraBorder = {-1000, -1000, 1000, 1000};
 	}
 	
 	private enum Status {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.AudioUtil;
@@ -89,7 +90,8 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 			
 			switch(function.action) {
 				case GAME_OVER:
-					game.launcher.exit();
+					game.stats.isWin = time == 0 ? true : false;
+					game.launcher.exit(GameLauncher.Status.GAME_OVER);
 					break;
 					
 				case PLAY_MUSIC:

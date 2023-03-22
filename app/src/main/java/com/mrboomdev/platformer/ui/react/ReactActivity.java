@@ -17,6 +17,7 @@ import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.soloader.SoLoader;
 import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.*;
+import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.AskUtil;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
     private ReactRootView root;
     private ReactInstanceManager reactInstance;
     private SharedPreferences prefs;
+	public boolean isGameStarted = false;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -71,26 +73,34 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 	@Override
 	public void onPause() {
 		super.onPause();
-		if(media == null) return;
+		if(media == null || !media.isPlaying()) return;
 		media.pause();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
+		if(isGameStarted) {
+			Intent intent = new Intent(this, getClass());
+			startActivity(intent);
+			finish();
+			return;
+		}
 		if(media == null) {
 			media = MediaPlayer.create(this, R.raw.lobby_theme);
 			media.setLooping(true);
 		}
 		media.start();
+		ActivityManager.current = this;
 	}
 	
 	@Override
 	public void onDestroy() {
+		super.onDestroy();
+		if(media == null) return;
 		media.stop();
 		media.release();
 		media = null;
-		super.onDestroy();
 	}
 
     @Override

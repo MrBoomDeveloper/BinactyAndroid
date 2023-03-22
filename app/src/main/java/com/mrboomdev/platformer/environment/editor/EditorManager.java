@@ -11,11 +11,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mrboomdev.platformer.environment.editor.widgets.ButtonWidget;
 import com.mrboomdev.platformer.environment.editor.widgets.GridWidget;
+import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget.NewButtonWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
+import com.squareup.moshi.Moshi;
 import java.util.HashMap;
 
 public class EditorManager implements CoreUi.UiDrawer {
@@ -50,20 +53,18 @@ public class EditorManager implements CoreUi.UiDrawer {
 		{
 			var exitButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
 				.setText("Exit", game.assets.get("bulletButton.ttf"))
-				.onClick(() -> game.launcher.exit())
-				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - 200 - game.settings.screenInset)
+				.onClick(() -> game.launcher.exit(GameLauncher.Status.LOBBY))
+				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - NewButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
 				.addTo(stage);
 			
 			var saveButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
 				.setText("Save to Android/data", game.assets.get("bulletButton.ttf"))
-				.toPosition(game.settings.screenInset + 150, Gdx.graphics.getHeight() - 200 - game.settings.screenInset)
+				.toPosition(game.settings.screenInset + 150, Gdx.graphics.getHeight() - NewButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
 				.onClick(() -> {
-					Gson gson = new GsonBuilder()
-						.excludeFieldsWithoutExposeAnnotation()
-						.create();
-				
+					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
+					var adapter = moshi.adapter(MapManager.class);
 					var map = game.environment.map;
-					Gdx.files.external("exportedMap.json").writeString(gson.toJson(map), false);
+					Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
 				})
 				.addTo(stage);
 		}

@@ -46,7 +46,7 @@ public class CharacterEntity extends EntityAbstract {
 		AssetManager asset = GameHolder.getInstance().assets;
 		font = asset.get("nick.ttf", BitmapFont.class);
 		font.setUseIntegerPositions(false);
-		font.getData().setScale(.012f, .012f);
+		font.getData().setScale(.01f, .01f);
 		shape = new ShapeRenderer();
 	}
 	

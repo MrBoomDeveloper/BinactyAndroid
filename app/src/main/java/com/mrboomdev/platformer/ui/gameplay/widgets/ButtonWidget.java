@@ -27,6 +27,8 @@ public class ButtonWidget extends ActorUtil {
 	public static final float activeBackgroundOpacity = .07f;
 	public static final float inactiveForegroundOpacity = .8f;
 	public static final float activeForegroundOpacity = .5f;
+	
+	public static final float BULLET_HEIGHT = 50;
 
 	public ButtonWidget(Style style) {
 		this.style = style;
@@ -48,7 +50,7 @@ public class ButtonWidget extends ActorUtil {
 		
 		switch(style) {
 			case BULLET:
-				setHeight(50);
+				setHeight(BULLET_HEIGHT);
 				break;
 			case CARD:
 				setHeight(75);

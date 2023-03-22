@@ -13,10 +13,11 @@ import com.mrboomdev.platformer.util.FileUtil;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.crypto.interfaces.PBEKey;
 
 public class LoadingFiles {
-	public HashMap<String, Scene> scenes;
+	public Map<String, Scene> scenes;
 	
 	public void loadToManager(AssetManager manager, String scene) {
 		LoadingFiles.loadToManager(scenes.get(scene).load, "", manager);
@@ -49,7 +50,7 @@ public class LoadingFiles {
 		}
 	}
 	
-	public class Scene {
+	public static class Scene {
 		public ArrayList<File> load = new ArrayList<>();
 		public ArrayList<String> unload = new ArrayList<>();
 	}
@@ -71,7 +72,7 @@ public class LoadingFiles {
 		}
 	}
 	
-	public class Font {
+	public static class Font {
 		public int size = 12, borderSize = 0;
 		public ColorUtil color, borderColor;
 	}

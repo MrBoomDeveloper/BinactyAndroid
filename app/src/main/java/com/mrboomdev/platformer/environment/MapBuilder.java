@@ -30,7 +30,7 @@ public class MapBuilder {
     
     public void loadBlocks(String[] load, Map<String, Block> blocks) {
         for(String name : load) {
-            this.blocks.add(blocks.get(name).init());
+            this.blocks.add(blocks.get(name));
         }
     }
     
@@ -45,24 +45,6 @@ public class MapBuilder {
                 if(special.equals("spawn_position")) {
                     manager.spawnPositions.add(new Spawn(y * 2, x * 2));
                 }
-            }
-        }
-    }
-    
-    public void render(SpriteBatch batch) {
-		int[][] tiles = mapTiles.background;
-        for(int y = tiles.length - 1; y >= 0; y--) {
-            for(int x = 0; x < tiles[y].length; x++) {
-                blocks.get(tiles[y][x]).render(
-                    new Vector2(x * tileSize, y * tileSize), batch);
-            }
-        }
-		
-        tiles = mapTiles.foreground;
-        for(int y = tiles.length - 1; y >= 0; y--) {
-            for(int x = 0; x < tiles[y].length; x++) {
-                blocks.get(tiles[y][x]).render(
-                    new Vector2(x * tileSize, y * tileSize), batch);
             }
         }
     }

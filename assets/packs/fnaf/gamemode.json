@@ -14,19 +14,19 @@
 				"from": 1, "to": 0
 			}
 		}, {
-			"action": "TIMER_SETUP", "speed": 1,
+			"action": "TIMER_SETUP", "speed": 1.4,
 			"options": {
 				"time": 360,
 				"direction": 1
 			}
 		}, {
-			"action": "TELEPORT", //TODO
+			"action": "TELEPORT",
 			"options": {
 				"target": "ALL_PLAYERS",
 				"toTarget": "PLAYER_SPAWN"
 			}
 		}, {
-			"action": "TELEPORT", //TODO
+			"action": "TELEPORT",
 			"options": {
 				"target": "ALL_BOTS",
 				"toTarget": "BOT_SPAWN"
@@ -73,7 +73,7 @@
 		}]
 	},
 	
-	"teams": [ //TODO
+	"teams": [
 		{
 			"name": "Guard",
 			"target": "ALL_PLAYERS",

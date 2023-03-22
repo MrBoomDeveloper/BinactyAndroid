@@ -57,7 +57,7 @@
 				}, {
 					"path": "ui/font/roboto-medium.ttf", "as": "nick.ttf", "type": "font",
 					"font": {
-						"size": 20,
+						"size": 22,
 						"color": { values: [255, 255, 255, 1] },
 						"borderSize": 1,
 						"borderColor": { values: [0, 0, 0, 1] }

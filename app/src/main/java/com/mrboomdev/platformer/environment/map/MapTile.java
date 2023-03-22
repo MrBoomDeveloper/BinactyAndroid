@@ -11,29 +11,28 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.FileUtil;
+import com.squareup.moshi.Json;
+import com.squareup.moshi.ToJson;
 
 public class MapTile extends MapObject {
-	@SerializedName("texture") public String texturePath;
-	@SerializedName("devTexture") public String devTexturePath;
-	@Expose public String name;
-	@Expose public int layer;
-	@Expose public float[] position;
+	public String name;
+	public int layer;
+	public float[] position;
+	public String texture, devTexture;
 	private Light light;
 	public float[] size;
 	public float[] colission;
 	public float[] shadowColission;
-	public Sprite sprite, devSprite;
-	public FileUtil source;
-    private Body body;
-	private boolean isDestroyed;
-	private PointLight pointLight;
-	private GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true) public Sprite sprite, devSprite;
+	@Json(ignore = true) public FileUtil source;
+    @Json(ignore = true) private Body body;
+	@Json(ignore = true) private boolean isDestroyed;
+	@Json(ignore = true) private PointLight pointLight;
+	@Json(ignore = true) private GameHolder game = GameHolder.getInstance();
 	
 	@Override
 	public void draw(SpriteBatch batch) {
@@ -104,8 +103,8 @@ public class MapTile extends MapObject {
 		shadowColission = tile.shadowColission;
 		light = tile.light;
 		size = tile.size;
-		texturePath = tile.texturePath;
-		devTexturePath = tile.devTexturePath;
+		texture = tile.texture;
+		devTexture = tile.devTexture;
 		source = tile.source;
 		if(tile.sprite != null) sprite = new Sprite(tile.sprite);
 		if(tile.devSprite != null) devSprite = new Sprite(tile.devSprite);
@@ -138,9 +137,19 @@ public class MapTile extends MapObject {
 		return layer;
 	}
 	
-	public class Light {
+	public static class Light {
 		public ColorUtil color;
 		public float distance = 5;
 		public float[] offset = {0, 0};
+	}
+	
+	public static class Adapter {
+		@ToJson MapTile toJson(MapTile tile) {
+			var serialized = new MapTile();
+			serialized.name = tile.name;
+			serialized.position = tile.position;
+			serialized.layer = tile.layer;
+			return serialized;
+		}
 	}
 }

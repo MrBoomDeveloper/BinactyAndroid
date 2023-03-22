@@ -19,6 +19,7 @@ import android.widget.Switch;
 import com.google.android.material.color.DynamicColors;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.game.GameSettings;
 
 public class GameDebugMenu {
@@ -141,7 +142,7 @@ public class GameDebugMenu {
 		editorSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
 			settings.enableEditor = isActive;
 			prefs.edit().putBoolean("forceEditor", isActive).commit();
-			((GameDebugLauncher)context).exit();
+			((GameDebugLauncher)context).exit(GameLauncher.Status.LOBBY);
 		});
 	}
 }

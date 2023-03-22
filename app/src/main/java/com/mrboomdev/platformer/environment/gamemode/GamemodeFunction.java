@@ -23,7 +23,7 @@ public class GamemodeFunction {
 		public String[] queue;
 	}
 	
-	public class Conditions {
+	public static class Conditions {
 		public Target target;
 	}
 	

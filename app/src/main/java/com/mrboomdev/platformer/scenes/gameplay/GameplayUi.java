@@ -26,30 +26,25 @@ public class GameplayUi extends CoreUi {
 		stage = new Stage();
 		
 		//TODO: REMOVE AFTER DONE REFACTOR
-		debugValues = (DebugValuesWidget) new DebugValuesWidget()
-			.toPosition(new Vector2(
-				game.settings.screenInset,
-				Gdx.graphics.getHeight() - 150 - game.settings.screenInset))
-			.connectToEntity(entity);
-		if(game.settings.debugValues) //stage.addActor(debugValues);
+		debugValues = (DebugValuesWidget) new DebugValuesWidget().connectToEntity(entity);
 		
 		for(int i = 0; i < 2; i++) {
 			final int a = i;
-			new ActionButton(a == 0 ? "ui/overlay/attack.png" : "ui/overlay/dash.png")
+			new ActionButton(i == 0 ? "ui/overlay/attack.png" : "ui/overlay/dash.png")
 				.toPosition(
-					Gdx.graphics.getWidth() - ActionButton.size - 100,
-					a * ActionButton.size * 1.2f + 50)
+					Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset - 25,
+					ActionButton.size * i + 50 * i + game.settings.screenInset + 25)
 				.onClick(() -> {
 					if(a == 0) entity.attack(Vector2.Zero);
 					if(a == 1) entity.dash();
-				})
-				.addTo(stage);
+				}).addTo(stage);
 		}
 		
 		joystick = (JoystickWidget) new JoystickWidget().connectToEntity(entity);
 		stage.addActor(joystick);
 		
 		for(int i = 0; i < 2; i++) {
+			if(game.settings.enableEditor) break;
 			new StatBarWidget(i == 0 ? Track.HEALTH : Track.STAMINA)
 				.toPosition(new Vector2(game.settings.screenInset,
 					Gdx.graphics.getHeight() - game.settings.screenInset
@@ -64,9 +59,7 @@ public class GameplayUi extends CoreUi {
 			public void zoom(InputEvent event, float from, float to) {
 				if(joystick.isActive) return;
 				float willZoomTo = cameraZoom + ((from - to) / 1000);
-				debugValues.setValue("Screen Zoom Next", String.valueOf(willZoomTo));
-				debugValues.setValue("Screen Zoom Current", String.valueOf(cameraZoom));
-				if (willZoomTo < 0.2f || willZoomTo > 1.5f) return;
+				if (willZoomTo < 0.4f || willZoomTo > (GameHolder.getInstance().settings.enableEditor ? 10 : 1.2f)) return;
 				gameplay.camera.zoom = willZoomTo;
 			}
 				

@@ -4,15 +4,17 @@ import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GamemodeScript {
-	public ArrayList<LoadingFiles.File> load = new ArrayList<>();
-	public ArrayList<GamemodeFunction> start = new ArrayList<>();
-	public HashMap<Action, ArrayList<GamemodeFunction>> listeners = new HashMap<>();
-	public ArrayList<Team> teams;
+	public List<LoadingFiles.File> load = new ArrayList<>();
+	public List<GamemodeFunction> start = new ArrayList<>();
+	public Map<Action, List<GamemodeFunction>> listeners = new HashMap<>();
+	public List<Team> teams;
 	public GamemodeOptions options;
 	
-	public class Team {
+	public static class Team {
 		public String name = "Team";
 		public Target target;
 		public int count = 100;
@@ -21,7 +23,7 @@ public class GamemodeScript {
 		public String[] forceCharacters;
 	}
 	
-	public class GamemodeOptions {
+	public static class GamemodeOptions {
 		public float initialFade = 0;
 	}
 }

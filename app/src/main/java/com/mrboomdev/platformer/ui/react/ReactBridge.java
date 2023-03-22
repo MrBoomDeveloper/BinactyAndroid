@@ -1,9 +1,8 @@
 package com.mrboomdev.platformer.ui.react;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -11,19 +10,15 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
-import com.mrboomdev.platformer.react.ReactGameOverActivity;
+import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.AskUtil;
 import android.content.Intent;
 
 public class ReactBridge extends ReactContextBaseJavaModule {
-	private SharedPreferences prefs;
-	private Activity activity;
-    
     public ReactBridge(ReactApplicationContext context) {
         super(context);
-		this.activity = ReactActivity.instance;
-		this.prefs = activity.getSharedPreferences("Save", 0);
     }
 
     @Override
@@ -32,13 +27,17 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     }
 	
 	@ReactMethod
-	public void setKey(String key, String value, String type) {
+	public void setKey(String type, String key, String value) {
+		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		switch(type) {
 			case "string":
 				prefs.edit().putString(key, value).commit();
 				break;
-			case "number":
+			case "int":
 				prefs.edit().putInt(key, Integer.parseInt(value)).commit();
+				break;
+			case "float":
+				prefs.edit().putFloat(key, Float.parseFloat(value)).commit();
 				break;
 			case "boolean":
 				prefs.edit().putBoolean(key, Boolean.parseBoolean(value)).commit();
@@ -47,22 +46,27 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void getKey(String key, String type, Callback callback) {
+	public void getKey(String type, String key, Promise promise) {
+		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		switch(type) {
 			case "string":
-				callback.invoke(prefs.getString(key, ""));
+				promise.resolve(prefs.getString(key, ""));
 				break;
-			case "number":
-				callback.invoke(prefs.getInt(key, 0));
+			case "int":
+				promise.resolve(prefs.getInt(key, 0));
+				break;
+			case "float":
+				promise.resolve(prefs.getFloat(key, 0));
 				break;
 			case "boolean":
-				callback.invoke(prefs.getBoolean(key, false));
+				promise.resolve(prefs.getBoolean(key, false));
 				break;
 		}
 	}
 	
 	@ReactMethod
 	public void getKeys(ReadableArray keys, Callback callback) {
+		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		WritableArray result = Arguments.createArray();
 		for(int i = 0; i < keys.size(); i++) {
 			ReadableMap was = keys.getMap(i);
@@ -94,6 +98,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void getMyData(Callback callback) {
+		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		WritableMap data = Arguments.createMap();
 		data.putString("nick", prefs.getString("nick", "Player"));
     	data.putString("avatar", "klarrie");
@@ -118,7 +123,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		WritableArray special = Arguments.createArray();
 		WritableArray other = Arguments.createArray();
 		
-		for(int i = 0; i < 5; i++) {
+		for(int i = 1; i < 5; i++) {
 			WritableMap fnaf = Arguments.createMap();
 			fnaf.putString("name", "Five Nights at Freddy's " + i);
 			fnaf.putString("description", "This gamemode is still under active development.");
@@ -127,7 +132,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 			special.pushMap(fnaf);
 		}
 		
-		for(int i = 0; i < 5; i++) {
+		for(int i = 1; i < 5; i++) {
 			WritableMap test = Arguments.createMap();
 			test.putString("name", "Test gamemode #" + i);
 			test.putString("key", "halloween" + i);
@@ -152,25 +157,37 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void getPacks(Callback callback) {
-		callback.invoke("EMPTY");
+	public void getStats(Promise promise) {
+		var stats = GameHolder.getInstance().stats;
+		WritableMap map = Arguments.createMap();
+		map.putBoolean("isWin", stats.isWin);
+		map.putDouble("totalKills", stats.totalKills);
+		map.putDouble("totalDamage", stats.totalDamage);
+		map.putDouble("matchDuration", stats.matchDuration);
+		promise.resolve(map);
+	}
+	
+	@ReactMethod
+	public void getPacks(Promise promise) {
+		
 	}
 	
 	@ReactMethod
 	public void requestClose() {
 		AskUtil.ask(AskUtil.AskType.REQUEST_CLOSE, obj -> {
-			activity.finishAffinity();
+			ActivityManager.current.finishAffinity();
 		});
 	}
 	
 	@ReactMethod
 	public void finish(String activity) {
-		if(activity.equals("React")) ReactActivity.instance.finish();
-		if(activity.equals("GameOver")) ReactGameOverActivity.activity.finish();
+		ActivityManager.current.finish();
 	}
     
     @ReactMethod
     public void play(ReadableMap data) {
+		var activity = ActivityManager.current;
+		((ReactActivity)activity).isGameStarted = true;
 		Intent intent = new Intent(activity, GameLauncher.class);
 		intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
 		if(data.hasKey("gamemodePath")) intent.putExtra("gamemodePath", data.getBoolean("gamemodePath"));

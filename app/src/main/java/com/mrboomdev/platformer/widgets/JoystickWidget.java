@@ -106,7 +106,7 @@ public class JoystickWidget extends ActorUtil {
 	public void draw(Batch batch, float alpha) {
 		holder.draw(batch);
 		point.draw(batch);
-		connectedEntity.usePower(getPower(), connectedEntity.config.stats.speed, false);
+		connectedEntity.usePower(getPower(), connectedEntity.config.stats.speed * (GameHolder.getInstance().settings.enableEditor ? 5 : 1), false);
 	}
 	
 	private void setPosition(Vector2 position, boolean isDown) {

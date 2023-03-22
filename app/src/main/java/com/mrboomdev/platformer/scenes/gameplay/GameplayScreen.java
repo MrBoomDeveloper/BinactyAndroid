@@ -16,6 +16,7 @@ import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
@@ -48,7 +49,6 @@ public class GameplayScreen extends CoreScreen {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		batch.begin();
 		{
-			map.render(batch);
 			environment.render(batch);
 			entities.render(batch, camera);
 		}
@@ -81,8 +81,8 @@ public class GameplayScreen extends CoreScreen {
 		shapeRenderer = new ShapeRenderer();
 		debugRenderer = new Box2DDebugRenderer();
 		
-		//shaders = new ShaderProgram(Gdx.files.internal("world/shaders/default/default.vert"), Gdx.files.internal("world/shaders/default/default.frag"));
-		shaders = new ShaderProgram(Gdx.files.internal("world/shaders/test/test.vert"), Gdx.files.internal("world/shaders/test/test.frag"));
+		shaders = new ShaderProgram(Gdx.files.internal("world/shaders/default/default.vert"), Gdx.files.internal("world/shaders/default/default.frag"));
+		//shaders = new ShaderProgram(Gdx.files.internal("world/shaders/test/test.vert"), Gdx.files.internal("world/shaders/test/test.frag"));
 		ShaderProgram.pedantic = false;
 		if(shaders.isCompiled()) {
 			game.analytics.log("Shaders", "Successdully compilied shaders!");
@@ -90,7 +90,7 @@ public class GameplayScreen extends CoreScreen {
 		} else {
 			game.analytics.error("Shaders", "Failed to compile shaders!");
 			game.analytics.error("Shaders", shaders.getLog());
-			game.launcher.exit();
+			game.launcher.exit(GameLauncher.Status.CRASH);
 		}
 		
 		environment.world.setContactListener(new ProjectileColission());
@@ -102,7 +102,6 @@ public class GameplayScreen extends CoreScreen {
 		map = new MapManager();
 		map.load(Gdx.files.internal("world/maps/test_01.json"));
 		map.build(environment.world, rayHandler);
-		map.setCamera(camera);
 		
 		entities = new EntityManager(environment.world, rayHandler)
 			.setSpawnsPositions(map.spawnPositions)
@@ -128,6 +127,11 @@ public class GameplayScreen extends CoreScreen {
 		}
 		environment.attachUi(ui);
 		environment.start(ui.stage);
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		shaders.setUniformf("u_resolution", width, height);
 	}
 	
 	@Override

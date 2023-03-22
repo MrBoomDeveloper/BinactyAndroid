@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.util.FileUtil;
@@ -41,7 +42,7 @@ public class LoadingScreen extends CoreScreen {
         switch(loadScene) {
             case LOBBY:
 				loadOtherResources();
-                game.launcher.exit();
+                game.launcher.exit(GameLauncher.Status.LOBBY);
                 break;
 			
             case GAMEPLAY:
@@ -55,7 +56,7 @@ public class LoadingScreen extends CoreScreen {
 						}).create();
 					loadStep = MAP;
 				} catch(Exception e) {
-					game.launcher.exit();
+					game.launcher.exit(GameLauncher.Status.CRASH);
 					e.printStackTrace();
 				}
                 break;

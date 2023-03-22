@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
+import com.mrboomdev.platformer.game.GameStatistics;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 
@@ -19,9 +20,9 @@ public class GameHolder extends Game {
 	public GameLauncher launcher;
 	public GameSettings settings;
 	public GameAnalytics analytics;
-	public AssetManager assets;
-	public AssetManager externalAssets;
+	public AssetManager assets, externalAssets;
 	public EnvironmentManager environment;
+	public GameStatistics stats;
 	private static GameHolder instance;
 	
 	@Override
@@ -55,6 +56,7 @@ public class GameHolder extends Game {
 		this.launcher = launcher;
 		this.settings = settings;
 		this.analytics = analytics;
+		this.stats = new GameStatistics();
 		this.assets = new Assets(analytics, new InternalFileHandleResolver());
 		this.externalAssets = new Assets(analytics, new ExternalFileHandleResolver());
 	}

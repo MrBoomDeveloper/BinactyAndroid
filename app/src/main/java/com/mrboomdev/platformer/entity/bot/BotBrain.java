@@ -51,7 +51,7 @@ public class BotBrain extends CharacterBrain {
 		var myPoint = graph.findNearest(entity.getPosition());
 		var targetPoint = graph.findNearest(game.settings.mainPlayer.getPosition());
 		
-		if(myPoint.position.dst(targetPoint.position) > 10) {
+		if(myPoint.position.dst(targetPoint.position) > 8 || game.settings.enableEditor) {
 			if(exploreTimeoutProgress <= 0) {
 				target = graph.points.random();
 				exploreTimeoutProgress = Math.min(target.getPosition().dst(entity.getPosition()) * 1.2f, 10);
@@ -77,11 +77,11 @@ public class BotBrain extends CharacterBrain {
 	private void goByPath(float speed) {
 		if(path.getCount() > 1) {
 			entity.usePower(path.get(1).position.sub(entity.getPosition()).scl(25), speed, true);
-		} else {
-			if(target instanceof CharacterEntity) {
-				entity.attack(Vector2.Zero);
-				entity.usePower(target.getPosition().sub(entity.getPosition()), speed, true);
-			}
+		} else if(target instanceof CharacterEntity) {
+			entity.usePower(target.getPosition().sub(entity.getPosition()), speed, true);
+		}
+		if(target instanceof CharacterEntity) {
+			if(entity.getPosition().dst(target.getPosition()) < 2) entity.attack(Vector2.Zero);
 		}
 	}
 }

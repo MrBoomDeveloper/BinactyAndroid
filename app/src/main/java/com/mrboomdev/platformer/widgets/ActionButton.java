@@ -19,38 +19,38 @@ public class ActionButton extends ActorUtil {
 	public static final float iconDefaultOpacity = .8f;
 	public static final float iconActiveOpacity = .5f;
 	private Sprite sprite, icon;
-
-  public ActionButton(String file) {
-    AssetManager asset = GameHolder.getInstance().assets;
-    Texture bigCircles = asset.get("ui/overlay/big_elements.png", Texture.class);
-    sprite = new Sprite(new TextureRegion(bigCircles, 400, 0, 200, 200));
-    setSize(size, size);
-    sprite.setSize(getWidth(), getHeight());
-    sprite.setAlpha(defaultOpacity);
-	icon = new Sprite(asset.get(file, Texture.class));
-	icon.setAlpha(iconDefaultOpacity);
-	icon.setSize(size / 1.8f, size / 1.8f);
-    addListener(new ClickListener() {
-        @Override
-        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-            sprite.setAlpha(activeOpacity);
-			icon.setAlpha(iconActiveOpacity);
-            return true;
-        }
-
-        @Override
-        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-            sprite.setAlpha(defaultOpacity);
-			icon.setAlpha(iconDefaultOpacity);
-        }
-    });
-  }
-
-  @Override
-  public void act(float delta) {
-    sprite.setPosition(getX(), getY());
-	icon.setCenter(getX() + (size / 2), getY() + (size / 2));
-  }
+	
+	public ActionButton(String file) {
+		AssetManager asset = GameHolder.getInstance().assets;
+		Texture bigCircles = asset.get("ui/overlay/big_elements.png", Texture.class);
+		sprite = new Sprite(new TextureRegion(bigCircles, 400, 0, 200, 200));
+		setSize(size, size);
+		sprite.setSize(size, size);
+		sprite.setAlpha(defaultOpacity);
+		icon = new Sprite(asset.get(file, Texture.class));
+		icon.setAlpha(iconDefaultOpacity);
+		icon.setSize(size / 1.8f, size / 1.8f);
+		this.addListener(new ClickListener() {
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+				sprite.setAlpha(activeOpacity);
+				icon.setAlpha(iconActiveOpacity);
+				return true;
+			}
+			
+			@Override
+			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+				sprite.setAlpha(defaultOpacity);
+				icon.setAlpha(iconDefaultOpacity);
+			}
+		});
+	}
+	
+	@Override
+	public void act(float delta) {
+		sprite.setPosition(getX(), getY());
+		icon.setCenter(getX() + (size / 2), getY() + (size / 2));
+	}
 
 	@Override
 	public void draw(Batch batch, float alpha) {

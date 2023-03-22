@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.entity.character;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,34 +24,24 @@ public class CharacterSkin {
 	private Sprite sprite;
 	private float animationProgress;
 	private int lastframeIndex;
-	
-	@SerializedName("skin")
-	private HashMap<Entity.Animation, AnimationObject> serailizedAnimations;
-	
-	@SerializedName("texture")
-	private String texturePath = "skin.png";
+	@SerializedName("skin") private HashMap<Entity.Animation, AnimationObject> serailizedAnimations;
+	@SerializedName("texture") private String texturePath = "skin.png";
 	
 	public void setAnimation(Entity.Animation animation) {
-		if(animation == currentAnimation) return;
-		if(animations.containsKey(animation)) {
-			currentAnimation = animation;
-		} else {
-			switch(animation) {
-				case WALK:
-					setAnimation(animations.containsKey(RUN) ? RUN : IDLE);
-					break;
-				case RUN:
-					setAnimation(animations.containsKey(WALK) ? WALK : IDLE);
-					break;
-				case DASH:
-					setAnimation(animations.containsKey(DASH) ? DASH : IDLE);
-					break;
-				default:
-					setAnimation(IDLE);
-					break;
-			}
-		}
+		if(currentAnimation == animation) return;
+		var selectedAnimation = getValidAnimation(animation);
+		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
 		animationProgress = (float)(Math.random() * 5);
+	}
+	
+	private Entity.Animation getValidAnimation(Entity.Animation animation) {
+		switch(animation) {
+			case WALK: return animations.containsKey(WALK) ? WALK : RUN;
+			case RUN: return animations.containsKey(RUN) ? RUN : WALK;
+			case DASH: return animations.containsKey(DASH) ? DASH : IDLE;
+			case DAMAGE: return animations.containsKey(DAMAGE) ? DAMAGE : WALK;
+			default: return animation;
+		}
 	}
 	
 	public void draw(SpriteBatch batch, Vector2 position, Direction direction) {
@@ -86,7 +77,8 @@ public class CharacterSkin {
 				sprites[i] = sprite;
 			}
 			Animation<Sprite> animation = new Animation<>(object.delay, sprites);
-			animation.setPlayMode(Animation.PlayMode.LOOP);
+			animation.setPlayMode(object.mode != null ? object.mode : PlayMode.LOOP);
+			animation.setFrameDuration(object.delay);
 			animations.put(entry.getKey(), animation);
 		}
 		setAnimation(IDLE);
@@ -94,8 +86,9 @@ public class CharacterSkin {
 	}
 	
 	public class AnimationObject {
-		public float delay = .1f;
+		public float delay;
 		public float[] size;
 		public int[][] frames;
+		public PlayMode mode;
 	}
 }

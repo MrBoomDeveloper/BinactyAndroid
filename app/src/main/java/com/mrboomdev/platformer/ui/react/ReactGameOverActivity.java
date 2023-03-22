@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.react;
+package com.mrboomdev.platformer.ui.react;
 
 import android.os.Bundle;
 import android.view.WindowInsets;
@@ -14,7 +14,7 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.mrboomdev.platformer.BuildConfig;
-import com.mrboomdev.platformer.ui.react.ReactGame;
+import com.mrboomdev.platformer.ui.ActivityManager;
 import java.util.List;
 
 public class ReactGameOverActivity extends AppCompatActivity {
@@ -45,7 +45,13 @@ public class ReactGameOverActivity extends AppCompatActivity {
 		
         WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
 		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-		windowController.hide(WindowInsetsCompat.Type.systemBars());
+		windowController.hide(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
 		windowController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
     }
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		ActivityManager.current = this;
+	}
 }

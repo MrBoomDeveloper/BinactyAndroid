@@ -13,7 +13,7 @@ import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.BuildConfig;
-import com.mrboomdev.platformer.react.ReactGameOverActivity;
+import com.mrboomdev.platformer.ui.react.ReactGameOverActivity;
 import com.mrboomdev.platformer.util.AudioUtil;
 
 public class GameLauncher extends AndroidApplication {
@@ -52,15 +52,29 @@ public class GameLauncher extends AndroidApplication {
 		return new AsynchronousAndroidAudio(context, config);
 	}
 	
-	public void exit() {
+	public void exit(Status status) {
 		if(isFinished) return;
 		AudioUtil.clear();
-		Intent intent = new Intent(this, ReactGameOverActivity.class);
-		startActivity(intent);
+		switch(status) {
+			case CRASH:
+			case LOBBY:
+				finish();
+				break;
+			case GAME_OVER:
+				Intent intent = new Intent(this, ReactGameOverActivity.class);
+				startActivity(intent);
+				finish();
+				break;
+		}
 		isFinished = true;
-		finish();
 	}
 	
 	@Override
 	public void onBackPressed() {}
+	
+	public enum Status {
+		CRASH,
+		GAME_OVER,
+		LOBBY
+	}
 }

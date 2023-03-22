@@ -19,6 +19,10 @@ import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.*;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.AskUtil;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
 
 public class ReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
@@ -68,6 +72,20 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 				finish();
             });
         }
+		
+		if(!prefs.getBoolean("isPacksSetup", false)) {
+			try {
+				var stream = getAssets().open("packs/defaultList.json");
+				var buffer = new byte[stream.available()];
+				stream.read(buffer);
+				stream.close();
+				File file = new File(getExternalFilesDir(null), "packs.json");
+				Files.write(file.toPath(), new String(buffer).getBytes(StandardCharsets.UTF_8));
+				prefs.edit().putBoolean("isPacksSetup", true).apply();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
     }
 	
 	@Override

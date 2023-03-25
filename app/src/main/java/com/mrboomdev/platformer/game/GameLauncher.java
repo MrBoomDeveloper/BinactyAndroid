@@ -13,6 +13,7 @@ import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.BuildConfig;
+import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.react.ReactGameOverActivity;
 import com.mrboomdev.platformer.util.AudioUtil;
 
@@ -71,6 +72,12 @@ public class GameLauncher extends AndroidApplication {
 	
 	@Override
 	public void onBackPressed() {}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		ActivityManager.current = this;
+	}
 	
 	public enum Status {
 		CRASH,

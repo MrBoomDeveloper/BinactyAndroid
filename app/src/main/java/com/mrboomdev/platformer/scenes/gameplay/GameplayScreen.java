@@ -23,8 +23,8 @@ import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FileUtil;
 
 public class GameplayScreen extends CoreScreen {
-	public static OrthographicCamera camera;
 	public static EntityManager entities;
+	public static OrthographicCamera camera;
 	public EnvironmentManager environment;
 	private GameHolder game;
 	private SpriteBatch batch;
@@ -125,7 +125,6 @@ public class GameplayScreen extends CoreScreen {
 			EditorManager editor = new EditorManager();
 			ui.attachLayerDrawer(editor);
 		}
-		environment.attachUi(ui);
 		environment.start(ui.stage);
 	}
 	

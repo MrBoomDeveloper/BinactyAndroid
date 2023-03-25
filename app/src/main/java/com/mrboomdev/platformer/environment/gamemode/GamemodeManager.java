@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GamemodeManager implements CoreUi.UiDrawer {
+public class GamemodeManager {
 	public List<StackOperation> stack = new ArrayList<>();
 	public GamemodeScript script;
 	private TextWidget title, timer;
@@ -76,8 +76,8 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 		return true;
 	}
 	
-	@Override
-	public void drawUi() {
+	public void update() {
+		if(game.settings.enableEditor) return;
 		List<StackOperation> oldStack = new ArrayList<>(stack);
 		for(StackOperation operation : oldStack) {
 			triggerListeners(operation.function);
@@ -138,8 +138,8 @@ public class GamemodeManager implements CoreUi.UiDrawer {
 		updateTimer(Gdx.graphics.getDeltaTime());
 	}
 	
-	@Override
-	public void setupStage(Stage stage) {
+	public void createUi(Stage stage) {
+		if(game.settings.enableEditor) return;
 		timer = (TextWidget)new TextWidget("timer.ttf")
 			.setOpacity(0)
 			.toPosition(new Vector2(

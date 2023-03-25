@@ -112,14 +112,9 @@ public class MapTile extends MapObject {
 	
 	public void setupRayHandler(RayHandler rayHandler) {
 		if(light != null) {
-			this.pointLight = new PointLight(
-				rayHandler, 6,
-				light.color.getColor(),
-				light.distance, 0, 0);
-                    
-            this.pointLight.attachToBody(body,
-                light.offset[0],
-                light.offset[1]);
+			pointLight = new PointLight(rayHandler, light.rays, light.color.getColor(), light.distance, 0, 0);
+            pointLight.attachToBody(body, light.offset[0], light.offset[1]);
+			pointLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
         }
 	}
 	
@@ -141,6 +136,7 @@ public class MapTile extends MapObject {
 		public ColorUtil color;
 		public float distance = 5;
 		public float[] offset = {0, 0};
+		public int rays = 6;
 	}
 	
 	public static class Adapter {

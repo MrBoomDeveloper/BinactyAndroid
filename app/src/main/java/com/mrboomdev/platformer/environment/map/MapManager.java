@@ -165,7 +165,7 @@ public class MapManager {
 	}
 	
 	public static class Atmosphere {
-		public ColorUtil color;
+		public ColorUtil environmentLightColor, playerLightColor;
 		public String[] tiles;
 	}
 	

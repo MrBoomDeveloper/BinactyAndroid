@@ -20,14 +20,14 @@ public class ActionButton extends ActorUtil {
 	public static final float iconActiveOpacity = .5f;
 	private Sprite sprite, icon;
 	
-	public ActionButton(String file) {
+	public ActionButton(Sprite spriteInput) {
 		AssetManager asset = GameHolder.getInstance().assets;
 		Texture bigCircles = asset.get("ui/overlay/big_elements.png", Texture.class);
 		sprite = new Sprite(new TextureRegion(bigCircles, 400, 0, 200, 200));
 		setSize(size, size);
 		sprite.setSize(size, size);
 		sprite.setAlpha(defaultOpacity);
-		icon = new Sprite(asset.get(file, Texture.class));
+		icon = new Sprite(spriteInput);
 		icon.setAlpha(iconDefaultOpacity);
 		icon.setSize(size / 1.8f, size / 1.8f);
 		this.addListener(new ClickListener() {

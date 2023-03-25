@@ -27,7 +27,7 @@ public class GameDebugMenu {
 	private static boolean isMenuOpened = false;
 	private WindowManager wm;
 	private SharedPreferences prefs;
-	private View myView;
+	public View myView;
 	private Context context;
 	
 	public GameDebugMenu(Context context) {
@@ -48,7 +48,7 @@ public class GameDebugMenu {
 			WindowManager.LayoutParams.WRAP_CONTENT,
 			WindowManager.LayoutParams.WRAP_CONTENT,
 			WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-			WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+			WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 			PixelFormat.TRANSPARENT);
 			
 		wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -142,7 +142,7 @@ public class GameDebugMenu {
 		editorSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
 			settings.enableEditor = isActive;
 			prefs.edit().putBoolean("forceEditor", isActive).commit();
-			((GameDebugLauncher)context).exit(GameLauncher.Status.LOBBY);
+			((GameDebugLauncher)context).exit(GameLauncher.Status.GAME_OVER);
 		});
 	}
 }

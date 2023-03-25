@@ -7,9 +7,7 @@ import com.mrboomdev.platformer.util.AudioUtil;
 public class GameSettings {
 	public String playerName = "Player";
 	public CharacterEntity mainPlayer;
-	
 	public int screenInset = 60;
-	
 	public boolean enableEditor = false;
 	public boolean debugRenderer, debugValues, debugRaysDisable;
 	

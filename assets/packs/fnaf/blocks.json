@@ -34,7 +34,7 @@
 		"guardChair": {
 			"texture": "tiles/guard_chair.png",
 			"size": [1.5, 2.3, 0, 0],
-			"colission": [1.5, 1.3, 0, -1]
+			"colission": [1.5, 1.1, 0, -1.2]
 		},
 	
 		"chair": {
@@ -64,7 +64,7 @@
 		"gift": {
 			"texture": "tiles/gift.png",
 			"size": [1, 1, 0, 0],
-			"colission": [1, 0.8, 0, -0.2]
+			"colission": [1, 0.6, 0, -0.4]
 		},
 	
 		"tip": {
@@ -95,7 +95,7 @@
 			"light": {
 				"distance": 2,
 				"offset": [0, 0],
-				"color": { "values": [255, 255, 255, 0.9] }
+				"color": { "values": [1, 1, 1, 0.9] }
 			}
 		},
 	
@@ -136,6 +136,17 @@
 		"star": {
 			"texture": "tiles/star.png",
 			"size": [0.4, 1, 0, 0]
+		},
+		
+		"lamp": {
+			"devTexture": "tiles/lamp.png",
+			"size": [2, 2, 0, 0],
+			"light": {
+				"distance": 7,
+				"rays": 10,
+				"offset": [0, 0],
+				"color": { "values": [0.5, 0.5, 0.5, 0.8] }
+			}
 		},
 	
 	

@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.game;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowInsets;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,6 +34,19 @@ public class GameDebugLauncher extends GameLauncher {
 	public void onResume() {
 		super.onResume();
 		menu.onResume();
+		menu.myView.setVisibility(View.VISIBLE);
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		menu.myView.setVisibility(View.GONE);
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		menu.destroy();
 	}
 	
 	@Override

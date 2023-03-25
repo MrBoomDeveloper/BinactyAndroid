@@ -177,6 +177,10 @@ public class CharacterEntity extends EntityAbstract {
 		AudioUtil.play3DSound(assets.get("audio/sounds/shot.wav"), .3f, 15, body.getPosition());
 	}
 	
+	public void interact() {
+		
+	}
+	
 	public void dash() {
 		if(stats.stamina < Entity.DASH_COST) return;
 		if(isDashing || dashReloadProgress < Entity.DASH_DELAY) return;

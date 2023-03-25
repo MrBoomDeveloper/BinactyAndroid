@@ -23,6 +23,7 @@ public class EnvironmentManager {
 	public World world;
 	public Stage stage;
 	public GameplayUi ui;
+	private GameHolder game = GameHolder.getInstance();
 	
 	public EnvironmentManager() {
 		Box2D.init();
@@ -38,6 +39,7 @@ public class EnvironmentManager {
 	public void update(float delta) {
 		stage.act(delta);
 		world.step(Math.min(delta, 1 / 60f), 6, 2);
+		gamemode.update();
 		CameraUtil.update(delta);
 	}
 	
@@ -45,20 +47,16 @@ public class EnvironmentManager {
 		this.stage = stage;
 		ui = new GameplayUi();
 		ui.createFreeRoam(stage);
-		ui.createCombat(stage);
-		ui.createEditor(stage);
-		ui.connectCharacter(GameHolder.getInstance().settings.mainPlayer);
-	}
-	
-	@Deprecated
-	public void attachUi(CoreUi ui) {
-		ui.attachLayerDrawer(gamemode);
+		if(!game.settings.enableEditor) ui.createCombat(stage);
+		if(game.settings.enableEditor) ui.createEditor(stage);
+		gamemode.createUi(stage);
+		ui.connectCharacter(game.settings.mainPlayer);
 	}
 	
 	public void setupRayHandler() {
 		rayHandler = new RayHandler(world);
-		rayHandler.setAmbientLight(map.atmosphere.color.getColor());
-		rayHandler.setBlurNum(3);
+		rayHandler.setAmbientLight(map.atmosphere.environmentLightColor.getColor());
+		rayHandler.setBlurNum(1);
 		map.rayHandler = rayHandler;
 		
 		for(var object : map.objects) {

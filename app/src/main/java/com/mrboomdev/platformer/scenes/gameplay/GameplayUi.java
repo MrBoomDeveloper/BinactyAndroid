@@ -18,27 +18,11 @@ public class GameplayUi extends CoreUi {
 	private GameplayScreen gameplay;
 	private JoystickWidget joystick;
 	private float cameraZoom;
-	public DebugValuesWidget debugValues;
 	public GameHolder game = GameHolder.getInstance();
 	
 	public GameplayUi(GameplayScreen screen, CharacterEntity entity) {
 		this.gameplay = screen;
 		stage = new Stage();
-		
-		//TODO: REMOVE AFTER DONE REFACTOR
-		debugValues = (DebugValuesWidget) new DebugValuesWidget().connectToEntity(entity);
-		
-		for(int i = 0; i < 2; i++) {
-			final int a = i;
-			new ActionButton(i == 0 ? "ui/overlay/attack.png" : "ui/overlay/dash.png")
-				.toPosition(
-					Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset - 25,
-					ActionButton.size * i + 50 * i + game.settings.screenInset + 25)
-				.onClick(() -> {
-					if(a == 0) entity.attack(Vector2.Zero);
-					if(a == 1) entity.dash();
-				}).addTo(stage);
-		}
 		
 		joystick = (JoystickWidget) new JoystickWidget().connectToEntity(entity);
 		stage.addActor(joystick);

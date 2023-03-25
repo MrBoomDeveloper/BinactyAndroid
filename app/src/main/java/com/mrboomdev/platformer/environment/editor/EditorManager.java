@@ -7,18 +7,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mrboomdev.platformer.environment.editor.widgets.ButtonWidget;
 import com.mrboomdev.platformer.environment.editor.widgets.GridWidget;
-import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget.NewButtonWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
-import com.squareup.moshi.Moshi;
 import java.util.HashMap;
 
 public class EditorManager implements CoreUi.UiDrawer {
@@ -50,25 +45,6 @@ public class EditorManager implements CoreUi.UiDrawer {
 			.toPosition(Gdx.graphics.getWidth() - 200 - game.settings.screenInset, game.settings.screenInset)
 			.addTo(stage);
 		
-		{
-			var exitButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
-				.setText("Exit", game.assets.get("bulletButton.ttf"))
-				.onClick(() -> game.launcher.exit(GameLauncher.Status.LOBBY))
-				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - NewButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
-				.addTo(stage);
-			
-			var saveButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
-				.setText("Save to Android/data", game.assets.get("bulletButton.ttf"))
-				.toPosition(game.settings.screenInset + 150, Gdx.graphics.getHeight() - NewButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
-				.onClick(() -> {
-					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
-					var adapter = moshi.adapter(MapManager.class);
-					var map = game.environment.map;
-					Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
-				})
-				.addTo(stage);
-		}
-		
 		for(int i = -1; i < 4; i++) {
 			final int a = i;
 			var layerButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
@@ -97,8 +73,6 @@ public class EditorManager implements CoreUi.UiDrawer {
 			.connectToScroller(tilesGrid)
 			.addTo(stage);
 		tilesGrid.add(eraserButton);
-		
-		//stage.setDebugAll(true);
 	}
 
     @Override

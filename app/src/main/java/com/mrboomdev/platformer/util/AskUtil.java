@@ -11,25 +11,17 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.mrboomdev.platformer.R;
+import com.mrboomdev.platformer.ui.ActivityManager;
 
 public class AskUtil {
     public static SharedPreferences prefs;
     private static Activity context;
 	private static AskType currentDialog = null;
     
-    public enum AskType {
-        SETUP_NICK,
-        UPDATE,
-		REQUEST_CLOSE
-    }
-    
-    public static void setContext(Activity activity) {
-        context = activity;
-        prefs = context.getSharedPreferences("Save", 0);
-    }
-    
     public static void ask(AskType type, AskCallback callback) {
 		if(type == currentDialog) return;
+		context = ActivityManager.current;
+        prefs = context.getSharedPreferences("Save", 0);
 		context.runOnUiThread(() -> {
 			createDialog(type, callback).show();
 		});
@@ -99,6 +91,12 @@ public class AskUtil {
 				return null;
         }
 	}
+	
+	public enum AskType {
+        SETUP_NICK,
+        UPDATE,
+		REQUEST_CLOSE
+    }
 	
 	public interface AskCallback {
 		public void callbacked(Object result);

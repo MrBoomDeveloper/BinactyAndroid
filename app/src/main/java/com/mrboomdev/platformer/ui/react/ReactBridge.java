@@ -181,13 +181,15 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void finish(String activity) {
+		if(ActivityManager.current instanceof ReactActivity) return;
 		ActivityManager.current.finish();
 	}
     
     @ReactMethod
     public void play(ReadableMap data) {
-		var activity = ActivityManager.current;
-		((ReactActivity)activity).isGameStarted = true;
+		var activity = (ReactActivity)ActivityManager.current;
+		if(activity.isGameStarted) return;
+		activity.isGameStarted = true;
 		Intent intent = new Intent(activity, GameLauncher.class);
 		intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
 		if(data.hasKey("gamemodePath")) intent.putExtra("gamemodePath", data.getBoolean("gamemodePath"));
@@ -197,6 +199,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		activity.startActivity(intent);
 		
 		var music = ReactActivity.instance.media;
+		if(music == null) return;
 		music.stop();
 		music.release();
 		ReactActivity.instance.media = null;

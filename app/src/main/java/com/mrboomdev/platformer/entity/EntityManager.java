@@ -17,15 +17,18 @@ import java.util.HashMap;
 public class EntityManager {
 	private World world;
 	private RayHandler rayHandler;
-	private PointLight mainLight;
+	public PointLight mainLight;
 	private EntityPresets presets = new EntityPresets();
 	private Array<Spawn> spawns = new Array<>();
 	public static final String entitiesDirectory = "world/player/characters/";
 	public HashMap<String, CharacterEntity> characters = new HashMap<>();
+	private GameHolder game = GameHolder.getInstance();
+	public static EntityManager instance;
 	
 	public EntityManager(World world, RayHandler rayHandler) {
 		this.world = world;
 		this.rayHandler = rayHandler;
+		instance = this;
 	}
 	
 	public void addCharacter(CharacterEntity character) {
@@ -40,7 +43,7 @@ public class EntityManager {
 	
 	public void setMain(CharacterEntity character) {
 		if(mainLight == null) {
-			mainLight = new PointLight(rayHandler, 100, new Color(10, 40, 250, .7f), 10, 0, 0);
+			mainLight = new PointLight(rayHandler, 100, game.environment.map.atmosphere.playerLightColor.getColor(), 10, 0, 0);
 			mainLight.setSoftnessLength(1);
 			mainLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
 		}
@@ -68,9 +71,6 @@ public class EntityManager {
 	}
 	
 	public void render(SpriteBatch batch, OrthographicCamera camera) {
-		/*for(CharacterEntity entity : characters.values()) {
-			entity.draw(batch);
-		}*/
 		for(CharacterEntity entity : characters.values()) {
 			entity.drawProjectiles(batch);
 		}

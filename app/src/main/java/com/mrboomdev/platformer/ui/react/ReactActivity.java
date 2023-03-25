@@ -38,7 +38,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 		LogSender.startLogging(this);
         super.onCreate(bundle);
         SoLoader.init(this, false);
-		AskUtil.setContext(this);
+		ActivityManager.current = this;
 		
 		instance = this;
         root = new ReactRootView(this);
@@ -91,13 +91,18 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 	@Override
 	public void onPause() {
 		super.onPause();
-		if(media == null || !media.isPlaying()) return;
-		media.pause();
+		try {
+			if(media == null || !media.isPlaying()) return;
+			media.pause();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
+		ActivityManager.current = this;
 		if(isGameStarted) {
 			Intent intent = new Intent(this, getClass());
 			startActivity(intent);
@@ -109,7 +114,6 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 			media.setLooping(true);
 		}
 		media.start();
-		ActivityManager.current = this;
 	}
 	
 	@Override

@@ -4,7 +4,6 @@
 ### Plans
 - Gameplay:
   - Advanced bots ai:
-    - Fix movement to the space when player is near of walls
     - Stuck position escaping
     - Try to defense
     - Random personalities
@@ -37,7 +36,7 @@
     - New level splash animation
 - Internal mods support:
   - Map Editor:
-    - Tiles editor
+    - Individual tile editor
     - Metadata editor
     - Ambient editor
   - Character editor:

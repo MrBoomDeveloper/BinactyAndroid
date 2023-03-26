@@ -13,11 +13,10 @@ public class EntityPresets {
 	private Array<String> names = new Array<>();
 	
 	public CharacterEntity getRandomCharacter() {
-		return new CharacterEntity(names.random())
-			.setConfig(new FileUtil(
-				EntityManager.entitiesDirectory, FileUtil.Source.INTERNAL)
-				.goTo(characters.random())
-		);
+		var character = new CharacterEntity(names.random())
+			.setConfig(new FileUtil(EntityManager.entitiesDirectory, FileUtil.Source.INTERNAL)
+			.goTo(characters.random()));
+		return character;
 	}
 	
 	public EntityPresets merge(EntityPresets presets) {

@@ -40,9 +40,9 @@ public class ProjectileManager {
 		delayProgress = 0;
     }
 	
-	public void attack() {
+	public void attack(Vector2 power) {
 		if(attackDelayProgress < 0.5f) return;
-		attacks.add(new ProjectileAttack(world, owner, attackStats));
+		attacks.add(new ProjectileAttack(world, owner, attackStats, power));
 		attackDelayProgress = 0;
 	}
 	

@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
+import com.badlogic.gdx.math.Vector2;
 import com.google.android.material.color.DynamicColors;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -115,7 +116,7 @@ public class GameDebugMenu {
 		
 		Button gainHealthButton = view.findViewById(R.id.gainHealthButton);
 		gainHealthButton.setOnClickListener(button -> {
-			 settings.mainPlayer.gainDamage(-1000);
+			 settings.mainPlayer.gainDamage(-1000, Vector2.Zero);
 		});
 		
 		Button gameOverButton = view.findViewById(R.id.gameOverButton);

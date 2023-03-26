@@ -24,7 +24,6 @@ public class EditorManager implements CoreUi.UiDrawer {
     @Override
     public void setupStage(Stage stage) {
 		var game = GameHolder.getInstance();
-		game.settings.mainPlayer.gainDamage(-99999);
 		
 		var tileSetter = new ActorUtil(){}.toSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()).addTo(stage);
 		tileSetter.addListener(new ClickListener() {

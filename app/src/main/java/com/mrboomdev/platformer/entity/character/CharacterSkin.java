@@ -48,7 +48,7 @@ public class CharacterSkin {
 		var activeAnimation = animations.get(currentAnimation);
 		animationProgress += Gdx.graphics.getDeltaTime();
 		
-		sprite = new Sprite(activeAnimation.getKeyFrame(animationProgress, true));
+		sprite = new Sprite(activeAnimation.getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL));
 		sprite.setSize(
 			direction.isForward() ? sprite.getWidth() : -sprite.getWidth(),
 			sprite.getHeight());

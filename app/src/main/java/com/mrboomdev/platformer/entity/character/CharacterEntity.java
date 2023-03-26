@@ -38,8 +38,10 @@ public class CharacterEntity extends EntityAbstract {
 	private ProjectileManager projectileManager;
 	private boolean isDashing;
 	private float dashProgress, dashReloadProgress;
+	private float damagedProgress = 1;
 	private float staminaReloadMultiply;
 	private boolean isRunning;
+	private Vector2 damagedPower;
 	
 	public CharacterEntity(String name) {
 		this.name = name;
@@ -129,13 +131,17 @@ public class CharacterEntity extends EntityAbstract {
 		skin.draw(batch, body.getPosition(), getDirection());
 		
 		stats.stamina = Math.min(stats.maxStamina, isRunning ? stats.stamina : stats.stamina + staminaReloadMultiply);
-		
 		dashProgress += Gdx.graphics.getDeltaTime();
 		dashReloadProgress += Gdx.graphics.getDeltaTime();
 		staminaReloadMultiply = Math.min(.3f, staminaReloadMultiply * 1.02f);
+		damagedProgress += Gdx.graphics.getDeltaTime();
+		
 		if(isDashing && dashProgress > Entity.DASH_DURATION) {
 			isDashing = false;
 			dashReloadProgress = 0;
+		}
+		if(damagedProgress < 1) {
+			body.setLinearVelocity(damagedPower.scl(5).limit(3));
 		}
 		if(brain != null) brain.update();
 		//drawDebug(batch);
@@ -168,7 +174,7 @@ public class CharacterEntity extends EntityAbstract {
 	}
 
 	public void attack(Vector2 power) {
-		projectileManager.attack();
+		projectileManager.attack(this.wasPower);
 	}
 	
 	public void shoot(Vector2 power) {
@@ -178,7 +184,8 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void interact() {
-		
+		gainDamage(2, Vector2.Zero);
+		body.setTransform(new Vector2((float)(Math.random() * 25), (float)(Math.random() * 25)), 0);
 	}
 	
 	public void dash() {
@@ -197,16 +204,22 @@ public class CharacterEntity extends EntityAbstract {
 		
 	}
 	
-	public void gainDamage(int damage) {
+	public void gainDamage(int damage, Vector2 power) {
+		if(damagedProgress < 1) return;
+		if(Math.random() > .5f) damagedProgress = 0;
+		skin.setAnimation(Entity.Animation.DAMAGE);
 		config.stats.health -= damage;
+		damagedPower = power;
+		
 		if(config.stats.health <= 0) die();
 		if(name == GameHolder.getInstance().settings.playerName) {
-			CameraUtil.setCameraShake(.2f, .5f);
+			CameraUtil.setCameraShake(.1f, .5f);
 		}
 	}
 	
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
+		if(damagedProgress < .5f) return;
 		if(isDashing) {
 			isRunning = true;
 			skin.setAnimation(DASH);

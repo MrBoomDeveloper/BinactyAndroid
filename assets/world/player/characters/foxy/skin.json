@@ -1,6 +1,5 @@
 {
 	"texture": "skin.png",
-	
 	"skin": {
 		"IDLE": {
 			"delay": 0.3,
@@ -16,7 +15,7 @@
 		},
 		
 		"DAMAGE": {
-			"delay": 0.3,
+			"delay": 0.1,
 			"mode": "NORMAL",
 			"size": [ 1.1, 1.8 ],
 			"frames": [

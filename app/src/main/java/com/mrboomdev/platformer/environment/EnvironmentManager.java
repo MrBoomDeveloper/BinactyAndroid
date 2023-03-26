@@ -1,7 +1,7 @@
 package com.mrboomdev.platformer.environment;
 
 import box2dLight.RayHandler;
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
@@ -11,13 +11,12 @@ import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.ui.gameplay.GameplayUi;
 import com.mrboomdev.platformer.util.CameraUtil;
 
 public class EnvironmentManager {
 	public MapManager map;
-	public Camera camera;
+	public OrthographicCamera camera;
 	public GamemodeManager gamemode;
 	public RayHandler rayHandler;
 	public World world;

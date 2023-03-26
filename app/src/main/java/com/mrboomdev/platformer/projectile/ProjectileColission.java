@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.projectile;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -29,13 +30,13 @@ public class ProjectileColission implements ContactListener {
                 ProjectileBullet bullet = (ProjectileBullet) me;
                 CharacterEntity player2 = (CharacterEntity) enemy;
                 if (bullet.owner == player2) return;
-                player2.gainDamage(bullet.stats.damage);
+                player2.gainDamage(bullet.stats.damage, Vector2.Zero);
             }
 
             if (me instanceof ProjectileAttack) {
                 ProjectileAttack attack = (ProjectileAttack) me;
                 if (attack.owner == enemy) return;
-                ((CharacterEntity) enemy).gainDamage(attack.stats.damage);
+                ((CharacterEntity) enemy).gainDamage(attack.stats.damage, attack.power);
                 attack.isDead = true;
             }
         }

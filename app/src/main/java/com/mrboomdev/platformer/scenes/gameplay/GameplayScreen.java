@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.EntityPresets;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
@@ -34,6 +36,7 @@ public class GameplayScreen extends CoreScreen {
 	private RayHandler rayHandler;
 	private Box2DDebugRenderer debugRenderer;
 	private ShaderProgram shaders;
+	private Viewport viewport;
 	private final float cameraSpeed = .05f;
 	
 	public GameplayScreen(EnvironmentManager manager) {
@@ -50,7 +53,7 @@ public class GameplayScreen extends CoreScreen {
 		batch.begin();
 		{
 			environment.render(batch);
-			entities.render(batch, camera);
+			entities.render(batch);
 		}
 		batch.end();
 		if(!game.settings.debugRaysDisable) {
@@ -59,14 +62,12 @@ public class GameplayScreen extends CoreScreen {
 		}
 		batch.begin();
 		{
-			if(game.settings.debugRenderer)
-				debugRenderer.render(environment.world, camera.combined);
+			if(game.settings.debugRenderer) debugRenderer.render(environment.world, camera.combined);
 			ui.render(delta);
 		}
 		batch.end();
-		String playerName = game.settings.playerName;
-		if(!entities.getCharacter(playerName).isDead) {
-			Vector2 playerPosition = entities.getCharacter(playerName).body.getPosition();
+		if(!game.settings.mainPlayer.isDead) {
+			Vector2 playerPosition = game.settings.mainPlayer.body.getPosition();
 			camera.position.set(CameraUtil.getCameraShake().add(
 				camera.position.x + (playerPosition.x - camera.position.x) * (cameraSpeed / camera.zoom),
 				camera.position.y + (playerPosition.y - camera.position.y) * (cameraSpeed / camera.zoom)
@@ -96,8 +97,10 @@ public class GameplayScreen extends CoreScreen {
 		environment.world.setContactListener(new ProjectileColission());
 		environment.setupRayHandler();
 		rayHandler = environment.rayHandler;
+		
 		camera = new OrthographicCamera(32, 18);
 		environment.camera = camera;
+		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
 		
 		map = new MapManager();
 		map.load(Gdx.files.internal("world/maps/test_01.json"));
@@ -131,6 +134,7 @@ public class GameplayScreen extends CoreScreen {
 	@Override
 	public void resize(int width, int height) {
 		shaders.setUniformf("u_resolution", width, height);
+		viewport.update(width, height);
 	}
 	
 	@Override

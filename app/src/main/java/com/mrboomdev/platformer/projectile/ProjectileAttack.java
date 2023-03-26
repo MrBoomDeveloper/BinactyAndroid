@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -28,11 +29,13 @@ public class ProjectileAttack {
 	public EntityAbstract owner;
 	public boolean isEnded, isDead;
 	public AttackStats stats;
+	public Vector2 power;
 	
-	public ProjectileAttack(World world, EntityAbstract owner, AttackStats stats) {
+	public ProjectileAttack(World world, EntityAbstract owner, AttackStats stats, Vector2 power) {
 		this.world = world;
 		this.owner = owner;
 		this.stats = stats;
+		this.power = power;
 		
 		AssetManager assets = GameHolder.getInstance().assets;
 		texture = assets.get("world/effects/attack.png", Texture.class);

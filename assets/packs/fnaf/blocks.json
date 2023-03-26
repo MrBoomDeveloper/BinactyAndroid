@@ -21,8 +21,8 @@
 	
 		"guardTable": {
 			"texture": "tiles/guard_table.png",
-			"size": [6, 3, 0, 0],
-			"colission": [6, 2, 0, -1]
+			"size": [5.4, 2.7, 0, 0],
+			"colission": [5.4, 1.8, 0, -0.9]
 		},
 	
 		"pirateBay": {
@@ -33,8 +33,8 @@
 	
 		"guardChair": {
 			"texture": "tiles/guard_chair.png",
-			"size": [1.5, 2.3, 0, 0],
-			"colission": [1.5, 1.1, 0, -1.2]
+			"size": [1.3, 2, 0, 0],
+			"colission": [1.3, 1, 0, -1]
 		},
 	
 		"chair": {
@@ -114,7 +114,7 @@
 		"shelf": {
 			"texture": "tiles/shelf.png",
 			"size": [1, 5, 0, 0],
-			"colission": [1, 4, 0, -1]
+			"colission": [1, 3, 0, -2]
 		},
 	
 		"cloud": {
@@ -136,6 +136,24 @@
 		"star": {
 			"texture": "tiles/star.png",
 			"size": [0.4, 1, 0, 0]
+		},
+		
+		"coke": {
+			"texture": "tiles/coke.png",
+			"size": [1.5, 4, 0, 0],
+			"colission": [1.5, 2, 0, -2],
+			"light": {
+				"distance": 5,
+				"rays": 10,
+				"offset": [-1, 0],
+				"color": { "values": [0.7, 0.7, 1, 0.7] }
+			}
+		},
+		
+		"balls": {
+			"texture": "tiles/balls.png",
+			"size": [5.2, 3, 0, 0],
+			"colission": [5.2, 2, 0, -1]
 		},
 		
 		"lamp": {

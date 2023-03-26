@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -37,8 +38,21 @@ public class MapTile extends MapObject {
 	@Override
 	public void draw(SpriteBatch batch) {
 		if(isDestroyed) return;
-		if(sprite != null) sprite.draw(batch);
-		if(devSprite != null) devSprite.draw(batch);
+		var camera = game.environment.camera;
+
+		float viewportWidth = camera.viewportWidth * camera.zoom;
+		float viewportHeight = camera.viewportHeight * camera.zoom;
+		float cameraX = camera.position.x - viewportWidth / 2;
+		float cameraY = camera.position.y - viewportHeight / 2;
+
+		// Check if object is within viewport
+		if(getPosition().x - size[0] * .5f + size[0] > cameraX &&
+		   getPosition().x - size[0] * .5f < cameraX + viewportWidth &&
+    	   getPosition().y - size[1] * .5f + size[1] > cameraY && 
+		   getPosition().y - size[1] * .5f < cameraY + viewportHeight) {
+			if(sprite != null) sprite.draw(batch);
+			if(devSprite != null) devSprite.draw(batch);
+		}
 	}
 	
 	public void build(World world) {

@@ -21,7 +21,7 @@ public class EntityManager {
 	private EntityPresets presets = new EntityPresets();
 	private Array<Spawn> spawns = new Array<>();
 	public static final String entitiesDirectory = "world/player/characters/";
-	public HashMap<String, CharacterEntity> characters = new HashMap<>();
+	public Array<CharacterEntity> characters = new Array<>();
 	private GameHolder game = GameHolder.getInstance();
 	public static EntityManager instance;
 	
@@ -32,7 +32,7 @@ public class EntityManager {
 	}
 	
 	public void addCharacter(CharacterEntity character) {
-		characters.put(character.name, character);
+		characters.add(character);
 		GameHolder.getInstance().environment.map.objects.add(new MapEntity(character));
 		if(character == GameHolder.getInstance().settings.mainPlayer) {
 			character.body.setTransform(22, -14, 0);
@@ -70,19 +70,15 @@ public class EntityManager {
 		return this;
 	}
 	
-	public void render(SpriteBatch batch, OrthographicCamera camera) {
-		for(CharacterEntity entity : characters.values()) {
+	public void render(SpriteBatch batch) {
+		for(CharacterEntity entity : characters) {
 			entity.drawProjectiles(batch);
 		}
 	}
 	
-	public CharacterEntity getCharacter(String name) {
-		return characters.get(name);
-	}
-	
 	public Array<CharacterEntity> getAllCharacters() {
 		Array<CharacterEntity> entities = new Array<>();
-		for(CharacterEntity entity : characters.values()) {
+		for(CharacterEntity entity : characters) {
 			entities.add(entity);
 		}
 		return entities;

@@ -16,11 +16,12 @@ import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GamemodeManager {
-	public List<StackOperation> stack = new ArrayList<>();
+	public List<StackOperation> stack = new LinkedList<>();
 	public GamemodeScript script;
 	private TextWidget title, timer;
 	private FadeWidget fade;
@@ -30,6 +31,7 @@ public class GamemodeManager {
 	private Status status = Status.PREPAIRING;
 	private Runnable buildCompletedCallback;
 	private FileUtil source;
+	private float gameOverTimeout;
 	public static GamemodeManager instance;
 	
 	public GamemodeManager(GamemodeScript script) {
@@ -78,7 +80,7 @@ public class GamemodeManager {
 	
 	public void update() {
 		if(game.settings.enableEditor) return;
-		List<StackOperation> oldStack = new ArrayList<>(stack);
+		List<StackOperation> oldStack = new LinkedList<>(stack);
 		for(StackOperation operation : oldStack) {
 			triggerListeners(operation.function);
 		}
@@ -91,7 +93,8 @@ public class GamemodeManager {
 			switch(function.action) {
 				case GAME_OVER:
 					game.stats.isWin = time == 0 ? true : false;
-					game.launcher.exit(GameLauncher.Status.GAME_OVER);
+					gameOverTimeout = 1;
+					fade.start(0, .6f, .5f);
 					break;
 					
 				case PLAY_MUSIC:
@@ -134,6 +137,13 @@ public class GamemodeManager {
 			return (operation.progress < operation.function.duration ||
 				(operation.function.isLong ? !operation.isFinished : false));
 		}).collect(Collectors.toList());
+		
+		if(gameOverTimeout > 0) {
+			gameOverTimeout += Gdx.graphics.getDeltaTime();
+			if(gameOverTimeout > 3) {
+				game.launcher.exit(GameLauncher.Status.GAME_OVER);
+			}
+		}
 		
 		updateTimer(Gdx.graphics.getDeltaTime());
 	}

@@ -47,9 +47,11 @@ public class GameplayUi {
 			.onClick(() -> connectedEntity.dash())
 			.addTo(stage);
 		
-		widgets.get("use").setPosition(
-			Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 75,
-			ActionButton.size + game.settings.screenInset - 25);
+		widgets.get("use")
+			.onClick(() -> connectedEntity.interact())
+			.setPosition(
+				Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 75,
+				ActionButton.size + game.settings.screenInset - 25);
 	}
 	
 	public void createEditor(Stage stage) {

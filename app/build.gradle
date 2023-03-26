@@ -113,18 +113,7 @@ dependencies {
 	implementation "androidx.appcompat:appcompat:1.5.0"
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 	
-	implementation("com.facebook.react:react-android")
-
-	debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
-		exclude group:"com.facebook.fbjni"
-	}
-	debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
-		exclude group:"com.facebook.flipper"
-		exclude group:"com.squareup.okhttp3", module:"okhttp"
-	}
-	debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
-		exclude group:"com.facebook.flipper"
-	}
+	implementation "com.facebook.react:react-android"
 	implementation "org.webkit:android-jsc:+"
 	
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"

@@ -42,11 +42,11 @@ public class CharacterEntity extends EntityAbstract {
 	private float staminaReloadMultiply;
 	private boolean isRunning;
 	private Vector2 damagedPower;
+	private GameHolder game = GameHolder.getInstance();
 	
 	public CharacterEntity(String name) {
 		this.name = name;
-		AssetManager asset = GameHolder.getInstance().assets;
-		font = asset.get("nick.ttf", BitmapFont.class);
+		font = game.assets.get("nick.ttf", BitmapFont.class);
 		font.setUseIntegerPositions(false);
 		font.getData().setScale(.01f, .01f);
 		shape = new ShapeRenderer();
@@ -101,17 +101,8 @@ public class CharacterEntity extends EntityAbstract {
 	
 	public CharacterEntity setConfig(FileUtil file) {
 		Gson gson = new Gson();
-		
-		config = gson.fromJson(
-			file.goTo("manifest.json").readString(true),
-			CharacterConfig.class)
-		.build();
-		
-		skin = gson.fromJson(
-			file.goTo("skin.json").readString(true),
-			CharacterSkin.class)
-		.build(file);
-		
+		config = gson.fromJson(file.goTo("manifest.json").readString(true), CharacterConfig.class).build();
+		skin = gson.fromJson(file.goTo("skin.json").readString(true), CharacterSkin.class).build(file);
 		stats = config.stats;
 		return this;
 	}
@@ -167,6 +158,16 @@ public class CharacterEntity extends EntityAbstract {
 	public void drawProjectiles(SpriteBatch batch) {
 		projectileManager.render(batch);
 		if(isDead) return;
+		batch.end();
+		if(damagedProgress < 3 && this != game.settings.mainPlayer) {
+			shape.setProjectionMatrix(game.environment.camera.combined);
+			shape.begin(ShapeRenderer.ShapeType.Filled);
+			shape.setColor(1, 0, 0, 1);
+			float progress = config.bodySize[0] / stats.maxHealth * stats.health;
+			shape.rect(getPosition().x - config.bodySize[0] / 2, getPosition().y - config.bodySize[1] / 2 - .4f, progress, .2f);
+			shape.end();
+		}
+		batch.begin();
 		font.draw(batch, name,
 			body.getPosition().x - 1,
 			body.getPosition().y + (config.bodySize[1] / 2) + .4f,
@@ -184,8 +185,8 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void interact() {
-		gainDamage(2, Vector2.Zero);
-		body.setTransform(new Vector2((float)(Math.random() * 25), (float)(Math.random() * 25)), 0);
+		gainDamage(5, wasPower);
+		body.setTransform(new Vector2((float)(Math.random() * 55), (float)(Math.random() * 55) - 20), 0);
 	}
 	
 	public void dash() {
@@ -219,7 +220,7 @@ public class CharacterEntity extends EntityAbstract {
 	
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
-		if(damagedProgress < .5f) return;
+		if(damagedProgress < .4f) return;
 		if(isDashing) {
 			isRunning = true;
 			skin.setAnimation(DASH);

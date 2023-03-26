@@ -9,7 +9,7 @@ public abstract class MapObject implements Comparable<MapObject> {
 	
 	public abstract void setPosition(Vector2 position);
 	
-	public abstract Vector2 getPosition();
+	public abstract Vector2 getPosition(boolean isBottom);
 	
 	public abstract int getLayer();
 	
@@ -19,9 +19,9 @@ public abstract class MapObject implements Comparable<MapObject> {
     public int compareTo(MapObject object) {
 		if(getLayer() != object.getLayer()) {
 			return getLayer() - object.getLayer();
-		} else if(getPosition().y != object.getPosition().y) {
-			return Math.round(object.getPosition().y - getPosition().y);
+		} else if(getPosition(true).y != object.getPosition(true).y) {
+			return Math.round(object.getPosition(true).y - getPosition(true).y);
 		}
-		return Math.round(getPosition().x - object.getPosition().x);
+		return Math.round(getPosition(true).x - object.getPosition(true).x);
 	}
 }

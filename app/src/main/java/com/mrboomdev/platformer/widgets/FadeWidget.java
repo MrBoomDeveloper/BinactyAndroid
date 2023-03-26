@@ -27,9 +27,9 @@ public class FadeWidget extends ActorUtil {
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
-		float delta = Gdx.graphics.getDeltaTime();
-		if(direction > 0) opacity = Math.min(to, opacity + delta * speed);
-		if(direction < 0) opacity = Math.max(to, opacity - delta * speed);
+		float delta = Gdx.graphics.getDeltaTime() * speed;
+		if(direction > 0) opacity = Math.min(to, opacity + delta);
+		if(direction < 0) opacity = Math.max(to, opacity - delta);
 		
 		batch.end();
 		Gdx.gl.glEnable(GL10.GL_BLEND);

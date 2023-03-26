@@ -24,8 +24,8 @@ public class MapEntity extends MapObject {
 	}
 
     @Override
-    public Vector2 getPosition() {
-        return entity.body.getPosition();
+    public Vector2 getPosition(boolean isBottom) {
+        return entity.body.getPosition().add(0, 0/*-(isBottom ? entity.config.bodySize[1] / 2 : 0)*/);
     }
 	
 	@Override
@@ -35,6 +35,6 @@ public class MapEntity extends MapObject {
 
     @Override
     public void remove() {
-		//TODO
+		entity.gainDamage(99999, Vector2.Zero);
 	}
 }

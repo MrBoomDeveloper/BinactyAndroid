@@ -46,10 +46,10 @@ public class MapTile extends MapObject {
 		float cameraY = camera.position.y - viewportHeight / 2;
 
 		// Check if object is within viewport
-		if(getPosition().x - size[0] * .5f + size[0] > cameraX &&
-		   getPosition().x - size[0] * .5f < cameraX + viewportWidth &&
-    	   getPosition().y - size[1] * .5f + size[1] > cameraY && 
-		   getPosition().y - size[1] * .5f < cameraY + viewportHeight) {
+		if(getPosition(false).x - size[0] * .5f + size[0] > cameraX &&
+		   getPosition(false).x - size[0] * .5f < cameraX + viewportWidth &&
+    	   getPosition(false).y - size[1] * .5f + size[1] > cameraY && 
+		   getPosition(false).y - size[1] * .5f < cameraY + viewportHeight) {
 			if(sprite != null) sprite.draw(batch);
 			if(devSprite != null) devSprite.draw(batch);
 		}
@@ -57,7 +57,7 @@ public class MapTile extends MapObject {
 	
 	public void build(World world) {
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(getPosition());
+		bodyDef.position.set(getPosition(false));
 		bodyDef.type = BodyDef.BodyType.StaticBody;
 		body = world.createBody(bodyDef);
 		body.setUserData(this);
@@ -86,7 +86,7 @@ public class MapTile extends MapObject {
 			body.createFixture(shadowFixture);
 			shadowShape.dispose();
 		}
-		setPosition(getPosition());
+		setPosition(getPosition(false));
 	}
 	
 	public void setTexture(Texture texture, boolean isDev) {
@@ -133,12 +133,12 @@ public class MapTile extends MapObject {
 	}
 	
 	@Override
-    public Vector2 getPosition() {
+    public Vector2 getPosition(boolean isBottom) {
 		if(body == null) {
 			if(position == null) return new Vector2();
-			return new Vector2(position[0], position[1]);
+			return new Vector2(position[0], position[1] - (isBottom ? size[1] / 2 : 0));
 		}
-        return body.getPosition();
+        return body.getPosition().add(0, 0/*- (isBottom ? size[1] / 2 : 0)*/);
     }
 	
 	@Override

@@ -1,0 +1,25 @@
+{
+	"moods": {
+		"AGGRESIVE": {
+			"when": [
+				{ "reason": "healthHigherThan", "value": 75 },
+				{ "reason": "healthHigherThan", "value": 40, "important": true },
+				{ "reason": "targetHasHealthLowerThan": 25 }
+			]
+		},
+		
+		"SEARCHING": {
+			"when": [
+				{ "reason": "noTargets" }
+			]
+		},
+		
+		"SCARED": {
+			"speed": 1.2,
+			"randomSpeed": 0.25,
+			"when": [
+				{ "reason": "healthLowerThan", "value": 25 }
+			]
+		}
+	}
+}

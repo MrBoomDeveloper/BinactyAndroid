@@ -75,13 +75,18 @@ public class BotBrain extends CharacterBrain {
 	}
 	
 	private void goByPath(float speed) {
-		if(path.getCount() > 1) {
-			entity.usePower(path.get(1).position.sub(entity.getPosition()).scl(25), speed, true);
-		} else if(target instanceof CharacterEntity) {
-			entity.usePower(target.getPosition().sub(entity.getPosition()), speed, true);
-		}
+		boolean shouldGoAway = false;
+		
 		if(target instanceof CharacterEntity) {
 			if(entity.getPosition().dst(target.getPosition()) < 2) entity.attack(Vector2.Zero);
+			if(entity.stats.health < entity.stats.maxHealth / 2) shouldGoAway = true;
+			if(entity.stats.stamina > entity.stats.maxStamina / 2) entity.dash();
+		}
+		
+		if(path.getCount() > 1) {
+			entity.usePower(path.get(1).position.sub(entity.getPosition()).scl(25).scl(shouldGoAway ? -1.7f : 1), speed, true);
+		} else if(target instanceof CharacterEntity) {
+			entity.usePower(target.getPosition().sub(entity.getPosition()).scl(shouldGoAway ? -1.7f : 1), speed, true);
 		}
 	}
 }

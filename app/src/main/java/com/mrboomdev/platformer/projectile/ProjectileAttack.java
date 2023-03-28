@@ -60,7 +60,7 @@ public class ProjectileAttack {
 		body = world.createBody(bodyDef);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(.5f, .5f);
+		shape.setAsBox(1, .5f);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.filter.categoryBits = Entity.ATTACK;
@@ -80,7 +80,7 @@ public class ProjectileAttack {
 		
 		animationProgress += Gdx.graphics.getDeltaTime();
 		sprite.set(new Sprite(animation.getKeyFrame(animationProgress)));
-		sprite.setSize(isForward ? 1 : -1, 1);
+		sprite.setSize(isForward ? .8f : -.8f, .8f);
 		sprite.setCenter(body.getPosition().x, body.getPosition().y);
 		sprite.draw(batch);
 	}

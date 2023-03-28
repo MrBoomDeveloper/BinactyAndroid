@@ -1,7 +1,6 @@
 package com.mrboomdev.platformer.game;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -14,7 +13,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.ui.ActivityManager;
-import com.mrboomdev.platformer.ui.react.ReactGameOverActivity;
 import com.mrboomdev.platformer.util.AudioUtil;
 
 public class GameLauncher extends AndroidApplication {
@@ -62,8 +60,7 @@ public class GameLauncher extends AndroidApplication {
 				finish();
 				break;
 			case GAME_OVER:
-				Intent intent = new Intent(this, ReactGameOverActivity.class);
-				startActivity(intent);
+				ActivityManager.gameOver();
 				finish();
 				break;
 		}

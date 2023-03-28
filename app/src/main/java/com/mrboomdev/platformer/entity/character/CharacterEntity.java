@@ -2,7 +2,9 @@ package com.mrboomdev.platformer.entity.character;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -39,9 +41,10 @@ public class CharacterEntity extends EntityAbstract {
 	private boolean isDashing;
 	private float dashProgress, dashReloadProgress;
 	private float damagedProgress = 1;
-	private float staminaReloadMultiply;
+	private float staminaReloadMultiply, healthPhantom;
 	private boolean isRunning;
 	private Vector2 damagedPower;
+	private Sprite shadow;
 	private GameHolder game = GameHolder.getInstance();
 	
 	public CharacterEntity(String name) {
@@ -50,6 +53,8 @@ public class CharacterEntity extends EntityAbstract {
 		font.setUseIntegerPositions(false);
 		font.getData().setScale(.01f, .01f);
 		shape = new ShapeRenderer();
+		shadow = new Sprite(game.assets.get("world/effects/shadow.png", Texture.class));
+		shadow.setAlpha(.75f);
 	}
 	
 	public CharacterEntity create(World world) {
@@ -82,6 +87,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		shape.dispose();
 		shape3D.dispose();
+		shadow.setSize(config.body3D[0], config.body3D[1]);
 		
 		projectileManager = new ProjectileManager(world, this)
 			.setBulletConfig(new ProjectileBullet.ProjectileStats()
@@ -104,6 +110,7 @@ public class CharacterEntity extends EntityAbstract {
 		config = gson.fromJson(file.goTo("manifest.json").readString(true), CharacterConfig.class).build();
 		skin = gson.fromJson(file.goTo("skin.json").readString(true), CharacterSkin.class).build(file);
 		stats = config.stats;
+		healthPhantom = stats.health;
 		return this;
 	}
 	
@@ -119,6 +126,8 @@ public class CharacterEntity extends EntityAbstract {
 		if(isDead && !isDestroyed) destroy();
 		
 		if(isDestroyed) return;
+		shadow.setCenter(getPosition().x, getPosition().y - config.bodySize[1] / 2);
+		shadow.draw(batch);
 		skin.draw(batch, body.getPosition(), getDirection());
 		
 		stats.stamina = Math.min(stats.maxStamina, isRunning ? stats.stamina : stats.stamina + staminaReloadMultiply);
@@ -133,6 +142,9 @@ public class CharacterEntity extends EntityAbstract {
 		}
 		if(damagedProgress < 1) {
 			body.setLinearVelocity(damagedPower.scl(5).limit(3));
+		} else {
+			healthPhantom += Gdx.graphics.getDeltaTime() / 2;
+			stats.health = Math.min((int)healthPhantom, stats.maxHealth);
 		}
 		if(brain != null) brain.update();
 		//drawDebug(batch);
@@ -207,13 +219,14 @@ public class CharacterEntity extends EntityAbstract {
 	
 	public void gainDamage(int damage, Vector2 power) {
 		if(damagedProgress < 1) return;
-		if(Math.random() > .5f) damagedProgress = 0;
+		damagedProgress = (Math.random() > .8f) ? 0 : .8f;
 		skin.setAnimation(Entity.Animation.DAMAGE);
-		config.stats.health -= damage;
+		stats.health -= damage;
+		healthPhantom = stats.health;
 		damagedPower = power;
 		
-		if(config.stats.health <= 0) die();
-		if(name == GameHolder.getInstance().settings.playerName) {
+		if(stats.health <= 0) die();
+		if(game.settings.mainPlayer == this) {
 			CameraUtil.setCameraShake(.1f, .5f);
 		}
 	}
@@ -250,12 +263,10 @@ public class CharacterEntity extends EntityAbstract {
 	@Override
 	public void die() {
 		super.die();
-		var game = GameHolder.getInstance();
-		var gamemode = GamemodeManager.instance;
 		var deathOptions = new GamemodeFunction.Options();
-		deathOptions.target = name == game.settings.playerName
+		deathOptions.target = (name == game.settings.playerName)
 			? GamemodeFunction.Target.MAIN_PLAYER
 			: GamemodeFunction.Target.ANY_BOT;
-		gamemode.runFunction(new GamemodeFunction(GamemodeFunction.Action.DEATH, deathOptions, null));
+		game.environment.gamemode.runFunction(new GamemodeFunction(GamemodeFunction.Action.DEATH, deathOptions, null));
 	}
 }

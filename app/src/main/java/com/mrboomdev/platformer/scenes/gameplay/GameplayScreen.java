@@ -109,7 +109,7 @@ public class GameplayScreen extends CoreScreen {
 		entities = new EntityManager(environment.world, rayHandler)
 			.setSpawnsPositions(map.spawnPositions)
 			.addPresets(EntityPresets.getInternal())
-			.addBots(5);
+			.addBots(4);
 		
 		CharacterEntity player = new CharacterEntity(game.settings.playerName)
 			.setConfig(new FileUtil(

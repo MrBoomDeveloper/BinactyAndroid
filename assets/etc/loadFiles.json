@@ -34,6 +34,7 @@
 				{ "path": "ui/overlay/shoot.png", "type": "texture" },
 				{ "path": "world/effects/attack.png", "type": "texture" },
 				{ "path": "world/player/weapon/projectile/bullet_fire.png", "type": "texture" },
+				{ "path": "world/effects/shadow.png", "type": "texture" },
 				{ "path": "audio/sounds/step.mp3", "type": "sound" },
 				{ "path": "audio/sounds/dash.wav", "type": "sound" },
 				{ "path": "audio/sounds/shot.wav", "type": "sound" },

@@ -6,10 +6,11 @@
 	"skin": "skin.json",
 	"bodySize": [ 1.5, 1.2 ],
 	"body3D": [ 1.5, 0.4, 0, -0.7 ],
+	"lightOffset": [0, 1],
 	"stats": {
 		"health": 75,
 		"damage": 75,
-		"speed": 0.75,
+		"speed": 0.8,
 		"shield": 50,
 		"stamina": 100
 	}

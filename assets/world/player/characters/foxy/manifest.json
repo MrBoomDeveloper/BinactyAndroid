@@ -12,6 +12,6 @@
 		"damage": 25,
 		"speed": 1.4,
 		"shield": 50,
-		"stamina": 100
+		"stamina": 25
 	}
 }

@@ -1,7 +1,6 @@
 package com.mrboomdev.platformer.ui.react;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -65,7 +64,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void getKeys(ReadableArray keys, Callback callback) {
+	public void getKeys(ReadableArray keys, Promise promise) {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		WritableArray result = Arguments.createArray();
 		for(int i = 0; i < keys.size(); i++) {
@@ -93,32 +92,32 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 			}
 			result.pushMap(newMap);
 		}
-		callback.invoke(result);
+		promise.resolve(result);
 	}
 	
 	@ReactMethod
-	public void getMyData(Callback callback) {
+	public void getMyData(Promise promise) {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		WritableMap data = Arguments.createMap();
 		data.putString("nick", prefs.getString("nick", "Player"));
     	data.putString("avatar", "klarrie");
         data.putInt("level", 1);
         data.putInt("progress", 0);
-        callback.invoke(data);
+        promise.resolve(data);
 	}
 	
     @ReactMethod
-    public void getPlayerData(String nick, Callback callback) {
+    public void getPlayerData(String nick, Promise promise) {
         WritableMap data = Arguments.createMap();
 		data.putString("nick", "Unknown");
         data.putString("avatar", "error");
         data.putInt("level", 0);
         data.putInt("progress", 0);
-        callback.invoke(data);
+        promise.resolve(data);
     }
 	
 	@ReactMethod
-	public void getGamemodes(Callback callback) {
+	public void getGamemodes(Promise promise) {
 		WritableMap map = Arguments.createMap();
 		WritableArray special = Arguments.createArray();
 		WritableArray other = Arguments.createArray();
@@ -142,29 +141,34 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		
 		map.putArray("special", special);
 		map.putArray("other", other);
-		callback.invoke(map);
+		promise.resolve(map);
 	}
 	
 	@ReactMethod
-	public void getMissions(Callback callback) {
+	public void getMissions(Promise promise) {
 		WritableArray missions = Arguments.createArray();
 		WritableMap mission = Arguments.createMap();
 		mission.putString("name", "Find The Capybara");
 		mission.putString("description", "The Legendary Animal is hidden somewhere. Find it!");
 		mission.putDouble("progress", 0);
 		mission.putDouble("progressMax", 1);
-		callback.invoke(missions);
+		promise.resolve(missions);
 	}
 	
 	@ReactMethod
 	public void getStats(Promise promise) {
-		var stats = GameHolder.getInstance().stats;
-		WritableMap map = Arguments.createMap();
-		map.putBoolean("isWin", stats.isWin);
-		map.putDouble("totalKills", stats.totalKills);
-		map.putDouble("totalDamage", stats.totalDamage);
-		map.putDouble("matchDuration", stats.matchDuration);
-		promise.resolve(map);
+		try {
+			var stats = GameHolder.getInstance().stats;
+			WritableMap map = Arguments.createMap();
+			map.putBoolean("isWin", stats.isWin);
+			map.putDouble("totalKills", stats.totalKills);
+			map.putDouble("totalDamage", stats.totalDamage);
+			map.putDouble("matchDuration", stats.matchDuration);
+			promise.resolve(map);
+		} catch(Exception e) {
+			promise.reject("Failed to collect stats", e);
+			e.printStackTrace();
+		}
 	}
 	
 	@ReactMethod
@@ -173,10 +177,25 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
+	public void startMusic() {
+		ActivityManager.startMusic();
+	}
+	
+	@ReactMethod
 	public void requestClose() {
 		AskUtil.ask(AskUtil.AskType.REQUEST_CLOSE, obj -> {
 			ActivityManager.current.finishAffinity();
 		});
+	}
+	
+	@ReactMethod
+	public void addListener(String name) {
+		
+	}
+	
+	@ReactMethod
+	public void removeListeners(Integer count) {
+		
 	}
 	
 	@ReactMethod
@@ -197,11 +216,6 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		if(data.hasKey("mapPath")) intent.putExtra("mapPath", data.getBoolean("mapPath"));
 		if(data.hasKey("mapSource")) intent.putExtra("mapSource", data.getBoolean("mapSource"));
 		activity.startActivity(intent);
-		
-		var music = ReactActivity.instance.media;
-		if(music == null) return;
-		music.stop();
-		music.release();
-		ReactActivity.instance.media = null;
+		ActivityManager.stopMusic();
     }
 }

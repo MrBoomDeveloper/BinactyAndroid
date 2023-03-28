@@ -2,7 +2,6 @@ package com.mrboomdev.platformer.ui.react;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -27,11 +26,10 @@ import java.util.List;
 
 public class ReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
 	public static ReactActivity instance;
-	public MediaPlayer media;
-    private ReactRootView root;
-    private ReactInstanceManager reactInstance;
-    private SharedPreferences prefs;
+	public ReactInstanceManager reactInstance;
 	public boolean isGameStarted = false;
+    private ReactRootView root;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -39,6 +37,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
         super.onCreate(bundle);
         SoLoader.init(this, false);
 		ActivityManager.current = this;
+		ActivityManager.reactActivity = this;
 		
 		instance = this;
         root = new ReactRootView(this);
@@ -54,7 +53,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
             .setInitialLifecycleState(LifecycleState.RESUMED)
             .build();
 		
-        root.startReactApplication(reactInstance, "GameLobbyScreen", null);
+        root.startReactApplication(reactInstance, "App", null);
         setContentView(root);
 		
 		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
@@ -91,38 +90,20 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 	@Override
 	public void onPause() {
 		super.onPause();
-		try {
-			if(media == null || !media.isPlaying()) return;
-			media.pause();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		ActivityManager.pauseMusic();
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
 		ActivityManager.current = this;
-		if(isGameStarted) {
-			Intent intent = new Intent(this, getClass());
-			startActivity(intent);
-			finish();
-			return;
-		}
-		if(media == null) {
-			media = MediaPlayer.create(this, R.raw.lobby_theme);
-			media.setLooping(true);
-		}
-		media.start();
+		ActivityManager.resumeMusic();
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if(media == null) return;
-		media.stop();
-		media.release();
-		media = null;
+		ActivityManager.stopMusic();
 	}
 
     @Override

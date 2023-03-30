@@ -93,31 +93,26 @@ public class MapManager {
 		return Math.round(position[0]) + ":" + Math.round(position[1]) + ":" + layer;
 	}
 	
-	private float[] getCorrectPosition(float[] position, MapTile tile) {
-		//position[1] += tile.size[1] / 2 - .4f;
-		return position;
-	}
-	
 	public void addTile(String name, float[] position, int layer) {
 		if(name == "ERASER") {
 			removeTile(position, layer);
 			return;
 		} else if(name == "SELECT") {
+			var pos = getTextPosition(position, layer, true);
+			game.environment.ui.editor.selectTile(tilesMap.containsKey(pos) ? tilesMap.get(pos) : null);
 			return;
 		}
 		
 		var preset = tilesPresets.get(name);
-		var correctPosition = getCorrectPosition(position, preset);
-		
-		var pos = getTextPosition(correctPosition, layer, true);
+		var pos = getTextPosition(position, layer, true);
 		if(tilesMap.containsKey(pos)) return;
 		
 		MapTile tile = new MapTile();
 		tile.copyData(preset);
-		correctPosition[0] = Math.round(correctPosition[0]);
-		correctPosition[1] = Math.round(correctPosition[1]);
+		position[0] = Math.round(position[0]);
+		position[1] = Math.round(position[1]);
 		
-		tile.position = correctPosition;
+		tile.position = position;
 		tile.name = name;
 		tile.layer = layer;
 		tile.build(world);

@@ -24,6 +24,7 @@ public class MapTile extends MapObject {
 	public String name;
 	public int layer;
 	public float[] position;
+	public boolean flipX, flipY;
 	public String texture, devTexture;
 	private Light light;
 	public float[] size;
@@ -171,6 +172,8 @@ public class MapTile extends MapObject {
 			serialized.name = tile.name;
 			serialized.position = tile.position;
 			serialized.layer = tile.layer;
+			serialized.flipX = tile.flipX;
+			serialized.flipY = tile.flipY;
 			return serialized;
 		}
 	}

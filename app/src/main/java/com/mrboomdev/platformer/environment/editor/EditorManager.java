@@ -58,12 +58,10 @@ public class EditorManager implements CoreUi.UiDrawer {
 				? tile.getValue().sprite
 				: tile.getValue().devSprite;
 			
-			var placeTileButton = (ButtonWidget)new ButtonWidget(tileSprite)
+			tilesGrid.add(new ButtonWidget(tileSprite)
 				.onClick(() -> current = tile.getKey())
 				.connectToScroller(tilesGrid)
-				.addTo(stage);
-			
-			tilesGrid.add(placeTileButton);
+				.addTo(stage));
 		}
 	}
 

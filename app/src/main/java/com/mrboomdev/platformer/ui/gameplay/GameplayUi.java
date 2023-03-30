@@ -31,8 +31,6 @@ public class GameplayUi {
 	public void createFreeRoam(Stage stage) {
 		widgets.put("debug", new DebugValuesWidget().toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - game.settings.screenInset - 150));
 		if(game.settings.debugValues) stage.addActor(widgets.get("debug"));
-		
-		widgets.put("use", new ActionButton(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 49, 14, 14)).addTo(stage));
 	}
 	
 	public void createCombat(Stage stage) {
@@ -50,37 +48,17 @@ public class GameplayUi {
 			.onClick(() -> connectedEntity.dash())
 			.addTo(stage);
 		
-		widgets.get("use")
+		widgets.put("use", new ActionButton(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 49, 14, 14))
 			.onClick(() -> connectedEntity.interact())
-			.setPosition(
+			.toPosition(
 				Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 75,
-				ActionButton.size + game.settings.screenInset - 25);
+				ActionButton.size + game.settings.screenInset - 25)
+			.addTo(stage));
 	}
 	
 	public void createEditor(Stage stage) {
 		editor = new EditorScreen();
 		editor.create(stage);
-		
-		widgets.get("use").setPosition(
-			Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 50 - 100,
-			ActionButton.size / 2 + game.settings.screenInset);
-		
-		widgets.get("use").onClick(() -> {
-			var dialog = new AndroidDialog().setTitle("Set Tile lightning");
-					
-			dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Tile color. Enter this text in the rgba like format, for example: (red 255 is 1, alpha 1 is 1)"));
-			var colorField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT).setText(game.environment.map.atmosphere.environmentLightColor.toString()).setHint("Ex. 0, 0, 0, 1");
-			dialog.addSpace(15).addField(colorField).addSpace(30);
-					
-			dialog.addAction(new AndroidDialog.Action().setText("Cancel").setClickListener(button -> dialog.close()));
-			dialog.addAction(new AndroidDialog.Action().setText("Save").setClickListener(button -> {
-				var envColor = ColorUtil.parse(colorField.getText());
-				game.environment.map.atmosphere.environmentLightColor = envColor;
-				game.environment.rayHandler.setAmbientLight(envColor.getColor());
-				dialog.close();
-			}));
-			dialog.show();
-		});
 	}
 	
 	public void createOverlay(Stage stage) {

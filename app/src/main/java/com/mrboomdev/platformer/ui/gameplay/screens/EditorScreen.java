@@ -20,25 +20,48 @@ import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget;
 public class EditorScreen {
 	private GameHolder game = GameHolder.getInstance();
 	private ObjectMap<String, ActorUtil> widgets = new ObjectMap<>();
+	private MapTile selectedTile;
 	private Stage stage;
 
 	public void selectTile(MapTile tile) {
-		if(!widgets.containsKey("tileConfig")) {
-			widgets.put("tileConfig", new ButtonWidget(ButtonWidget.Style.BULLET)
-				.setText("Configure Tile", game.assets.get("bulletButton.ttf"))
-				.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 17, 49, 14, 14))
+		this.selectedTile = tile;
+		if(!widgets.containsKey("lightEdit")) {
+		
+			widgets.put("flipX", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("FlipX", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					selectedTile.flipX = !selectedTile.flipX;
+					selectedTile.sprite.setFlip(selectedTile.flipX, selectedTile.flipY);
+					if(selectedTile.pointLight != null) {
+						selectedTile.pointLight.attachToBody(selectedTile.body,
+							selectedTile.flipX ? -selectedTile.light.offset[0] : selectedTile.light.offset[0],
+							selectedTile.flipY ? -selectedTile.light.offset[1] : selectedTile.light.offset[1]);
+					}
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 2 + 40)
+				.addTo(stage));
+				
+			widgets.put("flipY", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("FlipY", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					selectedTile.flipY = !selectedTile.flipY;
+					selectedTile.sprite.setFlip(selectedTile.flipX, selectedTile.flipY);
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT + 20)
+				.addTo(stage));
+				
+			widgets.put("lightEdit", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Edit Light", game.assets.get("bulletButton.ttf"))
 				.onClick(() -> {
 					
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 400, game.settings.screenInset)
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset)
 				.addTo(stage));
 		}
 		
-		if(tile == null) {
-			widgets.get("tileConfig").setVisible(false);
-		} else {
-			widgets.get("tileConfig").setVisible(true);
-		}
+		widgets.get("lightEdit").setVisible(tile != null);
+		widgets.get("flipX").setVisible(tile != null);
+		widgets.get("flipY").setVisible(tile != null);
 	}
 	
 	public void create(Stage stage) {

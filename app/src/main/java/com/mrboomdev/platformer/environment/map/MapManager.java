@@ -25,6 +25,8 @@ public class MapManager {
 	public Atmosphere atmosphere;
 	public Rules rules;
 	private List<MapTile> tiles;
+	@Json(ignore = true) private int currentHistoryStep;
+	@Json(ignore = true) private Array<HistoryStep> history = new Array<>();
 	@Json(ignore = true) public RayHandler rayHandler;
 	@Json(ignore = true) public Map<String, MapTile> tilesPresets = new HashMap<>();
 	@Json(ignore = true) public ObjectMap<String, MapTile> tilesMap = new ObjectMap<>();
@@ -121,6 +123,7 @@ public class MapManager {
 		objects.add(tile);
 		tiles.add(tile);
 		tilesMap.put(pos, tile);
+		history.add(new HistoryStep(HistoryStep.Type.ADD));
 	}
 	
 	public void removeTile(float[] position, int layer) {
@@ -132,6 +135,7 @@ public class MapManager {
 		objects.remove(objects.indexOf(removed));
 		tiles.remove(tiles.indexOf(removed));
 		tilesMap.remove(pos);
+		history.add(new HistoryStep(HistoryStep.Type.REMOVE));
 	}
 	
 	public void ping() {
@@ -170,6 +174,26 @@ public class MapManager {
 	public static class Rules {
 		public float[] worldBorder = {-1000, -1000, 1000, 1000};
 		public float[] cameraBorder = {-1000, -1000, 1000, 1000};
+	}
+	
+	private static class HistoryStep {
+		public Type type;
+		public String target;
+		
+		public HistoryStep(Type type) {
+			this.type = type;
+		}
+		
+		public void use() {
+			
+		}
+	
+		public enum Type {
+			ADD,
+			REMOVE,
+			FLIP,
+			ATMOSPHERE_COLOR
+		}
 	}
 	
 	private enum Status {

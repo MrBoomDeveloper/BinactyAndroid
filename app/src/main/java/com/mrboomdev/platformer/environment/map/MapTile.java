@@ -26,15 +26,15 @@ public class MapTile extends MapObject {
 	public float[] position;
 	public boolean flipX, flipY;
 	public String texture, devTexture;
-	private Light light;
+	public Light light;
 	public float[] size;
 	public float[] colission;
 	public float[] shadowColission;
 	@Json(ignore = true) public Sprite sprite, devSprite;
+	@Json(ignore = true) public PointLight pointLight;
 	@Json(ignore = true) public FileUtil source;
-    @Json(ignore = true) private Body body;
+    @Json(ignore = true) public Body body;
 	@Json(ignore = true) private boolean isDestroyed;
-	@Json(ignore = true) private PointLight pointLight;
 	@Json(ignore = true) private GameHolder game = GameHolder.getInstance();
 	
 	@Override
@@ -122,14 +122,17 @@ public class MapTile extends MapObject {
 		texture = tile.texture;
 		devTexture = tile.devTexture;
 		source = tile.source;
-		if(tile.sprite != null) sprite = new Sprite(tile.sprite);
+		if(tile.sprite != null) {
+			sprite = new Sprite(tile.sprite);
+			sprite.setFlip(flipX, flipY);
+		}
 		if(tile.devSprite != null) devSprite = new Sprite(tile.devSprite);
 	}
 	
 	public void setupRayHandler(RayHandler rayHandler) {
 		if(light != null) {
 			pointLight = new PointLight(rayHandler, light.rays, light.color.getColor(), light.distance, 0, 0);
-            pointLight.attachToBody(body, light.offset[0], light.offset[1]);
+            pointLight.attachToBody(body, flipX ? -light.offset[0] : light.offset[0], flipY ? -light.offset[1] : light.offset[1]);
 			pointLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
         }
 	}

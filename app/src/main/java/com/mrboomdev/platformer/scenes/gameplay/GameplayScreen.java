@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.scenes.gameplay;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -89,8 +90,10 @@ public class GameplayScreen extends CoreScreen {
 			game.analytics.log("Shaders", "Successdully compilied shaders!");
 			batch.setShader(shaders);
 		} else {
+			System.out.println("");
 			game.analytics.error("Shaders", "Failed to compile shaders!");
 			game.analytics.error("Shaders", shaders.getLog());
+			System.out.println("");
 			game.launcher.exit(GameLauncher.Status.CRASH);
 		}
 		

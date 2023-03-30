@@ -68,7 +68,7 @@
 				 android:textAllCaps="false"
 				 android:layout_marginTop="4dp"
 				 android:id="@+id/gainHealthButton"
-				 android:text="Gain 1000 hp" />
+				 android:text="Gain 5000 hp" />
 
 			<Button
 				 android:layout_height="40dp"

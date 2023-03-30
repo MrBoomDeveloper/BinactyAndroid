@@ -102,7 +102,10 @@ public class MapManager {
 		if(name == "ERASER") {
 			removeTile(position, layer);
 			return;
+		} else if(name == "SELECT") {
+			return;
 		}
+		
 		var preset = tilesPresets.get(name);
 		var correctPosition = getCorrectPosition(position, preset);
 		

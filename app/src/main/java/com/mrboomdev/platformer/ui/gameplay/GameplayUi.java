@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -86,7 +87,7 @@ public class GameplayUi {
 		new ButtonWidget(ButtonWidget.Style.BULLET)
 			.setText("Save to Android/data", game.assets.get("bulletButton.ttf"))
 			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 1, 14, 14))
-			.toPosition(game.settings.screenInset + 150, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
+			.toPosition(game.settings.screenInset + 135, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
 			.onClick(() -> {
 				Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
 				var adapter = moshi.adapter(MapManager.class);
@@ -124,6 +125,20 @@ public class GameplayUi {
 				}));
 				dialog.show();
 			})
+			.addTo(stage);
+		
+		new ButtonWidget(ButtonWidget.Style.BULLET)
+			.setText("Eraser", game.assets.get("bulletButton.ttf"))
+			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 49, 1, 14, 14))
+			.onClick(() -> EditorManager.current = "ERASER")
+			.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 400, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
+			.addTo(stage);
+			
+		new ButtonWidget(ButtonWidget.Style.BULLET)
+			.setText("Select", game.assets.get("bulletButton.ttf"))
+			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 49, 33, 14, 14))
+			.onClick(() -> EditorManager.current = "SELECT")
+			.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 400, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT * 2 - 20 - game.settings.screenInset)
 			.addTo(stage);
 	}
 	

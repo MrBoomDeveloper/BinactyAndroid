@@ -166,6 +166,65 @@
 				"color": { "values": [0.5, 0.5, 0.5, 0.8] }
 			}
 		},
+		
+		"button": {
+			"devTexture": "tiles/buttons.png",
+			"size": [0.5, 1, 0, 0],
+			"defaultStyle": "door",
+			"interaction": {
+				"type": "TOGGLE",
+				"toggle": [
+					{ "target": "ME", "change": "STYLE" },
+					{ "target": "CONNECTED", "change": "STYLE" }
+				]
+			},
+			"styles": {
+				"light": {
+					"region": [0, 0, 0, 0],
+					"size": [0.5, 1, 0, 0]
+				},
+				
+				"door": {
+					"region": [0, 0, 0, 0],
+					"size": [0.5, 1, 0, 0]
+				}
+			}
+		},
+		
+		"door": {
+			"devTexture": "../core/tiles/error.png",
+			"size": [2, 2, 0, 0],
+			"defaultStyle": "open",
+			"styles": {
+				"open": {
+					"speed": 1,
+					"frames": [
+						{ "region": [0, 0, 0, 0] }
+					]
+				},
+				
+				"close": {
+					"speed": 1,
+					"frames": [
+						{ "region": [0, 0, 0, 0] }
+					]
+				}
+			}
+		},
+		
+		"tv": {
+			"devTexture": "../core/tiles/error.png",
+			"size": [2, 2, 0, 0],
+			"styles": {
+				"active": {
+					"speed": 0.2,
+					"mode": "LOOP",
+					"frames": [
+						{ "region": [0, 0, 0, 0] }
+					]
+				}
+			}
+		},
 	
 	
 		"barrier": {

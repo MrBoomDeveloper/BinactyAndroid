@@ -3,10 +3,10 @@ package com.mrboomdev.platformer.environment.map;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -18,6 +18,7 @@ import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.FileUtil;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.ToJson;
+import java.util.List;
 
 public class MapTile extends MapObject {
 	public String name;
@@ -144,6 +145,17 @@ public class MapTile extends MapObject {
 	@Override
 	public int getLayer() {
 		return layer;
+	}
+	
+	public static class Style {
+		public float speed;
+		public Animation.PlayMode mode;
+		public List<Frame> frames;
+	}
+	
+	public static class Frame {
+		public int[] region;
+		public float[] size;
 	}
 	
 	public static class Light {

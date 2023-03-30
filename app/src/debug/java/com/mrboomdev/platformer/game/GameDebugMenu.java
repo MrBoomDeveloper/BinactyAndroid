@@ -116,7 +116,8 @@ public class GameDebugMenu {
 		
 		Button gainHealthButton = view.findViewById(R.id.gainHealthButton);
 		gainHealthButton.setOnClickListener(button -> {
-			 settings.mainPlayer.gainDamage(-1000, Vector2.Zero);
+			settings.mainPlayer.stats.maxHealth = 5000;
+			settings.mainPlayer.gainDamage(-5000, Vector2.Zero);
 		});
 		
 		Button gameOverButton = view.findViewById(R.id.gameOverButton);

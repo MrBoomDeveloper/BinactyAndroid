@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 public class EditorManager implements CoreUi.UiDrawer {
     private UiState editorVisibility = UiState.COLLAPSED;
-	public static String current = "wall";
+	public static String current = "SELECT";
 	public static int layer = 1;
 
     @Override
@@ -27,13 +27,13 @@ public class EditorManager implements CoreUi.UiDrawer {
 		
 		var tileSetter = new ActorUtil(){}.toSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()).addTo(stage);
 		tileSetter.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					Vector3 gamePosition = game.environment.camera.unproject(new Vector3(x, Gdx.graphics.getHeight() - y, 0));
-					float[] roundPosition = {Math.round(gamePosition.x), Math.round(gamePosition.y), 0};
-					game.environment.map.addTile(EditorManager.current, roundPosition, EditorManager.layer);
-				}
-			});
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Vector3 gamePosition = game.environment.camera.unproject(new Vector3(x, Gdx.graphics.getHeight() - y, 0));
+				float[] roundPosition = {Math.round(gamePosition.x), Math.round(gamePosition.y), 0};
+				game.environment.map.addTile(EditorManager.current, roundPosition, EditorManager.layer);
+			}
+		});
 		tileSetter.setZIndex(0);
 		
 		var tilesGrid = (GridWidget)new GridWidget(15, true)
@@ -48,7 +48,7 @@ public class EditorManager implements CoreUi.UiDrawer {
 			final int a = i;
 			var layerButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
 				.setText("Use layer " + i, game.assets.get("bulletButton.ttf"))
-				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() / 2 - i * 75 + 50)
+				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() / 2 - i * 70 + 50)
 				.onClick(() -> layer = a)
 				.addTo(stage);
 		}
@@ -64,14 +64,7 @@ public class EditorManager implements CoreUi.UiDrawer {
 				.addTo(stage);
 			
 			tilesGrid.add(placeTileButton);
-			current = tile.getKey();
 		}
-		
-		var eraserButton = (ButtonWidget)new ButtonWidget(new Sprite(new Texture(Gdx.files.internal("world/effects/boom.png"))))
-			.onClick(() -> current = "ERASER")
-			.connectToScroller(tilesGrid)
-			.addTo(stage);
-		tilesGrid.add(eraserButton);
 	}
 
     @Override

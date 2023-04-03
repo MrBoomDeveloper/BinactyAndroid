@@ -7,6 +7,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.ActorUtil;
+import com.mrboomdev.platformer.util.io.ZipUtil;
+import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.squareup.moshi.Moshi;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
@@ -16,27 +18,33 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class EditorScreen {
+	public MapTile selectedTile;
 	private GameHolder game = GameHolder.getInstance();
 	private ObjectMap<String, ActorUtil> widgets = new ObjectMap<>();
-	private MapTile selectedTile;
 	private Stage stage;
 
 	public void selectTile(MapTile tile) {
-		this.selectedTile = tile;
+		if(selectedTile != null) selectedTile.isSelected = false;
+		if(tile != null) tile.isSelected = true;
+		selectedTile = tile;
 		if(!widgets.containsKey("lightEdit")) {
-		
+			widgets.put("toggleStyle", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Toggle style", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 3 + 60)
+				.addTo(stage));
+				
 			widgets.put("flipX", new ButtonWidget(ButtonWidget.Style.BULLET)
 				.setText("FlipX", game.assets.get("bulletButton.ttf"))
 				.onClick(() -> {
 					selectedTile.flipX = !selectedTile.flipX;
-					selectedTile.sprite.setFlip(selectedTile.flipX, selectedTile.flipY);
-					if(selectedTile.pointLight != null) {
-						selectedTile.pointLight.attachToBody(selectedTile.body,
-							selectedTile.flipX ? -selectedTile.light.offset[0] : selectedTile.light.offset[0],
-							selectedTile.flipY ? -selectedTile.light.offset[1] : selectedTile.light.offset[1]);
-					}
+					selectedTile.update();
 				})
 				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 2 + 40)
 				.addTo(stage));
@@ -45,7 +53,7 @@ public class EditorScreen {
 				.setText("FlipY", game.assets.get("bulletButton.ttf"))
 				.onClick(() -> {
 					selectedTile.flipY = !selectedTile.flipY;
-					selectedTile.sprite.setFlip(selectedTile.flipX, selectedTile.flipY);
+					selectedTile.update();
 				})
 				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT + 20)
 				.addTo(stage));
@@ -59,9 +67,7 @@ public class EditorScreen {
 				.addTo(stage));
 		}
 		
-		widgets.get("lightEdit").setVisible(tile != null);
-		widgets.get("flipX").setVisible(tile != null);
-		widgets.get("flipY").setVisible(tile != null);
+		widgets.values().forEach(widget -> widget.setVisible(tile != null));
 	}
 	
 	public void create(Stage stage) {
@@ -83,6 +89,13 @@ public class EditorScreen {
 				var adapter = moshi.adapter(MapManager.class);
 				var map = game.environment.map;
 				Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
+				try {
+					String compressedFile = new String(ZipUtil.getCompressedString(adapter.toJson(map)), StandardCharsets.UTF_8);
+					Gdx.files.external("exportedMapCompressed.booma").writeString(compressedFile, false);
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+				
 			})
 			.addTo(stage);
 		

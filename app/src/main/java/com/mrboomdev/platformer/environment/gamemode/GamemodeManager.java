@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.environment.gamemode;
 
+import bsh.EvalError;
+import bsh.Interpreter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.Vector2;
@@ -8,14 +10,13 @@ import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
-import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
+import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.util.AudioUtil;
-import com.mrboomdev.platformer.util.FileUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +35,10 @@ public class GamemodeManager {
 	private float gameOverTimeout;
 	public static GamemodeManager instance;
 	
-	public GamemodeManager(GamemodeScript script) {
+	public GamemodeManager(GamemodeScript script, FileUtil scenario) {
+		game.script = new ScriptManager();
+		game.script.eval(scenario.readString(true));
+		
 		this.script = script;
 		script.start.forEach(function -> stack.add(new StackOperation(function, null)));
 		instance = this;

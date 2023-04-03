@@ -1,96 +1,98 @@
 {
 	"tiles": {
 		"wall": {
-			"texture": "tiles/wall_front.png",
-			"size": [2, 4, 0, 0],
+			"texture": "tiles/wall.png",
+			"size": [2, 4],
 			"colission": [2, 3, 0, -1],
+			"region": [0, 0, 16, 26],
 			"shadowColission": [2, 0.8, 0, 1.6]
 		},
 	
 		"wallSide": {
-			"texture": "tiles/wall_side.png",
-			"size": [2, 4, 0, 0],
+			"texture": "tiles/wall.png",
+			"size": [2, 4],
 			"colission": [2, 3.2, 0, -0.8],
+			"region": [16, 0, 16, 26],
 			"shadowColission": [2, 1, 0, 1.5]
 		},
 	
 		"floor": {
 			"texture": "tiles/floor.png",
-			"size": [2, 2, 0, 0]
+			"size": [2, 2]
 		},
 	
 		"guardTable": {
 			"texture": "tiles/guard_table.png",
-			"size": [5.4, 2.7, 0, 0],
+			"size": [5.4, 2.7],
 			"colission": [5.4, 1.8, 0, -0.9]
 		},
 	
 		"pirateBay": {
 			"texture": "tiles/pirate_bay.png",
-			"size": [3, 6, 0, 0],
+			"size": [3, 6],
 			"colission": [3, 4, 0, -2]
 		},
 	
 		"guardChair": {
 			"texture": "tiles/guard_chair.png",
-			"size": [1.3, 2, 0, 0],
+			"size": [1.3, 2],
 			"colission": [1.3, 1, 0, -1]
 		},
 	
 		"chair": {
 			"texture": "tiles/chair.png",
-			"size": [1, 1.5, 0, 0],
+			"size": [1, 1.5],
 			"colission": [1, 0.5, 0, -1]
 		},
 	
 		"soundBooster": {
 			"texture": "tiles/sound_booster.png",
-			"size": [1, 1.2, 0, 0],
+			"size": [1, 1.2],
 			"colission": [1, 1.2, 0, 0]
 		},
 	
 		"robotDesk": {
 			"texture": "tiles/robot_desk.png",
-			"size": [2, 3, 0, 0],
+			"size": [2, 3],
 			"colission": [2, 2.5, 0, -0.5]
 		},
 	
 		"robotShelf": {
 			"texture": "tiles/robot_shelf.png",
-			"size": [5, 3, 0, 0],
+			"size": [5, 3],
 			"colission": [5, 2.5, 0, -0.5]
 		},
 	
 		"gift": {
 			"texture": "tiles/gift.png",
-			"size": [1, 1, 0, 0],
+			"size": [1, 1],
 			"colission": [1, 0.6, 0, -0.4]
 		},
 	
 		"tip": {
 			"texture": "tiles/tip.png",
-			"size": [0.7, 0.7, 0, 0]
+			"size": [0.7, 0.7]
 		},
 	
 		"stage": {
 			"texture": "tiles/stage.png",
-			"size": [8, 4, 0, 0],
-			"colission": [8, 4, 0, 0]
+			"size": [8, 2.5],
+			"colission": [8, 2.5, 0, 0]
 		},
 	
 		"pizza": {
 			"texture": "tiles/pizza.png",
-			"size": [1, 1, 0, 0]
+			"size": [1, 1]
 		},
 	
 		"sun": {
 			"texture": "tiles/sun.png",
-			"size": [1, 1, 0, 0]
+			"size": [1, 1]
 		},
 	
 		"gameMachine": {
 			"texture": "tiles/game_machine.png",
-			"size": [1.8, 3, 0, 0],
+			"size": [1.8, 3],
 			"colission": [1.8, 2, 0, -1],
 			"light": {
 				"distance": 2,
@@ -101,46 +103,46 @@
 	
 		"table": {
 			"texture": "tiles/table.png",
-			"size": [2, 4.5, 0, 0],
+			"size": [2, 4.5],
 			"colission": [2, 4, 0, -0.5]
 		},
 	
 		"clean": {
 			"texture": "tiles/clean.png",
-			"size": [0.6, 1.5, 0, 0],
+			"size": [0.6, 1.5],
 			"colission": [0.6, 0.75, 0, -0.75]
 		},
 	
 		"shelf": {
 			"texture": "tiles/shelf.png",
-			"size": [1, 5, 0, 0],
+			"size": [1, 5],
 			"colission": [1, 3, 0, -2]
 		},
 	
 		"cloud": {
 			"texture": "tiles/cloud.png",
-			"size": [3, 2, 0, 0]
+			"size": [3, 2]
 		},
 	
 		"poster": {
 			"texture": "tiles/poster.png",
-			"size": [1, 1, 0, 0]
+			"size": [1, 1]
 		},
 	
 		"tvsSide": {
 			"texture": "tiles/tvs_side.png",
-			"size": [0.8, 2, 0, 0],
+			"size": [0.8, 2],
 			"colission": [0.8, 1.8, 0, -0.2]
 		},
 	
 		"star": {
 			"texture": "tiles/star.png",
-			"size": [0.4, 1, 0, 0]
+			"size": [0.4, 1]
 		},
 		
 		"coke": {
 			"texture": "tiles/coke.png",
-			"size": [1.5, 4, 0, 0],
+			"size": [1.5, 4],
 			"colission": [1.5, 2, 0, -2],
 			"light": {
 				"distance": 5,
@@ -152,13 +154,13 @@
 		
 		"balls": {
 			"texture": "tiles/balls.png",
-			"size": [5.2, 3, 0, 0],
+			"size": [5.2, 3],
 			"colission": [5.2, 2, 0, -1]
 		},
 		
 		"lamp": {
 			"devTexture": "tiles/lamp.png",
-			"size": [2, 2, 0, 0],
+			"size": [2, 2],
 			"light": {
 				"distance": 7,
 				"rays": 10,
@@ -167,36 +169,29 @@
 			}
 		},
 		
-		"button": {
+		"buttonToggle": {
 			"devTexture": "tiles/buttons.png",
-			"size": [0.5, 1, 0, 0],
-			"defaultStyle": "door",
+			"size": [0.5, 1],
 			"interaction": {
-				"type": "TOGGLE",
-				"toggle": [
-					{ "target": "ME", "change": "STYLE" },
-					{ "target": "CONNECTED", "change": "STYLE" }
+				"actions": [
+					{ "action": "TOGGLE_STYLE", "target": "ME", "queue": ["on", "default"] },
+					{ "action": "CALL_FUNCTION", "target": "CONNECTED" }
 				]
 			},
-			"styles": {
-				"light": {
-					"region": [0, 0, 0, 0],
-					"size": [0.5, 1, 0, 0]
-				},
-				
-				"door": {
-					"region": [0, 0, 0, 0],
-					"size": [0.5, 1, 0, 0]
+			
+			"style": {
+				"types": {
+					"default": { "region": [0, 0, 0, 0] },
+					"on": { "region": [0, 0, 0, 0] }
 				}
 			}
 		},
 		
 		"door": {
 			"devTexture": "../core/tiles/error.png",
-			"size": [2, 2, 0, 0],
-			"defaultStyle": "open",
+			"size": [2, 2],
 			"styles": {
-				"open": {
+				"default": {
 					"speed": 1,
 					"frames": [
 						{ "region": [0, 0, 0, 0] }
@@ -214,7 +209,7 @@
 		
 		"tv": {
 			"devTexture": "../core/tiles/error.png",
-			"size": [2, 2, 0, 0],
+			"size": [2, 2],
 			"styles": {
 				"active": {
 					"speed": 0.2,
@@ -230,17 +225,17 @@
 		"barrier": {
 			"devTexture": "../core/tiles/error.png",
 			"colission": [2, 2, 0, 0],
-			"size": [2, 2, 0, 0]
+			"size": [2, 2]
 		},
 	
 		"triggerAi": {
 			"devTexture": "../core/tiles/trigger_ai.png",
-			"size": [2, 2, 0, 0]
+			"size": [2, 2]
 		},
 	
 		"triggerSpawn": {
 			"devTexture": "../core/tiles/trigger_spawn.png",
-			"size": [2, 2, 0, 0]
+			"size": [2, 2]
 		}
 	}
 }

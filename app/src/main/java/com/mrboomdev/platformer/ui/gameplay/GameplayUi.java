@@ -20,17 +20,19 @@ import com.mrboomdev.platformer.util.ActorUtil;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.widgets.ActionButton;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
+import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.squareup.moshi.Moshi;
 
 public class GameplayUi {
 	public EditorScreen editor;
-	private ObjectMap<String, ActorUtil> widgets = new ObjectMap<>();
+	public ObjectMap<String, ActorUtil> widgets = new ObjectMap<>();
 	private GameHolder game = GameHolder.getInstance();
 	private CharacterEntity connectedEntity;
 	
 	public void createFreeRoam(Stage stage) {
 		widgets.put("debug", new DebugValuesWidget().toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - game.settings.screenInset - 150));
 		if(game.settings.debugValues) stage.addActor(widgets.get("debug"));
+		widgets.put("joystick", new JoystickWidget().addTo(stage));
 	}
 	
 	public void createCombat(Stage stage) {

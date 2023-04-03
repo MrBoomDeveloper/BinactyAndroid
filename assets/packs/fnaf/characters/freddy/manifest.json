@@ -1,15 +1,49 @@
 {
-	"id": "freddy",
-	"name": "Freddy Fazbear",
-	"description": "Is this a bite 87!?",
-	"version": 3,
-	"skin": "skin.json",
-	"bodySize": [ 1, 2 ],
+	"metadata": {
+		"name": "Freddy Fazbear",
+		"description": "Is this a bite 87!?"
+	},
+	
+	"skin": {
+		"texture": "skin.png",
+		"animations": {
+			"IDLE": {
+				"delay": 0.3,
+				"mode": "LOOP_PINGPONG",
+				"size": [ 1, 2 ],
+				"frames": [
+					[ 0,  0, 20, 43 ],
+					[ 0,  0, 20, 43 ],
+					[ 20, 0, 20, 43 ],
+					[ 40, 0, 20, 43 ],
+					[ 40, 0, 20, 43 ]
+				]
+			},
+			
+			"DAMAGE": {
+				"delay": 0.1,
+				"mode": "NORMAL",
+				"size": [ 1, 2 ],
+				"frames": [
+					[ 61,  0, 22, 43 ],
+					[ 83,  0, 22, 43 ],
+					[ 105, 0, 22, 43 ]
+				]
+			}
+		}
+	},
+	
+	"worldBody": {
+		"size": [ 1.1, 1.8 ],
+		"bottom": [ 1.1, 0.4, 0, -0.7 ],
+		"lightOffset": [0, 1]
+	},
+	
 	"stats": {
-		"health": 500,
-		"damage": 25,
-		"speed": 1,
+		"health": 250,
+		"damage": 50,
+		"speed": 1.2,
 		"shield": 50,
-		"stamina": 100
+		"stamina": 50
 	}
 }

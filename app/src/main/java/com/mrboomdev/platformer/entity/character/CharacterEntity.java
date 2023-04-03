@@ -19,37 +19,51 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
-import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.*;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
 import static com.mrboomdev.platformer.entity.Entity.Animation.*;
-import com.mrboomdev.platformer.util.FileUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
+import com.squareup.moshi.Json;
 
 public class CharacterEntity extends EntityAbstract {
-	public Fixture bottomFixture;
 	public CharacterConfig.Stats stats;
-	public CharacterBrain brain;
+	public CharacterBody worldBody;
 	public CharacterSkin skin;
-	public CharacterConfig config;
-	public String name;
-	private ShapeRenderer shape;
-	private BitmapFont font;
-	private ProjectileManager projectileManager;
-	private boolean isDashing;
-	private float dashProgress, dashReloadProgress;
-	private float damagedProgress = 1;
-	private float staminaReloadMultiply, healthPhantom;
-	private boolean isRunning;
-	private Vector2 damagedPower;
-	private Sprite shadow;
-	private GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true) public Fixture bottomFixture;
+	@Json(ignore = true) public CharacterBrain brain;
+	@Json(ignore = true) public CharacterConfig config;
+	@Json(ignore = true) public String name;
+	@Json(ignore = true) ShapeRenderer shape;
+	@Json(ignore = true) BitmapFont font;
+	@Json(ignore = true) ProjectileManager projectileManager;
+	@Json(ignore = true) Vector2 damagedPower;
+	@Json(ignore = true) Sprite shadow;
+	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true) float dashProgress, dashReloadProgress;
+	@Json(ignore = true) float damagedProgress = 1;
+	@Json(ignore = true) float staminaReloadMultiply, healthPhantom;
+	@Json(ignore = true) boolean isRunning, isDashing;
+	
+	public CharacterEntity cpy(String name) {
+		var copy = new CharacterEntity(name);
+		copy.healthPhantom = stats.health;
+		copy.config = new CharacterConfig();
+		copy.config.stats = stats;
+		copy.stats = stats;
+		copy.config.body3D = worldBody.bottom;
+		copy.config.bodySize = worldBody.size;
+		copy.config.lightOffset = worldBody.lightOffset;
+		copy.config.build();
+		copy.skin = skin.build("characters/freddy");
+		return copy;
+	}
 	
 	public CharacterEntity(String name) {
 		this.name = name;
-		font = game.assets.get("nick.ttf", BitmapFont.class);
+		font = game.assets.get("nick.ttf", false);
 		font.setUseIntegerPositions(false);
 		font.getData().setScale(.01f, .01f);
 		shape = new ShapeRenderer();
@@ -90,14 +104,7 @@ public class CharacterEntity extends EntityAbstract {
 		shadow.setSize(config.body3D[0], config.body3D[1]);
 		
 		projectileManager = new ProjectileManager(world, this)
-			.setBulletConfig(new ProjectileBullet.ProjectileStats()
-				.setDamage(15)
-				.setAmount(100, 10)
-				.setSpeed(25)
-				.setRandom(1)
-				.setDelay(.2f)
-				.setReloadTime(1)
-			).setAttackConfig(new ProjectileAttack.AttackStats()
+			.setAttackConfig(new ProjectileAttack.AttackStats()
 				.setDamage(50)
 				.setDelay(.4f)
 				.setDuration(1));
@@ -268,5 +275,11 @@ public class CharacterEntity extends EntityAbstract {
 			? GamemodeFunction.Target.MAIN_PLAYER
 			: GamemodeFunction.Target.ANY_BOT;
 		game.environment.gamemode.runFunction(new GamemodeFunction(GamemodeFunction.Action.DEATH, deathOptions, null));
+	}
+	
+	public static class CharacterBody {
+		public float[] size;
+		public float[] bottom;
+		public float[] lightOffset;
 	}
 }

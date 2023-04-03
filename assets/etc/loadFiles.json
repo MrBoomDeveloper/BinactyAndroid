@@ -21,11 +21,13 @@
 				}
 			]
 		},
+		
 		"LOBBY": {
 			"load": [
 				{ "path": "audio/music/lobby_theme.mp3", "type": "music" }
 			]
 		},
+		
 		"GAMEPLAY": {
 			"load": [
 				{ "path": "ui/overlay/big_elements.png", "type": "texture" },

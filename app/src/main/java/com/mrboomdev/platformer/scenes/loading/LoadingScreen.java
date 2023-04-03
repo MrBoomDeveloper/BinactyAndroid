@@ -13,7 +13,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
-import com.mrboomdev.platformer.util.FileUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
 import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.*;
 
 public class LoadingScreen extends CoreScreen {
@@ -39,6 +39,10 @@ public class LoadingScreen extends CoreScreen {
 
     @Override
     public void show() {
+		Gson gson = new Gson();
+		LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
+		files.loadToManager(asset, loadScene.name());
+		
         switch(loadScene) {
             case LOBBY:
 				loadOtherResources();
@@ -64,9 +68,6 @@ public class LoadingScreen extends CoreScreen {
     }
 	
 	private void loadOtherResources() {
-		Gson gson = new Gson();
-		LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
-		files.loadToManager(asset, loadScene.name());
 		this.loadStep = RESOURCES;
 	}
 

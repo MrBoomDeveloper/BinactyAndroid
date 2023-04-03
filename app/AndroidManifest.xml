@@ -42,6 +42,7 @@
 		<activity android:name=".ui.external.FileHandler"
 			android:screenOrientation="landscape"
 			android:exported="true">
+			
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -52,7 +53,7 @@
 				<data android:scheme="content" />
 				<data android:host="*" />
 				<data android:mimeType="*/*" />
-				<data android:pathPattern=".*\\.mpack" />
+				<data android:pathPattern=".*\\.booma" />
 			</intent-filter>
 		</activity>
 		

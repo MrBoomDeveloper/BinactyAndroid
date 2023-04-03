@@ -1,17 +1,16 @@
 package com.mrboomdev.platformer.environment;
 
 import com.badlogic.gdx.Gdx;
-import com.google.gson.Gson;
+import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
 import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.*;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
-import com.mrboomdev.platformer.util.FileUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import java.io.IOException;
 
 public class EnvironmentCreator {
 	private EnvironmentManager manager;
@@ -56,10 +55,11 @@ public class EnvironmentCreator {
 	}
 	
 	private void loadGamemode() {
+		manager.entities = new EntityManager(manager.world);
 		try {
 			Moshi moshi = new Moshi.Builder().build();
 			JsonAdapter<GamemodeScript> adapter = moshi.adapter(GamemodeScript.class);
-			manager.gamemode = new GamemodeManager(adapter.fromJson(gamemodeFile.readString(true)))
+			manager.gamemode = new GamemodeManager(adapter.fromJson(gamemodeFile.readString(true)), new FileUtil("packs/fnaf/gamemode.java", FileUtil.Source.INTERNAL))
 				.build(gamemodeFile, () -> {
 					createListener.created(manager);
 					status = DONE;

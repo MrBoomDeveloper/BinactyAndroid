@@ -16,16 +16,12 @@ import com.mrboomdev.platformer.widgets.StatBarWidget.Track;
 
 public class GameplayUi extends CoreUi {
 	private GameplayScreen gameplay;
-	private JoystickWidget joystick;
 	private float cameraZoom;
 	public GameHolder game = GameHolder.getInstance();
 	
 	public GameplayUi(GameplayScreen screen, CharacterEntity entity) {
 		this.gameplay = screen;
 		stage = new Stage();
-		
-		joystick = (JoystickWidget) new JoystickWidget().connectToEntity(entity);
-		stage.addActor(joystick);
 		
 		for(int i = 0; i < 2; i++) {
 			if(game.settings.enableEditor) break;
@@ -37,21 +33,25 @@ public class GameplayUi extends CoreUi {
 				.addTo(stage);
 		}
 		
-		cameraZoom = gameplay.camera.zoom;
+		cameraZoom = game.environment.camera.zoom;
 		stage.addListener(new ActorGestureListener() {
 			@Override
 			public void zoom(InputEvent event, float from, float to) {
-				if(joystick.isActive) return;
+				try {
+					if(((JoystickWidget)game.environment.ui.widgets.get("joystick")).isActive) return;
+				} catch(NullPointerException e) {
+					e.printStackTrace();
+				}
 				float willZoomTo = cameraZoom + ((from - to) / 1000);
-				if (willZoomTo < 0.4f || willZoomTo > (GameHolder.getInstance().settings.enableEditor ? 10 : 1.2f)) return;
-				gameplay.camera.zoom = willZoomTo;
+				if (willZoomTo < 0.4f || willZoomTo > (game.settings.enableEditor ? 10 : 1.2f)) return;
+				game.environment.camera.zoom = willZoomTo;
 			}
 				
 			@Override
 			public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchDown(event, x, y, pointer, button);
-				if(joystick.isActive) return;
-				cameraZoom = gameplay.camera.zoom;
+				if(((JoystickWidget)game.environment.ui.widgets.get("joystick")).isActive) return;
+				cameraZoom = game.environment.camera.zoom;
 			}
 		});
 	}

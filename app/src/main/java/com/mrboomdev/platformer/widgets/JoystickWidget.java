@@ -17,13 +17,14 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class JoystickWidget extends ActorUtil {
+	public boolean isActive;
 	private Sprite holder, point;
 	private int usedPointer = 999;
 	private Vector2 touchPosition;
 	private Vector2 power;
 	private float pointOpacity = .5f;
 	private final int limit = 10;
-	public boolean isActive = false;
+	private GameHolder game = GameHolder.getInstance();
 	
 	public JoystickWidget() {
 		setBounds(100, 100, 250, 250);
@@ -93,7 +94,7 @@ public class JoystickWidget extends ActorUtil {
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) keyboardMovement.x = 5;
 		if(Gdx.input.isKeyPressed(Input.Keys.UP)) keyboardMovement.y = 5;
 		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) keyboardMovement.y = -5;
-		if(keyboardMovement.x != 0 && keyboardMovement.y != 0) return keyboardMovement;
+		if(keyboardMovement.x != 0 || keyboardMovement.y != 0) return keyboardMovement;
 		
 		// If using touch controls
 		int offset = isActive ? 0 : 25;
@@ -106,7 +107,7 @@ public class JoystickWidget extends ActorUtil {
 	public void draw(Batch batch, float alpha) {
 		holder.draw(batch);
 		point.draw(batch);
-		connectedEntity.usePower(getPower(), connectedEntity.config.stats.speed * (GameHolder.getInstance().settings.enableEditor ? 5 : 1), false);
+		connectedEntity.usePower(getPower(), connectedEntity.config.stats.speed * (game.settings.enableEditor ? 5 : 1), false);
 	}
 	
 	private void setPosition(Vector2 position, boolean isDown) {

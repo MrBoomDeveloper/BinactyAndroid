@@ -46,7 +46,11 @@ public class GameDebugLauncher extends GameLauncher {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		menu.destroy();
+		try {
+			menu.destroy();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

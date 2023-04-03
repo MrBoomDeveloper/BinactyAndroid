@@ -6,21 +6,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.map.MapEntity;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.util.io.FileUtil;
+import com.squareup.moshi.Moshi;
 
 public class EntityManager {
+	public static EntityManager instance;
+	public static final String entitiesDirectory = "world/player/characters/";
+	public ObjectMap<String, CharacterEntity> presets = new ObjectMap<>();
+	public Array<CharacterEntity> characters = new Array<>();
+	public PointLight mainLight;
 	private World world;
 	private RayHandler rayHandler;
-	public PointLight mainLight;
-	private EntityPresets presets = new EntityPresets();
+	private EntityPresets presets0 = new EntityPresets();
 	private Array<Spawn> spawns = new Array<>();
-	public static final String entitiesDirectory = "world/player/characters/";
-	public Array<CharacterEntity> characters = new Array<>();
 	private GameHolder game = GameHolder.getInstance();
-	public static EntityManager instance;
 	
 	public EntityManager(World world, RayHandler rayHandler) {
 		this.world = world;
@@ -28,9 +32,27 @@ public class EntityManager {
 		instance = this;
 	}
 	
+	public EntityManager(World world) {
+		this.world = world;
+	}
+	
+	public void setupRayHandler(RayHandler rayHandler) {
+		this.rayHandler = rayHandler;
+	}
+	
+	public void loadCharacter(FileUtil file, String id) {
+		try {
+			Moshi moshi = new Moshi.Builder().build();
+			var adapter = moshi.adapter(CharacterEntity.class);
+			presets.put(id, adapter.fromJson(file.goTo("manifest.json").readString(true)));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void addCharacter(CharacterEntity character) {
 		characters.add(character);
-		GameHolder.getInstance().environment.map.objects.add(new MapEntity(character));
+		game.environment.map.objects.add(new MapEntity(character));
 		if(character == GameHolder.getInstance().settings.mainPlayer) {
 			character.body.setTransform(22, -14, 0);
 			return;
@@ -49,7 +71,7 @@ public class EntityManager {
 	
 	public EntityManager addBots(int count) {
 		for(int i = 0; i < count; i++) {
-			CharacterEntity bot = presets.getRandomCharacter()
+			CharacterEntity bot = presets0.getRandomCharacter()
 				.setBrain(new BotBrain(this))
 				.create(world);
 			addCharacter(bot);
@@ -58,7 +80,7 @@ public class EntityManager {
 	}
 	
 	public EntityManager addPresets(EntityPresets presets) {
-		this.presets = presets;
+		this.presets0 = presets;
 		return this;
 	}
 	

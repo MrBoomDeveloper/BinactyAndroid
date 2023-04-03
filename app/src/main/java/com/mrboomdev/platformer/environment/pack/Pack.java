@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.environment.pack;
-import com.mrboomdev.platformer.util.FileUtil;
+
+import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class Pack {
 	public String name = "Untitled";

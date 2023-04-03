@@ -1,11 +1,4 @@
 {
-	"load": [
-		{ "path": "music/dark_ambience_1.ogg", "type": "music" },
-		{ "path": "music/dark_ambience_2.ogg", "type": "music" },
-		{ "path": "music/dark_ambience_3.ogg", "type": "music" },
-		{ "path": "music/dark_ambience_4.ogg", "type": "music" }
-	],
-	
 	"start": [
 		{
 			"action": "FADE",

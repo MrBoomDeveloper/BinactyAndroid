@@ -2,7 +2,6 @@ package com.mrboomdev.platformer.scenes.gameplay;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -23,7 +22,7 @@ import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
-import com.mrboomdev.platformer.util.FileUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameplayScreen extends CoreScreen {
 	public static EntityManager entities;
@@ -55,6 +54,7 @@ public class GameplayScreen extends CoreScreen {
 		{
 			environment.render(batch);
 			entities.render(batch);
+			game.environment.entities.render(batch);
 		}
 		batch.end();
 		if(!game.settings.debugRaysDisable) {
@@ -84,7 +84,6 @@ public class GameplayScreen extends CoreScreen {
 		debugRenderer = new Box2DDebugRenderer();
 		
 		shaders = new ShaderProgram(Gdx.files.internal("world/shaders/default/default.vert"), Gdx.files.internal("world/shaders/default/default.frag"));
-		//shaders = new ShaderProgram(Gdx.files.internal("world/shaders/test/test.vert"), Gdx.files.internal("world/shaders/test/test.frag"));
 		ShaderProgram.pedantic = false;
 		if(shaders.isCompiled()) {
 			game.analytics.log("Shaders", "Successdully compilied shaders!");
@@ -112,7 +111,7 @@ public class GameplayScreen extends CoreScreen {
 		entities = new EntityManager(environment.world, rayHandler)
 			.setSpawnsPositions(map.spawnPositions)
 			.addPresets(EntityPresets.getInternal())
-			.addBots(4);
+			.addBots(3);
 		
 		CharacterEntity player = new CharacterEntity(game.settings.playerName)
 			.setConfig(new FileUtil(
@@ -136,7 +135,6 @@ public class GameplayScreen extends CoreScreen {
 	
 	@Override
 	public void resize(int width, int height) {
-		shaders.setUniformf("u_resolution", width, height);
 		viewport.update(width, height);
 	}
 	

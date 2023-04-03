@@ -22,4 +22,9 @@ public class Entity {
 		ATTACK, SHOOT,
 		DAMAGE, DEATH
 	}
+	
+	public enum Target {
+		EVERYONE,
+		MAIN_PLAYER
+	}
 }

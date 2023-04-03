@@ -6,12 +6,13 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.util.Direction;
+import com.squareup.moshi.Json;
 
 public abstract class EntityAbstract implements BotTarget {
-	public World world;
-	public Vector2 wasPower = new Vector2();
-	public Body body;
-	public boolean isDestroyed, isDead;
+	@Json(ignore = true) public World world;
+	@Json(ignore = true) public Vector2 wasPower = new Vector2();
+	@Json(ignore = true) public Body body;
+	@Json(ignore = true) public boolean isDestroyed, isDead;
 	
 	public abstract void draw(SpriteBatch batch);
 	

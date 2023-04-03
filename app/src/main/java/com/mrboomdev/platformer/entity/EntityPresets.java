@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
-import com.mrboomdev.platformer.util.FileUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class EntityPresets {
 	private static final String listFile = "world/player/list.json";

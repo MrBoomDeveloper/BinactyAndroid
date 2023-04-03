@@ -1,0 +1,16 @@
+{
+	"name": "Breaking Bad Pack",
+	"icon": "icon.jpg",
+	"description": "Jesse! We need to cook!",
+	"required": false,
+	"author": {
+		"name": "MrBoomDev",
+		"url": "https://mrboomdev.ru",
+		"icon": "author.jpg"
+	},
+	"resources": {
+		"gamemodes": "gamemodes.json",
+		"characters": "characters.json",
+		"maps": "maps.json"
+	}
+}

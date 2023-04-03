@@ -11,7 +11,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.ColorUtil;
-import com.mrboomdev.platformer.util.FileUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -91,7 +91,8 @@ public class MapManager {
 		return this;
 	}
 	
-	private String getTextPosition(float[] position, int layer, boolean round) {
+	//Prevents from dublicate tiles
+	private String getTextPosition(float[] position, int layer) {
 		return Math.round(position[0]) + ":" + Math.round(position[1]) + ":" + layer;
 	}
 	
@@ -100,13 +101,13 @@ public class MapManager {
 			removeTile(position, layer);
 			return;
 		} else if(name == "SELECT") {
-			var pos = getTextPosition(position, layer, true);
+			var pos = getTextPosition(position, layer);
 			game.environment.ui.editor.selectTile(tilesMap.containsKey(pos) ? tilesMap.get(pos) : null);
 			return;
 		}
 		
 		var preset = tilesPresets.get(name);
-		var pos = getTextPosition(position, layer, true);
+		var pos = getTextPosition(position, layer);
 		if(tilesMap.containsKey(pos)) return;
 		
 		MapTile tile = new MapTile();
@@ -127,7 +128,7 @@ public class MapManager {
 	}
 	
 	public void removeTile(float[] position, int layer) {
-		var pos = getTextPosition(position, layer, true);
+		var pos = getTextPosition(position, layer);
 		if(!tilesMap.containsKey(pos)) return;
 		
 		var removed = tilesMap.get(pos);
@@ -159,7 +160,7 @@ public class MapManager {
 			tile.copyData(tilesPresets.get(tile.name));
 			tile.build(world);
 			objects.add(tile);
-			tilesMap.put(getTextPosition(tile.position, tile.layer, true), tile);
+			tilesMap.put(getTextPosition(tile.position, tile.layer), tile);
 		}
 		
 		status = Status.DONE;

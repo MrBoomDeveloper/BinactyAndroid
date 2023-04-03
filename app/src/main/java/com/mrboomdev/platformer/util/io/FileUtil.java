@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.util;
+package com.mrboomdev.platformer.util.io;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

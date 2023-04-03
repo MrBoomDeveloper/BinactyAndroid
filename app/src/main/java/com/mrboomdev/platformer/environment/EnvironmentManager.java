@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
@@ -22,6 +23,7 @@ public class EnvironmentManager {
 	public World world;
 	public Stage stage;
 	public GameplayUi ui;
+	public EntityManager entities;
 	private GameHolder game = GameHolder.getInstance();
 	
 	public EnvironmentManager() {

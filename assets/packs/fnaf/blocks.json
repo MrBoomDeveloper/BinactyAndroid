@@ -1,177 +1,172 @@
 {
 	"tiles": {
 		"wall": {
-			"texture": "tiles/wall.png",
-			"size": [2, 4],
-			"colission": [2, 3, 0, -1],
-			"region": [0, 0, 16, 26],
-			"shadowColission": [2, 0.8, 0, 1.6]
+			"texture": "tiles/wall.png", "size": [2, 4], "region": [0, 0, 16, 26],
+			"colission": [2, 3, 0, -1], "shadowColission": [2, 0.8, 0, 1.6]
 		},
 	
 		"wallSide": {
-			"texture": "tiles/wall.png",
-			"size": [2, 4],
-			"colission": [2, 3.2, 0, -0.8],
-			"region": [16, 0, 16, 26],
-			"shadowColission": [2, 1, 0, 1.5]
+			"texture": "tiles/wall.png", "size": [2, 4], "region": [16, 0, 16, 26],
+			"colission": [2, 3.2, 0, -0.8], "shadowColission": [2, 1, 0, 1.5]
 		},
 	
 		"floor": {
-			"texture": "tiles/floor.png",
-			"size": [2, 2]
+			"texture": "tiles/floor.png", "size": [2, 2]
 		},
 	
 		"guardTable": {
-			"texture": "tiles/guard_table.png",
-			"size": [5.4, 2.7],
+			"texture": "tiles/guard_table.png", "size": [5.4, 2.7],
 			"colission": [5.4, 1.8, 0, -0.9]
 		},
 	
 		"pirateBay": {
-			"texture": "tiles/pirate_bay.png",
-			"size": [3, 6],
+			"texture": "tiles/pirate_bay.png", "size": [3, 6],
 			"colission": [3, 4, 0, -2]
 		},
 	
 		"guardChair": {
-			"texture": "tiles/guard_chair.png",
-			"size": [1.3, 2],
+			"texture": "tiles/guard_chair.png", "size": [1.3, 2],
 			"colission": [1.3, 1, 0, -1]
 		},
 	
 		"chair": {
-			"texture": "tiles/chair.png",
-			"size": [1, 1.5],
+			"texture": "tiles/chair.png", "size": [1, 1.5],
 			"colission": [1, 0.5, 0, -1]
 		},
 	
 		"soundBooster": {
-			"texture": "tiles/sound_booster.png",
-			"size": [1, 1.2],
+			"texture": "tiles/sound_booster.png", "size": [1, 1.2],
 			"colission": [1, 1.2, 0, 0]
 		},
 	
 		"robotDesk": {
-			"texture": "tiles/robot_desk.png",
-			"size": [2, 3],
+			"texture": "tiles/robot_desk.png", "size": [2, 3],
 			"colission": [2, 2.5, 0, -0.5]
 		},
 	
 		"robotShelf": {
-			"texture": "tiles/robot_shelf.png",
-			"size": [5, 3],
+			"texture": "tiles/robot_shelf.png", "size": [5, 3],
 			"colission": [5, 2.5, 0, -0.5]
 		},
 	
 		"gift": {
-			"texture": "tiles/gift.png",
-			"size": [1, 1],
-			"colission": [1, 0.6, 0, -0.4]
+			"texture": "tiles/gift.png", "size": [0.7, 0.8],
+			"colission": [0.7, 0.4, 0, -0.2]
 		},
 	
 		"tip": {
-			"texture": "tiles/tip.png",
-			"size": [0.7, 0.7]
+			"texture": "tiles/tip.png", "size": [0.7, 0.7]
 		},
 	
 		"stage": {
-			"texture": "tiles/stage.png",
-			"size": [8, 2.5],
+			"texture": "tiles/stage.png", "size": [8, 2.5],
 			"colission": [8, 2.5, 0, 0]
 		},
 	
 		"pizza": {
-			"texture": "tiles/pizza.png",
-			"size": [1, 1]
+			"texture": "tiles/pizza.png", "size": [1, 1]
 		},
 	
 		"sun": {
-			"texture": "tiles/sun.png",
-			"size": [1, 1]
+			"texture": "tiles/sun.png", "size": [1, 1]
 		},
 	
 		"gameMachine": {
-			"texture": "tiles/game_machine.png",
-			"size": [1.8, 3],
+			"texture": "tiles/game_machine.png", "size": [1.8, 3],
 			"colission": [1.8, 2, 0, -1],
 			"light": {
-				"distance": 2,
-				"offset": [0, 0],
+				"distance": 2, "offset": [0, 0],
 				"color": { "values": [1, 1, 1, 0.9] }
 			}
 		},
 	
 		"table": {
-			"texture": "tiles/table.png",
-			"size": [2, 4.5],
+			"texture": "tiles/table.png", "size": [2, 4.5],
 			"colission": [2, 4, 0, -0.5]
 		},
 	
 		"clean": {
-			"texture": "tiles/clean.png",
-			"size": [0.6, 1.5],
+			"texture": "tiles/clean.png", "size": [0.6, 1.5],
 			"colission": [0.6, 0.75, 0, -0.75]
 		},
 	
 		"shelf": {
-			"texture": "tiles/shelf.png",
-			"size": [1, 5],
+			"texture": "tiles/shelf.png", "size": [1, 5],
 			"colission": [1, 3, 0, -2]
 		},
 	
 		"cloud": {
-			"texture": "tiles/cloud.png",
-			"size": [3, 2]
+			"texture": "tiles/cloud.png", "size": [3, 2]
 		},
 	
 		"poster": {
-			"texture": "tiles/poster.png",
-			"size": [1, 1]
+			"texture": "tiles/posters.png",
+			"style": {
+				"types": {
+					"default": { "region": [0, 0, 22, 33], "size": [1.1, 1.4] },
+					"chica": { "region": [0, 34, 22, 30], "size": [0.8, 1] },
+					"bonnie": { "region": [23, 0, 21, 33], "size": [0.75, 1] },
+					"sus": { "region": [23, 34, 21, 33], "size": [0.75, 1] },
+					"guy": { "region": [45, 0, 19, 33], "size": [0.7, 1] },
+					"puppet": { "region": [45, 34, 19, 33], "size": [0.7, 1] }
+				}
+			}
+		},
+		
+		"hat": {
+			"texture": "tiles/hats.png", "size": [0.4, 0.5],
+			"style": {
+				"types": {
+					"default": { "region": [0, 0, 7, 8] },
+					"pink": { "region": [7, 0, 7, 8] },
+					"purple": { "region": [0, 8, 7, 8] },
+					"cyan": { "region": [7, 8, 7, 8] },
+					"green": { "region": [0, 16, 7, 8] },
+					"yellow": { "region": [7, 16, 7, 8] },
+					"red": { "region": [0, 24, 7, 8] },
+					"blue": { "region": [7, 24, 7, 8] }
+				}
+			}
+		},
+		
+		"warning": {
+			"texture": "tiles/warning.png", "size": [1, 1],
+			"colission": [1, 1, 0, 0]
 		},
 	
 		"tvsSide": {
-			"texture": "tiles/tvs_side.png",
-			"size": [0.8, 2],
+			"texture": "tiles/tvs_side.png", "size": [0.8, 2],
 			"colission": [0.8, 1.8, 0, -0.2]
 		},
 	
 		"star": {
-			"texture": "tiles/star.png",
-			"size": [0.4, 1]
+			"texture": "tiles/star.png", "size": [0.4, 1]
 		},
 		
 		"coke": {
-			"texture": "tiles/coke.png",
-			"size": [1.5, 4],
+			"texture": "tiles/coke.png", "size": [1.5, 4],
 			"colission": [1.5, 2, 0, -2],
 			"light": {
-				"distance": 5,
-				"rays": 6,
-				"offset": [-1, 0],
+				"distance": 5, "rays": 6, "offset": [-1, 0],
 				"color": { "values": [0.7, 0.7, 1, 0.7] }
 			}
 		},
 		
 		"balls": {
-			"texture": "tiles/balls.png",
-			"size": [5.2, 3],
+			"texture": "tiles/balls.png", "size": [5.2, 3],
 			"colission": [5.2, 2, 0, -1]
 		},
 		
 		"lamp": {
-			"devTexture": "tiles/lamp.png",
-			"size": [2, 2],
+			"devTexture": "tiles/lamp.png", "size": [2, 2],
 			"light": {
-				"distance": 7,
-				"rays": 10,
-				"offset": [0, 0],
+				"distance": 7, "offset": [0, 0], "rays": 10,
 				"color": { "values": [0.5, 0.5, 0.5, 0.8] }
 			}
 		},
 		
 		"buttonToggle": {
-			"devTexture": "tiles/buttons.png",
-			"size": [0.5, 1],
+			"texture": "tiles/buttons.png", "size": [0.25, 0.5],
 			"interaction": {
 				"actions": [
 					{ "action": "TOGGLE_STYLE", "target": "ME", "queue": ["on", "default"] },
@@ -181,15 +176,14 @@
 			
 			"style": {
 				"types": {
-					"default": { "region": [0, 0, 0, 0] },
-					"on": { "region": [0, 0, 0, 0] }
+					"default": { "region": [0, 0, 3, 6] },
+					"on": { "region": [3, 0, 3, 6] }
 				}
 			}
 		},
 		
 		"door": {
-			"devTexture": "../core/tiles/error.png",
-			"size": [2, 2],
+			"devTexture": "../core/tiles/error.png", "size": [2, 2],
 			"styles": {
 				"default": {
 					"speed": 1,
@@ -208,8 +202,7 @@
 		},
 		
 		"tv": {
-			"devTexture": "../core/tiles/error.png",
-			"size": [2, 2],
+			"devTexture": "../core/tiles/error.png", "size": [2, 2],
 			"styles": {
 				"active": {
 					"speed": 0.2,
@@ -223,19 +216,16 @@
 	
 	
 		"barrier": {
-			"devTexture": "../core/tiles/error.png",
-			"colission": [2, 2, 0, 0],
-			"size": [2, 2]
+			"devTexture": "../core/tiles/error.png", "size": [2, 2],
+			"colission": [2, 2, 0, 0]
 		},
 	
 		"triggerAi": {
-			"devTexture": "../core/tiles/trigger_ai.png",
-			"size": [2, 2]
+			"devTexture": "../core/tiles/trigger_ai.png", "size": [2, 2]
 		},
 	
 		"triggerSpawn": {
-			"devTexture": "../core/tiles/trigger_spawn.png",
-			"size": [2, 2]
+			"devTexture": "../core/tiles/trigger_spawn.png", "size": [2, 2]
 		}
 	}
 }

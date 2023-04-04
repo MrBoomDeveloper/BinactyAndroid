@@ -44,15 +44,6 @@ public class EditorManager implements CoreUi.UiDrawer {
 			.toPosition(Gdx.graphics.getWidth() - 200 - game.settings.screenInset, game.settings.screenInset)
 			.addTo(stage);
 		
-		for(int i = -1; i < 4; i++) {
-			final int a = i;
-			var layerButton = (NewButtonWidget)new NewButtonWidget(NewButtonWidget.Style.BULLET)
-				.setText("Use layer " + i, game.assets.get("bulletButton.ttf"))
-				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() / 2 - i * 70 + 50)
-				.onClick(() -> layer = a)
-				.addTo(stage);
-		}
-		
 		for(HashMap.Entry<String, MapTile> tile : game.environment.map.tilesPresets.entrySet()) {
 			var tileSprite = tile.getValue().sprite != null
 				? tile.getValue().sprite

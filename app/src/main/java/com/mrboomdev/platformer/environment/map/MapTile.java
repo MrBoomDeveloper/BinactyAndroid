@@ -54,12 +54,16 @@ public class MapTile extends MapObject {
 		float viewportHeight = camera.viewportHeight * camera.zoom;
 		float cameraX = camera.position.x - viewportWidth / 2;
 		float cameraY = camera.position.y - viewportHeight / 2;
+		
+		//Update the size just to check if the texture in the camera bounds
+		if(style != null && style.current != null && style.current.size != null) size = style.current.size;
 
 		// Check if object is within viewport
 		if(getPosition(false).x - size[0] * .5f + size[0] > cameraX &&
 		   getPosition(false).x - size[0] * .5f < cameraX + viewportWidth &&
     	   getPosition(false).y - size[1] * .5f + size[1] > cameraY &&
 		   getPosition(false).y - size[1] * .5f < cameraY + viewportHeight) {
+		    if(style != null) sprite = style.getSprite(getPosition(false), this);
 			if(sprite != null) sprite.draw(batch);
 			if(devSprite != null) devSprite.draw(batch);
 			if(shape != null && isSelected) {
@@ -129,7 +133,8 @@ public class MapTile extends MapObject {
 			} else {
 				sprite = new Sprite(texture);
 			}
-			sprite.setSize(size[0], size[1]);
+			if(size != null) sprite.setSize(size[0], size[1]);
+			if(style != null) style.build(sprite);
 		} else {
 			devSprite = new Sprite(texture);
 			devSprite.setSize(size[0], size[1]);
@@ -157,9 +162,17 @@ public class MapTile extends MapObject {
 		texture = tile.texture;
 		devTexture = tile.devTexture;
 		source = tile.source;
+		if(tile.style != null) {
+			if(style != null) {
+				style.clone(tile.style);
+			} else {
+				style = new TileStyle(tile.style);
+			}
+		}
 		if(tile.sprite != null) {
 			sprite = new Sprite(tile.sprite);
 			sprite.setFlip(flipX, flipY);
+			if(style != null) style.build(tile.sprite);
 		}
 		if(tile.devSprite != null) devSprite = new Sprite(tile.devSprite);
 	}

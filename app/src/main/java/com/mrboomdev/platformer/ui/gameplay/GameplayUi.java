@@ -30,7 +30,7 @@ public class GameplayUi {
 	private CharacterEntity connectedEntity;
 	
 	public void createFreeRoam(Stage stage) {
-		widgets.put("debug", new DebugValuesWidget().toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - game.settings.screenInset - 150));
+		widgets.put("debug", new DebugValuesWidget().toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - game.settings.screenInset - 75));
 		if(game.settings.debugValues) stage.addActor(widgets.get("debug"));
 		widgets.put("joystick", new JoystickWidget().addTo(stage));
 	}

@@ -35,7 +35,12 @@ public class EditorScreen {
 			widgets.put("toggleStyle", new ButtonWidget(ButtonWidget.Style.BULLET)
 				.setText("Toggle style", game.assets.get("bulletButton.ttf"))
 				.onClick(() -> {
-					
+					var style = selectedTile.style;
+					if(style == null) return;
+					var types = selectedTile.style.types.keySet();
+					style.currentId = style.currentId > types.size() - 2
+						? 0 : style.currentId + 1;
+					style.selectStyle((String)types.toArray()[style.currentId]);
 				})
 				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 3 + 60)
 				.addTo(stage));
@@ -85,19 +90,41 @@ public class EditorScreen {
 			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 1, 14, 14))
 			.toPosition(game.settings.screenInset + 135, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
 			.onClick(() -> {
-				Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
-				var adapter = moshi.adapter(MapManager.class);
-				var map = game.environment.map;
-				Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
 				try {
+					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
+					var adapter = moshi.adapter(MapManager.class);
+					var map = game.environment.map;
+					Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
 					String compressedFile = new String(ZipUtil.getCompressedString(adapter.toJson(map)), StandardCharsets.UTF_8);
 					Gdx.files.external("exportedMapCompressed.booma").writeString(compressedFile, false);
-				} catch(IOException e) {
+					
+					var dialog = new AndroidDialog().setTitle("Saved successfully!");
+					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Everything is ok, you can continue."));
+					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> {
+						dialog.close();
+					})).addSpace(30);
+					dialog.show();
+				} catch(Exception e) {
 					e.printStackTrace();
+					var dialog = new AndroidDialog().setTitle("Error while saving the file!");
+					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText(e.getMessage()));
+					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> {
+						dialog.close();
+					})).addSpace(30);
+					dialog.show();
 				}
 				
 			})
 			.addTo(stage);
+			
+		for(int i = -1; i < 4; i++) {
+			final int a = i;
+			new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Use layer " + i, game.assets.get("bulletButton.ttf"))
+				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() / 2 - i * 70 + 50)
+				.onClick(() -> EditorManager.layer = a)
+				.addTo(stage);
+		}
 		
 		new ButtonWidget(ButtonWidget.Style.BULLET)
 			.setText("Set environment lightning", game.assets.get("bulletButton.ttf"))

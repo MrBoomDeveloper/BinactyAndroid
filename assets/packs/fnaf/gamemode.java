@@ -15,10 +15,17 @@ int power = 100;
 
 teams.addTeam("Animatronics")
 	.setShowNames(false);*/
+	
+/*
+botBrain = new BotBrainBuilder()
+	.setTiles("triggerAi")
+	.setFamily("Animatronics");
+*/
 
 entities.createCharacter("characters/freddy");
 	//.setSpawnTiles("id:freddySpawn")
-	//.setBot("characters/bot.json", "aiTiles");
+	//.setBot(botBrain.build());
+	//.create();
 	
 /*entities.createCharacter("bonnie")
 	.setSpawnTiles("id:bonnieSpawn")
@@ -61,21 +68,20 @@ ui.addListener(new TimerListener() {
 			audio.playSound("sounds/powerEnd.mp3", 1);
 		}
 	}
-});
+});*/
 
-entities.setListener(new EntityListener(
+entities.setListener(new EntityListener() {
 	void died(entity) {
 		if(entity.isTarget(Target.MAIN_PLAYER)) {
-			game.over(Target.MAIN_PLAYER, false);
-			game.over(Target.EVERYONE, true);
+			game.over(entities.getCharacter(Target.MAIN_PLAYER), false);
 		}
 	}
-));
+});
 
 game.setListener(new GameListener() {
 	void start() {
-		audio.startMusic();
+		audio.playMusic(new String[]{"music/dark_ambience_1.ogg", "music/dark_ambience_2.ogg", "music/dark_ambience_3.ogg", "music/dark_ambience_4.ogg"}, 999);
 	}
-});*/
+});
 
 game.ready();

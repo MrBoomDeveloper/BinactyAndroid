@@ -5,27 +5,36 @@ import bsh.Interpreter;
 import com.badlogic.gdx.Gdx;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.script.bridge.AudioBridge;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
+import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class ScriptManager {
 	public GameBridge gameBridge;
 	public EntitiesBridge entitiesBridge;
 	public UiBridge uiBridge;
+	public AudioBridge audioBridge;
 	private GameHolder game = GameHolder.getInstance();
 	private Interpreter interpreter;
+	private FileUtil source;
 	
-	public ScriptManager() {
+	public ScriptManager(FileUtil source) {
+		this.source = source;
 		this.interpreter = new Interpreter();
 		this.gameBridge = new GameBridge();
 		this.uiBridge = new UiBridge();
 		this.entitiesBridge = new EntitiesBridge();
+		this.audioBridge = new AudioBridge();
 		
 		this.eval("import com.mrboomdev.platformer.entity.Entity.Target;");
+		this.eval("import com.mrboomdev.platformer.script.bridge.GameBridge.GameListener;");
+		this.eval("import com.mrboomdev.platformer.script.bridge.EntitiesBridge.EntityListener;");
 		this.put("game", gameBridge);
 		this.put("ui", uiBridge);
 		this.put("entities", entitiesBridge);
+		this.put("audio", audioBridge);
 		this.put("core", game);
 	}
 	
@@ -37,10 +46,6 @@ public class ScriptManager {
 			Gdx.files.external("crash.txt").writeString(e.getMessage(), false);
 			game.launcher.exit(GameLauncher.Status.CRASH);
 		}
-	}
-	
-	public <T> T get(String reference) {
-		return null;
 	}
 	
 	public void put(String reference, Object value) {

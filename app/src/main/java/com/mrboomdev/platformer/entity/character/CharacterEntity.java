@@ -22,6 +22,7 @@ import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.*;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
+import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
 import static com.mrboomdev.platformer.entity.Entity.Animation.*;
@@ -60,6 +61,8 @@ public class CharacterEntity extends EntityAbstract {
 		copy.skin = skin.build("characters/freddy");
 		return copy;
 	}
+	
+	public CharacterEntity() {}
 	
 	public CharacterEntity(String name) {
 		this.name = name;
@@ -270,11 +273,7 @@ public class CharacterEntity extends EntityAbstract {
 	@Override
 	public void die() {
 		super.die();
-		var deathOptions = new GamemodeFunction.Options();
-		deathOptions.target = (name == game.settings.playerName)
-			? GamemodeFunction.Target.MAIN_PLAYER
-			: GamemodeFunction.Target.ANY_BOT;
-		game.environment.gamemode.runFunction(new GamemodeFunction(GamemodeFunction.Action.DEATH, deathOptions, null));
+		game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);
 	}
 	
 	public static class CharacterBody {

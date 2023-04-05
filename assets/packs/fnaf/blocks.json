@@ -131,7 +131,7 @@
 		
 		"warning": {
 			"texture": "tiles/warning.png", "size": [1, 1],
-			"colission": [1, 1, 0, 0]
+			"colission": [1, 0.3, 0, -0.7]
 		},
 	
 		"tvsSide": {

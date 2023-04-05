@@ -32,7 +32,7 @@ public class GamemodeFunction {
 		TELEPORT,
 		TITLE, FADE,
 		GAME_OVER, DEATH,
-		PLAY_MUSIC, STOP_MUSIC
+		STOP_MUSIC
 	}
 	
 	public enum Mode {

@@ -36,7 +36,7 @@ public class GamemodeManager {
 	private boolean isBroken;
 	
 	public GamemodeManager(GamemodeScript script, FileUtil scenario) {
-		game.script = new ScriptManager();
+		game.script = new ScriptManager(scenario);
 		game.script.eval(scenario.readString(true));
 		
 		this.script = script;
@@ -101,15 +101,6 @@ public class GamemodeManager {
 					game.stats.isWin = time == 0 ? true : false;
 					gameOverTimeout = 1;
 					fade.start(0, .6f, .5f);
-					break;
-					
-				case PLAY_MUSIC:
-					Array<Music> musicQueue = new Array<>();
-					var assets = GameHolder.getInstance().assets;
-					for(String track : function.options.queue) {
-						musicQueue.add(assets.get(source.getParent().goTo(track).getPath()));
-					}
-					AudioUtil.playMusic(musicQueue, 100);
 					break;
 					
 				case STOP_MUSIC:

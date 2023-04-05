@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.bot.BotTarget;
+import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.Direction;
 import com.squareup.moshi.Json;
 
@@ -13,6 +14,7 @@ public abstract class EntityAbstract implements BotTarget {
 	@Json(ignore = true) public Vector2 wasPower = new Vector2();
 	@Json(ignore = true) public Body body;
 	@Json(ignore = true) public boolean isDestroyed, isDead;
+	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	public abstract void draw(SpriteBatch batch);
 	
@@ -51,6 +53,13 @@ public abstract class EntityAbstract implements BotTarget {
 	
 	public Direction getDirection() {
 		return new Direction(wasPower.x);
+	}
+	
+	public boolean isTarget(Entity.Target target) {
+		switch(target) {
+			case MAIN_PLAYER: return this == game.settings.mainPlayer;
+			default: return false;
+		}
 	}
 	
 	@Override

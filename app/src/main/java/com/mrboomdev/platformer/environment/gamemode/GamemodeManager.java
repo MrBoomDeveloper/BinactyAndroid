@@ -33,7 +33,7 @@ public class GamemodeManager {
 	private Runnable buildCompletedCallback;
 	private FileUtil source;
 	private float gameOverTimeout;
-	public static GamemodeManager instance;
+	private boolean isBroken;
 	
 	public GamemodeManager(GamemodeScript script, FileUtil scenario) {
 		game.script = new ScriptManager();
@@ -41,7 +41,6 @@ public class GamemodeManager {
 		
 		this.script = script;
 		script.start.forEach(function -> stack.add(new StackOperation(function, null)));
-		instance = this;
 	}
 	
 	public GamemodeManager build(FileUtil source, Runnable callback) {
@@ -83,7 +82,10 @@ public class GamemodeManager {
 	}
 	
 	public void update() {
-		if(game.settings.enableEditor) return;
+		if(game.settings.enableEditor || isBroken) {
+			isBroken = true;
+			return;
+		}
 		List<StackOperation> oldStack = new LinkedList<>(stack);
 		for(StackOperation operation : oldStack) {
 			triggerListeners(operation.function);

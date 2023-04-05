@@ -46,6 +46,7 @@ public class GameplayScreen extends CoreScreen {
 	
 	@Override
 	public void render(float delta) {
+		if(game.settings.pause) return;
 		ScreenUtils.clear(0, 0, 0, 1);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);

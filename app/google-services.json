@@ -1,68 +1,83 @@
 {
-  "project_info": {
-    "project_number": "125055915021",
-    "project_id": "action-platformer",
-    "storage_bucket": "action-platformer.appspot.com"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:125055915021:android:d7dd598a8217566acd3144",
-        "android_client_info": {
-          "package_name": "com.mrboomdev.platformer"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "125055915021-c65r59t8e0o326ebsubc7cth21vn5kmp.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDyXfnhnYwXw4z4Z5JIKgolD2Ju3wlnfNc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "125055915021-c65r59t8e0o326ebsubc7cth21vn5kmp.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:125055915021:android:d7dd598a8217566acd3144",
-        "android_client_info": {
-          "package_name": "com.mrboomdev.platformer.debug"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "125055915021-c65r59t8e0o326ebsubc7cth21vn5kmp.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDyXfnhnYwXw4z4Z5JIKgolD2Ju3wlnfNc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "125055915021-c65r59t8e0o326ebsubc7cth21vn5kmp.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
+	"project_info": {
+		"project_number": "125055915021",
+		"project_id": "action-platformer",
+		"storage_bucket": "action-platformer.appspot.com"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:125055915021:android:d7dd598a8217566acd3144",
+				"android_client_info": {
+					"package_name": "com.mrboomdev.platformer"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "125055915021-c65r59t8e0o326ebsubc7cth21vn5kmp.apps.googleusercontent.com",
+					"client_type": 1,
+					"android_info": {
+						"package_name": "com.mrboomdev.platformer",
+						"certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+					}
+				},
+				{
+					"client_id": "125055915021-t440mrlf6u5k1lnfabh7srjblp7dertc.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyDyXfnhnYwXw4z4Z5JIKgolD2Ju3wlnfNc"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "125055915021-t440mrlf6u5k1lnfabh7srjblp7dertc.apps.googleusercontent.com",
+							"client_type": 3
+						}
+					]
+				}
+			}
+		}, 	{
+			"client_info": {
+				"mobilesdk_app_id": "1:125055915021:android:d7dd598a8217566acd3144",
+				"android_client_info": {
+					"package_name": "com.mrboomdev.platformer.debug"
+				}
+			},
+			"oauth_client": [
+				{
+					"client_id": "125055915021-c65r59t8e0o326ebsubc7cth21vn5kmp.apps.googleusercontent.com",
+					"client_type": 1,
+					"android_info": {
+						"package_name": "com.mrboomdev.platformer",
+						"certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+					}
+				},
+				{
+					"client_id": "125055915021-t440mrlf6u5k1lnfabh7srjblp7dertc.apps.googleusercontent.com",
+					"client_type": 3
+				}
+			],
+			"api_key": [
+				{
+					"current_key": "AIzaSyDyXfnhnYwXw4z4Z5JIKgolD2Ju3wlnfNc"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": [
+						{
+							"client_id": "125055915021-t440mrlf6u5k1lnfabh7srjblp7dertc.apps.googleusercontent.com",
+							"client_type": 3
+						}
+					]
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
 }

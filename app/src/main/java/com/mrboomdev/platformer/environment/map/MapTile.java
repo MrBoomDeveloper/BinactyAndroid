@@ -113,7 +113,7 @@ public class MapTile extends MapObject {
 			FixtureDef shadowFixture = new FixtureDef();
 			PolygonShape shadowShape = new PolygonShape();
 			shadowShape.setAsBox(shadowColission[0] / 2, shadowColission[1] / 2,
-				new Vector2(shadowColission[2], shadowColission[3]), 0);
+				new Vector2(shadowColission[2] / 2 * (flipX ? -1 : 1), shadowColission[3] / 2 * (flipY ? -1 : 1)), 0);
 			shadowFixture.shape = shadowShape;
 			shadowFixture.filter.categoryBits = Entity.BLOCK;
 			shadowFixture.filter.maskBits = Entity.LIGHT;

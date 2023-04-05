@@ -2,12 +2,12 @@
 	"tiles": {
 		"wall": {
 			"texture": "tiles/wall.png", "size": [2, 4], "region": [0, 0, 16, 26],
-			"colission": [2, 3, 0, -1], "shadowColission": [2, 0.8, 0, 1.6]
+			"colission": [2, 3, 0, -1], "shadowColission": [2, 0.8, 0, 3.2]
 		},
 	
 		"wallSide": {
 			"texture": "tiles/wall.png", "size": [2, 4], "region": [16, 0, 16, 26],
-			"colission": [2, 3.2, 0, -0.8], "shadowColission": [2, 1, 0, 1.5]
+			"colission": [2, 3.2, 0, -0.8], "shadowColission": [2, 1, 0, 3]
 		},
 	
 		"floor": {
@@ -92,7 +92,7 @@
 	
 		"shelf": {
 			"texture": "tiles/shelf.png", "size": [1, 5],
-			"colission": [1, 3, 0, -2]
+			"colission": [1, 3, 0, -2], "shadowColission": [0.2, 3, 1, -2]
 		},
 	
 		"cloud": {
@@ -145,7 +145,7 @@
 		
 		"coke": {
 			"texture": "tiles/coke.png", "size": [1.5, 4],
-			"colission": [1.5, 2, 0, -2],
+			"colission": [1.5, 2, 0, -2], "shadowColission": [0.2, 2, 1.2, -2],
 			"light": {
 				"distance": 5, "rays": 6, "offset": [-1, 0],
 				"color": { "values": [0.7, 0.7, 1, 0.7] }
@@ -183,7 +183,7 @@
 		},
 		
 		"door": {
-			"devTexture": "../core/tiles/error.png", "size": [2, 2],
+			"texture": "../core/tiles/error.png", "size": [2, 2],
 			"styles": {
 				"default": {
 					"speed": 1,
@@ -202,7 +202,7 @@
 		},
 		
 		"tv": {
-			"devTexture": "../core/tiles/error.png", "size": [2, 2],
+			"texture": "../core/tiles/error.png", "size": [2, 2],
 			"styles": {
 				"active": {
 					"speed": 0.2,

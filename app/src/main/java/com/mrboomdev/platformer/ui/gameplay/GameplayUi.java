@@ -56,6 +56,27 @@ public class GameplayUi {
 				Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 75,
 				ActionButton.size + game.settings.screenInset - 25)
 			.addTo(stage));
+			
+		new ActionButton(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 33, 17, 14, 14))
+			.toPosition(
+				Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset,
+				Gdx.graphics.getHeight() - ActionButton.size - game.settings.screenInset)
+			.onClick(() -> {
+				game.settings.pause = true;
+				var dialog = new AndroidDialog().setTitle("Game Paused").setCancelable(false);
+				dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Hi! So you just stopped the entire universe, huh?"));
+				dialog.addAction(new AndroidDialog.Action().setText("Exit").setClickListener(button -> {
+					game.settings.pause = false;
+					game.launcher.exit(GameLauncher.Status.LOBBY);
+					dialog.close();
+				}));
+				dialog.addAction(new AndroidDialog.Action().setText("Resume").setClickListener(button -> {
+					game.settings.pause = false;
+					dialog.close();
+				})).addSpace(30);
+				dialog.show();
+			})
+			.addTo(stage);
 	}
 	
 	public void createEditor(Stage stage) {

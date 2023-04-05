@@ -34,23 +34,23 @@ public class GameDebugLauncher extends GameLauncher {
 	public void onResume() {
 		super.onResume();
 		menu.onResume();
-		menu.myView.setVisibility(View.VISIBLE);
+		if(menu.myView != null) {
+			menu.myView.setVisibility(View.VISIBLE);
+		}
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
-		menu.myView.setVisibility(View.GONE);
+		if(menu.myView != null) {
+			menu.myView.setVisibility(View.GONE);
+		}
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		try {
-			menu.destroy();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		finishAffinity();
 	}
 	
 	@Override

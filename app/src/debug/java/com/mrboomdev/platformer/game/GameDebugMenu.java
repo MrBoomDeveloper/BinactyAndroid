@@ -143,6 +143,7 @@ public class GameDebugMenu {
 		editorSwitch.setChecked(settings.enableEditor);
 		editorSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
 			settings.enableEditor = isActive;
+			settings.pause = false;
 			prefs.edit().putBoolean("forceEditor", isActive).commit();
 			((GameDebugLauncher)context).exit(GameLauncher.Status.GAME_OVER);
 		});

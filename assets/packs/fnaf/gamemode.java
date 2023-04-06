@@ -1,8 +1,8 @@
 //game.load("sound", "sounds/powerEnd.mp3");
 game.load("character", "characters/freddy");
-//game.load("character", "characters/bonnie");
-//game.load("character", "characters/chica");
-//game.load("character", "characters/foxy");
+game.load("character", "characters/bonnie");
+game.load("character", "characters/chica");
+game.load("character", "characters/foxy");
 for(int i = 1; i < 5; i++) {
 	game.load("music", "music/dark_ambience_" + i + ".ogg");
 }
@@ -22,23 +22,20 @@ botBrain = new BotBrainBuilder()
 	.setFamily("Animatronics");
 */
 
-entities.createCharacter("characters/freddy");
-	//.setSpawnTiles("id:freddySpawn")
-	//.setBot(botBrain.build());
-	//.create();
+var bots = new CharacterCreator[4];
+bots[0] = entities.createCharacter("characters/freddy").setSpawnTiles(new String[]{"#id:freddySpawn"});
+bots[1] = entities.createCharacter("characters/bonnie").setSpawnTiles(new String[]{"#id:bonnieSpawn"});
+bots[2] = entities.createCharacter("characters/chica").setSpawnTiles(new String[]{"#id:chicaSpawn"});
+bots[3] = entities.createCharacter("characters/foxy").setSpawnTiles(new String[]{"#id:foxySpawn"});
+for(var bot : bots) { bot.create(); }
+
+game.setTimer(new Runnable() {
+	void run() {
+		for(var bot : bots) { bot.setBot(); }
+	}
+}, 15);
 	
-/*entities.createCharacter("bonnie")
-	.setSpawnTiles("id:bonnieSpawn")
-	.setBot("characters/bot.json", "aiTiles");
-	
-entities.createCharacter("chica")
-	.setSpawnTiles("id:chicaSpawn")
-	.setBot("characters/bot.json", "aiTiles");
-	
-entities.createCharacter("foxy")
-	.setSpawnTiles("id:foxySpawn")
-	.setBot("characters/bot.json", "aiTiles");
-	
+/*
 tiles.getById("buttonDoorLeft")
 	.connectTo(tiles.getById("doorLeft"));
 	
@@ -52,28 +49,27 @@ tiles.getById("buttonLightRight")
 	.connectTo(tiles.getById("lightRight"));
 
 ui.setFade(1, 0, 4);
-ui.setTmer(360, 1.4, true);
-ui.addListener(new TimerListener() {
-	void end() {
+ui.setTitle("SURVIVE THE NIGHT", 4);
+ui.setTimer(360, 1.4, true);*/
+ui.setListener(new UiListener() {
+	void timerEnd() {
 		game.over(Target.MAIN_PLAYER, true);
-		game.over(Target.EVERYONE, false);
 	}
 	
-	void nextSecond(timer) {
-		power = power - 1;
+	void timerNextSecond() {
+		power--;
 		if(power <= 0) {
-			timer.reset();
 			environment.setEnvironmentColor(0, 0, 0, 0.1);
 			audio.clearMusic();
 			audio.playSound("sounds/powerEnd.mp3", 1);
 		}
 	}
-});*/
+});
 
 entities.setListener(new EntityListener() {
 	void died(entity) {
 		if(entity.isTarget(Target.MAIN_PLAYER)) {
-			game.over(entities.getCharacter(Target.MAIN_PLAYER), false);
+			game.over(entity, false);
 		}
 	}
 });

@@ -67,8 +67,8 @@ public class CharacterSkin {
 		lastframeIndex = frameIndex;
 	}
 	
-	public CharacterSkin build(String temp) {
-		Texture texture = new Texture(new FileUtil("packs/fnaf/" + temp + "/" + this.texture, FileUtil.Source.INTERNAL).getHandle());
+	public CharacterSkin build(FileUtil source, boolean isNew) {
+		Texture texture = new Texture(source.goTo(this.texture).getHandle());
 		for(HashMap.Entry<Entity.Animation, AnimationObject> entry : animations.entrySet()) {
 			AnimationObject object = entry.getValue();
 			Sprite[] sprites = new Sprite[object.frames.length];

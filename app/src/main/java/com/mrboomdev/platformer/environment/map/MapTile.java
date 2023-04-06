@@ -23,7 +23,7 @@ import com.squareup.moshi.Json;
 import com.squareup.moshi.ToJson;
 
 public class MapTile extends MapObject {
-	public String name;
+	public String name, id;
 	public int layer;
 	public float[] position;
 	public boolean flipX, flipY;
@@ -218,6 +218,7 @@ public class MapTile extends MapObject {
 			serialized.layer = tile.layer;
 			serialized.flipX = tile.flipX;
 			serialized.flipY = tile.flipY;
+			serialized.id = tile.id;
 			return serialized;
 		}
 	}

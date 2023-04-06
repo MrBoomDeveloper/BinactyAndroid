@@ -32,6 +32,25 @@ public class EditorScreen {
 		if(tile != null) tile.isSelected = true;
 		selectedTile = tile;
 		if(!widgets.containsKey("lightEdit")) {
+			widgets.put("setId", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Set ID", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					var dialog = new AndroidDialog().setTitle("Set unique tile ID");
+					
+					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Only this single one tile should to have this id."));
+					var idField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT).setText(selectedTile.id);
+					dialog.addSpace(15).addField(idField).addSpace(30);
+					
+					dialog.addAction(new AndroidDialog.Action().setText("Cancel").setClickListener(button -> dialog.close()));
+					dialog.addAction(new AndroidDialog.Action().setText("Save").setClickListener(button -> {
+						selectedTile.id = idField.getText();
+						dialog.close();
+					}));
+					dialog.show();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 4 + 80)
+				.addTo(stage));
+				
 			widgets.put("toggleStyle", new ButtonWidget(ButtonWidget.Style.BULLET)
 				.setText("Toggle style", game.assets.get("bulletButton.ttf"))
 				.onClick(() -> {
@@ -149,7 +168,7 @@ public class EditorScreen {
 								
 					var playerColor = ColorUtil.parse(playerColorField.getText());
 					game.environment.map.atmosphere.playerLightColor = playerColor;
-					EntityManager.instance.mainLight.setColor(playerColor.getColor());
+					game.environment.entities.mainLight.setColor(playerColor.getColor());
 								
 					dialog.close();
 				}));

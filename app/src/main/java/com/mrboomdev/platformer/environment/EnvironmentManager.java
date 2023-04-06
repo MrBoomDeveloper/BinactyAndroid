@@ -35,6 +35,7 @@ public class EnvironmentManager {
 	
 	public void render(SpriteBatch batch) {
 		map.render(batch);
+		entities.render(batch);
 		//stage.draw();
 	}
 	
@@ -61,6 +62,7 @@ public class EnvironmentManager {
 		rayHandler.setAmbientLight(map.atmosphere.environmentLightColor.getColor());
 		rayHandler.setBlurNum(1);
 		map.rayHandler = rayHandler;
+		entities.setupRayHandler(rayHandler);
 		
 		for(var object : map.objects) {
 			if(!(object instanceof MapTile)) continue;

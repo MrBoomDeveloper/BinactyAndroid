@@ -1,0 +1,49 @@
+{
+	"metadata": {
+		"name": "Foxy - The Pirate",
+		"description": "Yargh!"
+	},
+	
+	"skin": {
+		"texture": "skin.png",
+		"animations": {
+			"IDLE": {
+				"delay": 0.3,
+				"mode": "LOOP_PINGPONG",
+				"size": [ 1.1, 1.8 ],
+				"frames": [
+					[ 0,  0, 21, 42 ],
+					[ 0,  0, 21, 42 ],
+					[ 21, 0, 21, 42 ],
+					[ 42, 0, 21, 42 ],
+					[ 42, 0, 21, 42 ]
+				]
+			},
+		
+			"DAMAGE": {
+				"delay": 0.1,
+				"mode": "NORMAL",
+				"size": [ 1.1, 1.8 ],
+				"frames": [
+					[ 64,  0, 22, 42 ],
+					[ 86,  0, 22, 42 ],
+					[ 108, 0, 22, 42 ]
+				]
+			}
+		}
+	},
+	
+	"worldBody": {
+		"size": [ 1.1, 1.8 ],
+		"bottom": [ 1.1, 0.4, 0, -0.7 ],
+		"lightOffset": [0, 1]
+	},
+	
+	"stats": {
+		"health": 250,
+		"damage": 25,
+		"speed": 1.4,
+		"shield": 50,
+		"stamina": 25
+	}
+}

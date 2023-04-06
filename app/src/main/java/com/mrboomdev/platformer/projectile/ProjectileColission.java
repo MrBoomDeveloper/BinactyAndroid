@@ -7,7 +7,6 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
-import com.mrboomdev.platformer.environment.Block;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 
@@ -43,7 +42,6 @@ public class ProjectileColission implements ContactListener {
 
         if (me instanceof ProjectileBullet
                 && (enemy instanceof CharacterEntity
-                        || enemy instanceof Block
                         || enemy instanceof MapTile
                         || enemy instanceof ProjectileBullet
                         || enemy instanceof ProjectileAttack)) {

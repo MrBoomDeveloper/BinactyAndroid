@@ -50,7 +50,11 @@ public class GameplayUi extends CoreUi {
 			@Override
 			public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				super.touchDown(event, x, y, pointer, button);
-				if(((JoystickWidget)game.environment.ui.widgets.get("joystick")).isActive) return;
+				try {
+					if(((JoystickWidget)game.environment.ui.widgets.get("joystick")).isActive) return;
+				} catch(NullPointerException e) {
+					e.printStackTrace();
+				}
 				cameraZoom = game.environment.camera.zoom;
 			}
 		});

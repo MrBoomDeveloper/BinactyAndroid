@@ -4,16 +4,26 @@ import com.mrboomdev.platformer.game.GameHolder;
 
 public class UiBridge {
 	private GameHolder game = GameHolder.getInstance();
+	private UiListener listener;
 	
-	public void title(String text, float duration) {
+	public void setListener(UiListener listener) {
+		this.listener = listener;
+	}
+	
+	public void setTitle(String text, float duration) {
 		
 	}
 	
-	public void timer(float initial, float speed, boolean isCountdown) {
+	public void setTimer(float initial, float speed, boolean isCountdown) {
 		
 	}
 	
-	public void fade(float from, float to) {
+	public void setFade(float from, float to) {
 		
+	}
+	
+	public interface UiListener {
+		void timerEnd();
+		void timerNextSecond();
 	}
 }

@@ -48,17 +48,18 @@ public class CharacterEntity extends EntityAbstract {
 	@Json(ignore = true) float staminaReloadMultiply, healthPhantom;
 	@Json(ignore = true) boolean isRunning, isDashing;
 	
-	public CharacterEntity cpy(String name) {
+	public CharacterEntity cpy(String name, FileUtil source) {
 		var copy = new CharacterEntity(name);
 		copy.healthPhantom = stats.health;
 		copy.config = new CharacterConfig();
 		copy.config.stats = stats;
 		copy.stats = stats;
+		copy.name = name;
 		copy.config.body3D = worldBody.bottom;
 		copy.config.bodySize = worldBody.size;
 		copy.config.lightOffset = worldBody.lightOffset;
 		copy.config.build();
-		copy.skin = skin.build("characters/freddy");
+		copy.skin = skin.build(source, true);
 		return copy;
 	}
 	
@@ -94,7 +95,7 @@ public class CharacterEntity extends EntityAbstract {
 		FixtureDef fixture3D = new FixtureDef();
 		fixture3D.shape = shape3D;
 		fixture3D.filter.categoryBits = Entity.CHARACTER_BOTTOM;
-		fixture3D.filter.maskBits = Entity.TILE_BOTTOM | Entity.CHARACTER_BOTTOM;
+		fixture3D.filter.maskBits = Entity.TILE_BOTTOM;
 		
 		this.world = world;
 		this.body = world.createBody(bodyDef);
@@ -161,7 +162,7 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void drawDebug(SpriteBatch batch) {
-		shape.setProjectionMatrix(GameplayScreen.camera.combined);
+		shape.setProjectionMatrix(game.environment.camera.combined);
 		if(brain != null && brain instanceof BotBrain) {
 			var botBrain = (BotBrain)brain;
 			if(botBrain.graph == null) return;

@@ -25,19 +25,19 @@ public class MapManager {
 	public Atmosphere atmosphere;
 	public Rules rules;
 	private List<MapTile> tiles;
-	@Json(ignore = true) private int currentHistoryStep;
-	@Json(ignore = true) private Array<HistoryStep> history = new Array<>();
 	@Json(ignore = true) public RayHandler rayHandler;
 	@Json(ignore = true) public Map<String, MapTile> tilesPresets = new HashMap<>();
 	@Json(ignore = true) public ObjectMap<String, MapTile> tilesMap = new ObjectMap<>();
-	@Json(ignore = true) private LoadingFiles loadFiles;
-	@Json(ignore = true) private FileUtil source;
-	@Json(ignore = true) private World world;
-	@Json(ignore = true) private Runnable buildCallback;
-	@Json(ignore = true) private Status status = Status.PREPAIRING;
-	@Json(ignore = true) private GameHolder game = GameHolder.getInstance();
 	@Json(ignore = true) public Array<MapObject> pendingRemoves = new Array<>();
 	@Json(ignore = true) public ArrayList<MapObject> objects = new ArrayList<>();
+	@Json(ignore = true) int currentHistoryStep;
+	@Json(ignore = true) Array<HistoryStep> history = new Array<>();
+	@Json(ignore = true) LoadingFiles loadFiles;
+	@Json(ignore = true) FileUtil source;
+	@Json(ignore = true) World world;
+	@Json(ignore = true) Runnable buildCallback;
+	@Json(ignore = true) Status status = Status.PREPAIRING;
+	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	public void render(SpriteBatch batch) {
 		pendingRemoves.forEach(obj -> obj.remove());

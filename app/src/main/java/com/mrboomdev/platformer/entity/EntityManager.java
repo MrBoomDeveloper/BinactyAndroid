@@ -15,7 +15,6 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Moshi;
 
 public class EntityManager {
-	public static EntityManager instance;
 	public static final String entitiesDirectory = "world/player/characters/";
 	public ObjectMap<String, CharacterEntity> presets = new ObjectMap<>();
 	public Array<CharacterEntity> characters = new Array<>();
@@ -29,7 +28,6 @@ public class EntityManager {
 	public EntityManager(World world, RayHandler rayHandler) {
 		this.world = world;
 		this.rayHandler = rayHandler;
-		instance = this;
 	}
 	
 	public EntityManager(World world) {
@@ -53,7 +51,7 @@ public class EntityManager {
 	public void addCharacter(CharacterEntity character) {
 		characters.add(character);
 		game.environment.map.objects.add(new MapEntity(character));
-		if(character == GameHolder.getInstance().settings.mainPlayer) {
+		if(character == game.settings.mainPlayer) {
 			character.body.setTransform(22, -14, 0);
 			return;
 		}

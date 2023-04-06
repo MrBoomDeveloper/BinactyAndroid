@@ -80,6 +80,7 @@ public class BotBrain extends CharacterBrain {
 	}
 	
 	private void goByPath(float speed, boolean toEnemy) {
+		if(entity == null || target == null) return;
 		boolean shouldGoAway = false;
 		
 		if(toEnemy) {

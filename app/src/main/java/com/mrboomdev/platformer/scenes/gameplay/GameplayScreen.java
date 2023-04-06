@@ -12,26 +12,22 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mrboomdev.platformer.entity.EntityManager;
-import com.mrboomdev.platformer.entity.EntityPresets;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
-import com.mrboomdev.platformer.environment.MapManager;
 import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameplayScreen extends CoreScreen {
-	public static EntityManager entities;
-	public static OrthographicCamera camera;
 	public EnvironmentManager environment;
 	private GameHolder game;
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
-	private MapManager map;
 	private GameplayUi ui;
 	private RayHandler rayHandler;
 	private Box2DDebugRenderer debugRenderer;
@@ -48,26 +44,23 @@ public class GameplayScreen extends CoreScreen {
 	public void render(float delta) {
 		if(game.settings.pause) return;
 		ScreenUtils.clear(0, 0, 0, 1);
+		
+		var camera = game.environment.camera;
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
-		batch.begin();
-		{
+		
+		batch.begin(); {
 			environment.render(batch);
-			entities.render(batch);
-			game.environment.entities.render(batch);
-		}
-		batch.end();
+		} batch.end();
 		if(!game.settings.debugRaysDisable) {
 			rayHandler.setCombinedMatrix(camera);
 			rayHandler.updateAndRender();
 		}
-		batch.begin();
-		{
+		batch.begin(); {
 			if(game.settings.debugRenderer) debugRenderer.render(environment.world, camera.combined);
 			ui.render(delta);
-		}
-		batch.end();
+		} batch.end();
 		if(!game.settings.mainPlayer.isDead) {
 			Vector2 playerPosition = game.settings.mainPlayer.body.getPosition();
 			camera.position.set(CameraUtil.getCameraShake().add(
@@ -76,6 +69,7 @@ public class GameplayScreen extends CoreScreen {
 			), 0);
 		}
 		environment.update(delta);
+		FunUtil.update();
 	}
 	
 	@Override
@@ -101,18 +95,9 @@ public class GameplayScreen extends CoreScreen {
 		environment.setupRayHandler();
 		rayHandler = environment.rayHandler;
 		
-		camera = new OrthographicCamera(32, 18);
+		var camera = new OrthographicCamera(32, 18);
 		environment.camera = camera;
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
-		
-		map = new MapManager();
-		map.load(Gdx.files.internal("world/maps/test_01.json"));
-		map.build(environment.world, rayHandler);
-		
-		entities = new EntityManager(environment.world, rayHandler)
-			.setSpawnsPositions(map.spawnPositions)
-			.addPresets(EntityPresets.getInternal())
-			.addBots(3);
 		
 		CharacterEntity player = new CharacterEntity(game.settings.playerName)
 			.setConfig(new FileUtil(
@@ -121,8 +106,8 @@ public class GameplayScreen extends CoreScreen {
 			.create(environment.world);
 		
 		game.settings.mainPlayer = player;
-		entities.addCharacter(player);
-		entities.setMain(player);
+		game.environment.entities.addCharacter(player);
+		game.environment.entities.setMain(player);
 		camera.position.set(player.body.getPosition(), 0);
 		
 		ui = new GameplayUi(this, player);

@@ -7,11 +7,17 @@ import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameBridge {
 	private GameHolder game = GameHolder.getInstance();
 	private GameListener listener;
+	private FileUtil source;
+	
+	public GameBridge(FileUtil source) {
+		this.source = source;
+	}
 	
 	public void setListener(GameListener listener) {
 		this.listener = listener;
@@ -26,18 +32,22 @@ public class GameBridge {
 		}
 	}
 	
+	public void setTimer(Runnable runnable, float delay) {
+		FunUtil.setTimer(runnable, delay);
+	}
+	
 	public void load(String type, String path) {
 		switch(type) {
 			case "music": {
-				game.assets.load("packs/fnaf/" + path, Music.class);
+				game.assets.load(source.getParent().getPath() + path, Music.class);
 				break;
 			}
 			case "sound": {
-				game.assets.load("packs/fnaf/" + path, Sound.class);
+				game.assets.load(source.getParent().getPath() + path, Sound.class);
 				break;
 			}
 			case "character": {
-				game.environment.entities.loadCharacter(new FileUtil("packs/fnaf/" + path, FileUtil.Source.INTERNAL), path);
+				game.environment.entities.loadCharacter(source.getParent().goTo(path), path);
 				break;
 			}
 		}

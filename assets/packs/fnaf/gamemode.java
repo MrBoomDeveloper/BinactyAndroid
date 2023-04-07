@@ -18,7 +18,7 @@ teams.addTeam("Animatronics")
 	
 /*
 botBrain = new BotBrainBuilder()
-	.setTiles("triggerAi")
+	.setTiles("triggerAi", "triggerSpawn")
 	.setFamily("Animatronics");
 */
 
@@ -34,23 +34,17 @@ game.setTimer(new Runnable() {
 		for(var bot : bots) { bot.setBot(); }
 	}
 }, 15);
+
+map.connectTiles("buttonDoorLeft", "doorLeft");
+map.connectTiles("buttonDoorRight", "doorRight");
+map.connectTiles("buttonLightRight", "lightRight");
+map.connectTiles("buttonLightLeft", "lightLeft");
 	
 /*
-tiles.getById("buttonDoorLeft")
-	.connectTo(tiles.getById("doorLeft"));
-	
-tiles.getById("buttonDoorRight")
-	.connectTo(tiles.getById("doorRight"));
-	
-tiles.getById("buttonLightLeft")
-	.connectTo(tiles.getById("lightLeft"));
-	
-tiles.getById("buttonLightRight")
-	.connectTo(tiles.getById("lightRight"));
-
 ui.setFade(1, 0, 4);
 ui.setTitle("SURVIVE THE NIGHT", 4);
 ui.setTimer(360, 1.4, true);*/
+
 ui.setListener(new UiListener() {
 	void timerEnd() {
 		game.over(Target.MAIN_PLAYER, true);

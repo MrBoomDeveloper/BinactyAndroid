@@ -49,4 +49,11 @@ public class ActivityManager {
 		ReactContext context = instance.getCurrentReactContext();
 		context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("GameOver", null);
 	}
+	
+	public static void forceExit() {
+		reactActivity.isGameStarted = false;
+		var instance = reactActivity.reactInstance;
+		ReactContext context = instance.getCurrentReactContext();
+		context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ForceExit", null);
+	}
 }

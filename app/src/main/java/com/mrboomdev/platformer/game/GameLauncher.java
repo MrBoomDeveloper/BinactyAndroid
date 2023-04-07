@@ -57,6 +57,7 @@ public class GameLauncher extends AndroidApplication {
 		switch(status) {
 			case CRASH:
 			case LOBBY:
+				ActivityManager.forceExit();
 				finish();
 				break;
 			case GAME_OVER:

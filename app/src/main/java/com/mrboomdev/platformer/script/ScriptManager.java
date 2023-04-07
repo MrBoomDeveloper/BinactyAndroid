@@ -8,6 +8,7 @@ import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.script.bridge.AudioBridge;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.script.bridge.GameBridge;
+import com.mrboomdev.platformer.script.bridge.MapBridge;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
@@ -16,6 +17,7 @@ public class ScriptManager {
 	public EntitiesBridge entitiesBridge;
 	public UiBridge uiBridge;
 	public AudioBridge audioBridge;
+	public MapBridge mapBridge;
 	private GameHolder game = GameHolder.getInstance();
 	private Interpreter interpreter;
 	private FileUtil source;
@@ -24,6 +26,7 @@ public class ScriptManager {
 		this.source = source;
 		this.interpreter = new Interpreter();
 		this.gameBridge = new GameBridge(source);
+		this.mapBridge = new MapBridge();
 		this.uiBridge = new UiBridge();
 		this.entitiesBridge = new EntitiesBridge(source);
 		this.audioBridge = new AudioBridge();
@@ -35,6 +38,7 @@ public class ScriptManager {
 		this.eval("import com.mrboomdev.platformer.entity.character.CharacterCreator;");
 		this.put("game", gameBridge);
 		this.put("ui", uiBridge);
+		this.put("map", mapBridge);
 		this.put("entities", entitiesBridge);
 		this.put("audio", audioBridge);
 		this.put("core", game);

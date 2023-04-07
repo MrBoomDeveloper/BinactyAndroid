@@ -32,7 +32,6 @@ public class CharacterCreator {
 				return tile.id != null && tile.id.equals(spawnTile.substring(4, spawnTile.length()));
 			});
 			for(var result : results) {
-				System.out.println(result.id + " teleported!");
 				entity.body.setTransform(result.getPosition(false), 0);
 			}
 		} else {

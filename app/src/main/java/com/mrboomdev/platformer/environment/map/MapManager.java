@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.mrboomdev.platformer.environment.pack.PackMap;
+import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
@@ -51,7 +51,7 @@ public class MapManager {
 	public MapManager build(World world, FileUtil source, Runnable callback) {
 		try {
 			Moshi moshi = new Moshi.Builder().build();
-			JsonAdapter<PackMap.Tiles> adapter = moshi.adapter(PackMap.Tiles.class);
+			JsonAdapter<PackData.Tiles> adapter = moshi.adapter(PackData.Tiles.class);
 			this.world = world;
 			this.source = source;
 			this.buildCallback = callback;

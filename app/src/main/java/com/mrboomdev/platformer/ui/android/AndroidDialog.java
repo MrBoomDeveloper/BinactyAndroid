@@ -76,6 +76,11 @@ public class AndroidDialog {
 	
 	public void close() {
 		dialog.cancel();
+		dialog = null;
+		builder = null;
+		holder = null;
+		fields = null;
+		actions = null;
 	}
 	
 	public static class Field {
@@ -85,6 +90,8 @@ public class AndroidDialog {
 		private String color;
 		private View view;
 		private int size;
+		
+		public Field() {}
 		
 		public Field(FieldType type) {
 			this.type = type;

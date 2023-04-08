@@ -7,9 +7,5 @@
 		"name": "MrBoomDev",
 		"url": "https://mrboomdev.ru",
 		"icon": "author.jpg"
-	},
-	"resources": {
-		"gamemodes": "gamemodes.json",
-		"maps": "maps.json"
 	}
 }

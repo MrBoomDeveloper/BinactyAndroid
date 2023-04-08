@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import java.util.Timer;
 
 public class FunUtil {
 	private static Array<TimerTask> timerTasks = new Array<>();
@@ -23,6 +24,15 @@ public class FunUtil {
 	
 	public static void setTimer(Runnable runnable, float delay) {
 		timerTasks.add(new TimerTask(runnable, delay));
+	}
+	
+	public static void setTimer(Runnable runnable, Timer timer, long delay) {
+		timer.schedule(new java.util.TimerTask() {
+			@Override
+			public void run() {
+				runnable.run();
+			}
+		}, delay);
 	}
 	
 	private static class TimerTask {

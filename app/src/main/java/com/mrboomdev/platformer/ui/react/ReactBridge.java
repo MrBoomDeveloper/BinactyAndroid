@@ -11,6 +11,8 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.game.pack.PackLoader;
+import com.mrboomdev.platformer.game.pack.PackWidget;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.AskUtil;
@@ -119,44 +121,41 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void getGamemodes(Promise promise) {
-		WritableArray array = Arguments.createArray();
-		
-		WritableMap gamemodes = Arguments.createMap();
-		WritableArray gamemodesData = Arguments.createArray();
-		gamemodes.putString("title", "Gamemodes");
-		
-		WritableMap other = Arguments.createMap();
-		WritableArray otherData = Arguments.createArray();
-		other.putString("title", "Other");
-		
-		for(int i = 1; i < 5; i++) {
-			WritableMap fnaf = Arguments.createMap();
-			fnaf.putString("name", "Five Nights at Freddy's " + i);
-			fnaf.putString("description", "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food!");
-			fnaf.putString("id", "fnaf" + i);
-			fnaf.putString("author", "MrBoomDev");
-			gamemodesData.pushMap(fnaf);
+		var jsGamemodes = Arguments.createArray();
+		for(var row : PackLoader.getGamemodes()) {
+			var jsRow = Arguments.createMap();
+			jsRow.putString("title", row.title);
+			var jsData = Arguments.createArray();
+			for(var gamemode : row.data) {
+				var jsGamemode = Arguments.createMap();
+				jsGamemode.putString("name", gamemode.name);
+				jsGamemode.putString("id", gamemode.id);
+				jsGamemode.putInt("maxPlayers", gamemode.maxPlayers);
+				if(gamemode.author != null) jsGamemode.putString("author", gamemode.author.name);
+				if(gamemode.time != null) jsGamemode.putString("time", gamemode.time);
+				if(gamemode.description != null) jsGamemode.putString("description", gamemode.description);
+				if(gamemode.banner != null) jsGamemode.putString("banner", gamemode.source.goTo(gamemode.banner).getFullPath(true));
+				switch(gamemode.type) {
+					case "match": {
+						var jsMaps = Arguments.createArray();
+						for(var map : gamemode.maps) {
+							var jsMap = Arguments.createMap();
+							jsMap.putString("name", map.name);
+							jsMap.putString("author", map.author.name);
+						}
+						jsGamemode.putArray("maps", jsMaps);
+						break;
+					}
+					case "story": {
+						break;
+					}
+				}
+				jsData.pushMap(jsGamemode);
+			}
+			jsRow.putArray("data", jsData);
+			jsGamemodes.pushMap(jsRow);
 		}
-		
-		for(int i = 1; i < 5; i++) {
-			WritableMap test = Arguments.createMap();
-			test.putString("name", "Test gamemode #" + i);
-			test.putString("id", "halloween" + i);
-			test.putString("author", "MrBoomDev");
-			gamemodesData.pushMap(test);
-		}
-		
-		WritableMap test = Arguments.createMap();
-		test.putString("name", "Tutorial");
-		test.putString("id", "tutorial");
-		test.putString("author", "MrBoomDev");
-		otherData.pushMap(test);
-		
-		gamemodes.putArray("data", gamemodesData);
-		other.putArray("data", otherData);
-		array.pushMap(gamemodes);
-		array.pushMap(other);
-		promise.resolve(array);
+		promise.resolve(jsGamemodes);
 	}
 	
 	@ReactMethod
@@ -187,20 +186,20 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void getPacks(Promise promise) {
-		
-	}
-	
-	@ReactMethod
 	public void startMusic() {
 		ActivityManager.startMusic();
 	}
 	
 	@ReactMethod
 	public void requestClose() {
-		AskUtil.ask(AskUtil.AskType.REQUEST_CLOSE, obj -> {
+		var dialog = new AndroidDialog().setTitle("Confirm Exit");
+		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Are you sure, you want to exit the game?"));
+		dialog.addAction(new AndroidDialog.Action().setText("Cancel").setClickListener(button -> dialog.close()));
+		dialog.addAction(new AndroidDialog.Action().setText("Exit").setClickListener(button -> {
 			ActivityManager.current.finishAffinity();
-		});
+			dialog.close();
+		}));
+		dialog.addSpace(30).show();
 	}
 	
 	@ReactMethod
@@ -211,16 +210,22 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void managePacks() {
-		var dialog = new AndroidDialog().setTitle("Manage Your Packs");
-		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setText("Sorry, but this feature is currently unavailable."));
-		dialog.addAction(new AndroidDialog.Action().setText("Cancel").setClickListener(button -> dialog.close()));
-		dialog.addAction(new AndroidDialog.Action().setText("Save").setClickListener(button -> {
-			dialog.close();
-		}));
+		var dialog = new AndroidDialog().setTitle("Manage Your Packs").addSpace(15);
+		for(var pack : PackLoader.getPacks()) {
+			dialog.addField(new PackWidget.DialogPackWidget(pack));
+			dialog.addSpace(15);
+		}
+		if(PackLoader.getPacks().size() == 0) {
+			dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setText("No packs were found."));
+		}
+		dialog.addAction(new AndroidDialog.Action().setText("Close").setClickListener(button -> dialog.close()));
 		dialog.addAction(new AndroidDialog.Action().setText("Import").setClickListener(button -> {
-			
+			Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("application/zip");
+			ActivityManager.current.startActivityForResult(intent, 1);
 		}));
-		dialog.addSpace(30).show();
+		dialog.addSpace(15).show();
 	}
 	
 	@ReactMethod

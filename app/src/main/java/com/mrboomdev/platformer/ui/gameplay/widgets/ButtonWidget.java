@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -14,6 +15,7 @@ import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ButtonWidget extends ActorUtil {
 	private ShapeRenderer shape;
+	private FrameBuffer frameBuffer;
 	private Sprite backgroundImage, foregroundImage;
 	private BitmapFont font;
 	private GlyphLayout glyph;

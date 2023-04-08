@@ -10,7 +10,6 @@
 	},
 	"resources": {
 		"gamemodes": "gamemodes.json",
-		"characters": "characters.json",
-		"maps": "maps.json"
+		"characters": "characters.json"
 	}
 }

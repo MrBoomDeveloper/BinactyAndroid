@@ -1,14 +1,24 @@
-{
-	"special": [
-		{
-			"name": "Five Nights at Freddy's",
-			"author": {
-				"name": "MrBoomDev"
-			},
-			"banner": "src/banner.jpg",
-			"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food! The main attraction is Freddy Fazbear, of course; and his two friends. They are animatronic robots, programmed to please the crowds!",
-			"path": "gamemode.json",
-			"maps": [ "maps/fnafMap1.json" ]
-		}
-	]
-}
+[
+	{
+		"title": "Made by MrBoomDev",
+		"data": [
+			{
+				"id": "fnaf",
+				"name": "Five Nights at Freddy's",
+				"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food!",
+				"maxPlayers": 1,
+				"time": "6:00",
+				"banner": "src/banner.png",
+				"type": "match",
+				"file": "fnaf.json",
+				"maps": [
+					{
+						"name": "FNaF 1",
+						"author": { "name": "MrBoomDev" },
+						"file": "maps/fnaf1.json"
+					}
+				]
+			}
+		]
+	}
+]

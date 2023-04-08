@@ -1,7 +1,7 @@
 [
 	{
-		"path": "core", "active": true, "source": "INTERNAL"
+		"file": { "path": "packs/core", "source": "INTERNAL" }, "active": true
 	}, {
-		"path": "fnaf", "active": true, "source": "INTERNAL"
+		"file": { "path": "packs/fnaf", "source": "INTERNAL" }, "active": true
 	}
 ]

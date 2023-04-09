@@ -190,6 +190,27 @@ public class AndroidDialog {
 		}
 	}
 	
+	public static class SimpleBuilder {
+		private AndroidDialog dialog;
+		
+		public SimpleBuilder(String title) {
+			dialog = new AndroidDialog().setTitle(title);
+		}
+		
+		public SimpleBuilder addText(String text) {
+			dialog.addSpace(10).addField(new Field(FieldType.TEXT).setText(text));
+			return this;
+		}
+		
+		public void show() {
+			dialog.addAction(new Action().setText("Continue").setClickListener(button -> {
+				dialog.close();
+				dialog = null;
+			}));
+			dialog.addSpace(25).show();
+		}
+	}
+	
 	public enum FieldType {
 		EDIT_TEXT,
 		CHECKBOX,

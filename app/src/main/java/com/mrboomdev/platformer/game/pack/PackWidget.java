@@ -3,6 +3,8 @@ package com.mrboomdev.platformer.game.pack;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +24,7 @@ public class PackWidget {
 	public static class DialogPackWidget extends AndroidDialog.Field {
 		private PackData.Manifest data;
 		private LinearLayout view;
+		private TextView isActive;
 		
 		public DialogPackWidget(PackData.Manifest data) {
 			this.data = data;
@@ -53,6 +56,10 @@ public class PackWidget {
 				}
 				view.addView(icon);
 				var info = new LinearLayout(activity);
+				var infoParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+				infoParams.weight = 1;
+				info.setPadding(0, 0, 25, 0);
+				info.setLayoutParams(infoParams);
 				info.setOrientation(LinearLayout.VERTICAL);
 				var header = new LinearLayout(activity);
 				{
@@ -82,14 +89,36 @@ public class PackWidget {
 					info.addView(description);
 				}
 				view.addView(info);
+				view.setPadding(0, 0, 25, 0);
+				view.setGravity(Gravity.CENTER_VERTICAL);
+				{
+					isActive = new TextView(activity);
+					isActive.setGravity(Gravity.CENTER);
+					isActive.setTextSize(15);
+					var textParams = new LayoutParams(85, 35);
+					isActive.setLayoutParams(textParams);
+					GradientDrawable back = new GradientDrawable();
+					back.setCornerRadius(10);
+					isActive.setBackground(back);
+					view.addView(isActive);
+				}
 				view.setOnClickListener(v -> {
-					
+					data.config.active = !data.config.active;
+					updateState();
 				});
 				view.setOnLongClickListener(v -> {
 					
 					return false;
 				});
+				updateState();
 			} return view;
+		}
+		
+		private void updateState() {
+			isActive.setText(data.config.active ? "Active" : "Disabled");
+			var back = (GradientDrawable)isActive.getBackground();
+			back.setColor(Color.parseColor(data.config.active ? "#da33ff" : "#25c8c8c8"));
+			isActive.setTextColor(Color.parseColor(data.config.active ? "#000000" : "#ffffff"));
 		}
 	}
 }

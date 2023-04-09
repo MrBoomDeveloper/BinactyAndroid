@@ -140,12 +140,49 @@ public class FileUtil {
 		switch(source) {
 			case EXTERNAL: {
 				var file = new File(ActivityManager.current.getExternalFilesDir(null), path);
-				return "file://" + file.getAbsolutePath();
+				return isUrl ? ("file://" + file.getAbsolutePath()) : file.getAbsolutePath();
+			}
+			case FULL: {
+				return getPath();
 			}
 			case INTERNAL: {
-				return "asset:/" + getPath();
+				return isUrl ? ("asset:/" + getPath()) : getPath();
 			}
 			default: return getPath();
+		}
+	}
+	
+	public void remove() {
+		switch(source) {
+			case INTERNAL: throw new RuntimeException("Can't remove internal assets!");
+			case EXTERNAL: {
+				var file = new File(getFullPath(false));
+				if(file.isDirectory()) {
+					for(var child : file.listFiles()) {
+						child.delete();
+					}
+				}
+				file.delete();
+				break;
+			}
+		}
+	}
+	
+	public void rename(String name) {
+		switch(source) {
+			case INTERNAL: throw new RuntimeException("Can't rename file from the assets!");
+			case EXTERNAL: {
+				var file = getFile();
+				file.renameTo(new File(file.getParent() + "/" + name));
+				break;
+			}
+		}
+	}
+	
+	public File getFile() {
+		switch(source) {
+			case EXTERNAL: return new File(ActivityManager.current.getExternalFilesDir(null), path);
+			default: return new File(getPath());
 		}
 	}
 	
@@ -166,9 +203,19 @@ public class FileUtil {
 		return game.assets.get(getPath());
 	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if(!(object instanceof FileUtil)) return false;
+		var file = (FileUtil)object;
+		if(!file.getPath().equals(getPath())) return false;
+		if(file.source != source) return false;
+		return true;
+	}
+	
 	public enum Source {
 		INTERNAL,
 		EXTERNAL,
+		FULL,
 		NETWORK
 	}
 }

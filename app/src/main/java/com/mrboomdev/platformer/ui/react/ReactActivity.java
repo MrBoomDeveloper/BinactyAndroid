@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -13,15 +14,23 @@ import com.facebook.react.PackageList;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.soloader.SoLoader;
 import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.*;
+import com.mrboomdev.platformer.game.pack.PackData;
+import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.ui.ActivityManager;
+import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.AskUtil;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.ZipUtil;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -122,11 +131,40 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch(requestCode) {
 			case 1: {
-				if(resultCode != Activity.RESULT_OK || resultData == null) return;
-				Uri uri = resultData.getData();
+				if(resultCode != Activity.RESULT_OK || intent == null) return;
+				Toast.makeText(getApplicationContext(), "Please wait. Loading the pack data", 0).show();
+				var dest = FileUtil.external("packs/temp");
+				dest.remove();
+				try {
+					ZipUtil.unzipFile(getContentResolver().openInputStream(intent.getData()), dest, () -> {
+						try {
+							Moshi moshi = new Moshi.Builder().build();
+							JsonAdapter<PackData.Manifest> adapter = moshi.adapter(PackData.Manifest.class);
+							var pack = adapter.fromJson(dest.goTo("manifest.json").readString(false));
+							if(!pack.isValid()) throw new RuntimeException("Not vaild pack!");
+							if(!PackLoader.addPack(pack, dest)) {
+								dest.getParent().goTo(pack.id).remove();
+								Toast.makeText(getApplicationContext(), "This pack is already installed, trying to update...", Toast.LENGTH_LONG).show();
+							} else {
+								Toast.makeText(getApplicationContext(), "Installing a new pack...", Toast.LENGTH_LONG).show();
+							}
+							dest.rename(pack.id);
+							PackLoader.reloadPacks();
+							PackLoader.reloadGamemodes();
+							ReactContext context = reactInstance.getCurrentReactContext();
+							context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
+						} catch(Exception e) {
+							e.printStackTrace();
+							new AndroidDialog.SimpleBuilder("Failed to load the pack").addText("Error message: " + e.getMessage()).show();
+						}
+					});
+				} catch(Exception e) {
+					e.printStackTrace();
+					new AndroidDialog.SimpleBuilder("Failed to load the pack").addText("Error message: " + e.getMessage()).show();
+				}
 				break;
 			}
 		}

@@ -9,11 +9,16 @@ import java.util.Map;
 public class PackData {
 
 	public static class Manifest {
-		public String name, icon, description;
+		public String name, icon, description, id;
 		public boolean required;
 		public Author author;
 		public Resources resources;
 		@Json(ignore = true) public FileUtil source;
+		@Json(ignore = true) public Config config;
+		
+		public boolean isValid() {
+			return name != null;
+		}
 	}
 	
 	public static class Author {
@@ -31,6 +36,11 @@ public class PackData {
 	public static class Config {
 		public FileUtil file;
 		public boolean active;
+		
+		public Config(FileUtil file) {
+			this.file = file;
+			this.active = true;
+		}
 	}
 	
 	public static class Gamemode {

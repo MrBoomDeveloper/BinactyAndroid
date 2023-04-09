@@ -1,5 +1,6 @@
 {
 	"name": "Core Pack",
+	"id": "6a7b64fc-d6d4-11ed-afa1-0242ac120002",
 	"icon": "icon.jpg",
 	"description": "A very important pack, without which the game will not work.",
 	"required": true,

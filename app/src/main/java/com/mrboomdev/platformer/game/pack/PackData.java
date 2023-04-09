@@ -43,7 +43,7 @@ public class PackData {
 	
 	public static class GamemodesRow {
 		public List<Gamemode> data;
-		public String title;
+		public String title, id;
 	}
 	
 	public static class MapData {

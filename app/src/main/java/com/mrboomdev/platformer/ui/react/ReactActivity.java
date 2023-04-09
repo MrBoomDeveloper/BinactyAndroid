@@ -84,9 +84,9 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
                     });
         }
 
-        if(!prefs.getBoolean("isPacksSetup", false)) {
+        if(!prefs.getBoolean("isPacksListDefaultCopied", false)) {
 			FileUtil.external("packs/installed.json").writeString(FileUtil.internal("packs/defaultList.json").readString(false), false);
-            prefs.edit().putBoolean("isPacksSetup", true).apply();
+            prefs.edit().putBoolean("isPacksListDefaultCopied", true).apply();
         }
     }
 

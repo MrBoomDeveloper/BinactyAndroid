@@ -125,6 +125,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		for(var row : PackLoader.getGamemodes()) {
 			var jsRow = Arguments.createMap();
 			jsRow.putString("title", row.title);
+			jsRow.putString("id", row.id);
 			var jsData = Arguments.createArray();
 			for(var gamemode : row.data) {
 				var jsGamemode = Arguments.createMap();
@@ -135,6 +136,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 				if(gamemode.time != null) jsGamemode.putString("time", gamemode.time);
 				if(gamemode.description != null) jsGamemode.putString("description", gamemode.description);
 				if(gamemode.banner != null) jsGamemode.putString("banner", gamemode.source.goTo(gamemode.banner).getFullPath(true));
+				if(gamemode.type == null) gamemode.type = "match";
 				switch(gamemode.type) {
 					case "match": {
 						var jsMaps = Arguments.createArray();
@@ -186,11 +188,6 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void startMusic() {
-		ActivityManager.startMusic();
-	}
-	
-	@ReactMethod
 	public void requestClose() {
 		var dialog = new AndroidDialog().setTitle("Confirm Exit");
 		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Are you sure, you want to exit the game?"));
@@ -207,26 +204,6 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void removeListeners(Integer count) {}
-	
-	@ReactMethod
-	public void managePacks() {
-		var dialog = new AndroidDialog().setTitle("Manage Your Packs").addSpace(15);
-		for(var pack : PackLoader.getPacks()) {
-			dialog.addField(new PackWidget.DialogPackWidget(pack));
-			dialog.addSpace(15);
-		}
-		if(PackLoader.getPacks().size() == 0) {
-			dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setText("No packs were found."));
-		}
-		dialog.addAction(new AndroidDialog.Action().setText("Close").setClickListener(button -> dialog.close()));
-		dialog.addAction(new AndroidDialog.Action().setText("Import").setClickListener(button -> {
-			Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-			intent.addCategory(Intent.CATEGORY_OPENABLE);
-			intent.setType("application/zip");
-			ActivityManager.current.startActivityForResult(intent, 1);
-		}));
-		dialog.addSpace(15).show();
-	}
 	
 	@ReactMethod
 	public void finish(String activity) {

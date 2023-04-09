@@ -14,8 +14,13 @@ public class ActivityManager {
 	
 	public static void startMusic() {
 		media = MediaPlayer.create(current, R.raw.lobby_theme);
+		setVolume(current.getSharedPreferences("Save", 0).getInt("musicVolume", 100) / 100);
 		media.setLooping(true);
 		media.start();
+	}
+	
+	public static void setVolume(float volume) {
+		media.setVolume(volume, volume);
 	}
 	
 	public static void resumeMusic() {

@@ -9,28 +9,19 @@ import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.serjltt.moshi.adapters.DeserializeOnly;
+import com.serjltt.moshi.adapters.Transient;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 public class EnvironmentCreator {
 	private EnvironmentManager manager;
 	private onCreateListener createListener;
-	private FileUtil gamemodeFile, mapFile;
 	private GameHolder game = GameHolder.getInstance();
 	private Status status = PREPAIRING;
 	
 	public EnvironmentCreator() {
 		this.manager = new EnvironmentManager();
-	}
-	
-	public EnvironmentCreator setGamemode(FileUtil file) {
-		this.gamemodeFile = file;
-		return this;
-	}
-	
-	public EnvironmentCreator setMap(FileUtil file) {
-		this.mapFile = file;
-		return this;
 	}
 	
 	public EnvironmentCreator onCreate(onCreateListener listener) {
@@ -41,9 +32,9 @@ public class EnvironmentCreator {
 	public EnvironmentCreator create() {
 		new Thread(() -> {
 			try {
-				Moshi moshi = new Moshi.Builder().build();
+				Moshi moshi = new Moshi.Builder().add(Transient.ADAPTER_FACTORY).build();
 				JsonAdapter<MapManager> adapter = moshi.adapter(MapManager.class);
-				manager.map = adapter.fromJson(mapFile.readString(true)).build(manager.world, mapFile, () -> loadGamemode());
+				manager.map = adapter.fromJson(game.mapFile.readString(true)).build(manager.world, game.mapFile, () -> loadGamemode());
 				status = BUILDING_MAP;
 			} catch(Exception e) {
 				e.printStackTrace();
@@ -59,8 +50,8 @@ public class EnvironmentCreator {
 		try {
 			Moshi moshi = new Moshi.Builder().build();
 			JsonAdapter<GamemodeScript> adapter = moshi.adapter(GamemodeScript.class);
-			manager.gamemode = new GamemodeManager(adapter.fromJson(gamemodeFile.readString(true)), new FileUtil("packs/fnaf/gamemode.java", FileUtil.Source.INTERNAL))
-				.build(gamemodeFile, () -> {
+			manager.gamemode = new GamemodeManager(adapter.fromJson(FileUtil.internal("packs/fnaf/gamemode.json").readString(true)), game.gamemodeFile)
+				.build(game.gamemodeFile, () -> {
 					createListener.created(manager);
 					status = DONE;
 				});

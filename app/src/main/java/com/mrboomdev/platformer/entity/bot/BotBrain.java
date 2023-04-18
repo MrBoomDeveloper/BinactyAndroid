@@ -23,7 +23,7 @@ public class BotBrain extends CharacterBrain {
 	private float exploreTimeoutProgress;
 	private BotTarget target;
 	private Sound playerDetectedSound;
-	private long playerLastDetected;
+	private long playerLastDetected, mapLastScanned;
 	
 	public BotBrain(EntityManager entityManager) {
 		this.entityManager = entityManager;
@@ -53,6 +53,11 @@ public class BotBrain extends CharacterBrain {
 	
 	@Override
 	public void update() {
+		if(System.currentTimeMillis() > mapLastScanned + 10000) {
+			mapLastScanned = System.currentTimeMillis();
+			scanMap();
+		}
+		
 		var myPoint = graph.findNearest(entity.getPosition());
 		var targetPoint = graph.findNearest(game.settings.mainPlayer.getPosition());
 		

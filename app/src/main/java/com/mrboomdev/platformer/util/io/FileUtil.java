@@ -155,11 +155,12 @@ public class FileUtil {
 	public void remove() {
 		switch(source) {
 			case INTERNAL: throw new RuntimeException("Can't remove internal assets!");
+			case FULL:
 			case EXTERNAL: {
 				var file = new File(getFullPath(false));
 				if(file.isDirectory()) {
 					for(var child : file.listFiles()) {
-						child.delete();
+						new FileUtil(child.getAbsolutePath(), Source.FULL).remove();
 					}
 				}
 				file.delete();

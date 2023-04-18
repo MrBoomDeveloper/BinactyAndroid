@@ -16,6 +16,7 @@ import com.mrboomdev.platformer.game.GameStatistics;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.script.ScriptManager;
+import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameHolder extends Game {
 	public GameLauncher launcher;
@@ -25,6 +26,7 @@ public class GameHolder extends Game {
 	public EnvironmentManager environment;
 	public ScriptManager script;
 	public GameStatistics stats;
+	public FileUtil gamemodeFile, mapFile;
 	private static GameHolder instance;
 	
 	@Override

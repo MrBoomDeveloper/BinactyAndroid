@@ -1,6 +1,8 @@
 package com.mrboomdev.platformer.game.pack;
 
-import android.widget.Toast;
+import android.util.Log;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -52,6 +54,7 @@ public class PackLoader {
 				for(var row : rows) {
 					for(var gamemode : row.data) {
 						gamemode.source = pack.source.goTo(pack.resources.gamemodes).getParent();
+						gamemode.file = gamemode.source.goTo(gamemode.file.getPath());
 						gamemode.author = pack.author;
 					}
 				}
@@ -59,7 +62,7 @@ public class PackLoader {
 			}
 		} catch(IOException e) {
 			e.printStackTrace();
-			new AndroidDialog.SimpleBuilder("Failed to load gamemodes").addText("Contact with developers and send them this message: " + e.getMessage()).show();
+			showErrorDialog(e);
 		}
 	}
 	
@@ -79,7 +82,7 @@ public class PackLoader {
 			}
 		} catch(IOException e) {
 			e.printStackTrace();
-			new AndroidDialog.SimpleBuilder("Failed to load packs").addText("Contact with developers and send them this message: " + e.getMessage()).show();
+			showErrorDialog(e);
 		}
 	}
 	
@@ -88,9 +91,29 @@ public class PackLoader {
 			if(config.file.equals(file.getParent().goTo(manifest.id))) return false;
 		}
 		configs.add(new PackData.Config(FileUtil.external("packs/" + manifest.id)));
+		saveConfig();
+		return true;
+	}
+	
+	public static void saveConfig() {
 		Moshi moshi = new Moshi.Builder().build();
 		JsonAdapter<List<PackData.Config>> adapter = moshi.adapter(Types.newParameterizedType(List.class, PackData.Config.class));
 		FileUtil.external("packs/installed.json").writeString(adapter.toJson(PackLoader.getConfigs()), false);
-		return true;
+	}
+	
+	private static void showErrorDialog(Exception e) {
+		var dialog = new AndroidDialog().setTitle("Failed to load Packs").setCancelable(false);
+		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setText("Something went wrong while loading Packs. Stacktrace:\n" + Log.getStackTraceString(e)));
+		dialog.addAction(new AndroidDialog.Action().setText("Ignore").setClickListener(button -> dialog.close()));
+		dialog.addAction(new AndroidDialog.Action().setText("Reset").setClickListener(button -> {
+			FileUtil.external("packs").remove();
+			FileUtil.external("packs/installed.json").writeString(FileUtil.internal("packs/defaultList.json").readString(false), false);
+			reloadPacks();
+			reloadGamemodes();
+			ReactContext context = ActivityManager.reactActivity.reactInstance.getCurrentReactContext();
+			context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
+			dialog.close();
+		}));
+		dialog.addSpace(15).show();
 	}
 }

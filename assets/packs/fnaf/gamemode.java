@@ -1,4 +1,5 @@
-//game.load("sound", "sounds/powerEnd.mp3");
+game.load("sound", "sounds/power_end.wav");
+game.load("sound", "sounds/door_close.wav");
 game.load("character", "characters/freddy");
 game.load("character", "characters/bonnie");
 game.load("character", "characters/chica");
@@ -31,14 +32,32 @@ for(var bot : bots) { bot.create(); }
 
 game.setTimer(new Runnable() {
 	void run() {
-		for(var bot : bots) { bot.setBot(); }
+		for(var bot : bots) {
+			bot.setBot();
+		}
 	}
 }, 15);
 
-map.connectTiles("buttonDoorLeft", "doorLeft");
-map.connectTiles("buttonDoorRight", "doorRight");
-map.connectTiles("buttonLightRight", "lightRight");
-map.connectTiles("buttonLightLeft", "lightLeft");
+var doorRight = map.getById("doorRight");
+var doorLeft = map.getById("doorLeft");
+boolean isDoorRightOpened = true;
+boolean isDoorLeftOpened = true;
+
+map.getById("buttonDoorRight").setListener(new InteractionListener() {
+	void use() {
+		isDoorRightOpened = !isDoorRightOpened;
+		doorRight.style.selectStyle(isDoorRightOpened ? "default" : "close");
+		audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
+	}
+});
+
+map.getById("buttonDoorLeft").setListener(new InteractionListener() {
+	void use() {
+		isDoorLeftOpened = !isDoorLeftOpened;
+		doorLeft.style.selectStyle(isDoorLeftOpened ? "default" : "close");
+		audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
+	}
+});
 	
 /*
 ui.setFade(1, 0, 4);
@@ -55,7 +74,7 @@ ui.setListener(new UiListener() {
 		if(power <= 0) {
 			environment.setEnvironmentColor(0, 0, 0, 0.1);
 			audio.clearMusic();
-			audio.playSound("sounds/powerEnd.mp3", 1);
+			audio.playSound("sounds/power_end.wav", 1);
 		}
 	}
 });
@@ -70,7 +89,12 @@ entities.setListener(new EntityListener() {
 
 game.setListener(new GameListener() {
 	void start() {
-		audio.playMusic(new String[]{"music/dark_ambience_1.ogg", "music/dark_ambience_2.ogg", "music/dark_ambience_3.ogg", "music/dark_ambience_4.ogg"}, 999);
+		audio.playMusic(new String[]{
+			"music/dark_ambience_1.ogg",
+			"music/dark_ambience_2.ogg",
+			"music/dark_ambience_3.ogg",
+			"music/dark_ambience_4.ogg"},
+		999);
 	}
 });
 

@@ -34,7 +34,7 @@ android {
 	
 	defaultConfig {
 		applicationId "com.mrboomdev.platformer"
-		minSdkVersion 25
+		minSdkVersion 24
 		targetSdkVersion 32
 		versionCode 12
 		versionName "0.3.2"
@@ -108,6 +108,7 @@ dependencies {
 	
 	implementation "com.google.code.gson:gson:2.10"
 	implementation "com.squareup.moshi:moshi:1.14.0"
+	implementation "com.serjltt.moshi:moshi-lazy-adapters:2.2"
 	
 	implementation "com.google.android.material:material:1.7.0"
 	implementation "androidx.appcompat:appcompat:1.5.0"

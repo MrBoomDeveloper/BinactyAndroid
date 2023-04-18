@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.map.MapEntity;
+import com.mrboomdev.platformer.environment.path.PathGraph;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Moshi;
@@ -17,6 +18,7 @@ import com.squareup.moshi.Moshi;
 public class EntityManager {
 	public static final String entitiesDirectory = "world/player/characters/";
 	public ObjectMap<String, CharacterEntity> presets = new ObjectMap<>();
+	public ObjectMap<CharacterEntity, PathGraph> graphs = new ObjectMap<>();
 	public Array<CharacterEntity> characters = new Array<>();
 	public PointLight mainLight;
 	private World world;

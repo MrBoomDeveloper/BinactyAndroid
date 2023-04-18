@@ -147,9 +147,9 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 							if(!pack.isValid()) throw new RuntimeException("Not vaild pack!");
 							if(!PackLoader.addPack(pack, dest)) {
 								dest.getParent().goTo(pack.id).remove();
-								Toast.makeText(getApplicationContext(), "This pack is already installed, trying to update...", Toast.LENGTH_LONG).show();
+								Toast.makeText(getApplicationContext(), "This pack is already installed, trying to update...", 0).show();
 							} else {
-								Toast.makeText(getApplicationContext(), "Installing a new pack...", Toast.LENGTH_LONG).show();
+								Toast.makeText(getApplicationContext(), "Installing a new pack...", 0).show();
 							}
 							dest.rename(pack.id);
 							PackLoader.reloadPacks();

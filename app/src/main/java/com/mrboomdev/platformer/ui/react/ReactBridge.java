@@ -11,12 +11,16 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.game.pack.PackWidget;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.AskUtil;
 import android.content.Intent;
+import com.mrboomdev.platformer.util.io.FileUtil;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 public class ReactBridge extends ReactContextBaseJavaModule {
     public ReactBridge(ReactApplicationContext context) {
@@ -131,6 +135,11 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 				var jsGamemode = Arguments.createMap();
 				jsGamemode.putString("name", gamemode.name);
 				jsGamemode.putString("id", gamemode.id);
+				
+				Moshi moshi = new Moshi.Builder().build();
+				JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
+				jsGamemode.putString("file", adapter.toJson(gamemode.file));
+				
 				jsGamemode.putInt("maxPlayers", gamemode.maxPlayers);
 				if(gamemode.author != null) jsGamemode.putString("author", gamemode.author.name);
 				if(gamemode.time != null) jsGamemode.putString("time", gamemode.time);
@@ -144,6 +153,8 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 							var jsMap = Arguments.createMap();
 							jsMap.putString("name", map.name);
 							jsMap.putString("author", map.author.name);
+							jsMap.putString("file", adapter.toJson(gamemode.source.goTo(map.file.getPath())));
+							jsMaps.pushMap(jsMap);
 						}
 						jsGamemode.putArray("maps", jsMaps);
 						break;
@@ -218,10 +229,8 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		activity.isGameStarted = true;
 		Intent intent = new Intent(activity, GameLauncher.class);
 		intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
-		if(data.hasKey("gamemodePath")) intent.putExtra("gamemodePath", data.getBoolean("gamemodePath"));
-		if(data.hasKey("gamemodeSource")) intent.putExtra("gamemodeSource", data.getBoolean("gamemodeSource"));
-		if(data.hasKey("mapPath")) intent.putExtra("mapPath", data.getBoolean("mapPath"));
-		if(data.hasKey("mapSource")) intent.putExtra("mapSource", data.getBoolean("mapSource"));
+		intent.putExtra("gamemodeFile", data.getString("file"));
+		intent.putExtra("mapFile", data.getString("mapFile"));
 		activity.startActivity(intent);
 		ActivityManager.stopMusic();
     }

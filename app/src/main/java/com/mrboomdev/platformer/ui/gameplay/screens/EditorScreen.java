@@ -9,6 +9,7 @@ import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.ActorUtil;
 import com.mrboomdev.platformer.util.io.ZipUtil;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
+import com.serjltt.moshi.adapters.DeserializeOnly;
 import com.squareup.moshi.Moshi;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
@@ -32,6 +33,42 @@ public class EditorScreen {
 		if(tile != null) tile.isSelected = true;
 		selectedTile = tile;
 		if(!widgets.containsKey("lightEdit")) {
+			widgets.put("moveUp", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("More Up", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					selectedTile.offset[1] += .2f;
+					selectedTile.rebuild();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 8 + 160)
+				.addTo(stage));
+				
+			widgets.put("moveDown", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Move Down", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					selectedTile.offset[1] -= .2f;
+					selectedTile.rebuild();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 7 + 140)
+				.addTo(stage));
+				
+			widgets.put("moveRight", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("More right", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					selectedTile.offset[0] += .2f;
+					selectedTile.rebuild();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 6 + 120)
+				.addTo(stage));
+				
+			widgets.put("moveLeft", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Move Left", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					selectedTile.offset[0] -= .2f;
+					selectedTile.rebuild();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 5 + 100)
+				.addTo(stage));
+			
 			widgets.put("setId", new ButtonWidget(ButtonWidget.Style.BULLET)
 				.setText("Set ID", game.assets.get("bulletButton.ttf"))
 				.onClick(() -> {
@@ -110,7 +147,7 @@ public class EditorScreen {
 			.toPosition(game.settings.screenInset + 135, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
 			.onClick(() -> {
 				try {
-					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
+					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).add(DeserializeOnly.ADAPTER_FACTORY).build();
 					var adapter = moshi.adapter(MapManager.class);
 					var map = game.environment.map;
 					Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);

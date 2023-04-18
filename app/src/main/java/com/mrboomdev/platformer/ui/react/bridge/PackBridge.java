@@ -48,19 +48,17 @@ public class PackBridge extends ReactContextBaseJavaModule {
 			dialog.close();
 		}));
 		dialog.addAction(new AndroidDialog.Action().setText("Import").setClickListener(button -> {
+			dialog.close();
 			Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 			intent.addCategory(Intent.CATEGORY_OPENABLE);
 			intent.setType("application/zip");
 			ActivityManager.current.startActivityForResult(intent, 1);
-			dialog.close();
 		}));
 		dialog.addSpace(15).show();
 	}
 	
 	private void saveAndReload() {
-		Moshi moshi = new Moshi.Builder().build();
-		JsonAdapter<List<PackData.Config>> adapter = moshi.adapter(Types.newParameterizedType(List.class, PackData.Config.class));
-		FileUtil.external("packs/installed.json").writeString(adapter.toJson(PackLoader.getConfigs()), false);
+		PackLoader.saveConfig();
 		PackLoader.reloadPacks();
 		PackLoader.reloadGamemodes();
 	}

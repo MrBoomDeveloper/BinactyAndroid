@@ -8,9 +8,13 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.map.MapTile;
+import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.widgets.ActionButton;
 
 public class ProjectileColission implements ContactListener {
+	private GameHolder game = GameHolder.getInstance();
+	private int selectedTilesCount;
 
     @Override
     public void beginContact(Contact contact) {
@@ -38,6 +42,15 @@ public class ProjectileColission implements ContactListener {
                 ((CharacterEntity) enemy).gainDamage(attack.stats.damage, attack.power);
                 attack.isDead = true;
             }
+			
+			if (me instanceof TileInteraction && !game.settings.enableEditor) {
+				var player = ((CharacterEntity)enemy);
+				var interaction = (TileInteraction)me;
+				player.nearInteraction = interaction;
+				interaction.owner.isSelected = true;
+				selectedTilesCount++;
+				((ActionButton)game.environment.ui.widgets.get("use")).setActive(true);
+			}
         }
 
         if (me instanceof ProjectileBullet
@@ -81,7 +94,22 @@ public class ProjectileColission implements ContactListener {
     }
 
     @Override
-    public void endContact(Contact contact) {}
+    public void endContact(Contact contact) {
+		onCollideEnd(contact.getFixtureA().getBody().getUserData(), contact.getFixtureB().getBody().getUserData());
+		onCollideEnd(contact.getFixtureB().getBody().getUserData(), contact.getFixtureA().getBody().getUserData());
+	}
+	
+	private void onCollideEnd(Object me, Object enemy) {
+		if(me instanceof CharacterEntity && enemy instanceof TileInteraction && !game.settings.enableEditor) {
+			var player = (CharacterEntity)me;
+			var interaction = (TileInteraction)enemy;
+			player.nearInteraction = null;
+			interaction.owner.isSelected = false;
+			
+			if(--selectedTilesCount == 0)
+				((ActionButton)game.environment.ui.widgets.get("use")).setActive(false);
+		}
+	}
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {}

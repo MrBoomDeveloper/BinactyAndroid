@@ -29,13 +29,14 @@ public class ScriptManager {
 		this.mapBridge = new MapBridge();
 		this.uiBridge = new UiBridge();
 		this.entitiesBridge = new EntitiesBridge(source);
-		this.audioBridge = new AudioBridge();
+		this.audioBridge = new AudioBridge(source.getParent());
 		
 		this.eval("import com.mrboomdev.platformer.entity.Entity.Target;");
 		this.eval("import com.mrboomdev.platformer.script.bridge.GameBridge.GameListener;");
 		this.eval("import com.mrboomdev.platformer.script.bridge.EntitiesBridge.EntityListener;");
 		this.eval("import com.mrboomdev.platformer.script.bridge.UiBridge.UiListener;");
 		this.eval("import com.mrboomdev.platformer.entity.character.CharacterCreator;");
+		this.eval("import com.mrboomdev.platformer.environment.map.tile.TileInteraction.InteractionListener;");
 		this.put("game", gameBridge);
 		this.put("ui", uiBridge);
 		this.put("map", mapBridge);

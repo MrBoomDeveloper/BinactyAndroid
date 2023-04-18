@@ -51,13 +51,10 @@ public class LoadingScreen extends CoreScreen {
 			
             case GAMEPLAY:
 				try {
-					environmentCreator = new EnvironmentCreator()
-						.setGamemode(new FileUtil("packs/fnaf/gamemode.json", FileUtil.Source.INTERNAL))
-						.setMap(new FileUtil("packs/fnaf/maps/fnafMap1.json", FileUtil.Source.INTERNAL))
-						.onCreate(manager -> {
-							this.environment = manager;
-							loadOtherResources();
-						}).create();
+					environmentCreator = new EnvironmentCreator().onCreate(manager -> {
+						this.environment = manager;
+						loadOtherResources();
+					}).create();
 					loadStep = MAP;
 				} catch(Exception e) {
 					game.launcher.exit(GameLauncher.Status.CRASH);

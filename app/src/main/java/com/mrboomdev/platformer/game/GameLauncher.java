@@ -14,6 +14,10 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.AudioUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import java.io.IOException;
 
 public class GameLauncher extends AndroidApplication {
 	private FirebaseAnalytics analytics;
@@ -39,6 +43,16 @@ public class GameLauncher extends AndroidApplication {
 		var settings = GameSettings.getFromSharedPreferences(prefs);
 		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
 		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
+		var game = GameHolder.getInstance();
+		try {
+			Moshi moshi = new Moshi.Builder().build();
+			JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
+			game.gamemodeFile = adapter.fromJson(getIntent().getCharSequenceExtra("gamemodeFile").toString());
+			game.mapFile = adapter.fromJson(getIntent().getCharSequenceExtra("mapFile").toString());
+		} catch(IOException e) {
+			e.printStackTrace();
+			exit(Status.CRASH);
+		}
 		
 		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
 		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());

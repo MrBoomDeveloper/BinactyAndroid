@@ -11,12 +11,12 @@
 				"time": "6:00",
 				"banner": "src/banner.png",
 				"type": "match",
-				"file": "fnaf.json",
+				"file": { "path": "gamemode.java" },
 				"maps": [
 					{
 						"name": "FNaF 1",
 						"author": { "name": "MrBoomDev" },
-						"file": "maps/fnaf1.json"
+						"file": { "path": "maps/fnafMap1.json" }
 					}
 				]
 			}

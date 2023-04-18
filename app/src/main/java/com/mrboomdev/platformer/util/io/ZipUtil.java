@@ -14,6 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ZipUtil {
+	private static final int BUFFER_SIZE = 4096;
 
 	public static byte[] getCompressedString(String input) throws IOException {
 		byte[] data = input.getBytes("UTF-8");
@@ -55,31 +56,32 @@ public class ZipUtil {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void unzipFile(InputStream fis, FileUtil destination, Runnable callback) throws IOException {
-        byte[] buffer = new byte[1024];
-        try {
-            ZipInputStream zis = new ZipInputStream(fis);
-            ZipEntry ze = zis.getNextEntry();
-            while(ze != null) {
-                String fileName = ze.getName();
-                File newFile = new File(destination.getFullPath(false) + File.separator + fileName);
-                new File(newFile.getParent()).mkdirs();
-                FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while((len = zis.read(buffer)) > 0) {
-                	fos.write(buffer, 0, len);
+
+    public static void unzipFile(InputStream stream, FileUtil destDirectory, Runnable callback) throws IOException {
+        File destDir = destDirectory.getFile();
+        if(!destDir.exists()) destDir.mkdir();
+        ZipInputStream zipIn = new ZipInputStream(stream);
+        ZipEntry entry = zipIn.getNextEntry();
+        while(entry != null) {
+            String filePath = destDirectory.getFullPath(false) + File.separator + entry.getName();
+            if(!entry.isDirectory()) {
+                File file = new File(filePath);
+                file.getParentFile().mkdirs();
+                FileOutputStream fos = new FileOutputStream(file);
+                byte[] bytes = new byte[BUFFER_SIZE];
+                int length;
+                while ((length = zipIn.read(bytes)) >= 0) {
+                    fos.write(bytes, 0, length);
                 }
                 fos.close();
-                zis.closeEntry();
-                ze = zis.getNextEntry();
+            } else {
+                File dir = new File(filePath);
+                dir.mkdir();
             }
-            zis.closeEntry();
-            zis.close();
-            fis.close();
-			callback.run();
-        } catch(IOException e) {
-            e.printStackTrace();
+            zipIn.closeEntry();
+            entry = zipIn.getNextEntry();
         }
-	}
+        zipIn.close();
+        callback.run();
+    }
 }

@@ -19,6 +19,7 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
+import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.*;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
@@ -37,16 +38,17 @@ public class CharacterEntity extends EntityAbstract {
 	@Json(ignore = true) public CharacterBrain brain;
 	@Json(ignore = true) public CharacterConfig config;
 	@Json(ignore = true) public String name;
+	@Json(ignore = true) public TileInteraction nearInteraction;
+	@Json(ignore = true) float dashProgress, dashReloadProgress;
+	@Json(ignore = true) float damagedProgress = 1;
+	@Json(ignore = true) float staminaReloadMultiply, healthPhantom;
+	@Json(ignore = true) boolean isRunning, isDashing;
 	@Json(ignore = true) ShapeRenderer shape;
 	@Json(ignore = true) BitmapFont font;
 	@Json(ignore = true) ProjectileManager projectileManager;
 	@Json(ignore = true) Vector2 damagedPower;
 	@Json(ignore = true) Sprite shadow;
 	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
-	@Json(ignore = true) float dashProgress, dashReloadProgress;
-	@Json(ignore = true) float damagedProgress = 1;
-	@Json(ignore = true) float staminaReloadMultiply, healthPhantom;
-	@Json(ignore = true) boolean isRunning, isDashing;
 	
 	public CharacterEntity cpy(String name, FileUtil source) {
 		var copy = new CharacterEntity(name);
@@ -87,7 +89,7 @@ public class CharacterEntity extends EntityAbstract {
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.filter.categoryBits = Entity.CHARACTER;
-		fixtureDef.filter.maskBits = Entity.ATTACK | Entity.BULLET;
+		fixtureDef.filter.maskBits = Entity.ATTACK | Entity.BULLET | Entity.INTERACTABLE;
 		
 		PolygonShape shape3D = new PolygonShape();
 		shape3D.setAsBox(config.body3D[0] / 2, config.body3D[1] / 2,
@@ -208,8 +210,9 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void interact() {
-		gainDamage(5, wasPower);
-		body.setTransform(new Vector2((float)(Math.random() * 55), (float)(Math.random() * 55) - 20), 0);
+		if(nearInteraction != null) {
+			nearInteraction.act();
+		}
 	}
 	
 	public void dash() {

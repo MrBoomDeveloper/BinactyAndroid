@@ -48,7 +48,7 @@ public class PackData {
 		public Author author;
 		public int maxPlayers;
 		public List<MapData> maps;
-		public FileUtil source;
+		public FileUtil source, file;
 	}
 	
 	public static class GamemodesRow {
@@ -57,7 +57,8 @@ public class PackData {
 	}
 	
 	public static class MapData {
-		public String name, file;
+		public String name;
+		public FileUtil file;
 		public Author author;
 	}
 }

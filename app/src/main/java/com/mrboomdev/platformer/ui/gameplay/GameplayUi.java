@@ -44,6 +44,7 @@ public class GameplayUi {
 			.addTo(stage);
 		
 		widgets.put("use", new ActionButton(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 49, 14, 14))
+			.setActive(false)
 			.onClick(() -> connectedEntity.interact())
 			.toPosition(
 				Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 55,

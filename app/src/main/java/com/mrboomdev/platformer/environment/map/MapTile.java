@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -19,21 +20,19 @@ import com.mrboomdev.platformer.environment.map.tile.TileStyle;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.serjltt.moshi.adapters.DeserializeOnly;
+import com.serjltt.moshi.adapters.Transient;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.ToJson;
 
 public class MapTile extends MapObject {
 	public String name, id;
 	public int layer;
-	public float[] position;
 	public boolean flipX, flipY;
 	public String texture, devTexture;
 	public Light light;
-	public float[] size;
-	public float[] colission;
-	public float[] shadowColission;
-	public int[] region;
-	public int[] connectedTile;
+	public float[] size, colission, shadowColission, position, offset = {0, 0};
+	public int[] region, connectedTile;
 	public TileInteraction interaction;
 	public TileStyle style;
 	@Json(ignore = true) public boolean isSelected;
@@ -41,9 +40,11 @@ public class MapTile extends MapObject {
 	@Json(ignore = true) public PointLight pointLight;
 	@Json(ignore = true) public FileUtil source;
     @Json(ignore = true) public Body body;
-	@Json(ignore = true) private boolean isDestroyed;
-	@Json(ignore = true) private ShapeRenderer shape;
-	@Json(ignore = true) private GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true) public Fixture fixture, shadowFixture;
+	@Json(ignore = true) boolean isDestroyed;
+	@Json(ignore = true) World world;
+	@Json(ignore = true) ShapeRenderer shape;
+	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	@Override
 	public void draw(SpriteBatch batch) {
@@ -63,7 +64,10 @@ public class MapTile extends MapObject {
 		   getPosition(false).x - size[0] * .5f < cameraX + viewportWidth &&
     	   getPosition(false).y - size[1] * .5f + size[1] > cameraY &&
 		   getPosition(false).y - size[1] * .5f < cameraY + viewportHeight) {
-		    if(style != null) sprite = style.getSprite(getPosition(false), this);
+		    if(style != null) {
+				sprite = style.getSprite(getPosition(false), this);
+				sprite.setFlip(flipX, flipY);
+			}
 			if(sprite != null) sprite.draw(batch);
 			if(devSprite != null) devSprite.draw(batch);
 			if(shape != null && isSelected) {
@@ -90,6 +94,16 @@ public class MapTile extends MapObject {
 	}
 	
 	public void build(World world) {
+		this.world = world;
+		this.rebuild();
+		Gdx.app.postRunnable(() -> shape = new ShapeRenderer());
+	}
+	
+	public void rebuild() {
+		if(body != null) {
+			world.destroyBody(body);
+			body = null;
+		}
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(getPosition(false));
 		bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -105,25 +119,28 @@ public class MapTile extends MapObject {
 			fixtureDef.filter.categoryBits = Entity.TILE_BOTTOM;
 			fixtureDef.filter.maskBits = Entity.CHARACTER_BOTTOM | Entity.BULLET;
 			fixtureDef.shape = shape;
-			body.createFixture(fixtureDef);
+			fixture = body.createFixture(fixtureDef);
 			shape.dispose();
 		}
 		
 		if(shadowColission != null) {
-			FixtureDef shadowFixture = new FixtureDef();
-			PolygonShape shadowShape = new PolygonShape();
+			FixtureDef shadowFixtureDef = new FixtureDef();
+            PolygonShape shadowShape = new PolygonShape();
 			shadowShape.setAsBox(shadowColission[0] / 2, shadowColission[1] / 2,
 				new Vector2(shadowColission[2] / 2 * (flipX ? -1 : 1), shadowColission[3] / 2 * (flipY ? -1 : 1)), 0);
-			shadowFixture.shape = shadowShape;
-			shadowFixture.filter.categoryBits = Entity.BLOCK;
-			shadowFixture.filter.maskBits = Entity.LIGHT;
-			body.createFixture(shadowFixture);
+			shadowFixtureDef.shape = shadowShape;
+			shadowFixtureDef.filter.categoryBits = Entity.BLOCK;
+			shadowFixtureDef.filter.maskBits = Entity.LIGHT;
+			shadowFixture = body.createFixture(shadowFixtureDef);
 			shadowShape.dispose();
 		}
+		
+		if(interaction != null) {
+			interaction.build(world, getPosition(false));
+			interaction.owner = this;
+		}
+		
 		update();
-		Gdx.app.postRunnable(() -> {
-			shape = new ShapeRenderer();
-		});
 	}
 	
 	public void setTexture(Texture texture, boolean isDev) {
@@ -144,8 +161,8 @@ public class MapTile extends MapObject {
     @Override
     public void setPosition(Vector2 position) {
         body.setTransform(position, 0);
-		if(sprite != null) sprite.setCenter(body.getPosition().x, body.getPosition().y);
-		if(devSprite != null) devSprite.setCenter(body.getPosition().x, body.getPosition().y);
+		if(sprite != null) sprite.setCenter(getPosition(false).x, getPosition(false).y);
+		if(devSprite != null) devSprite.setCenter(getPosition(false).x, getPosition(false).y);
     }
 
     @Override
@@ -163,12 +180,20 @@ public class MapTile extends MapObject {
 		devTexture = tile.devTexture;
 		source = tile.source;
 		if(tile.style != null) {
-			if(style != null) {
+			if(style != null)
 				style.clone(tile.style);
-			} else {
+			else
 				style = new TileStyle(tile.style);
-			}
+			style.owner = this;
 		}
+		
+		if(tile.interaction != null) {
+			if(interaction != null)
+				interaction.clone(tile.interaction);
+			else
+				interaction = new TileInteraction(tile.interaction);
+		}
+		
 		if(tile.sprite != null) {
 			sprite = new Sprite(tile.sprite);
 			sprite.setFlip(flipX, flipY);
@@ -187,11 +212,18 @@ public class MapTile extends MapObject {
         }
 	}
 	
+	public void setListener(TileInteraction.InteractionListener listener) {
+		if(interaction == null) {
+			interaction = new TileInteraction(null);
+		}
+		interaction.listener = listener;
+	}
+	
 	@Override
     public Vector2 getPosition(boolean isBottom) {
 		if(body == null) {
 			if(position == null) return new Vector2();
-			return new Vector2(position[0], position[1]);
+			return new Vector2(position[0] + offset[0], position[1] + offset[1]);
 		}
         return body.getPosition();
     }
@@ -213,8 +245,10 @@ public class MapTile extends MapObject {
 			var serialized = new MapTile();
 			serialized.name = tile.name;
 			serialized.position = tile.position;
+			serialized.offset = tile.offset;
 			serialized.connectedTile = tile.connectedTile;
 			if(tile.style != null) serialized.style = tile.style.getSerialized();
+			if(tile.interaction != null) serialized.interaction = tile.interaction.getSerialized();
 			serialized.layer = tile.layer;
 			serialized.flipX = tile.flipX;
 			serialized.flipY = tile.flipY;

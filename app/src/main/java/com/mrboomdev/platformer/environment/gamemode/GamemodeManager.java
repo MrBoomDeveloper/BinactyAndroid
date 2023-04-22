@@ -35,12 +35,12 @@ public class GamemodeManager {
 	private float gameOverTimeout;
 	private boolean isBroken;
 	
-	public GamemodeManager(GamemodeScript script, FileUtil scenario) {
+	public GamemodeManager(GamemodeScript scriptOld, FileUtil scenario) {
 		game.script = new ScriptManager(scenario);
 		game.script.eval(scenario.readString(true));
 		
-		this.script = script;
-		script.start.forEach(function -> stack.add(new StackOperation(function, null)));
+		this.script = scriptOld;
+		scriptOld.start.forEach(function -> stack.add(new StackOperation(function, null)));
 	}
 	
 	public GamemodeManager build(FileUtil source, Runnable callback) {

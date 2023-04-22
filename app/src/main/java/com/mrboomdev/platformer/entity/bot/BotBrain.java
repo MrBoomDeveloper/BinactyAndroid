@@ -1,11 +1,11 @@
 package com.mrboomdev.platformer.entity.bot;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.EntityManager;
+import com.mrboomdev.platformer.entity.bot.ai.*;
 import com.mrboomdev.platformer.entity.character.CharacterBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.path.PathGraph;
@@ -16,17 +16,20 @@ import com.mrboomdev.platformer.util.AudioUtil;
 public class BotBrain extends CharacterBrain {
 	public GraphPath<PathPoint> path;
 	public PathGraph graph;
+	public BotTarget target;
+	public AiStuckChecker stuckChecker;
+	private AiTargeter targeter;
 	private EntityManager entityManager;
 	private float attackReloadProgress, attackReloadDuration;
 	private float dashReloadProgress, dashReloadDuration;
 	private GameHolder game = GameHolder.getInstance();
-	private float exploreTimeoutProgress;
-	private BotTarget target;
 	private Sound playerDetectedSound;
 	private long playerLastDetected, mapLastScanned;
 	
 	public BotBrain(EntityManager entityManager) {
 		this.entityManager = entityManager;
+		this.stuckChecker = new AiStuckChecker();
+		this.targeter = new AiTargeter(this);
 		attackReloadDuration = (float)(Math.random() * 1);
 		dashReloadDuration = (float)(Math.random() * 1);
 		playerDetectedSound = game.assets.get("audio/sounds/player_detected.wav");
@@ -58,33 +61,10 @@ public class BotBrain extends CharacterBrain {
 			scanMap();
 		}
 		
-		var myPoint = graph.findNearest(entity.getPosition());
-		var targetPoint = graph.findNearest(game.settings.mainPlayer.getPosition());
-		
-		if(myPoint.position.dst(targetPoint.position) > 8 || game.settings.enableEditor) {
-			if(exploreTimeoutProgress <= 0) {
-				target = graph.points.random();
-				exploreTimeoutProgress = Math.min(target.getPosition().dst(entity.getPosition()) * 1.2f, 10);
-			}
-			exploreTimeoutProgress -= Gdx.graphics.getDeltaTime();
-			targetPoint = graph.findNearest(target.getPosition());
-			path = graph.findPath(myPoint, targetPoint);
-			
-			if(myPoint != targetPoint) {
-				goByPath(entity.stats.speed, false);
-			} else {
-				entity.usePower(Vector2.Zero, 0, false);
-			}
-			return;
-		}
-		
-		exploreTimeoutProgress = 0;
-		path = graph.findPath(myPoint, targetPoint);
-		goByPath(entity.stats.speed * 1.5f, true);
-		target = game.settings.mainPlayer;
+		targeter.update();
 	}
 	
-	private void goByPath(float speed, boolean toEnemy) {
+	public void goByPath(float speed, boolean toEnemy) {
 		if(entity == null || target == null) return;
 		boolean shouldGoAway = false;
 		
@@ -103,6 +83,12 @@ public class BotBrain extends CharacterBrain {
 			entity.usePower(path.get(1).position.sub(entity.getPosition()).scl(25).scl(shouldGoAway ? -1.7f : 1), speed, true);
 		} else if(target instanceof CharacterEntity) {
 			entity.usePower(target.getPosition().sub(entity.getPosition()).scl(shouldGoAway ? -1.7f : 1), speed, true);
+		}
+		
+		if(stuckChecker.isStuck(entity.getPosition())) {
+			stuckChecker.reset();
+			targeter.setIgnored(target);
+			targeter.exploreTimeoutProgress = 0;
 		}
 	}
 }

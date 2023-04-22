@@ -1,6 +1,6 @@
 {
 	"initial": "sleeping",
-	"moods": {
+	"states": {
 		"sleeping": {
 			"targets": [],
 			"speed": 0,
@@ -15,7 +15,7 @@
 			"speed": 0.8
 			"animation": "WALK",
 			"next": "seeking",
-			"radius": 100
+			"visionDistance": 8
 		},
 		
 		"scared": {
@@ -24,7 +24,7 @@
 			"targets": ["ENEMY"],
 			"speed": -1.5,
 			"next": "seeking",
-			"radius": 25
+			"visionDistance": 15
 		},
 		
 		"attacking": {
@@ -32,14 +32,14 @@
 			"animation": "running",
 			"targets": ["ENEMY"],
 			"next": "lookout",
-			"radius": 10
+			"visionDistance": 12
 		},
 		
 		"lookout": {
 			"animation": "WALK",
 			"targets": ["TILE"],
 			"speed": 1.1,
-			"radius": 5,
+			"visionDistance": 10,
 			"next": "seeking"
 		}
 	}

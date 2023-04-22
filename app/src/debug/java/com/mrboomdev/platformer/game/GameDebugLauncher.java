@@ -13,6 +13,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.util.AudioUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameDebugLauncher extends GameLauncher {
 	private GameDebugMenu menu;
@@ -21,6 +22,10 @@ public class GameDebugLauncher extends GameLauncher {
 	public void onCreate(Bundle bundle) {
 		LogSender.startLogging(this);
 		super.onCreate(bundle);
+		var game = GameHolder.getInstance();
+		game.gamemodeFile = FileUtil.internal("packs/fnaf/gamemode.java");
+		game.mapFile = FileUtil.internal("packs/fnaf/maps/fnafMap1.json");
+		
 		menu = new GameDebugMenu(this);
 		DynamicColors.applyToActivityIfAvailable(this);
 		

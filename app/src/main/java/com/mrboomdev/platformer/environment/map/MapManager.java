@@ -57,16 +57,14 @@ public class MapManager {
 			this.buildCallback = callback;
 		
 			for(String pack : atmosphere.tiles) {
-				FileUtil path = new FileUtil(pack, FileUtil.Source.INTERNAL);
-				Map<String, MapTile> tilesPreset = null;
+				Map<String, MapTile> tilesPreset;
 				if(pack.startsWith("$")) {
-					path = new FileUtil("packs/" + pack.substring(1, pack.length()), FileUtil.Source.INTERNAL);
-					tilesPreset = adapter.fromJson(Gdx.files.internal(path.getPath()).readString()).tiles;
+					throw new RuntimeException("bruh.");
 				} else {
-					tilesPreset = adapter.fromJson(source.getParent().goTo(path.getPath()).readString(true)).tiles;
+					tilesPreset = adapter.fromJson(source.getParent().goTo(pack).readString(true)).tiles;
 				}
 				for(var tile : tilesPreset.entrySet()) {
-					tile.getValue().source = path;
+					tile.getValue().source = FileUtil.internal(pack);
 				}
 				tilesPresets.putAll(tilesPreset);
 			}

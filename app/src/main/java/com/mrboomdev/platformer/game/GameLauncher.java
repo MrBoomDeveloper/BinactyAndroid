@@ -49,9 +49,9 @@ public class GameLauncher extends AndroidApplication {
 			JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
 			game.gamemodeFile = adapter.fromJson(getIntent().getCharSequenceExtra("gamemodeFile").toString());
 			game.mapFile = adapter.fromJson(getIntent().getCharSequenceExtra("mapFile").toString());
-		} catch(IOException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
-			exit(Status.CRASH);
+			if(!BuildConfig.DEBUG) exit(Status.CRASH);
 		}
 		
 		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);

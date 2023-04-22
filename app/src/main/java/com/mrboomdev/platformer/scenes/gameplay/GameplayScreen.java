@@ -96,13 +96,12 @@ public class GameplayScreen extends CoreScreen {
 		rayHandler = environment.rayHandler;
 		
 		var camera = new OrthographicCamera(32, 18);
+		camera.zoom = .9f;
 		environment.camera = camera;
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
 		
 		CharacterEntity player = new CharacterEntity(game.settings.playerName)
-			.setConfig(new FileUtil(
-				EntityManager.entitiesDirectory + "klarrie",
-				FileUtil.Source.INTERNAL))
+			.setConfig(FileUtil.internal(EntityManager.entitiesDirectory + "klarrie"))
 			.create(environment.world);
 		
 		game.settings.mainPlayer = player;

@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.util.io;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.ActivityManager;
@@ -22,8 +23,7 @@ public class FileUtil {
 	@Json(ignore = true) static final String errorMessageIO = errorMessageBase + "We don't know the reason of the error. Only the type. It is IOException!";
 	@Json(ignore = true) static final String errorMessageNotFound = errorMessageBase + "File not found! ";
 	@Json(ignore = true) static final String errorMessageUnknown = errorMessageBase + "Something unexpected has happened! ";
-	@Json(ignore = true) private boolean loadAsync = false;
-	
+	@Json(ignore = true) boolean loadAsync = false;
 	
 	public FileUtil(String path, Source source, boolean loadAsync) {
 		this.path = path;
@@ -134,6 +134,33 @@ public class FileUtil {
 			result = result.substring(1, result.length());
 		}
 		return result;
+	}
+	
+	public void loadAsync(Class<?> clazz) {
+		var game = GameHolder.getInstance();
+		switch(source) {
+			case INTERNAL: {
+				game.assets.load(getPath(), clazz);
+				break;
+			}
+			case EXTERNAL: {
+				game.externalAssets.load(getPath(), clazz);
+				break;
+			}
+		}
+	}
+	
+	public <T> T getLoaded(Class<T> clazz) {
+		var game = GameHolder.getInstance();
+		switch(source) {
+			case INTERNAL: {
+				return game.assets.get(getPath(), clazz);
+			}
+			case EXTERNAL: {
+				return game.externalAssets.get(getPath(), clazz);
+			}
+			default: return null;
+		}
 	}
 	
 	public String getFullPath(boolean isUrl) {

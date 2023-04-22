@@ -68,7 +68,7 @@ public class CharacterSkin {
 	}
 	
 	public CharacterSkin build(FileUtil source, boolean isNew) {
-		Texture texture = new Texture(source.goTo(this.texture).getHandle());
+		Texture texture = new Texture(source.goTo(this.texture).getFileHandle());
 		for(HashMap.Entry<Entity.Animation, AnimationObject> entry : animations.entrySet()) {
 			AnimationObject object = entry.getValue();
 			Sprite[] sprites = new Sprite[object.frames.length];

@@ -39,11 +39,11 @@ public class GameBridge {
 	public void load(String type, String path) {
 		switch(type) {
 			case "music": {
-				game.assets.load(source.getParent().getPath() + path, Music.class);
+				source.getParent().goTo(path).loadAsync(Music.class);
 				break;
 			}
 			case "sound": {
-				game.assets.load(source.getParent().getPath() + path, Sound.class);
+				source.getParent().goTo(path).loadAsync(Sound.class);
 				break;
 			}
 			case "character": {

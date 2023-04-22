@@ -77,7 +77,7 @@ public class LoadingScreen extends CoreScreen {
 		}
         batch.end();
 		
-		if(asset.update(17) && loadStep == RESOURCES) {
+		if(asset.update(17) && game.externalAssets.update(17) && loadStep == RESOURCES) {
             switch(loadScene) {
                 case GAMEPLAY:
                     game.setScreen(new GameplayScreen(environment));

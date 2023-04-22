@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.environment.map;
 
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -59,12 +60,10 @@ public class MapManager {
 			for(String pack : atmosphere.tiles) {
 				Map<String, MapTile> tilesPreset;
 				if(pack.startsWith("$")) {
-					throw new RuntimeException("bruh.");
+					throw new RuntimeException("Unsupported source!");
 				} else {
 					tilesPreset = adapter.fromJson(source.getParent().goTo(pack).readString(true)).tiles;
-				}
-				for(var tile : tilesPreset.entrySet()) {
-					tile.getValue().source = FileUtil.internal(pack);
+					tilesPreset.values().forEach(tile -> tile.source = source.getParent().goTo(pack).getParent());
 				}
 				tilesPresets.putAll(tilesPreset);
 			}
@@ -72,15 +71,12 @@ public class MapManager {
 			ArrayList<LoadingFiles.File> files = new ArrayList<>();
 			for(MapTile tile : tilesPresets.values()) {
 				if(tile.devTexture != null && game.settings.enableEditor) {
-					files.add(new LoadingFiles.File(source.getParent().getParent().goTo(tile.devTexture).getPath(), "texture"));
+					tile.source.goTo(tile.devTexture).loadAsync(Texture.class);
 				}
 				if(tile.texture == null) continue;
-				files.add(new LoadingFiles.File(source.getParent().getParent().goTo(tile.texture).getPath(), "texture"));
+				tile.source.goTo(tile.texture).loadAsync(Texture.class);
 			}
-			Gdx.app.postRunnable(() -> {
-				LoadingFiles.loadToManager(files, "", game.assets);
-				status = Status.LOADING_RESOURCES;
-			});
+			status = Status.LOADING_RESOURCES;
 		} catch(Exception e) {
 			Gdx.files.external("crash.txt").writeString("Crashed while building the map.\n" + e.getMessage(), false);
 			e.printStackTrace();
@@ -138,7 +134,7 @@ public class MapManager {
 	}
 	
 	public void ping() {
-		if(game.assets.update(17) && status == Status.LOADING_RESOURCES) {
+		if(game.assets.update(17) && game.externalAssets.update(17) && status == Status.LOADING_RESOURCES) {
 			buildTerrain();
 			status = Status.BUILDING_BLOCKS;
 		}
@@ -147,10 +143,10 @@ public class MapManager {
 	private void buildTerrain() {
 		for(var tile : tilesPresets.values()) {
 			if(tile.devTexture != null && game.settings.enableEditor) {
-				tile.setTexture(game.assets.get(source.getParent().getParent().goTo(tile.devTexture).getPath()), true);
+				tile.setTexture(tile.source.goTo(tile.devTexture).getLoaded(Texture.class), true);
 			}
 			if(tile.texture != null) {
-				tile.setTexture(game.assets.get(source.getParent().getParent().goTo(tile.texture).getPath()), false);
+				tile.setTexture(tile.source.goTo(tile.texture).getLoaded(Texture.class), false);
 			}
 		}
 		

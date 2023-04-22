@@ -33,7 +33,7 @@ public class PackBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void managePacks() {
-		var dialog = new AndroidDialog().setTitle("Manage Your Packs").setCancelable(false).addSpace(15);
+		var dialog = new AndroidDialog().setTitle("Manage Your Packs").addSpace(15);
 		for(var pack : PackLoader.getPacks()) {
 			dialog.addField(new PackWidget.DialogPackWidget(pack));
 			dialog.addSpace(15);

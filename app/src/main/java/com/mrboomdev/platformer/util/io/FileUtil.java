@@ -223,6 +223,14 @@ public class FileUtil {
 		if(source == Source.NETWORK) game.externalAssets.load("cache/" + getPath(), className);
 	}
 	
+	public FileHandle getFileHandle() {
+		switch(source) {
+			case EXTERNAL: return Gdx.files.external(getPath());
+			default: return Gdx.files.internal(getPath());
+		}
+	}
+	
+	@Deprecated
 	public FileHandle getHandle() {
 		var game = GameHolder.getInstance();
 		if(!loadAsync) return Gdx.files.internal(getPath());

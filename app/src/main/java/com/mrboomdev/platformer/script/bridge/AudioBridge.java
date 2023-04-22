@@ -17,19 +17,19 @@ public class AudioBridge {
 	}
 	
 	public void playSound(String path, float volume) {
-		var sound = game.assets.get(source.goTo(path).getPath(), Sound.class);
+		var sound = source.goTo(path).getLoaded(Sound.class);
 		sound.play(volume * AudioUtil.soundVolume);
 	}
 	
 	public void playSound(String path, float volume, float power, Vector2 position) {
-		var sound = game.assets.get(source.goTo(path).getPath(), Sound.class);
+		var sound = source.goTo(path).getLoaded(Sound.class);
 		AudioUtil.play3DSound(sound, volume, power, position);
 	}
 	
 	public void playMusic(String[] queue, int repeat) {
 		Array<Music> musicQueue = new Array<>();
 		for(String track : queue) {
-			musicQueue.add(game.assets.get(source.goTo(track).getPath()));
+			musicQueue.add(source.goTo(track).getLoaded(Music.class));
 		}
 		AudioUtil.playMusic(musicQueue, repeat);
 	}

@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.ActorUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.ZipUtil;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.serjltt.moshi.adapters.DeserializeOnly;
@@ -142,7 +143,7 @@ public class EditorScreen {
 			.addTo(stage);
 			
 		new ButtonWidget(ButtonWidget.Style.BULLET)
-			.setText("Save to Android/data", game.assets.get("bulletButton.ttf"))
+			.setText("Save", game.assets.get("bulletButton.ttf"))
 			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 1, 14, 14))
 			.toPosition(game.settings.screenInset + 135, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
 			.onClick(() -> {
@@ -150,9 +151,13 @@ public class EditorScreen {
 					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).add(DeserializeOnly.ADAPTER_FACTORY).build();
 					var adapter = moshi.adapter(MapManager.class);
 					var map = game.environment.map;
-					Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
-					String compressedFile = new String(ZipUtil.getCompressedString(adapter.toJson(map)), StandardCharsets.UTF_8);
-					Gdx.files.external("exportedMapCompressed.booma").writeString(compressedFile, false);
+					if(game.mapFile.source == FileUtil.Source.EXTERNAL) {
+						game.mapFile.writeString(adapter.toJson(map), true);
+					} else {
+						Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
+					}
+					/*String compressedFile = new String(ZipUtil.getCompressedString(adapter.toJson(map)), StandardCharsets.UTF_8);
+					Gdx.files.external("exportedMapCompressed.booma").writeString(compressedFile, false);*/
 					
 					var dialog = new AndroidDialog().setTitle("Saved successfully!");
 					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Everything is ok, you can continue."));

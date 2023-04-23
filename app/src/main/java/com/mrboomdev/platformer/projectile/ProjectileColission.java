@@ -46,6 +46,7 @@ public class ProjectileColission implements ContactListener {
 			if (me instanceof TileInteraction && !game.settings.enableEditor) {
 				var player = ((CharacterEntity)enemy);
 				var interaction = (TileInteraction)me;
+				if(interaction.listener == null) return;
 				player.nearInteraction = interaction;
 				interaction.owner.isSelected = true;
 				selectedTilesCount++;
@@ -103,6 +104,7 @@ public class ProjectileColission implements ContactListener {
 		if(me instanceof CharacterEntity && enemy instanceof TileInteraction && !game.settings.enableEditor) {
 			var player = (CharacterEntity)me;
 			var interaction = (TileInteraction)enemy;
+			if(interaction.listener == null) return;
 			player.nearInteraction = null;
 			interaction.owner.isSelected = false;
 			

@@ -1,5 +1,7 @@
 game.load("sound", "sounds/power_end.wav");
+game.load("sound", "sounds/freddy_nose.wav");
 game.load("sound", "sounds/door_close.wav");
+game.load("sound", "sounds/error.wav");
 game.load("character", "characters/freddy");
 game.load("character", "characters/bonnie");
 game.load("character", "characters/chica");
@@ -43,21 +45,54 @@ var doorLeft = map.getById("doorLeft");
 boolean isDoorRightOpened = true;
 boolean isDoorLeftOpened = true;
 
+map.getById("freddyNose").setListener(new InteractionListener() {
+	void use() {
+		audio.playSound("sounds/freddy_nose.wav", 0.5f, 10, map.getById("freddyNose").getPosition(false));
+	}
+});
+
 map.getById("buttonDoorRight").setListener(new InteractionListener() {
 	void use() {
+		if(power <= 0) {
+			audio.playSound("sounds/error.wav", 0.5f, 15, doorRight.getPosition(false));
+			return;
+		}
 		isDoorRightOpened = !isDoorRightOpened;
 		doorRight.style.selectStyle(isDoorRightOpened ? "default" : "close");
 		audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
+		power -= 10;
+		checkIfNoPower();
 	}
 });
 
 map.getById("buttonDoorLeft").setListener(new InteractionListener() {
 	void use() {
+		if(power <= 0) {
+			audio.playSound("sounds/error.wav", 0.5f, 15, doorLeft.getPosition(false));
+			return;
+		}
 		isDoorLeftOpened = !isDoorLeftOpened;
 		doorLeft.style.selectStyle(isDoorLeftOpened ? "default" : "close");
 		audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
+		power -= 10;
+		checkIfNoPower();
 	}
 });
+
+void checkIfNoPower() {
+	if(power <= 0) {
+		doorLeft.style.selectStyle("default");
+		doorRight.style.selectStyle("default");
+		if(doorLeft.style.current.id.equals("close")) {
+			audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
+		}
+		if(doorRight.style.current.id.equals("close")) {
+			audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
+		}
+		audio.playSound("sounds/power_end.wav", 1);
+		core.environment.entities.mainLight.setColor(0.25f ,0.25f ,0.5f, 0.4f);
+	}
+}
 	
 /*
 ui.setFade(1, 0, 4);

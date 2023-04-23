@@ -101,6 +101,9 @@
 	
 		"poster": {
 			"texture": "tiles/posters.png",
+			"interaction": {
+				"timeout": 0.2, "selectable": true, "range": [2, 2]
+			},
 			"style": {
 				"types": {
 					"default": { "region": [0, 0, 22, 33], "size": [1.1, 1.4] },

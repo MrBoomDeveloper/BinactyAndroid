@@ -70,8 +70,8 @@ public class BotBrain extends CharacterBrain {
 		
 		if(toEnemy) {
 			if(entity.getPosition().dst(target.getPosition()) < 2) entity.attack(Vector2.Zero);
-			if(entity.stats.health < entity.stats.maxHealth / 2) shouldGoAway = true;
-			if(entity.stats.stamina > entity.stats.maxStamina / 2) entity.dash();
+			if(entity.stats.health < entity.stats.maxHealth / 3) shouldGoAway = true;
+			if(entity.stats.stamina > entity.stats.maxStamina / 3) entity.dash();
 		}
 		
 		if(toEnemy && target != game.settings.mainPlayer && !shouldGoAway && System.currentTimeMillis() > playerLastDetected + 5000) {

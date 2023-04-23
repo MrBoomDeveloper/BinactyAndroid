@@ -153,7 +153,7 @@ public class CharacterEntity extends EntityAbstract {
 			isDashing = false;
 			dashReloadProgress = 0;
 		}
-		if(damagedProgress < 1) {
+		if(damagedProgress < 1 && !isDashing) {
 			body.setLinearVelocity(damagedPower.scl(5).limit(3));
 		} else {
 			healthPhantom += Gdx.graphics.getDeltaTime() / 2;
@@ -226,8 +226,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		if(wasPower.isZero()) wasPower = new Vector2(5, 0);
 		body.setLinearVelocity(wasPower.scl(100).limit(18));
-		AssetManager assets = GameHolder.getInstance().assets;
-		AudioUtil.play3DSound(assets.get("audio/sounds/dash.wav"), .1f, 10, body.getPosition());
+		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, body.getPosition());
 		
 	}
 	
@@ -235,7 +234,7 @@ public class CharacterEntity extends EntityAbstract {
 		if(damagedProgress < 1) return;
 		damagedProgress = (Math.random() > .8f) ? 0 : .8f;
 		skin.setAnimation(Entity.Animation.DAMAGE);
-		stats.health -= damage;
+		stats.health = Math.max(stats.health - damage, 0);
 		healthPhantom = stats.health;
 		damagedPower = power;
 		

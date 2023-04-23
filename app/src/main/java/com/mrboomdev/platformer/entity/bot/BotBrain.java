@@ -40,7 +40,7 @@ public class BotBrain extends CharacterBrain {
 		this.graph = new PathGraph();
 		var points = new Array<PathPoint>();
 		for(var tile : game.environment.map.tilesMap.values()) {
-			if(!tile.name.equals("triggerAi") && !tile.name.equals("triggerSpawn")) continue;
+			if(!tile.name.equals("6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerAi") && !tile.name.equals("6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerSpawn")) continue;
 			var point = new PathPoint(tile.getPosition(false));
 			this.graph.addPoint(point);
 			points.add(point);

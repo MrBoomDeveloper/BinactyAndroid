@@ -221,4 +221,13 @@ public class AndroidDialog {
 		TEXT,
 		NUMBER
 	}
+	
+	public static AndroidDialog createMessageDialog(String title, String message) {
+		var dialog = new AndroidDialog().setTitle(title);
+		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText(message));
+		dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> {
+			dialog.close();
+		})).addSpace(30);
+		return dialog;
+	}
 }

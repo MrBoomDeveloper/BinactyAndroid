@@ -56,6 +56,14 @@
 						"borderColor": { values: [0, 0, 0, 1] }
 					}
 				}, {
+					"path": "ui/font/roboto-medium.ttf", "as": "buttonWhite.ttf", "type": "font",
+					"font": {
+						"size": 14,
+						"color": { values: [1, 1, 1, 1] },
+						"borderSize": 2,
+						"borderColor": { values: [0, 0, 0, 1] }
+					}
+				}, {
 					"path": "ui/font/roboto-medium.ttf", "as": "nick.ttf", "type": "font",
 					"font": {
 						"size": 22,

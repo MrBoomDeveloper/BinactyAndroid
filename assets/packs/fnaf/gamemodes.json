@@ -12,13 +12,11 @@
 				"banner": "src/banner.png",
 				"type": "match",
 				"file": { "path": "gamemode.java" },
-				"maps": [
-					{
-						"name": "FNaF 1",
-						"author": { "name": "MrBoomDev" },
-						"file": { "path": "maps/fnafMap1.json" }
-					}
-				]
+				"maps": [{
+					"name": "FNaF 1",
+					"author": { "name": "MrBoomDev" },
+					"file": { "path": "maps/fnafMap1.json" }
+				}]
 			}
 		]
 	}

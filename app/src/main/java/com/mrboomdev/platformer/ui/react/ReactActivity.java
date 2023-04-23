@@ -3,8 +3,8 @@ package com.mrboomdev.platformer.ui.react;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -19,34 +19,32 @@ import com.facebook.react.common.LifecycleState;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.soloader.SoLoader;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.common.api.ApiException;
 import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.*;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
+import com.mrboomdev.platformer.ui.react.bridge.AppBridge;
 import com.mrboomdev.platformer.util.AskUtil;
-import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.ZipUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
     public static ReactActivity instance;
     public ReactInstanceManager reactInstance;
-    private ReactRootView root;
-    private SharedPreferences prefs;
-	private long lastBackPressed;
+    public SharedPreferences prefs;
 	public boolean isGameStarted;
+	private long lastBackPressed;
+	private ReactRootView root;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -164,6 +162,27 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 				} catch(Exception e) {
 					e.printStackTrace();
 					new AndroidDialog.SimpleBuilder("Failed to load the pack").addText("Error message: " + e.getMessage()).show();
+				}
+				break;
+			}
+			
+			case 2: {
+				if(resultCode == Activity.RESULT_OK) {
+					try {
+						SignInCredential credentials = Identity.getSignInClient(this).getSignInCredentialFromIntent(intent);
+						prefs.edit()
+							.putBoolean("isSignedIn", true)
+							.putString("signedInMethod", "google")
+							.putString("nick", credentials.getDisplayName())
+							.putString("avatar", credentials.getProfilePictureUri().toString())
+							.commit();
+						ActivityManager.forceExit();
+					} catch(Exception e) {
+						e.printStackTrace();
+						AndroidDialog.createMessageDialog("Failed to get the data", "Stacktrace:\n" + Log.getStackTraceString(e)).show();
+					}
+				} else {
+					AndroidDialog.createMessageDialog("Failed to select the Account", "Please, try again later.").show();
 				}
 				break;
 			}

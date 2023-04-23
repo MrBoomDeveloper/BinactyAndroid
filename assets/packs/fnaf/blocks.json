@@ -214,20 +214,6 @@
 					]
 				}
 			}
-		},
-	
-	
-		"barrier": {
-			"devTexture": "../core/tiles/barrier.png", "size": [2, 2],
-			"colission": [2, 2, 0, 0]
-		},
-	
-		"triggerAi": {
-			"devTexture": "../core/tiles/trigger_ai.png", "size": [2, 2]
-		},
-	
-		"triggerSpawn": {
-			"devTexture": "../core/tiles/trigger_spawn.png", "size": [2, 2]
 		}
 	}
 }

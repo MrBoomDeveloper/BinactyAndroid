@@ -102,17 +102,6 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		promise.resolve(result);
 	}
 	
-	@ReactMethod
-	public void getMyData(Promise promise) {
-		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
-		WritableMap data = Arguments.createMap();
-		data.putString("nick", prefs.getString("nick", "Player"));
-    	data.putString("avatar", "klarrie");
-        data.putInt("level", 1);
-        data.putInt("progress", 0);
-        promise.resolve(data);
-	}
-	
     @ReactMethod
     public void getPlayerData(String nick, Promise promise) {
         WritableMap data = Arguments.createMap();

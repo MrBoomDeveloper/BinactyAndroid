@@ -116,4 +116,11 @@ public class PackLoader {
 		}));
 		dialog.addSpace(15).show();
 	}
+	
+	public static PackData.Manifest findById(String id) {
+		for(var pack : getPacks()) {
+			if(pack.id.equals(id)) return pack;
+		}
+		throw new NullPointerException("No pack with a such name were found: " + id);
+	}
 }

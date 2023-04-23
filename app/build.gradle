@@ -105,6 +105,7 @@ dependencies {
 	implementation "com.google.firebase:firebase-crashlytics"
 	implementation "com.google.firebase:firebase-messaging"
 	implementation "com.google.firebase:firebase-analytics"
+	implementation "com.google.android.gms:play-services-auth:20.5.0"
 	
 	implementation "com.google.code.gson:gson:2.10"
 	implementation "com.squareup.moshi:moshi:1.14.0"

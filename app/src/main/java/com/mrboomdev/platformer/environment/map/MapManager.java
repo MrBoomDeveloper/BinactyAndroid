@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -60,7 +61,15 @@ public class MapManager {
 			for(String pack : atmosphere.tiles) {
 				Map<String, MapTile> tilesPreset;
 				if(pack.startsWith("$")) {
-					throw new RuntimeException("Unsupported source!");
+					var packName = pack.substring(1, pack.indexOf("/"));
+					var dir = PackLoader.findById(packName).source;
+					var file = dir.goTo(pack.substring(pack.indexOf("/") + 1, pack.length()));
+					tilesPreset = adapter.fromJson(file.readString(true)).tiles;
+					for(var tile : tilesPreset.values()) {
+						tile.source = file.getParent();
+						//tile.name = packName + ":" + tile.name;
+					}
+					addPrefix(tilesPreset, packName + ":");
 				} else {
 					tilesPreset = adapter.fromJson(source.getParent().goTo(pack).readString(true)).tiles;
 					tilesPreset.values().forEach(tile -> tile.source = source.getParent().goTo(pack).getParent());
@@ -84,6 +93,18 @@ public class MapManager {
 		}
 		return this;
 	}
+	
+	private void addPrefix(Map<String, MapTile> hashMap, String prefix) {
+    	Map<String, MapTile> newHashMap = new HashMap<>();
+    	for(var entry : hashMap.entrySet()) {
+        	String newKey = prefix + entry.getKey();
+        	MapTile value = entry.getValue();
+        	newHashMap.put(newKey, value);
+    	}
+   	 hashMap.clear();
+   	 hashMap.putAll(newHashMap);
+	}
+
 	
 	//Prevents from dublicate tiles
 	private String getTextPosition(float[] position, int layer) {

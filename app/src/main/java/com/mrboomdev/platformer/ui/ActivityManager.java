@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.ui;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mrboomdev.platformer.R;
@@ -60,5 +61,11 @@ public class ActivityManager {
 		var instance = reactActivity.reactInstance;
 		ReactContext context = instance.getCurrentReactContext();
 		context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ForceExit", null);
+	}
+	
+	public static void toast(String text, boolean isLong) {
+		current.runOnUiThread(() -> {
+			Toast.makeText(current.getApplication(), text, (isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show();
+		});
 	}
 }

@@ -6,7 +6,9 @@ import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.NativeModule;
 import com.mrboomdev.platformer.ui.react.bridge.AppBridge;
 import com.mrboomdev.platformer.ui.react.bridge.PackBridge;
+import com.mrboomdev.platformer.ui.react.view.ReactCharacterViewManager;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,15 +16,17 @@ public class ReactGame implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext context) {
-        ArrayList<NativeModule> modules = new ArrayList<>();
-        modules.add(new ReactBridge(context));
-		modules.add(new PackBridge(context));
-		modules.add(new AppBridge(context));
-        return modules;
+		return Arrays.<NativeModule>asList(
+            new ReactBridge(context),
+			new PackBridge(context),
+			new AppBridge(context)
+       );
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext context) {
-        return Collections.emptyList();
+        return Arrays.<ViewManager>asList(
+            new ReactCharacterViewManager(context)
+       );
     }
 }

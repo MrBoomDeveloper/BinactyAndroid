@@ -42,6 +42,7 @@ public class GameLauncher extends AndroidApplication {
 		
 		var settings = GameSettings.getFromSharedPreferences(prefs);
 		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
+		settings.ignoreScriptErrors = true;
 		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
 		var game = GameHolder.getInstance();
 		try {

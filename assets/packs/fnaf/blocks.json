@@ -102,7 +102,7 @@
 		"poster": {
 			"texture": "tiles/posters.png",
 			"interaction": {
-				"timeout": 0.2, "selectable": true, "range": [2, 2]
+				"timeout": 0.2, "selectable": true, "range": [1, 1]
 			},
 			"style": {
 				"types": {

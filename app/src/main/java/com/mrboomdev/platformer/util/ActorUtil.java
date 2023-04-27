@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 
+@SuppressWarnings("unchecked")
 public abstract class ActorUtil extends Actor {
 	public CharacterEntity connectedEntity;
 
@@ -17,17 +18,17 @@ public abstract class ActorUtil extends Actor {
 		return this;
 	}
 	
-	public ActorUtil toPosition(float x, float y) {
+	public <T extends ActorUtil> T toPosition(float x, float y) {
 		setPosition(x, y);
-		return this;
+		return (T)this;
 	}
 	
-	public ActorUtil toSize(float width, float height) {
+	public <T extends ActorUtil> T toSize(float width, float height) {
 		setSize(width, height);
-		return this;
+		return (T)this;
 	}
 	
-	public ActorUtil connectToScroller(Scrollable scroller) {
+	public <T extends ActorUtil> T connectToScroller(Scrollable scroller) {
 		this.addListener(new InputListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int poiner, int button) {
@@ -40,32 +41,32 @@ public abstract class ActorUtil extends Actor {
 				scroller.handleScroll(x, y);
 			}
 		});
-		return this;
+		return (T)this;
 	}
 	
-	public ActorUtil connectToEntity(CharacterEntity entity) {
+	public <T extends ActorUtil> T connectToEntity(CharacterEntity entity) {
 		connectedEntity = entity;
-		return this;
+		return (T)this;
 	}
 	
-	public ActorUtil addTo(Stage stage) {
+	public <T extends ActorUtil> T addTo(Stage stage) {
 		stage.addActor(this);
-		return this;
+		return (T)this;
 	}
 	
-	public ActorUtil addTo(Table table) {
+	public <T extends ActorUtil> T addTo(Table table) {
 		table.add(this);
-		return this;
+		return (T)this;
 	}
 	
-	public ActorUtil onClick(onClickListener listener) {
+	public <T extends ActorUtil> T onClick(onClickListener listener) {
 		this.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				listener.clicked();
 			}
 		});
-		return this;
+		return (T)this;
 	}
 
 	public interface onClickListener {

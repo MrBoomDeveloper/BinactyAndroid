@@ -14,6 +14,7 @@ public class ActivityManager {
 	public static ReactActivity reactActivity;
 	
 	public static void startMusic() {
+		stopMusic();
 		media = MediaPlayer.create(current, R.raw.lobby_theme);
 		setVolume(current.getSharedPreferences("Save", 0).getInt("musicVolume", 100) / 100);
 		media.setLooping(true);
@@ -26,7 +27,12 @@ public class ActivityManager {
 	
 	public static void resumeMusic() {
 		if(media == null) return;
-		media.start();
+		try {
+			media.start();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static void pauseMusic() {

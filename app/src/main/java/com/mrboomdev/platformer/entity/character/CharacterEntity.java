@@ -244,6 +244,10 @@ public class CharacterEntity extends EntityAbstract {
 		}
 	}
 	
+	public void gainDamage(int damage) {
+		this.gainDamage(damage, Vector2.Zero);
+	}
+	
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
 		if(damagedProgress < .4f) return;

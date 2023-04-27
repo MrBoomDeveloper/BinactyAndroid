@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.util;
 
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +9,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 
 public class AudioUtil {
 	public static float musicVolume = 1, soundVolume = 1;
+	public static Array<Music> playingMusic = new Array<>();
 	private static Array<Music> musicQueue = new Array<>();
 	
 	public static void setVolume(float music, float sound) {
@@ -31,6 +33,11 @@ public class AudioUtil {
 	
 	public static void stopMusic() {
 		for(Music music : musicQueue) {
+			music.pause();
+			music.stop();
+		}
+		
+		for(Music music : playingMusic) {
 			music.pause();
 			music.stop();
 		}

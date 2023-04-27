@@ -2,15 +2,20 @@ game.load("sound", "sounds/power_end.wav");
 game.load("sound", "sounds/freddy_nose.wav");
 game.load("sound", "sounds/door_close.wav");
 game.load("sound", "sounds/error.wav");
+game.load("sound", "sounds/foxy_song.wav");
+game.load("sound", "sounds/win.wav");
 game.load("character", "characters/freddy");
 game.load("character", "characters/bonnie");
 game.load("character", "characters/chica");
 game.load("character", "characters/foxy");
+game.load("music", "music/music_box.wav");
+game.load("music", "music/light.wav");
 for(int i = 1; i < 5; i++) {
 	game.load("music", "music/dark_ambience_" + i + ".ogg");
 }
 
-int power = 100;
+int power = 100, usage = 1;
+var powerWidget, usageWidget;
 
 /*teams.addTeam("Guard")
 	.setSpawnTiles("playerSpawn")
@@ -32,90 +37,114 @@ bots[2] = entities.createCharacter("characters/chica").setSpawnTiles(new String[
 bots[3] = entities.createCharacter("characters/foxy").setSpawnTiles(new String[]{"#id:foxySpawn"});
 for(var bot : bots) { bot.create(); }
 
-game.setTimer(new Runnable() {
-	void run() {
-		for(var bot : bots) {
-			bot.setBot();
-		}
-	}
-}, 15);
+var staticLights = new ArrayList();
+for(int i = 1; i < 13; i++) {
+	staticLights.add(map.getById("staticLight" + i));
+}
 
-var doorRight = map.getById("doorRight");
-var doorLeft = map.getById("doorLeft");
-boolean isDoorRightOpened = true;
-boolean isDoorLeftOpened = true;
-
-map.getById("freddyNose").setListener(new InteractionListener() {
-	void use() {
-		audio.playSound("sounds/freddy_nose.wav", 0.5f, 10, map.getById("freddyNose").getPosition(false));
+game.setTimer(new Runnable() {run() {
+	for(var bot : bots) {
+		bot.setBot();
 	}
-});
+}}, 15);
 
-map.getById("buttonDoorRight").setListener(new InteractionListener() {
-	void use() {
-		if(power <= 0) {
-			audio.playSound("sounds/error.wav", 0.5f, 15, doorRight.getPosition(false));
-			return;
-		}
-		isDoorRightOpened = !isDoorRightOpened;
-		doorRight.style.selectStyle(isDoorRightOpened ? "default" : "close");
-		audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
-		power -= 10;
-		checkIfNoPower();
-	}
-});
+var doorRight = map.getById("doorRight"), doorLeft = map.getById("doorLeft");
+boolean isDoorRightOpened = true, isDoorLeftOpened = true;
 
-map.getById("buttonDoorLeft").setListener(new InteractionListener() {
-	void use() {
-		if(power <= 0) {
-			audio.playSound("sounds/error.wav", 0.5f, 15, doorLeft.getPosition(false));
-			return;
-		}
-		isDoorLeftOpened = !isDoorLeftOpened;
-		doorLeft.style.selectStyle(isDoorLeftOpened ? "default" : "close");
-		audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
-		power -= 10;
-		checkIfNoPower();
+var lightRight = map.getById("lightRight"), lightLeft = map.getById("lightLeft");
+boolean isLightRightOn, isLightLeftOn;
+
+map.getById("freddyNose").setListener(new InteractionListener() {use() {
+	audio.playSound("sounds/freddy_nose.wav", 0.5f, 10, map.getById("freddyNose").getPosition(false));
+}});
+
+map.getById("buttonLightRight").setListener(new InteractionListener() {use() {
+	if(power <= 0) {
+		audio.playSound("sounds/error.wav", 0.5f, 15, lightRight.getPosition(false));
+		return;
 	}
-});
+	isLightRightOn = !isLightRightOn;
+	lightRight.pointLight.setActive(isLightRightOn);
+	usage += (isLightRightOn ? 1 : -1);
+	uiUpdate();
+}});
+
+map.getById("buttonLightLeft").setListener(new InteractionListener() {use() {
+	if(power <= 0) {
+		audio.playSound("sounds/error.wav", 0.5f, 15, lightLeft.getPosition(false));
+		return;
+	}
+	isLightLeftOn = !isLightLeftOn;
+	lightLeft.pointLight.setActive(isLightLeftOn);
+	usage += (isLightLeftOn ? 1 : -1);
+	uiUpdate();
+}});
+
+map.getById("buttonDoorRight").setListener(new InteractionListener() {use() {
+	if(power <= 0) {
+		audio.playSound("sounds/error.wav", 0.5f, 15, doorRight.getPosition(false));
+		return;
+	}
+	isDoorRightOpened = !isDoorRightOpened;
+	doorRight.style.selectStyle(isDoorRightOpened ? "default" : "close");
+	audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
+	usage += isDoorRightOpened ? -1 : 1;
+	uiUpdate();
+}});
+
+map.getById("buttonDoorLeft").setListener(new InteractionListener() {use() {
+	if(power == 0) {
+		audio.playSound("sounds/error.wav", 0.5f, 15, doorLeft.getPosition(false));
+		return;
+	}
+	isDoorLeftOpened = !isDoorLeftOpened;
+	doorLeft.style.selectStyle(isDoorLeftOpened ? "default" : "close");
+	audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
+	usage += isDoorLeftOpened ? -1 : 1;
+	uiUpdate();
+}});
 
 void checkIfNoPower() {
-	if(power <= 0) {
+	if(power == 0) {
 		doorLeft.style.selectStyle("default");
 		doorRight.style.selectStyle("default");
-		if(doorLeft.style.current.id.equals("close")) {
+		if(!isDoorLeftOpened) {
 			audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
 		}
-		if(doorRight.style.current.id.equals("close")) {
+		if(!isDoorRightOpened) {
 			audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
 		}
+		
+		lightLeft.pointLight.setActive(false);
+		lightRight.pointLight.setActive(false);
+		
 		audio.playSound("sounds/power_end.wav", 1);
-		core.environment.entities.mainLight.setColor(0.25f ,0.25f ,0.5f, 0.4f);
+		core.environment.entities.mainLight.setColor(0.25f, 0.25f, 0.5f, 0.4f);
+		
+		for(var light : staticLights) {
+			light.pointLight.setActive(false);
+		}
+		
+		game.setTimer(new Runnable() {run() {
+			audio.playMusic("music/music_box.wav", 0.5f);
+		}}, 3);
 	}
 }
 	
-/*
-ui.setFade(1, 0, 4);
+/*ui.setFade(1, 0, 4);
 ui.setTitle("SURVIVE THE NIGHT", 4);
 ui.setTimer(360, 1.4, true);*/
 
 ui.setListener(new UiListener() {
-	void timerEnd() {
+	timerEnd() {
+		audio.playSound("sounds/win.wav", 1);
+		for(var bot : bots) { bot.entity.gainDamage(999); }
 		game.over(Target.MAIN_PLAYER, true);
-	}
-	
-	void timerNextSecond() {
-		power--;
-		if(power <= 0) {
-			environment.setEnvironmentColor(0, 0, 0, 0.1);
-			audio.clearMusic();
-			audio.playSound("sounds/power_end.wav", 1);
-		}
 	}
 });
 
 entities.setListener(new EntityListener() {
-	void died(entity) {
+	died(entity) {
 		if(entity.isTarget(Target.MAIN_PLAYER)) {
 			game.over(entity, false);
 		}
@@ -123,14 +152,47 @@ entities.setListener(new EntityListener() {
 });
 
 game.setListener(new GameListener() {
-	void start() {
+	start() {
 		audio.playMusic(new String[]{
 			"music/dark_ambience_1.ogg",
 			"music/dark_ambience_2.ogg",
 			"music/dark_ambience_3.ogg",
 			"music/dark_ambience_4.ogg"},
 		999);
+		usageWidget = ui.createText("statBarWidget.ttf").setText("Usage: 1").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 25);
+		powerWidget = ui.createText("statBarWidget.ttf").setText("100%").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 60);
+		powerUpdate();
+		
+		lightLeft.pointLight.setActive(false);
+		lightRight.pointLight.setActive(false);
+		
+		game.setTimer(new Runnable() {run() {
+			audio.playSound("sounds/foxy_song.wav", 0.2f);
+		}}, (float)(Math.random() * 600 + 30));
 	}
 });
 
-game.ready();
+void powerUpdate() {
+	game.setTimer(new Runnable() {run() {
+		if(power <= 0) {
+			uiUpdate();
+			return;
+		}
+		
+		power -= 1;
+		checkIfNoPower();
+		powerUpdate();
+		uiUpdate();
+	}}, 5 / usage);
+}
+
+void uiUpdate() {
+	if(power > 0) {
+		powerWidget.setText(power + "%").setOpacity(1);
+		usageWidget.setText("Usage: " + usage);
+		return;
+	}
+	
+	powerWidget.setOpacity(0);
+	usageWidget.setOpacity(0);
+}

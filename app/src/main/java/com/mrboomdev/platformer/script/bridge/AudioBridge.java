@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.script.bridge;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
@@ -29,8 +30,16 @@ public class AudioBridge {
 	public void playMusic(String[] queue, int repeat) {
 		Array<Music> musicQueue = new Array<>();
 		for(String track : queue) {
-			musicQueue.add(source.goTo(track).getLoaded(Music.class));
+			musicQueue.add(Gdx.audio.newMusic(source.goTo(track).getFileHandle()));
 		}
 		AudioUtil.playMusic(musicQueue, repeat);
+	}
+	
+	public Music playMusic(String path, float volume) {
+		var music = Gdx.audio.newMusic(source.goTo(path).getFileHandle());
+		music.setVolume(AudioUtil.musicVolume * volume);
+		music.play();
+		AudioUtil.playingMusic.add(music);
+		return music;
 	}
 }

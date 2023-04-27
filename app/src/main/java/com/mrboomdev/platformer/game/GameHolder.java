@@ -96,4 +96,6 @@ public class GameHolder extends Game {
 			super.load(file, fileClass);
 		}
 	}
+	
+	public GameHolder() {}
 }

@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.script;
 
+import android.util.Log;
 import bsh.EvalError;
 import bsh.Interpreter;
 import com.badlogic.gdx.Gdx;
@@ -10,6 +11,7 @@ import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.script.bridge.MapBridge;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
+import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class ScriptManager {
@@ -37,6 +39,7 @@ public class ScriptManager {
 		this.eval("import com.mrboomdev.platformer.script.bridge.UiBridge.UiListener;");
 		this.eval("import com.mrboomdev.platformer.entity.character.CharacterCreator;");
 		this.eval("import com.mrboomdev.platformer.environment.map.tile.TileInteraction.InteractionListener;");
+		this.eval("import com.mrboomdev.platformer.util.ui.ActorUtil.Align;");
 		this.put("game", gameBridge);
 		this.put("ui", uiBridge);
 		this.put("map", mapBridge);
@@ -49,9 +52,7 @@ public class ScriptManager {
 		try {
 			interpreter.eval(code);
 		} catch(EvalError e) {
-			e.printStackTrace();
-			Gdx.files.external("crash.txt").writeString(e.getMessage(), false);
-			game.launcher.exit(GameLauncher.Status.CRASH);
+			handleException(e);
 		}
 	}
 	
@@ -59,8 +60,16 @@ public class ScriptManager {
 		try {
 			interpreter.set(reference, value);
 		} catch(EvalError e) {
-			e.printStackTrace();
-			Gdx.files.external("crash.txt").writeString(e.getMessage(), false);
+			handleException(e);
+		}
+	}
+	
+	private void handleException(Throwable t) {
+		t.printStackTrace();
+		Gdx.files.external("crash.txt").writeString(Log.getStackTraceString(t), false);
+		if(game.settings.ignoreScriptErrors) {
+			ActivityManager.toast("Script error has happened! Check the logs!", true);
+		} else {
 			game.launcher.exit(GameLauncher.Status.CRASH);
 		}
 	}

@@ -8,7 +8,7 @@
 					"path": "ui/font/gilroyBold.ttf", "as": "loading.ttf", "type": "font",
 					"font": {
 						"size": 45,
-						"color": { values: [255, 255, 255, 1] },
+						"color": { values: [1, 1, 1, 1] },
 						"borderSize": 3,
 						"borderColor": { values: [0, 0, 0, 1] }
 					}
@@ -16,7 +16,7 @@
 					"path": "ui/font/gilroyBold.ttf", "as": "title.ttf", "type": "font",
 					"font": {
 						"size": 100,
-						"color": { values: [255, 255, 255, 1] }
+						"color": { values: [1, 1, 1, 1] }
 					}
 				}
 			]
@@ -51,7 +51,7 @@
 					"path": "ui/font/roboto-medium.ttf", "as": "debug.ttf", "type": "font",
 					"font": {
 						"size": 14,
-						"color": { values: [255, 255, 255, 1] },
+						"color": { values: [1, 1, 1, 1] },
 						"borderSize": 1,
 						"borderColor": { values: [0, 0, 0, 1] }
 					}
@@ -67,7 +67,7 @@
 					"path": "ui/font/roboto-medium.ttf", "as": "nick.ttf", "type": "font",
 					"font": {
 						"size": 22,
-						"color": { values: [255, 255, 255, 1] },
+						"color": { values: [1, 1, 1, 1] },
 						"borderSize": 1,
 						"borderColor": { values: [0, 0, 0, 1] }
 					}
@@ -75,7 +75,7 @@
 					"path": "ui/font/gilroyBold.ttf", "as": "timer.ttf", "type": "font",
 					"font": {
 						"size": 60,
-						"color": { values: [255, 255, 255, 1] },
+						"color": { values: [1, 1, 1, 1] },
 						"borderColor": { values: [0, 0, 0, 1] },
 						"borderSize": 1
 					}
@@ -83,7 +83,7 @@
 					"path": "ui/font/productSansBlack.ttf", "as": "statBarWidget.ttf", "type": "font",
 					"font": {
 						"size": 18,
-						"color": { values: [255, 255, 255, 1] },
+						"color": { values: [1, 1, 1, 1] },
 						"borderColor": { values: [0, 0, 0, 1] },
 						"borderSize": 2
 					}

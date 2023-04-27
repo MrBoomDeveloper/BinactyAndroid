@@ -60,10 +60,6 @@ public class GameBridge {
 		}
 	}
 	
-	public void ready() {
-		
-	}
-	
 	public interface GameListener {
 		public void start();
 		public void build();

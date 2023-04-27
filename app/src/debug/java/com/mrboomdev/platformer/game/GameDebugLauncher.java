@@ -25,6 +25,7 @@ public class GameDebugLauncher extends GameLauncher {
 		var game = GameHolder.getInstance();
 		game.gamemodeFile = FileUtil.internal("packs/fnaf/gamemode.java");
 		game.mapFile = FileUtil.internal("packs/fnaf/maps/fnafMap1.json");
+		AudioUtil.setVolume(1, 1);
 		
 		menu = new GameDebugMenu(this);
 		DynamicColors.applyToActivityIfAvailable(this);

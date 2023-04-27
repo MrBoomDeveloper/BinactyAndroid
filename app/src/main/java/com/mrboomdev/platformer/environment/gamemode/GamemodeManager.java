@@ -37,7 +37,7 @@ public class GamemodeManager {
 	
 	public GamemodeManager(GamemodeScript scriptOld, FileUtil scenario) {
 		game.script = new ScriptManager(scenario);
-		game.script.eval(scenario.readString(true));
+		if(!game.settings.enableEditor) game.script.eval(scenario.readString(true));
 		
 		this.script = scriptOld;
 		scriptOld.start.forEach(function -> stack.add(new StackOperation(function, null)));
@@ -147,16 +147,13 @@ public class GamemodeManager {
 	
 	public void createUi(Stage stage) {
 		if(game.settings.enableEditor) return;
-		timer = (TextWidget)new TextWidget("timer.ttf")
-			.setOpacity(0)
-			.toPosition(new Vector2(
-				Gdx.graphics.getWidth() / 2,
-				Gdx.graphics.getHeight() - game.settings.screenInset))
+		timer = new TextWidget("timer.ttf").setOpacity(0)
+			.toPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - game.settings.screenInset)
 			.addTo(stage);
 		
-		fade = (FadeWidget) new FadeWidget(script.options.initialFade).addTo(stage);
+		fade = new FadeWidget(script.options.initialFade).addTo(stage);
 		
-		title = (TextWidget) new TextWidget("title.ttf").setOpacity(0)
+		title = new TextWidget("title.ttf").setOpacity(0)
 			.toPosition(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 50))
 			.addTo(stage);
 	}

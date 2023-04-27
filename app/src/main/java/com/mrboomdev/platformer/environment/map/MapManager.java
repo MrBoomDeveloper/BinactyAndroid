@@ -44,7 +44,11 @@ public class MapManager {
 	public void render(SpriteBatch batch) {
 		pendingRemoves.forEach(obj -> obj.remove());
 		pendingRemoves.clear();
-		Collections.sort(objects);
+		try {
+			Collections.sort(objects);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		for(MapObject object : objects) {
 			object.draw(batch);
 		}
@@ -67,7 +71,6 @@ public class MapManager {
 					tilesPreset = adapter.fromJson(file.readString(true)).tiles;
 					for(var tile : tilesPreset.values()) {
 						tile.source = file.getParent();
-						//tile.name = packName + ":" + tile.name;
 					}
 					addPrefix(tilesPreset, packName + ":");
 				} else {

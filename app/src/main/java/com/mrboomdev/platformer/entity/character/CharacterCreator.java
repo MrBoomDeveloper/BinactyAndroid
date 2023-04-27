@@ -7,8 +7,8 @@ import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 
 public class CharacterCreator {
+	public CharacterEntity entity;
 	private GameHolder game = GameHolder.getInstance();
-	private CharacterEntity entity;
 	private String spawnTile;
 	
 	public CharacterCreator(CharacterEntity entity) {
@@ -25,7 +25,7 @@ public class CharacterCreator {
 		return this;
 	}
 	
-	public void create() {
+	public CharacterEntity create() {
 		entity.create(game.environment.world);
 		if(spawnTile.startsWith("#id:")) {
 			var results = game.environment.map.tilesMap.values().toArray().select((var tile) -> {
@@ -39,5 +39,6 @@ public class CharacterCreator {
 		}
 		game.environment.map.objects.add(new MapEntity(entity));
 		game.environment.entities.characters.add(entity);
+		return entity;
 	}
 }

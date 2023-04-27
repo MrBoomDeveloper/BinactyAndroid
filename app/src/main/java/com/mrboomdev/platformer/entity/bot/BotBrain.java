@@ -26,7 +26,7 @@ public class BotBrain extends CharacterBrain {
 	private Sound playerDetectedSound;
 	private long playerLastDetected, mapLastScanned;
 	
-	public BotBrain(EntityManager entityManager) {
+	public BotBrain start(EntityManager entityManager) {
 		this.entityManager = entityManager;
 		this.stuckChecker = new AiStuckChecker();
 		this.targeter = new AiTargeter(this);
@@ -34,6 +34,7 @@ public class BotBrain extends CharacterBrain {
 		dashReloadDuration = (float)(Math.random() * 1);
 		playerDetectedSound = game.assets.get("audio/sounds/player_detected.wav");
 		scanMap();
+		return this;
 	}
 	
 	public void scanMap() {

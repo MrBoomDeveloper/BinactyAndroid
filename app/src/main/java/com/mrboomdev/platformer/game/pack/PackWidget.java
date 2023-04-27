@@ -135,7 +135,7 @@ public class PackWidget {
 							default: return false;
 						}
 					});
-					popup.setGravity(Gravity.RIGHT);
+					popup.setGravity(Gravity.END);
 					if(popup.getMenu().size() > 0) popup.show();
 					return false;
 				});

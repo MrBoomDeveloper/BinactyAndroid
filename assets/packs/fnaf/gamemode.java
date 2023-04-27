@@ -9,42 +9,33 @@ game.load("character", "characters/bonnie");
 game.load("character", "characters/chica");
 game.load("character", "characters/foxy");
 game.load("music", "music/music_box.wav");
+game.load("music", "music/6am.wav");
 game.load("music", "music/light.wav");
 for(int i = 1; i < 5; i++) {
 	game.load("music", "music/dark_ambience_" + i + ".ogg");
 }
 
+boolean isGameEnded = false;
 int power = 100, usage = 1;
 var powerWidget, usageWidget;
 
-/*teams.addTeam("Guard")
-	.setSpawnTiles("playerSpawn")
-	.fillWithPlayers(1);
+var botBrain = entities.createBrain().build();
 
-teams.addTeam("Animatronics")
-	.setShowNames(false);*/
-	
-/*
-botBrain = new BotBrainBuilder()
-	.setTiles("triggerAi", "triggerSpawn")
-	.setFamily("Animatronics");
-*/
-
-var bots = new CharacterCreator[4];
-bots[0] = entities.createCharacter("characters/freddy").setSpawnTiles(new String[]{"#id:freddySpawn"});
-bots[1] = entities.createCharacter("characters/bonnie").setSpawnTiles(new String[]{"#id:bonnieSpawn"});
-bots[2] = entities.createCharacter("characters/chica").setSpawnTiles(new String[]{"#id:chicaSpawn"});
-bots[3] = entities.createCharacter("characters/foxy").setSpawnTiles(new String[]{"#id:foxySpawn"});
+var bots = new ArrayList();
+bots.add(entities.createCharacter("characters/freddy").setSpawnTiles(new String[]{"#id:freddySpawn"}));
+bots.add(entities.createCharacter("characters/bonnie").setSpawnTiles(new String[]{"#id:bonnieSpawn"}));
+bots.add(entities.createCharacter("characters/chica").setSpawnTiles(new String[]{"#id:chicaSpawn"}));
+bots.add(entities.createCharacter("characters/foxy").setSpawnTiles(new String[]{"#id:foxySpawn"}));
 for(var bot : bots) { bot.create(); }
 
 var staticLights = new ArrayList();
-for(int i = 1; i < 13; i++) {
+for(int i = 1; i <= 13; i++) {
 	staticLights.add(map.getById("staticLight" + i));
 }
 
 game.setTimer(new Runnable() {run() {
 	for(var bot : bots) {
-		bot.setBot();
+		bot.setBot(botBrain);
 	}
 }}, 15);
 
@@ -105,6 +96,7 @@ map.getById("buttonDoorLeft").setListener(new InteractionListener() {use() {
 }});
 
 void checkIfNoPower() {
+	if(isGameEnded) return;
 	if(power == 0) {
 		doorLeft.style.selectStyle("default");
 		doorRight.style.selectStyle("default");
@@ -118,6 +110,7 @@ void checkIfNoPower() {
 		lightLeft.pointLight.setActive(false);
 		lightRight.pointLight.setActive(false);
 		
+		audio.clear();
 		audio.playSound("sounds/power_end.wav", 1);
 		core.environment.entities.mainLight.setColor(0.25f, 0.25f, 0.5f, 0.4f);
 		
@@ -125,27 +118,42 @@ void checkIfNoPower() {
 			light.pointLight.setActive(false);
 		}
 		
+		for(var bot : bots) {
+			bot.entity.stats.speed *= 3;
+			bot.entity.stats.damage *= 3;
+			bot.entity.stats.maxHealth *= 3;
+			bot.entity.stats.stamina *= 3;
+			bot.entity.gainDamage(-999);
+		}
+		
 		game.setTimer(new Runnable() {run() {
 			audio.playMusic("music/music_box.wav", 0.5f);
-		}}, 3);
+		}}, (float)(Math.random() * 10 + 3));
 	}
 }
 	
-/*ui.setFade(1, 0, 4);
+/*ui.setFade(1, 0, 0.5f);
 ui.setTitle("SURVIVE THE NIGHT", 4);
-ui.setTimer(360, 1.4, true);*/
+ui.setTimer(360, 1.5, true);*/
 
 ui.setListener(new UiListener() {
 	timerEnd() {
-		audio.playSound("sounds/win.wav", 1);
+		isGameEnded = true;
+		audio.playMusic("music/6am.wav", 1);
+		game.setTimer(new Runnable() {run() {
+			audio.playSound("sounds/win.wav", 1);
+		}}, 6);
 		for(var bot : bots) { bot.entity.gainDamage(999); }
-		game.over(Target.MAIN_PLAYER, true);
+		game.setTimer(new Runnable() {run() {
+			game.over(entities.getCharacter(Target.MAIN_PLAYER), true);
+		}}, 8);
 	}
 });
 
 entities.setListener(new EntityListener() {
 	died(entity) {
 		if(entity.isTarget(Target.MAIN_PLAYER)) {
+			isGameEnded = true;
 			game.over(entity, false);
 		}
 	}
@@ -167,14 +175,15 @@ game.setListener(new GameListener() {
 		lightRight.pointLight.setActive(false);
 		
 		game.setTimer(new Runnable() {run() {
-			audio.playSound("sounds/foxy_song.wav", 0.2f);
+			if(isGameEnded) return;
+			audio.playSound("sounds/foxy_song.wav", 0.1f);
 		}}, (float)(Math.random() * 600 + 30));
 	}
 });
 
 void powerUpdate() {
 	game.setTimer(new Runnable() {run() {
-		if(power <= 0) {
+		if(power <= 0 || isGameEnded) {
 			uiUpdate();
 			return;
 		}
@@ -183,7 +192,7 @@ void powerUpdate() {
 		checkIfNoPower();
 		powerUpdate();
 		uiUpdate();
-	}}, 5 / usage);
+	}}, 6 / usage);
 }
 
 void uiUpdate() {

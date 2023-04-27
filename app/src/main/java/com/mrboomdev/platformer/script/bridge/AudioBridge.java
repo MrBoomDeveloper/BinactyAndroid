@@ -38,8 +38,15 @@ public class AudioBridge {
 	public Music playMusic(String path, float volume) {
 		var music = Gdx.audio.newMusic(source.goTo(path).getFileHandle());
 		music.setVolume(AudioUtil.musicVolume * volume);
+		music.setOnCompletionListener((completedMusic) -> {
+			AudioUtil.playingMusic.removeValue(completedMusic, false);
+		});
 		music.play();
 		AudioUtil.playingMusic.add(music);
 		return music;
+	}
+	
+	public void clear() {
+		AudioUtil.clear();
 	}
 }

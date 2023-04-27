@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.script.bridge;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
+import com.mrboomdev.platformer.entity.bot.BotBrainBuilder;
 import com.mrboomdev.platformer.entity.character.CharacterCreator;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.character.CharacterGroup;
@@ -46,6 +47,10 @@ public class EntitiesBridge {
 
 	public void setListener(EntityListener listener) {
 		this.listener = listener;
+	}
+	
+	public BotBrainBuilder createBrain() {
+		return new BotBrainBuilder();
 	}
 	
 	public interface EntityListener {

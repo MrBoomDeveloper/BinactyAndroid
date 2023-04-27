@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Timer;
 
 public class FunUtil {
-	private static Array<TimerTask> timerTasks = new Array<>();
+	public static Array<TimerTask> timerTasks = new Array<>();
 	private static Array<TimerTask> timerTasksCompleted = new Array<>();
 	
 	public static void update() {

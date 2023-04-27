@@ -7,22 +7,10 @@
 				"from": 1, "to": 0
 			}
 		}, {
-			"action": "TIMER_SETUP", "speed": 1.4,
+			"action": "TIMER_SETUP", "speed": 1.5,
 			"options": {
 				"time": 360,
 				"direction": 1
-			}
-		}, {
-			"action": "TELEPORT",
-			"options": {
-				"target": "ALL_PLAYERS",
-				"toTarget": "PLAYER_SPAWN"
-			}
-		}, {
-			"action": "TELEPORT",
-			"options": {
-				"target": "ALL_BOTS",
-				"toTarget": "BOT_SPAWN"
 			}
 		}, {
 			"action": "TITLE",
@@ -30,41 +18,6 @@
 			"options": {
 				"text": "SURVIVE THE NIGHT"
 			}
-		}
-	],
-	
-	"listeners": {
-		"TIMER_END": [{
-			"action": "GAME_OVER",
-			"options": {
-				"target": "ALL_PLAYERS"
-			}
-		}],
-		
-		"GAME_OVER": [{
-			"action": "STOP_MUSIC"
-		}]
-	},
-	
-	"teams": [
-		{
-			"name": "Guard",
-			"target": "ALL_PLAYERS",
-			"count": 1,
-			"permissions": [ "USE", "RUN" ]
-		}, {
-			"name": "Animatronics",
-			"target": "ALL_BOTS",
-			"count": 4,
-			"permissions": [ "ATTACK", "DASH", "RUN" ],
-			"strictOrder": true,
-			"repeatCharacters": false,
-			"forceCharacters": [
-				"freddy",
-				"bonnie",
-				"chica",
-				"foxy"
-			]
 		}
 	],
 	

@@ -48,7 +48,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 				break;
 			}
 			case "guest": {
-				ActivityManager.reactActivity.prefs.edit().putBoolean("isSignedIn", true).putString("signedInMethod", "guest").commit();
+				ActivityManager.reactActivity.prefs.edit().putBoolean("isSignedIn", true).putString("signedInMethod", "guest").apply();
 				break;
 			}
 		}

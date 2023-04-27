@@ -12,6 +12,16 @@ public class UiBridge {
 		this.listener = listener;
 	}
 	
+	public void callListener(Function function) {
+		if(listener == null) return;
+		switch(function) {
+			case TIMER_END: {
+				listener.timerEnd();
+				return;
+			}
+		}
+	}
+	
 	public TextWidget createText(String font) {
 		return new TextWidget(font).setOpacity(1).addTo(game.environment.stage);
 	}
@@ -39,5 +49,9 @@ public class UiBridge {
 	public interface UiListener {
 		void timerEnd();
 		void timerNextSecond();
+	}
+	
+	public enum Function {
+		TIMER_END
 	}
 }

@@ -1,18 +1,14 @@
 package com.mrboomdev.platformer.environment.gamemode;
 
-import bsh.EvalError;
-import bsh.Interpreter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.script.ScriptManager;
-import com.mrboomdev.platformer.util.AudioUtil;
+import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
@@ -44,7 +40,6 @@ public class GamemodeManager {
 	}
 	
 	public GamemodeManager build(FileUtil source, Runnable callback) {
-		LoadingFiles.loadToManager(script.load, source.getParent().getPath(), game.assets);
 		this.buildCompletedCallback = callback;
 		this.source = source;
 		status = Status.LOADING_RESOURCES;
@@ -52,7 +47,7 @@ public class GamemodeManager {
 	}
 	
 	public void ping() {
-		if(status == Status.LOADING_RESOURCES && game.assets.update(17)) {
+		if(status == Status.LOADING_RESOURCES && game.assets.update(17) && game.externalAssets.update(17)) {
 			buildCompletedCallback.run();
 			status = Status.DONE;
 		}
@@ -60,14 +55,6 @@ public class GamemodeManager {
 	
 	public void runFunction(GamemodeFunction function) {
 		stack.add(new StackOperation(function, function));
-	}
-	
-	private void triggerListeners(GamemodeFunction function) {
-		if(script.listeners.containsKey(function.action)) {
-			script.listeners.get(function.action).forEach(listener -> {
-				stack.add(new StackOperation(listener, function));
-			});
-		}
 	}
 	
 	private boolean resolveConditions(StackOperation operation) {
@@ -86,10 +73,6 @@ public class GamemodeManager {
 			isBroken = true;
 			return;
 		}
-		List<StackOperation> oldStack = new LinkedList<>(stack);
-		for(StackOperation operation : oldStack) {
-			triggerListeners(operation.function);
-		}
 		
 		for(var operation : stack) {
 			var function = operation.function;
@@ -101,10 +84,6 @@ public class GamemodeManager {
 					game.stats.isWin = time == 0 ? true : false;
 					gameOverTimeout = 1;
 					fade.start(0, .6f, .5f);
-					break;
-					
-				case STOP_MUSIC:
-					AudioUtil.stopMusic();
 					break;
 					
 				case TIMER_SETUP:
@@ -167,6 +146,7 @@ public class GamemodeManager {
 		
 		if(time == 0) {
 			isTimerEnd = true;
+			game.script.uiBridge.callListener(UiBridge.Function.TIMER_END);
 			runFunction(new GamemodeFunction(Action.TIMER_END, null, null));
 		}
 	}

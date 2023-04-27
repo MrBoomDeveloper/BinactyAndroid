@@ -16,6 +16,7 @@ import com.mrboomdev.platformer.game.GameStatistics;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.script.ScriptManager;
+import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameHolder extends Game {
@@ -33,6 +34,7 @@ public class GameHolder extends Game {
 	public void create() {
 		analytics.log("GameHolder", "create");
 		
+		FunUtil.timerTasks.clear();
 		Gson gson = new Gson();
 		LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
 		files.loadToManager(assets, "LOADING");

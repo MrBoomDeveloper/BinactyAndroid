@@ -6,6 +6,7 @@ public class BotConfig {
 	public Map<String, State> states;
 	public State current;
 	public String initial;
+	public Listener listener;
 	
 	public BotConfig build() {
 		current = states.get(initial);
@@ -20,5 +21,9 @@ public class BotConfig {
 		public float visionDistance;
 		public float speed, duration;
 		public String next;
+	}
+	
+	public static class Listener {
+		
 	}
 }

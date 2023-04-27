@@ -56,19 +56,7 @@ public class GameplayUi {
 				Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset,
 				Gdx.graphics.getHeight() - ActionButton.size - game.settings.screenInset)
 			.onClick(() -> {
-				game.settings.pause = true;
-				var dialog = new AndroidDialog().setTitle("Game Paused").setCancelable(false);
-				dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Hi! So you just stopped the entire universe, huh?"));
-				dialog.addAction(new AndroidDialog.Action().setText("Exit").setClickListener(button -> {
-					game.settings.pause = false;
-					game.launcher.exit(GameLauncher.Status.LOBBY);
-					dialog.close();
-				}));
-				dialog.addAction(new AndroidDialog.Action().setText("Resume").setClickListener(button -> {
-					game.settings.pause = false;
-					dialog.close();
-				})).addSpace(30);
-				dialog.show();
+				game.launcher.pause();
 			})
 			.addTo(stage);
 	}

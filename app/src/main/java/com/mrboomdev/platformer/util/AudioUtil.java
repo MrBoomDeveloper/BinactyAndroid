@@ -11,6 +11,7 @@ public class AudioUtil {
 	public static float musicVolume = 1, soundVolume = 1;
 	public static Array<Music> playingMusic = new Array<>();
 	private static Array<Music> musicQueue = new Array<>();
+	private static Music currentTheme;
 	
 	public static void setVolume(float music, float sound) {
 		musicVolume = music;
@@ -24,11 +25,11 @@ public class AudioUtil {
 	
 	private static void startMusic(int repeatTimes) {
 		if(repeatTimes < 0) return;
-		Music music = musicQueue.random();
-		music.setOnCompletionListener(completedMusic -> startMusic(repeatTimes - 1));
-		music.setVolume(0.2f * musicVolume);
-		music.setPosition(0);
-		music.play();
+		currentTheme = musicQueue.random();
+		currentTheme.setOnCompletionListener(completedMusic -> startMusic(repeatTimes - 1));
+		currentTheme.setVolume(0.2f * musicVolume);
+		currentTheme.setPosition(0);
+		currentTheme.play();
 	}
 	
 	public static void stopMusic() {
@@ -61,8 +62,23 @@ public class AudioUtil {
 		return Math.max(result, 0);
 	}
 	
+	public static void pause() {
+		if(currentTheme != null) currentTheme.pause();
+		for(Music music : playingMusic) {
+			music.pause();
+		}
+	}
+	
+	public static void resume() {
+		if(currentTheme != null) currentTheme.play();
+		for(Music music : playingMusic) {
+			music.play();
+		}
+	}
+	
 	public static void clear() {
 		stopMusic();
 		musicQueue.clear();
+		if(currentTheme != null) currentTheme.stop();
 	}
 }

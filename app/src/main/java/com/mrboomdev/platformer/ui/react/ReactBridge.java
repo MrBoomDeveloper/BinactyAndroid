@@ -11,12 +11,9 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
-import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
-import com.mrboomdev.platformer.game.pack.PackWidget;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
-import com.mrboomdev.platformer.util.AskUtil;
 import android.content.Intent;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
@@ -37,16 +34,16 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		switch(type) {
 			case "string":
-				prefs.edit().putString(key, value).commit();
+				prefs.edit().putString(key, value).apply();
 				break;
 			case "int":
-				prefs.edit().putInt(key, Integer.parseInt(value)).commit();
+				prefs.edit().putInt(key, Integer.parseInt(value)).apply();
 				break;
 			case "float":
-				prefs.edit().putFloat(key, Float.parseFloat(value)).commit();
+				prefs.edit().putFloat(key, Float.parseFloat(value)).apply();
 				break;
 			case "boolean":
-				prefs.edit().putBoolean(key, Boolean.parseBoolean(value)).commit();
+				prefs.edit().putBoolean(key, Boolean.parseBoolean(value)).apply();
 				break;
 		}
 	}

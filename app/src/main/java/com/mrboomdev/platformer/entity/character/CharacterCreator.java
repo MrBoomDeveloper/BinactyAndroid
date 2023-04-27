@@ -20,8 +20,8 @@ public class CharacterCreator {
 		return this;
 	}
 
-	public CharacterCreator setBot() {
-		entity.setBrain(new BotBrain(game.environment.entities));
+	public CharacterCreator setBot(BotBrain brain) {
+		entity.setBrain(brain.start(game.environment.entities));
 		return this;
 	}
 	

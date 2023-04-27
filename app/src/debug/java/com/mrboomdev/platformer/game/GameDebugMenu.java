@@ -1,11 +1,14 @@
 package com.mrboomdev.platformer.game;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -17,11 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import com.badlogic.gdx.math.Vector2;
-import com.google.android.material.color.DynamicColors;
 import com.mrboomdev.platformer.R;
-import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
-import com.mrboomdev.platformer.game.GameSettings;
 
 public class GameDebugMenu {
 	private static boolean isMenuCreated = false;
@@ -36,8 +35,10 @@ public class GameDebugMenu {
 		this.prefs = ((Activity)context).getSharedPreferences("Save", 0);
 	}
 	
+	@TargetApi(26)
+	@SuppressLint("UseSwitchCompatOrMaterialCode")
 	public void onResume() {
-		if(isMenuCreated) return;
+		if(isMenuCreated || (Build.VERSION.SDK_INT < 26)) return;
 		
 		if(!Settings.canDrawOverlays(context)) {
 			Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
@@ -87,7 +88,7 @@ public class GameDebugMenu {
 		hold.setOnTouchListener(dragEvent);
 		menuTrigger.setOnTouchListener(dragEvent);
 			
-		params.gravity = Gravity.TOP | Gravity.LEFT;
+		params.gravity = Gravity.TOP | Gravity.START;
 		params.x = 0;
 		params.y = 0;
 		
@@ -144,7 +145,7 @@ public class GameDebugMenu {
 		editorSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
 			settings.enableEditor = isActive;
 			settings.pause = false;
-			prefs.edit().putBoolean("forceEditor", isActive).commit();
+			prefs.edit().putBoolean("forceEditor", isActive).apply();
 			((GameDebugLauncher)context).exit(GameLauncher.Status.GAME_OVER);
 		});
 	}

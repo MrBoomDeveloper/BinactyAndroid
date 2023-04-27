@@ -21,21 +21,16 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.soloader.SoLoader;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInCredential;
-import com.google.android.gms.common.api.ApiException;
 import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.*;
-import com.mrboomdev.platformer.game.pack.PackData;
-import com.mrboomdev.platformer.game.pack.PackLoader;
+import com.mrboomdev.platformer.game.pack.*;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
-import com.mrboomdev.platformer.ui.react.bridge.AppBridge;
-import com.mrboomdev.platformer.util.AskUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.ZipUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
 public class ReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
@@ -79,16 +74,24 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
 
         prefs = getSharedPreferences("Save", 0);
-        if (!prefs.getBoolean("isNickSetup", false)) {
-            AskUtil.ask(
-                    AskUtil.AskType.SETUP_NICK,
-                    (data) -> {
-                        prefs.edit().putBoolean("isNickSetup", true).commit();
-                        prefs.edit().putString("nick", (String) data).commit();
-                        Intent intent = new Intent(this, ReactActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
+        if(!prefs.getBoolean("isNickSetup", false)) {
+			var dialog = new AndroidDialog().setTitle("Welcome to the Action Platformer!").setCancelable(false);
+					
+			dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Please enter your nickname here."));
+			var nameField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT);
+			dialog.addSpace(30).addField(nameField).addSpace(30);
+					
+			dialog.addAction(new AndroidDialog.Action().setText("Save and Continue").setClickListener(button -> {
+				prefs.edit()
+					.putBoolean("isNickSetup", true)
+                    .putString("nick", nameField.getText()).apply();
+					
+                Intent intent = new Intent(this, ReactActivity.class);
+                startActivity(intent);
+                finish();
+				dialog.close();
+			}));
+			dialog.show();
         }
 
         if(!prefs.getBoolean("isPacksListDefaultCopied", false)) {
@@ -130,10 +133,11 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		super.onActivityResult(requestCode, resultCode, intent);
         switch(requestCode) {
 			case 1: {
 				if(resultCode != Activity.RESULT_OK || intent == null) return;
-				Toast.makeText(getApplicationContext(), "Please wait. Loading the pack data", 0).show();
+				ActivityManager.toast("Please wait. Loading the pack data", false);
 				var dest = FileUtil.external("packs/temp");
 				dest.remove();
 				try {
@@ -145,9 +149,9 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 							if(!pack.isValid()) throw new RuntimeException("Not vaild pack!");
 							if(!PackLoader.addPack(pack, dest)) {
 								dest.getParent().goTo(pack.id).remove();
-								Toast.makeText(getApplicationContext(), "This pack is already installed, trying to update...", 0).show();
+								ActivityManager.toast("This pack is already installed, trying to update...", false);
 							} else {
-								Toast.makeText(getApplicationContext(), "Installing a new pack...", 0).show();
+								ActivityManager.toast("Installing a new pack...", false);
 							}
 							dest.rename(pack.id);
 							PackLoader.reloadPacks();
@@ -175,7 +179,8 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 							.putString("signedInMethod", "google")
 							.putString("nick", credentials.getDisplayName())
 							.putString("avatar", credentials.getProfilePictureUri().toString())
-							.commit();
+							.apply();
+							
 						ActivityManager.forceExit();
 					} catch(Exception e) {
 						e.printStackTrace();

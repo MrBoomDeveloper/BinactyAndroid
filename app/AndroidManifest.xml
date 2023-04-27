@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
 	
 	<application android:label="@string/app_name"
 		android:allowBackup="true"
@@ -25,11 +24,6 @@
 			</intent-filter>
 		</activity>
 		
-		<activity android:name=".ui.react.ReactGameOverActivity"
-			android:screenOrientation="landscape"
-			android:theme="@style/Material"
-			android:exported="false" />
-		
 		<activity android:name=".game.GameLauncher"
 			android:screenOrientation="landscape"
 			android:theme="@style/Material"
@@ -46,6 +40,8 @@
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				
 
 				<data android:scheme="file" />
 				<data android:scheme="http" />
@@ -57,8 +53,7 @@
 			</intent-filter>
 		</activity>
 		
-		<service android:name=".ui.external.NotificationReceiver"
-			android:exported="true">
+		<service android:name=".ui.external.NotificationReceiver" android:exported="false">
 			<intent-filter>
 				<action android:name="com.google.firebase.MESSAGING_EVENT"/>
 			</intent-filter>

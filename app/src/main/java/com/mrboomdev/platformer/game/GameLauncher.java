@@ -13,6 +13,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.ui.ActivityManager;
+import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
@@ -22,6 +23,7 @@ import java.io.IOException;
 public class GameLauncher extends AndroidApplication {
 	private FirebaseAnalytics analytics;
 	private FirebaseCrashlytics crashlytics;
+	private GameHolder game;
 	private boolean isFinished;
 	
 	@Override
@@ -44,7 +46,7 @@ public class GameLauncher extends AndroidApplication {
 		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
 		settings.ignoreScriptErrors = true;
 		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
-		var game = GameHolder.getInstance();
+		game = GameHolder.getInstance();
 		try {
 			Moshi moshi = new Moshi.Builder().build();
 			JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
@@ -83,8 +85,28 @@ public class GameLauncher extends AndroidApplication {
 		isFinished = true;
 	}
 	
+	public void pause() {
+		game.settings.pause = true;
+		AudioUtil.pause();
+		var dialog = new AndroidDialog().setTitle("Game Paused").setCancelable(false);
+		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Hi! So you just stopped the entire universe, huh?"));
+		dialog.addAction(new AndroidDialog.Action().setText("Exit").setClickListener(button -> {
+			game.settings.pause = false;
+			game.launcher.exit(GameLauncher.Status.LOBBY);
+			dialog.close();
+		}));
+		dialog.addAction(new AndroidDialog.Action().setText("Resume").setClickListener(button -> {
+			game.settings.pause = false;
+			AudioUtil.resume();
+			dialog.close();
+		})).addSpace(30);
+		dialog.show();
+	}
+	
 	@Override
-	public void onBackPressed() {}
+	public void onBackPressed() {
+		pause();
+	}
 	
 	@Override
 	public void onResume() {

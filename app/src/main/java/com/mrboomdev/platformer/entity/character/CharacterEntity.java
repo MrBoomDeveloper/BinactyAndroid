@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.entity.character;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -137,11 +138,7 @@ public class CharacterEntity extends EntityAbstract {
 	public void draw(SpriteBatch batch) {
 		projectileManager.clearTrash();
 		if(isDead && !isDestroyed) destroy();
-		
 		if(isDestroyed) return;
-		shadow.setCenter(getPosition().x, getPosition().y - config.bodySize[1] / 2);
-		shadow.draw(batch);
-		skin.draw(batch, body.getPosition(), getDirection());
 		
 		stats.stamina = Math.min(stats.maxStamina, isRunning ? stats.stamina : stats.stamina + staminaReloadMultiply);
 		dashProgress += Gdx.graphics.getDeltaTime();
@@ -160,6 +157,11 @@ public class CharacterEntity extends EntityAbstract {
 			stats.health = Math.min((int)healthPhantom, stats.maxHealth);
 		}
 		if(brain != null) brain.update();
+		
+		shadow.setCenter(getPosition().x, getPosition().y - config.bodySize[1] / 2);
+		shadow.draw(batch);
+		skin.draw(batch, body.getPosition(), getDirection());
+		
 		//drawDebug(batch);
 	}
 	
@@ -232,6 +234,8 @@ public class CharacterEntity extends EntityAbstract {
 	
 	public void gainDamage(int damage, Vector2 power) {
 		if(damagedProgress < 1) return;
+		
+		AudioUtil.play3DSound(game.assets.get("audio/sounds/damage.mp3", Sound.class), .25f, 10, getPosition());
 		damagedProgress = (Math.random() > .8f) ? 0 : .8f;
 		skin.setAnimation(Entity.Animation.DAMAGE);
 		stats.health = Math.max(stats.health - damage, 0);

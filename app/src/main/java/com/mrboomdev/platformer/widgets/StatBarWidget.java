@@ -13,29 +13,29 @@ import com.mrboomdev.platformer.util.ActorUtil;
 public class StatBarWidget extends ActorUtil {
 	private Track track;
 	private Sprite iconSprite, barSprite, progressSprite;
+	private GameHolder game = GameHolder.getInstance();
 	private BitmapFont font;
 	private float currentProgress;
-	public static final int SIZE = 55;
+	public static final int SIZE = 50;
 	
 	public StatBarWidget(Track track) {
 		this.track = track;
-		AssetManager asset = GameHolder.getInstance().assets;
-		Texture texture = asset.get("ui/overlay/generalIcons.png", Texture.class);
+		Texture texture = game.assets.get("ui/overlay/generalIcons.png", Texture.class);
+		Texture icons = game.assets.get("ui/overlay/large_icons.png", Texture.class);
 		switch(track) {
 			case HEALTH:
-				iconSprite = new Sprite(texture, 11, 0, 14, 14);
-				iconSprite.setSize(SIZE, SIZE);
+				iconSprite = new Sprite(icons, 49, 17, 14, 14);
 				progressSprite = new Sprite(texture, 49, 12, 2, 2);
 				break;
 			case STAMINA:
-				iconSprite = new Sprite(texture, 0, 0, 11, 14);
-				iconSprite.setSize(47, SIZE);
+				iconSprite = new Sprite(icons, 33, 33, 13, 14);
 				progressSprite = new Sprite(texture, 49, 10, 2, 2);
 				break;
 		}
+		iconSprite.setSize(SIZE, SIZE);
 		barSprite = new Sprite(texture, 25, 10, 24, 6);
 		barSprite.setSize(200, SIZE - 8);
-		font = asset.get("statBarWidget.ttf", BitmapFont.class);
+		font = game.assets.get("statBarWidget.ttf", BitmapFont.class);
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class StatBarWidget extends ActorUtil {
 		iconSprite.setPosition(getX() + (track == Track.HEALTH ? 0 : 6.5f), getY());
 		iconSprite.draw(batch);
 		
-		font.draw(batch, getData(), getX() + SIZE / 2, getY() + 35, 200, Align.center, false);
+		font.draw(batch, getData(), getX() + SIZE / 2, getY() + 33, 200, Align.center, false);
 	}
 	
 	private float getProgress() {

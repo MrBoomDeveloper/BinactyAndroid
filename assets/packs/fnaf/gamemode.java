@@ -4,6 +4,7 @@ game.load("sound", "sounds/door_close.wav");
 game.load("sound", "sounds/error.wav");
 game.load("sound", "sounds/foxy_song.wav");
 game.load("sound", "sounds/win.wav");
+game.load("sound", "sounds/scream.wav");
 game.load("character", "characters/freddy");
 game.load("character", "characters/bonnie");
 game.load("character", "characters/chica");
@@ -15,11 +16,42 @@ for(int i = 1; i < 5; i++) {
 	game.load("music", "music/dark_ambience_" + i + ".ogg");
 }
 
+String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerAi", "6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerSpawn"};
 boolean isGameEnded = false;
 int power = 100, usage = 1;
 var powerWidget, usageWidget;
 
-var botBrain = entities.createBrain().build();
+var freddyBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
+	getWaypoints() { return waypoints; }
+	
+	getTarget() {
+		return null;
+	}
+}).build();
+
+var bonnieBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
+	getWaypoints() { return waypoints; }
+	
+	getTarget() {
+		return null;
+	}
+}).build();
+
+var chicaBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
+	getWaypoints() { return waypoints; }
+	
+	getTarget() {
+		return null;
+	}
+}).build();
+
+var foxyBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
+	getWaypoints() { return waypoints; }
+	
+	getTarget() {
+		return null;
+	}
+}).build();
 
 var bots = new ArrayList();
 bots.add(entities.createCharacter("characters/freddy").setSpawnTiles(new String[]{"#id:freddySpawn"}));
@@ -34,9 +66,10 @@ for(int i = 1; i <= 13; i++) {
 }
 
 game.setTimer(new Runnable() {run() {
-	for(var bot : bots) {
-		bot.setBot(botBrain);
-	}
+	bots.get(0).setBot(freddyBrain);
+	bots.get(1).setBot(bonnieBrain);
+	bots.get(2).setBot(chicaBrain);
+	bots.get(3).setBot(foxyBrain);
 }}, 15);
 
 var doorRight = map.getById("doorRight"), doorLeft = map.getById("doorLeft");
@@ -143,7 +176,7 @@ ui.setListener(new UiListener() {
 		game.setTimer(new Runnable() {run() {
 			audio.playSound("sounds/win.wav", 1);
 		}}, 6);
-		for(var bot : bots) { bot.entity.gainDamage(999); }
+		for(var bot : bots) { bot.entity.gainDamage(99999); }
 		game.setTimer(new Runnable() {run() {
 			game.over(entities.getCharacter(Target.MAIN_PLAYER), true);
 		}}, 8);
@@ -153,8 +186,12 @@ ui.setListener(new UiListener() {
 entities.setListener(new EntityListener() {
 	died(entity) {
 		if(entity.isTarget(Target.MAIN_PLAYER)) {
+			audio.playSound("sounds/scream.wav", 0.5f);
 			isGameEnded = true;
 			game.over(entity, false);
+		} else {
+			if(isGameEnded) return;
+			audio.playSound("sounds/scream.wav", 0.25f, 20, entity.getPosition());
 		}
 	}
 });

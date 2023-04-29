@@ -41,6 +41,7 @@
 				{ "path": "audio/sounds/player_detected.wav", "type": "sound" },
 				{ "path": "audio/sounds/dash.wav", "type": "sound" },
 				{ "path": "audio/sounds/shot.wav", "type": "sound" },
+				{ "path": "audio/sounds/damage.mp3", "type": "sound" },
 				{ 
 					"path": "ui/font/roboto-medium.ttf", "as": "bulletButton.ttf", "type": "font",
 					"font": {

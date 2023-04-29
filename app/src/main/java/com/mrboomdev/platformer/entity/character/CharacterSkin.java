@@ -55,6 +55,8 @@ public class CharacterSkin {
 		sprite.setSize(
 			direction.isForward() ? sprite.getWidth() : -sprite.getWidth(),
 			sprite.getHeight());
+		
+		sprite.setAlpha(currentAnimation == Entity.Animation.DAMAGE ? 0.85f : 1);
 		sprite.setCenter(position.x, position.y);
 		sprite.draw(batch);
 		

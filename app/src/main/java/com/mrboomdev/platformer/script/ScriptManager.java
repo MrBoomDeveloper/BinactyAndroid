@@ -40,6 +40,7 @@ public class ScriptManager {
 		this.eval("import com.mrboomdev.platformer.entity.character.CharacterCreator;");
 		this.eval("import com.mrboomdev.platformer.environment.map.tile.TileInteraction.InteractionListener;");
 		this.eval("import com.mrboomdev.platformer.util.ui.ActorUtil.Align;");
+		this.eval("import com.mrboomdev.platformer.entity.bot.BotBrain;");
 		this.put("game", gameBridge);
 		this.put("ui", uiBridge);
 		this.put("map", mapBridge);

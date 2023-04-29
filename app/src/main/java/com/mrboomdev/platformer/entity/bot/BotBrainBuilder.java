@@ -4,20 +4,18 @@ import com.mrboomdev.platformer.entity.bot.BotBrain;
 
 public class BotBrainBuilder {
 	private BotBrain brain;
-	private String[] tiles;
-	private String family;
 	
 	public BotBrainBuilder() {
 		brain = new BotBrain();
 	}
 	
-	public BotBrainBuilder setTiles(String... tiles) {
-		this.tiles = tiles;
+	public BotBrainBuilder setResponder(BotBrain.Responder responder) {
+		brain.responder = responder;
 		return this;
 	}
 	
-	public BotBrainBuilder setFamily(String team) {
-		this.family = team;
+	public BotBrainBuilder setRefreshRate(int refreshRate) {
+		brain.refreshRate = refreshRate;
 		return this;
 	}
 	

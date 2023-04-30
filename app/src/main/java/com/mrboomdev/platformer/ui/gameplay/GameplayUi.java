@@ -8,8 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
-import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.ui.gameplay.screens.EditorScreen;
 import com.mrboomdev.platformer.util.ActorUtil;
 import com.mrboomdev.platformer.widgets.ActionButton;
@@ -25,7 +23,15 @@ public class GameplayUi {
 	public void createFreeRoam(Stage stage) {
 		widgets.put("debug", new DebugValuesWidget().toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - game.settings.screenInset - 75));
 		if(game.settings.debugValues) stage.addActor(widgets.get("debug"));
-		widgets.put("joystick", new JoystickWidget().addTo(stage));
+		
+		widgets.put("joystick", new JoystickWidget()
+			.onUpdate(power -> {
+				connectedEntity.usePower(power, connectedEntity.stats.speed * (game.settings.enableEditor ? game.environment.camera.zoom * 3 : 1), false);
+				getWidget("debug", DebugValuesWidget.class).setValue("Movement Joystick Power", power.toString());
+			})
+			.toPosition(game.settings.screenInset, game.settings.screenInset)
+			.toSize(250, 250)
+			.addTo(stage));
 	}
 	
 	public void createCombat(Stage stage) {
@@ -68,6 +74,10 @@ public class GameplayUi {
 	
 	public void createOverlay(Stage stage) {
 		
+	}
+	
+	public <T extends ActorUtil> T getWidget(String name, Class<T> type) {
+		return type.cast(widgets.get(name));
 	}
 	
 	public void connectCharacter(CharacterEntity character) {

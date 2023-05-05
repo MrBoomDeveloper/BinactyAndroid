@@ -1,0 +1,70 @@
+{
+	"metadata": {
+		"name": "Klarrie",
+		"description": "..."
+	},
+	
+	"skin": {
+		"texture": "skin.png",
+		"animations": {
+			"IDLE": {
+				"delay": 0.2,
+				"size": [ 1.1, 1.8 ],
+				"frames": [
+					{ "region": [ 0, 0, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 21, 0, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 42, 0, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 63, 0, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 84, 0, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 105, 0, 21, 40 ], "hand_position": [0, 0] }
+				]
+			},
+			
+			"WALK": {
+				"delay": 0.07,
+				"size": [ 1.1, 1.8 ],
+				"frames": [
+					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0, 0] }
+				]
+			},
+			
+			"RUN": {
+				"delay": 0.035,
+				"size": [ 1.1, 1.8 ],
+				"frames": [
+					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0, 0] },
+					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0, 0] }
+				]
+			}
+		}
+	},
+	
+	"worldBody": {
+		"size": [ 1.1, 1.8 ],
+		"bottom": [ 1.1, 0.4, 0, -0.7 ],
+		"light_offset": [0, 1]
+	},
+	
+	"stats": {
+		"health": 250,
+		"damage": 20,
+		"speed": 1.2,
+		"shield": 50,
+		"stamina": 100
+	}
+}

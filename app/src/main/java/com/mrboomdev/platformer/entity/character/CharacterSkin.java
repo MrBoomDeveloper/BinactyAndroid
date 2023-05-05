@@ -21,12 +21,11 @@ import static com.mrboomdev.platformer.entity.Entity.Animation.*;
 import java.util.Map;
 
 public class CharacterSkin {
-	private Map<Entity.Animation, AnimationObject> animations;
-	private String texture = "skin.png";
+	@Json(name = "animations") Map<Entity.Animation, AnimationObject> animationsJson;
+	@Json(name = "texture") String texturePath = "skin.png";
 	@Json(ignore = true) Map<Entity.Animation, Animation<Sprite>> animations0 = new HashMap<>();
 	@Json(ignore = true) Entity.Animation currentAnimation;
 	@Json(ignore = true) Sprite sprite;
-	@Json(ignore = true) @SerializedName("skin") HashMap<Entity.Animation, AnimationObject> serailizedAnimations;
 	@Json(ignore = true) float animationProgress;
 	@Json(ignore = true) int lastframeIndex;
 	
@@ -69,30 +68,13 @@ public class CharacterSkin {
 		lastframeIndex = frameIndex;
 	}
 	
-	public CharacterSkin build(FileUtil source, boolean isNew) {
-		Texture texture = new Texture(source.goTo(this.texture).getFileHandle());
-		for(HashMap.Entry<Entity.Animation, AnimationObject> entry : animations.entrySet()) {
-			AnimationObject object = entry.getValue();
-			Sprite[] sprites = new Sprite[object.frames.length];
-			for(int i = 0; i < object.frames.length; i++) {
-				int[] bounds = object.frames[i].region;
-				TextureRegion region = new TextureRegion(texture, bounds[0], bounds[1], bounds[2], bounds[3]);
-				Sprite sprite = new Sprite(region);
-				sprite.setSize(object.size[0], object.size[1]);
-				sprites[i] = sprite;
-			}
-			Animation<Sprite> animation = new Animation<>(object.delay, sprites);
-			animation.setPlayMode(object.mode != null ? object.mode : PlayMode.LOOP);
-			animation.setFrameDuration(object.delay);
-			animations0.put(entry.getKey(), animation);
-		}
-		setAnimation(IDLE);
-		return this;
+	public Entity.Frame getCurrentFrame() {
+		return null;
 	}
 	
-	public CharacterSkin build(FileUtil file) {
-		Texture texture = new Texture(file.goTo(this.texture).getHandle());
-		for(HashMap.Entry<Entity.Animation, AnimationObject> entry : serailizedAnimations.entrySet()) {
+	public CharacterSkin build(FileUtil source) {
+		Texture texture = new Texture(source.goTo(texturePath).getFileHandle());
+		for(HashMap.Entry<Entity.Animation, AnimationObject> entry : animationsJson.entrySet()) {
 			AnimationObject object = entry.getValue();
 			Sprite[] sprites = new Sprite[object.frames.length];
 			for(int i = 0; i < object.frames.length; i++) {
@@ -116,5 +98,6 @@ public class CharacterSkin {
 		public float[] size;
 		public Entity.Frame[] frames;
 		public PlayMode mode;
+		@Json(ignore = true) public Sprite sprite;
 	}
 }

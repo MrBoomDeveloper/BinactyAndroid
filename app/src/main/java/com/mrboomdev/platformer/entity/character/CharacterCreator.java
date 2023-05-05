@@ -27,7 +27,7 @@ public class CharacterCreator {
 	
 	public CharacterEntity create() {
 		entity.create(game.environment.world);
-		if(spawnTile.startsWith("#id:")) {
+		if(spawnTile != null && spawnTile.startsWith("#id:")) {
 			var results = game.environment.map.tilesMap.values().toArray().select((var tile) -> {
 				return tile.id != null && tile.id.equals(spawnTile.substring(4, spawnTile.length()));
 			});
@@ -35,7 +35,7 @@ public class CharacterCreator {
 				entity.body.setTransform(result.getPosition(false), 0);
 			}
 		} else {
-			entity.body.setTransform(36, 20, 0);
+			entity.body.setTransform(22, -14, 0);
 		}
 		game.environment.map.objects.add(new MapEntity(entity));
 		game.environment.entities.characters.add(entity);

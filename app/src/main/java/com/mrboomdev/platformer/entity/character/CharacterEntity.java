@@ -63,7 +63,7 @@ public class CharacterEntity extends EntityAbstract {
 		copy.config.bodySize = worldBody.size;
 		copy.config.lightOffset = worldBody.lightOffset;
 		copy.config.build();
-		copy.skin = skin.build(source, true);
+		copy.skin = skin.build(source);
 		return copy;
 	}
 	
@@ -124,15 +124,6 @@ public class CharacterEntity extends EntityAbstract {
 		return this;
 	}
 	
-	public CharacterEntity setConfig(FileUtil file) {
-		Gson gson = new Gson();
-		config = gson.fromJson(file.goTo("manifest.json").readString(true), CharacterConfig.class).build();
-		skin = gson.fromJson(file.goTo("skin.json").readString(true), CharacterSkin.class).build(file);
-		stats = config.stats;
-		healthPhantom = stats.health;
-		return this;
-	}
-	
 	public CharacterEntity setBrain(CharacterBrain brain) {
 		brain.setEntity(this);
 		this.brain = brain;
@@ -166,7 +157,7 @@ public class CharacterEntity extends EntityAbstract {
 		shadow.setCenter(getPosition().x, getPosition().y - config.bodySize[1] / 2);
 		shadow.draw(batch);
 		skin.draw(batch, body.getPosition(), getDirection());
-		if(game.settings.isBeta) inventory.draw(batch, getPosition());
+		if(game.settings.isBeta) inventory.draw(batch, getPosition(), skin);
 		
 		//drawDebug(batch);
 	}

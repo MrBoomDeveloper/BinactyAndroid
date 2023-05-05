@@ -1,9 +1,12 @@
 package com.mrboomdev.platformer.entity;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mrboomdev.platformer.util.ColorUtil;
+import com.squareup.moshi.Json;
 import java.util.Map;
 
 public class Entity {
+
 	public static final short NONE = 0,
 		CHARACTER = 1,
 		BLOCK = 2,
@@ -37,6 +40,7 @@ public class Entity {
 		public String texture = "texture.png";
 		public float[] size, position;
 		public int[] region;
+		@Json(name = "hand_position") public float[] handPosition;
 	}
 	
 	public static class States {

@@ -47,7 +47,7 @@ public class FileUtil {
 	public String readString(boolean isGdxThread) {
 		switch(source) {
 			case INTERNAL: if(isGdxThread) {
-				return getHandle().readString();
+				return getFileHandle().readString();
 			} else {
 				try {
 					var stream = ActivityManager.current.getAssets().open(getPath());
@@ -229,15 +229,6 @@ public class FileUtil {
 			case EXTERNAL: return Gdx.files.external(getPath());
 			default: return Gdx.files.internal(getPath());
 		}
-	}
-	
-	@Deprecated
-	public FileHandle getHandle() {
-		var game = GameHolder.getInstance();
-		if(!loadAsync) return Gdx.files.internal(getPath());
-		if(source == Source.EXTERNAL) return game.externalAssets.get(getPath());
-		if(source == Source.NETWORK) return game.externalAssets.get("cache/" + getPath());
-		return game.assets.get(getPath());
 	}
 	
 	@Override

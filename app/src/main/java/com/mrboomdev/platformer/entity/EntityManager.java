@@ -16,7 +16,6 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Moshi;
 
 public class EntityManager {
-	public static final String entitiesDirectory = "world/player/characters/";
 	public ObjectMap<String, CharacterEntity> presets = new ObjectMap<>();
 	public ObjectMap<String, Item> itemPresets = new ObjectMap<>();
 	public ObjectMap<CharacterEntity, PathGraph> graphs = new ObjectMap<>();
@@ -53,15 +52,6 @@ public class EntityManager {
 			itemPresets.put(id, item);
 		} catch(Exception e) {
 			throw new BoomException(e);
-		}
-	}
-	
-	public void addCharacter(CharacterEntity character) {
-		characters.add(character);
-		game.environment.map.objects.add(new MapEntity(character));
-		if(character == game.settings.mainPlayer) {
-			character.body.setTransform(22, -14, 0);
-			return;
 		}
 	}
 	

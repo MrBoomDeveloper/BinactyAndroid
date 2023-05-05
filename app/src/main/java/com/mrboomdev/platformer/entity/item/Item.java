@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.entity.character.CharacterSkin;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 
@@ -16,9 +17,10 @@ public class Item {
 	@Json(ignore = true) public FileUtil source;
 	@Json(ignore = true) Sprite sprite;
 	
-	public Sprite getSprite(Vector2 position) {
+	public Sprite getSprite(Vector2 position, CharacterSkin characterSkin) {
 		if(sprite == null) {
 			sprite = new Sprite(new Texture(source.goTo(skin.texture).getFileHandle()));
+			var currentCharacterFrame = characterSkin.getCurrentFrame();
 			sprite.setSize(skin.size[0], skin.size[1]);
 		}
 		sprite.setPosition(position.x + skin.position[0], position.y + skin.position[1]);

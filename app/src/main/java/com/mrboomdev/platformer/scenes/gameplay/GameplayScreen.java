@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mrboomdev.platformer.entity.EntityManager;
+import com.mrboomdev.platformer.entity.character.CharacterCreator;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.editor.EditorManager;
@@ -98,14 +99,11 @@ public class GameplayScreen extends CoreScreen {
 		environment.camera = camera;
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
 		
-		CharacterEntity player = new CharacterEntity(game.settings.playerName)
-			.setConfig(FileUtil.internal(EntityManager.entitiesDirectory + "klarrie"))
-			.create(environment.world);
-		
-		
+		var path = FileUtil.internal("packs/official/src/characters/klarrie");
+		environment.entities.loadCharacter(path, "klarrie");
+		var player = new CharacterCreator(environment.entities.presets.get("klarrie").cpy(game.settings.playerName, path)).create();
 		
 		game.settings.mainPlayer = player;
-		game.environment.entities.addCharacter(player);
 		game.environment.entities.setMain(player);
 		camera.position.set(player.body.getPosition(), 0);
 		

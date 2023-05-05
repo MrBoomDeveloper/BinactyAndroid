@@ -1,0 +1,13 @@
+{
+	"name": "Official Pack",
+	"id": "a7739b9c-e7df-11ed-a05b-0242ac120003",
+	"description": ":)",
+	"required": true,
+	"author": {
+		"name": "MrBoomDev",
+		"url": "https://mrboomdev.ru"
+	},
+	"resources": {
+		"weapons": "weapons.json"
+	}
+}

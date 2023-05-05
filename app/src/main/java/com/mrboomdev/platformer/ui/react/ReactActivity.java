@@ -26,6 +26,7 @@ import com.mrboomdev.platformer.*;
 import com.mrboomdev.platformer.game.pack.*;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.ZipUtil;
 import com.squareup.moshi.JsonAdapter;
@@ -146,7 +147,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 							Moshi moshi = new Moshi.Builder().build();
 							JsonAdapter<PackData.Manifest> adapter = moshi.adapter(PackData.Manifest.class);
 							var pack = adapter.fromJson(dest.goTo("manifest.json").readString(false));
-							if(!pack.isValid()) throw new RuntimeException("Not vaild pack!");
+							if(!pack.isValid()) throw new BoomException("Error while importing a pack. Manifest file isn't valid!");
 							if(!PackLoader.addPack(pack, dest)) {
 								dest.getParent().goTo(pack.id).remove();
 								ActivityManager.toast("This pack is already installed, trying to update...", false);

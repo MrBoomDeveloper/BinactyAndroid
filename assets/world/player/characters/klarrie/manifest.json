@@ -1,8 +1,6 @@
 {
 	"id": "klarrie",
 	"name": "Klarrie",
-	"description": "Default character",
-	"version": 3,
 	"skin": "skin.json",
 	"bodySize": [ 1.1, 1.8 ],
 	"body3D": [ 1.1, 0.4, 0, -0.7 ],

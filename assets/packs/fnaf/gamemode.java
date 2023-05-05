@@ -9,6 +9,7 @@ game.load("character", "characters/freddy");
 game.load("character", "characters/bonnie");
 game.load("character", "characters/chica");
 game.load("character", "characters/foxy");
+game.load("item", "items/flashlight");
 game.load("music", "music/music_box.wav");
 game.load("music", "music/6am.wav");
 game.load("music", "music/light.wav");
@@ -186,12 +187,12 @@ ui.setListener(new UiListener() {
 entities.setListener(new EntityListener() {
 	died(entity) {
 		if(entity.isTarget(Target.MAIN_PLAYER)) {
-			audio.playSound("sounds/scream.wav", 0.5f);
+			audio.playSound("sounds/scream.wav", 0.25f);
 			isGameEnded = true;
 			game.over(entity, false);
 		} else {
 			if(isGameEnded) return;
-			audio.playSound("sounds/scream.wav", 0.25f, 20, entity.getPosition());
+			audio.playSound("sounds/scream.wav", 0.1f, 20, entity.getPosition());
 		}
 	}
 });
@@ -215,6 +216,8 @@ game.setListener(new GameListener() {
 			if(isGameEnded) return;
 			audio.playSound("sounds/foxy_song.wav", 0.1f);
 		}}, (float)(Math.random() * 600 + 30));
+		
+		core.settings.mainPlayer.giveItem(entities.createItem("items/flashlight"));
 	}
 });
 

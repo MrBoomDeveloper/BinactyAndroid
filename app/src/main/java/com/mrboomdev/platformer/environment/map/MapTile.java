@@ -20,8 +20,6 @@ import com.mrboomdev.platformer.environment.map.tile.TileStyle;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
-import com.serjltt.moshi.adapters.DeserializeOnly;
-import com.serjltt.moshi.adapters.Transient;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.ToJson;
 
@@ -30,7 +28,7 @@ public class MapTile extends MapObject {
 	public int layer;
 	public boolean flipX, flipY;
 	public String texture, devTexture;
-	public Light light;
+	public Entity.Light light;
 	public float[] size, colission, shadowColission, position, offset = {0, 0};
 	public int[] region, connectedTile;
 	public TileInteraction interaction;
@@ -231,13 +229,6 @@ public class MapTile extends MapObject {
 	@Override
 	public int getLayer() {
 		return layer;
-	}
-	
-	public static class Light {
-		public ColorUtil color;
-		public float distance = 5;
-		public float[] offset = {0, 0};
-		public int rays = 6;
 	}
 	
 	public static class Adapter {

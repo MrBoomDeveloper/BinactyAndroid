@@ -83,7 +83,7 @@ public class GamemodeManager {
 				case GAME_OVER:
 					game.stats.isWin = time == 0 ? true : false;
 					gameOverTimeout = 1;
-					fade.start(0, .6f, .5f);
+					fade.start(0, 1, .5f);
 					break;
 					
 				case TIMER_SETUP:
@@ -116,7 +116,7 @@ public class GamemodeManager {
 		
 		if(gameOverTimeout > 0) {
 			gameOverTimeout += Gdx.graphics.getDeltaTime();
-			if(gameOverTimeout > 3) {
+			if(gameOverTimeout > 3.5f) {
 				game.launcher.exit(GameLauncher.Status.GAME_OVER);
 			}
 		}

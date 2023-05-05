@@ -23,8 +23,8 @@ public class ButtonWidget extends ActorUtil {
 	private float padding, height;
 	private boolean isPressed;
 	
-	public static final float inactiveBackgroundOpacity = .1f;
-	public static final float activeBackgroundOpacity = .07f;
+	public static final float inactiveBackgroundOpacity = .8f;
+	public static final float activeBackgroundOpacity = .25f;
 	public static final float inactiveForegroundOpacity = .8f;
 	public static final float activeForegroundOpacity = .5f;
 	
@@ -63,8 +63,8 @@ public class ButtonWidget extends ActorUtil {
 		}
 	}
 	
-	public ButtonWidget setBackgroundImage(Texture texture) {
-		backgroundImage = new Sprite(texture);
+	public ButtonWidget setBackgroundImage(Sprite sprite) {
+		backgroundImage = new Sprite(sprite);
 		return this;
 	}
 	
@@ -108,8 +108,13 @@ public class ButtonWidget extends ActorUtil {
 					batch.begin();
 				}
 				break;
-			case CARD:
 				
+			case CARD:
+				if(backgroundImage != null) {
+					backgroundImage.setPosition(getX(), getY());
+					backgroundImage.setSize(getWidth(), getHeight());
+					backgroundImage.draw(batch);
+				}
 				break;
 		}
 		

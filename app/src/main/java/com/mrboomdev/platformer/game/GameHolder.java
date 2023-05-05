@@ -17,6 +17,7 @@ import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.util.FunUtil;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameHolder extends Game {
@@ -52,7 +53,7 @@ public class GameHolder extends Game {
 	
 	public static GameHolder getInstance() {
 		if(instance == null) {
-			throw new RuntimeException("You need to set the instance first!");
+			throw new BoomException("You need to set the instance first!");
 		}
 		return instance;
 	}
@@ -88,7 +89,7 @@ public class GameHolder extends Game {
 			
 			setErrorListener((asset, throwable) -> {
 				analytics.error("Assets", "Failed to load asset: " + asset.fileName + ", of type: " + asset.type.getName());
-				throw new RuntimeException(throwable);
+				throw new BoomException(throwable);
 			});
 		}
 		

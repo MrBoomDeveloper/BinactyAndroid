@@ -106,6 +106,7 @@ public class PackWidget {
 					view.addView(isActive);
 				}
 				view.setOnClickListener(v -> {
+					if(data.required && data.source.source == FileUtil.Source.INTERNAL) return;
 					data.config.active = !data.config.active;
 					updateState();
 				});

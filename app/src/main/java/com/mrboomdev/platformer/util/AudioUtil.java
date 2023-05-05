@@ -79,6 +79,7 @@ public class AudioUtil {
 	public static void clear() {
 		stopMusic();
 		musicQueue.clear();
+		playingMusic.clear();
 		if(currentTheme != null) currentTheme.stop();
 	}
 }

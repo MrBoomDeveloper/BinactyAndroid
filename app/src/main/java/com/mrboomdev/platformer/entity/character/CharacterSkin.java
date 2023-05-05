@@ -75,7 +75,7 @@ public class CharacterSkin {
 			AnimationObject object = entry.getValue();
 			Sprite[] sprites = new Sprite[object.frames.length];
 			for(int i = 0; i < object.frames.length; i++) {
-				int[] bounds = object.frames[i];
+				int[] bounds = object.frames[i].region;
 				TextureRegion region = new TextureRegion(texture, bounds[0], bounds[1], bounds[2], bounds[3]);
 				Sprite sprite = new Sprite(region);
 				sprite.setSize(object.size[0], object.size[1]);
@@ -96,7 +96,7 @@ public class CharacterSkin {
 			AnimationObject object = entry.getValue();
 			Sprite[] sprites = new Sprite[object.frames.length];
 			for(int i = 0; i < object.frames.length; i++) {
-				int[] bounds = object.frames[i];
+				int[] bounds = object.frames[i].region;
 				TextureRegion region = new TextureRegion(texture, bounds[0], bounds[1], bounds[2], bounds[3]);
 				Sprite sprite = new Sprite(region);
 				sprite.setSize(object.size[0], object.size[1]);
@@ -114,7 +114,7 @@ public class CharacterSkin {
 	public static class AnimationObject {
 		public float delay;
 		public float[] size;
-		public int[][] frames;
+		public Entity.Frame[] frames;
 		public PlayMode mode;
 	}
 }

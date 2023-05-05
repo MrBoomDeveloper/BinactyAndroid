@@ -19,11 +19,11 @@ import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
-import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
+import com.mrboomdev.platformer.entity.item.Item;
+import com.mrboomdev.platformer.entity.item.ItemInventory;
 import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.*;
-import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
@@ -35,6 +35,7 @@ public class CharacterEntity extends EntityAbstract {
 	public CharacterConfig.Stats stats;
 	public CharacterBody worldBody;
 	public CharacterSkin skin;
+	@Json(ignore = true) public ItemInventory inventory;
 	@Json(ignore = true) public Fixture bottomFixture;
 	@Json(ignore = true) public CharacterBrain brain;
 	@Json(ignore = true) public CharacterConfig config;
@@ -70,12 +71,16 @@ public class CharacterEntity extends EntityAbstract {
 	
 	public CharacterEntity(String name) {
 		this.name = name;
+		shape = new ShapeRenderer();
+		
 		font = game.assets.get("nick.ttf", false);
 		font.setUseIntegerPositions(false);
 		font.getData().setScale(.01f, .01f);
-		shape = new ShapeRenderer();
+		
 		shadow = new Sprite(game.assets.get("world/effects/shadow.png", Texture.class));
 		shadow.setAlpha(.75f);
+		
+		inventory = new ItemInventory();
 	}
 	
 	public CharacterEntity create(World world) {
@@ -161,6 +166,7 @@ public class CharacterEntity extends EntityAbstract {
 		shadow.setCenter(getPosition().x, getPosition().y - config.bodySize[1] / 2);
 		shadow.draw(batch);
 		skin.draw(batch, body.getPosition(), getDirection());
+		if(game.settings.isBeta) inventory.draw(batch, getPosition());
 		
 		//drawDebug(batch);
 	}
@@ -252,6 +258,10 @@ public class CharacterEntity extends EntityAbstract {
 		this.gainDamage(damage, Vector2.Zero);
 	}
 	
+	public boolean giveItem(Item item) {
+		return inventory.add(item);
+	}
+	
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
 		if(damagedProgress < .4f) return;
@@ -290,6 +300,6 @@ public class CharacterEntity extends EntityAbstract {
 	public static class CharacterBody {
 		public float[] size;
 		public float[] bottom;
-		public float[] lightOffset;
+		@Json(name = "light_offset") public float[] lightOffset;
 	}
 }

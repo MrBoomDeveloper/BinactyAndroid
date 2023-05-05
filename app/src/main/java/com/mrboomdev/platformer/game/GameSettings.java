@@ -9,7 +9,7 @@ public class GameSettings {
 	public CharacterEntity mainPlayer;
 	public int screenInset = 60;
 	public boolean enableEditor, pause, ignoreScriptErrors;
-	public boolean debugRenderer, debugValues, debugRaysDisable;
+	public boolean debugRenderer, debugValues, debugRaysDisable, isBeta;
 	
 	public static GameSettings getFromSharedPreferences(SharedPreferences prefs) {
 		var settings = new GameSettings();
@@ -19,6 +19,7 @@ public class GameSettings {
 		settings.debugValues = prefs.getBoolean("debug", false);
 		settings.debugRenderer = prefs.getBoolean("debugRenderer", false);
 		settings.debugRaysDisable = prefs.getBoolean("debugRaysDisable", false);
+		settings.isBeta = prefs.getBoolean("beta", false);
 		
 		if(prefs.getBoolean("forceEditor", false)) settings.enableEditor = true;
 		AudioUtil.setVolume(prefs.getInt("musicVolume", 100) / 100, prefs.getInt("soundsVolume", 100) / 100);

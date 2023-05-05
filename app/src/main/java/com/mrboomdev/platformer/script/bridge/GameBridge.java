@@ -8,6 +8,7 @@ import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.FunUtil;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameBridge {
@@ -38,18 +39,23 @@ public class GameBridge {
 	
 	public void load(String type, String path) {
 		switch(type) {
-			case "music": {
+			case "music":
 				source.getParent().goTo(path).loadAsync(Music.class);
 				break;
-			}
-			case "sound": {
+				
+			case "sound":
 				source.getParent().goTo(path).loadAsync(Sound.class);
 				break;
-			}
-			case "character": {
+			
+			case "character":
 				game.environment.entities.loadCharacter(source.getParent().goTo(path), path);
 				break;
-			}
+			
+			case "item":
+				game.environment.entities.loadItem(source.getParent().goTo(path), path);
+				break;
+			
+			default: throw BoomException.builder("Failed to load a resource. Unknown type! Type: ").addQuoted(type).append(", Path: ").addQuoted(path).build();
 		}
 	}
 	

@@ -20,8 +20,8 @@ public abstract class MapObject implements Comparable<MapObject> {
 		if(getLayer() != object.getLayer()) {
 			return getLayer() - object.getLayer();
 		} else if(getPosition(true).y != object.getPosition(true).y) {
-			return Math.round(object.getPosition(true).y - getPosition(true).y);
+			return (object.getPosition(true).y > getPosition(true).y) ? 1 : -1;
 		}
-		return Math.round(getPosition(true).x - object.getPosition(true).x);
+		return (object.getPosition(true).x > getPosition(true).x) ? 1 : -1;
 	}
 }

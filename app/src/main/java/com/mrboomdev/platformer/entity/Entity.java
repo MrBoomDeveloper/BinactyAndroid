@@ -1,5 +1,8 @@
 package com.mrboomdev.platformer.entity;
 
+import com.mrboomdev.platformer.util.ColorUtil;
+import java.util.Map;
+
 public class Entity {
 	public static final short NONE = 0,
 		CHARACTER = 1,
@@ -28,5 +31,28 @@ public class Entity {
 		EVERYONE,
 		MAIN_PLAYER,
 		CONNECTED
+	}
+	
+	public static class Frame {
+		public String texture = "texture.png";
+		public float[] size, position;
+		public int[] region;
+	}
+	
+	public static class States {
+		public String initial;
+		public Map<String, State> types;
+	}
+	
+	public static class State {
+		public Frame[] skin;
+		public Light[] light;
+	}
+	
+	public static class Light {
+		public ColorUtil color;
+		public float distance = 5;
+		public float[] offset = {0, 0};
+		public int rays = 6;
 	}
 }

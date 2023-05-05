@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.ActivityManager;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.squareup.moshi.Json;
 import java.io.BufferedReader;
 import java.io.File;
@@ -181,7 +182,7 @@ public class FileUtil {
 	
 	public void remove() {
 		switch(source) {
-			case INTERNAL: throw new RuntimeException("Can't remove internal assets!");
+			case INTERNAL: throw BoomException.builder("Failed to remove a file. Can't edit internal assets! Path: ").addQuoted(getPath()).build();
 			case FULL:
 			case EXTERNAL: {
 				var file = new File(getFullPath(false));
@@ -198,7 +199,7 @@ public class FileUtil {
 	
 	public void rename(String name) {
 		switch(source) {
-			case INTERNAL: throw new RuntimeException("Can't rename file from the assets!");
+			case INTERNAL: throw BoomException.builder("Failed to rename a file. Can't edit internal assets! Path: ").addQuoted(getPath()).build();
 			case EXTERNAL: {
 				var file = getFile();
 				file.renameTo(new File(file.getParent() + "/" + name));

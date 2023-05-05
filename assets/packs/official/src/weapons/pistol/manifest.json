@@ -1,0 +1,15 @@
+{
+	"name": "Pistol",
+	"description": "ajwjwjakaiaiaia",
+	"author": { "name": "MrBoomDev" },
+	"type": "PISTOL",
+	
+	"skin": {
+		"texture": "texture.jpg",
+		"size": [1, 1]
+	},
+	
+	"stats": {
+		"damage": 10
+	}
+}

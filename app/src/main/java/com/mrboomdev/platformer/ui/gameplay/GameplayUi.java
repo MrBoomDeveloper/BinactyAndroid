@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.ui.gameplay.layout.InventoryLayout;
 import com.mrboomdev.platformer.ui.gameplay.screens.EditorScreen;
 import com.mrboomdev.platformer.util.ActorUtil;
 import com.mrboomdev.platformer.widgets.ActionButton;
@@ -65,6 +66,20 @@ public class GameplayUi {
 				game.launcher.pause();
 			})
 			.addTo(stage);
+		
+		if(game.settings.isBeta) {
+			widgets.put("inventory", new InventoryLayout()
+				.toPosition(Gdx.graphics.getWidth() / 2, game.settings.screenInset)
+				.addTo(stage));
+		}
+		
+		/*new JoystickWidget()
+			.onUpdate(power -> {
+				
+			})
+			.toPosition(Gdx.graphics.getWidth() - 200 - game.settings.screenInset, game.settings.screenInset)
+			.toSize(200, 200)
+			.addTo(stage);*/
 	}
 	
 	public void createEditor(Stage stage) {

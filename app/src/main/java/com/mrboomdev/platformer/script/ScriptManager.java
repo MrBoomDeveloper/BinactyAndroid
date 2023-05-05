@@ -12,6 +12,8 @@ import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.script.bridge.MapBridge;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.ui.ActivityManager;
+import com.mrboomdev.platformer.ui.android.AndroidDialog;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class ScriptManager {
@@ -54,6 +56,9 @@ public class ScriptManager {
 			interpreter.eval(code);
 		} catch(EvalError e) {
 			handleException(e);
+		} catch(Exception e) {
+			handleException(e);
+			AndroidDialog.createMessageDialog("Exception happened, while evaluating a script.", Log.getStackTraceString(e)).show();
 		}
 	}
 	

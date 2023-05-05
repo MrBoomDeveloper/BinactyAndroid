@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -121,6 +122,6 @@ public class PackLoader {
 		for(var pack : getPacks()) {
 			if(pack.id.equals(id)) return pack;
 		}
-		throw new NullPointerException("No pack with a such name were found: " + id);
+		throw BoomException.builder("Failed to find a pack. No item with a such name were found: ").addQuoted(id).build();
 	}
 }

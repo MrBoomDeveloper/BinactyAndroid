@@ -6,29 +6,25 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.environment.map.MapEntity;
 import com.mrboomdev.platformer.environment.path.PathGraph;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Moshi;
 
 public class EntityManager {
 	public static final String entitiesDirectory = "world/player/characters/";
 	public ObjectMap<String, CharacterEntity> presets = new ObjectMap<>();
+	public ObjectMap<String, Item> itemPresets = new ObjectMap<>();
 	public ObjectMap<CharacterEntity, PathGraph> graphs = new ObjectMap<>();
 	public Array<CharacterEntity> characters = new Array<>();
 	public PointLight mainLight;
 	private World world;
 	private RayHandler rayHandler;
-	private EntityPresets presets0 = new EntityPresets();
 	private GameHolder game = GameHolder.getInstance();
-	
-	public EntityManager(World world, RayHandler rayHandler) {
-		this.world = world;
-		this.rayHandler = rayHandler;
-	}
 	
 	public EntityManager(World world) {
 		this.world = world;
@@ -44,7 +40,19 @@ public class EntityManager {
 			var adapter = moshi.adapter(CharacterEntity.class);
 			presets.put(id, adapter.fromJson(file.goTo("manifest.json").readString(true)));
 		} catch(Exception e) {
-			e.printStackTrace();
+			throw new BoomException(e);
+		}
+	}
+	
+	public void loadItem(FileUtil file, String id) {
+		try {
+			Moshi moshi = new Moshi.Builder().build();
+			var adapter = moshi.adapter(Item.class);
+			var item = adapter.fromJson(file.goTo("manifest.json").readString(true));
+			item.source = file;
+			itemPresets.put(id, item);
+		} catch(Exception e) {
+			throw new BoomException(e);
 		}
 	}
 	
@@ -66,22 +74,9 @@ public class EntityManager {
 		mainLight.attachToBody(character.body, character.config.lightOffset[0], character.config.lightOffset[1]);
 	}
 	
-	public EntityManager addPresets(EntityPresets presets) {
-		this.presets0 = presets;
-		return this;
-	}
-	
 	public void render(SpriteBatch batch) {
 		for(CharacterEntity entity : characters) {
 			entity.drawProjectiles(batch);
 		}
-	}
-	
-	public Array<CharacterEntity> getAllCharacters() {
-		Array<CharacterEntity> entities = new Array<>();
-		for(CharacterEntity entity : characters) {
-			entities.add(entity);
-		}
-		return entities;
 	}
 }

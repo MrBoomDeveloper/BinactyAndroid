@@ -7,8 +7,10 @@ import com.mrboomdev.platformer.entity.bot.BotBrainBuilder;
 import com.mrboomdev.platformer.entity.character.CharacterCreator;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.character.CharacterGroup;
+import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.environment.map.MapEntity;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class EntitiesBridge {
@@ -30,7 +32,7 @@ public class EntitiesBridge {
 	
 	public CharacterCreator createCharacter(String name) {
 		if(!entities.presets.containsKey(name)) {
-			throw new RuntimeException("Tried to create the character, which wasn't been loaded: " + name);
+			throw BoomException.builder("Tried to create a character, which wasn't been loaded: ").addQuoted(name).build();
 		}
 		var character = entities.presets.get(name).cpy("", source.getParent().goTo(name));
 		var creator = new CharacterCreator(character);
@@ -43,6 +45,14 @@ public class EntitiesBridge {
 			case EVERYONE: return new CharacterGroup(game.environment.entities.characters);
 			default: return null;
 		}
+	}
+	
+	public Item createItem(String name) {
+		if(!entities.itemPresets.containsKey(name)) {
+			throw BoomException.builder("Tried to create a item, which wasn't been loaded: ").addQuoted(name).build();
+		}
+		var item = entities.itemPresets.get(name).cpy();
+		return item;
 	}
 
 	public void setListener(EntityListener listener) {

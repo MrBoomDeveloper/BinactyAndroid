@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
+import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.FunUtil;
@@ -61,9 +62,13 @@ public class GameBridge {
 	
 	public void over(CharacterEntity character, boolean isWin) {
 		if(character == game.settings.mainPlayer) {
-			game.environment.gamemode.runFunction(new GamemodeFunction(GamemodeFunction.Action.GAME_OVER, null, null));
+			game.environment.gamemode.runFunction(new GamemodeFunction(GamemodeFunction.Action.GAME_OVER, null));
 			return;
 		}
+	}
+	
+	public void __startOldGamemodeScript() {
+		game.environment.gamemode.script.start.forEach(function -> game.environment.gamemode.stack.add(new GamemodeManager.StackOperation(function, null)));
 	}
 	
 	public interface GameListener {

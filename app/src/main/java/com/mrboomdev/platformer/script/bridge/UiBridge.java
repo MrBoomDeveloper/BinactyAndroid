@@ -22,8 +22,8 @@ public class UiBridge {
 		}
 	}
 	
-	public TextWidget createText(String font) {
-		return new TextWidget(font).setOpacity(1).addTo(game.environment.stage);
+	public TextWidget createText(String font, String text) {
+		return new TextWidget(font).setOpacity(1).setText(text).addTo(game.environment.stage);
 	}
 	
 	public float getWidth() {

@@ -62,7 +62,7 @@ bots.add(entities.createCharacter("characters/foxy").setSpawnTiles(new String[]{
 for(var bot : bots) { bot.create(); }
 
 var staticLights = new ArrayList();
-for(int i = 1; i <= 13; i++) {
+for(int i = 1; i <= 18; i++) {
 	staticLights.add(map.getById("staticLight" + i));
 }
 
@@ -161,6 +161,7 @@ void checkIfNoPower() {
 		}
 		
 		game.setTimer(new Runnable() {run() {
+			if(isGameEnded) return;
 			audio.playMusic("music/music_box.wav", 0.5f);
 		}}, (float)(Math.random() * 10 + 3));
 	}
@@ -169,6 +170,7 @@ void checkIfNoPower() {
 /*ui.setFade(1, 0, 0.5f);
 ui.setTitle("SURVIVE THE NIGHT", 4);
 ui.setTimer(360, 1.5, true);*/
+game.__startOldGamemodeScript();
 
 ui.setListener(new UiListener() {
 	timerEnd() {
@@ -205,15 +207,15 @@ game.setListener(new GameListener() {
 			"music/dark_ambience_3.ogg",
 			"music/dark_ambience_4.ogg"},
 		999);
-		usageWidget = ui.createText("statBarWidget.ttf").setText("Usage: 1").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 25);
-		powerWidget = ui.createText("statBarWidget.ttf").setText("100%").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 60);
+		usageWidget = ui.createText("statBarWidget.ttf", "Usage: 1").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 25);
+		powerWidget = ui.createText("statBarWidget.ttf", "100%").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 60);
 		powerUpdate();
 		
 		lightLeft.pointLight.setActive(false);
 		lightRight.pointLight.setActive(false);
 		
 		game.setTimer(new Runnable() {run() {
-			if(isGameEnded) return;
+			if(isGameEnded || bots.get(3).entity.isDead) return;
 			audio.playSound("sounds/foxy_song.wav", 0.1f);
 		}}, (float)(Math.random() * 600 + 30));
 		

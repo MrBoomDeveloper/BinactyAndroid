@@ -27,14 +27,14 @@ import com.mrboomdev.platformer.projectile.*;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
-import static com.mrboomdev.platformer.entity.Entity.Animation.*;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.*;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 
 public class CharacterEntity extends EntityAbstract {
 	public CharacterConfig.Stats stats;
-	public CharacterBody worldBody;
 	public CharacterSkin skin;
+	@Json(name = "body") public CharacterBody worldBody;
 	@Json(ignore = true) public ItemInventory inventory;
 	@Json(ignore = true) public Fixture bottomFixture;
 	@Json(ignore = true) public CharacterBrain brain;
@@ -157,7 +157,7 @@ public class CharacterEntity extends EntityAbstract {
 		shadow.setCenter(getPosition().x, getPosition().y - config.bodySize[1] / 2);
 		shadow.draw(batch);
 		skin.draw(batch, body.getPosition(), getDirection());
-		if(game.settings.isBeta) inventory.draw(batch, getPosition(), skin);
+		if(game.settings.isBeta) inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
 		
 		//drawDebug(batch);
 	}
@@ -199,10 +199,12 @@ public class CharacterEntity extends EntityAbstract {
 	}
 
 	public void attack(Vector2 power) {
+		if(isDead) return;
 		projectileManager.attack(this.wasPower);
 	}
 	
 	public void shoot(Vector2 power) {
+		if(isDead) return;
 		projectileManager.shoot(getDirection().isForward() ? new Vector2(5, 0) : new Vector2(-5, 0));
 		AssetManager assets = GameHolder.getInstance().assets;
 		AudioUtil.play3DSound(assets.get("audio/sounds/shot.wav"), .3f, 15, body.getPosition());
@@ -234,7 +236,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/damage.mp3", Sound.class), .25f, 10, getPosition());
 		damagedProgress = (Math.random() > .8f) ? 0 : .8f;
-		skin.setAnimation(Entity.Animation.DAMAGE);
+		skin.setAnimation(DAMAGE);
 		stats.health = Math.max(stats.health - damage, 0);
 		healthPhantom = stats.health;
 		damagedPower = power;

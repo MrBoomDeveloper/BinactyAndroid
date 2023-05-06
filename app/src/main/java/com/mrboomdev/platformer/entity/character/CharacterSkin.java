@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.google.gson.annotations.SerializedName;
+import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.AudioUtil;
@@ -17,87 +17,76 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 import java.util.HashMap;
 import com.mrboomdev.platformer.entity.Entity;
-import static com.mrboomdev.platformer.entity.Entity.Animation.*;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.*;
 import java.util.Map;
 
 public class CharacterSkin {
-	@Json(name = "animations") Map<Entity.Animation, AnimationObject> animationsJson;
+	@Json(name = "animations") Map<Entity.AnimationType, Entity.Animation> animationsJson;
 	@Json(name = "texture") String texturePath = "skin.png";
-	@Json(ignore = true) Map<Entity.Animation, Animation<Sprite>> animations0 = new HashMap<>();
-	@Json(ignore = true) Entity.Animation currentAnimation;
+	@Json(ignore = true) Map<Entity.AnimationType, Animation<Entity.Frame>> animations = new HashMap<>();
+	@Json(ignore = true) Entity.AnimationType currentAnimation;
 	@Json(ignore = true) Sprite sprite;
 	@Json(ignore = true) float animationProgress;
 	@Json(ignore = true) int lastframeIndex;
+	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
-	public void setAnimation(Entity.Animation animation) {
+	public void setAnimation(Entity.AnimationType animation) {
 		if(currentAnimation == animation) return;
 		var selectedAnimation = getValidAnimation(animation);
-		currentAnimation = animations0.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
+		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
 		animationProgress = (float)(Math.random() * 5);
 	}
 	
-	private Entity.Animation getValidAnimation(Entity.Animation animation) {
+	private Entity.AnimationType getValidAnimation(Entity.AnimationType animation) {
 		switch(animation) {
-			case WALK: return animations0.containsKey(WALK) ? WALK : RUN;
-			case RUN: return animations0.containsKey(RUN) ? RUN : WALK;
-			case DASH: return animations0.containsKey(DASH) ? DASH : IDLE;
-			case DAMAGE: return animations0.containsKey(DAMAGE) ? DAMAGE : WALK;
+			case WALK: return animations.containsKey(WALK) ? WALK : RUN;
+			case RUN: return animations.containsKey(RUN) ? RUN : WALK;
+			case DASH: return animations.containsKey(DASH) ? DASH : IDLE;
+			case DAMAGE: return animations.containsKey(DAMAGE) ? DAMAGE : WALK;
 			default: return animation;
 		}
 	}
 	
 	public void draw(SpriteBatch batch, Vector2 position, Direction direction) {
-		var activeAnimation = animations0.get(currentAnimation);
+		var activeAnimation = animations.get(currentAnimation);
 		animationProgress += Gdx.graphics.getDeltaTime();
 		
-		sprite = new Sprite(activeAnimation.getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL));
+		sprite = new Sprite(activeAnimation.getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL).sprite);
 		sprite.setSize(
 			direction.isForward() ? sprite.getWidth() : -sprite.getWidth(),
 			sprite.getHeight());
 		
-		sprite.setAlpha(currentAnimation == Entity.Animation.DAMAGE ? 0.85f : 1);
+		sprite.setAlpha(currentAnimation == DAMAGE ? 0.85f : 1);
 		sprite.setCenter(position.x, position.y);
 		sprite.draw(batch);
 		
 		int frameIndex = activeAnimation.getKeyFrameIndex(animationProgress);
 		if((frameIndex == 1 || frameIndex == 6) && frameIndex != lastframeIndex &&
 		  (currentAnimation == WALK || currentAnimation == RUN)) {
-			var assets = GameHolder.getInstance().assets;
-			AudioUtil.play3DSound(assets.get("audio/sounds/step.mp3"), .2f, 15, position);
+			AudioUtil.play3DSound(game.assets.get("audio/sounds/step.mp3"), .2f, 15, position);
 		}
 		lastframeIndex = frameIndex;
 	}
 	
 	public Entity.Frame getCurrentFrame() {
-		return null;
+		var activeAnimation = animations.get(currentAnimation);
+		return activeAnimation.getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL);
 	}
 	
 	public CharacterSkin build(FileUtil source) {
 		Texture texture = new Texture(source.goTo(texturePath).getFileHandle());
-		for(HashMap.Entry<Entity.Animation, AnimationObject> entry : animationsJson.entrySet()) {
-			AnimationObject object = entry.getValue();
-			Sprite[] sprites = new Sprite[object.frames.length];
-			for(int i = 0; i < object.frames.length; i++) {
-				int[] bounds = object.frames[i].region;
-				TextureRegion region = new TextureRegion(texture, bounds[0], bounds[1], bounds[2], bounds[3]);
-				Sprite sprite = new Sprite(region);
-				sprite.setSize(object.size[0], object.size[1]);
-				sprites[i] = sprite;
+		for(HashMap.Entry<Entity.AnimationType, Entity.Animation> entry : animationsJson.entrySet()) {
+			Array<Entity.Frame> frames = Array.with(entry.getValue().frames);
+			for(var frame : frames) {
+				frame.fillEmpty(entry.getValue());
+				frame.sprite = new Sprite(new TextureRegion(texture, frame.region[0], frame.region[1], frame.region[2], frame.region[3]));
+				frame.sprite.setSize(entry.getValue().size[0], entry.getValue().size[1]);
 			}
-			Animation<Sprite> animation = new Animation<>(object.delay, sprites);
-			animation.setPlayMode(object.mode != null ? object.mode : PlayMode.LOOP);
-			animation.setFrameDuration(object.delay);
-			animations0.put(entry.getKey(), animation);
+			var mode = entry.getValue().mode != null ? entry.getValue().mode : PlayMode.LOOP;
+			Animation<Entity.Frame> animation = new Animation<>(entry.getValue().delay, frames, mode);
+			animations.put(entry.getKey(), animation);
 		}
 		setAnimation(IDLE);
 		return this;
-	}
-	
-	public static class AnimationObject {
-		public float delay;
-		public float[] size;
-		public Entity.Frame[] frames;
-		public PlayMode mode;
-		@Json(ignore = true) public Sprite sprite;
 	}
 }

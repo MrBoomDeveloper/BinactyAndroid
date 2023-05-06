@@ -52,9 +52,9 @@ public class EnvironmentManager {
 		ui.createFreeRoam(stage);
 		if(!game.settings.enableEditor) ui.createCombat(stage);
 		if(game.settings.enableEditor) ui.createEditor(stage);
-		gamemode.createUi(stage);
 		ui.connectCharacter(game.settings.mainPlayer);
 		game.script.gameBridge.callListener(GameBridge.Function.START);
+		gamemode.createUi(stage);
 	}
 	
 	public void setupRayHandler() {

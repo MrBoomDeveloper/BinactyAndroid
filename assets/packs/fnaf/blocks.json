@@ -31,7 +31,7 @@
 	
 		"chair": {
 			"texture": "tiles/chair.png", "size": [1, 1.5],
-			"colission": [1, 0.5, 0, -1]
+			"colission": [1, 0.7, 0, -0.8]
 		},
 	
 		"soundBooster": {

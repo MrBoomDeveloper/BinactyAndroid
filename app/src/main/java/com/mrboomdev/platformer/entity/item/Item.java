@@ -17,14 +17,17 @@ public class Item {
 	@Json(ignore = true) public FileUtil source;
 	@Json(ignore = true) Sprite sprite;
 	
-	public Sprite getSprite(Vector2 position, CharacterSkin characterSkin) {
+	public Sprite getSprite() {
 		if(sprite == null) {
 			sprite = new Sprite(new Texture(source.goTo(skin.texture).getFileHandle()));
-			var currentCharacterFrame = characterSkin.getCurrentFrame();
 			sprite.setSize(skin.size[0], skin.size[1]);
 		}
-		sprite.setPosition(position.x + skin.position[0], position.y + skin.position[1]);
 		return sprite;
+	}
+	
+	public Vector2 getOffset(CharacterSkin characterSkin) {
+		var currentCharacterFrame = characterSkin.getCurrentFrame();
+		return new Vector2(skin.position[0] + currentCharacterFrame.handPosition[0], skin.position[1] + currentCharacterFrame.handPosition[1]);
 	}
 	
 	public Item cpy() {

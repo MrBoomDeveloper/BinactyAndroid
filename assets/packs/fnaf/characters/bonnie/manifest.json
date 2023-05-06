@@ -7,7 +7,7 @@
 	"skin": {
 		"texture": "skin.png",
 		"animations": {
-			"IDLE": {
+			"idle": {
 				"delay": 0.2,
 				"size": [ 1, 2 ],
 				"frames": [
@@ -15,7 +15,7 @@
 				]
 			},
 			
-			"WALK": {
+			"walk": {
 				"delay": 0.05,
 				"size": [ 1, 2 ],
 				"frames": [
@@ -25,7 +25,7 @@
 		}
 	},
 	
-	"worldBody": {
+	"body": {
 		"size": [ 1.1, 1.8 ],
 		"bottom": [ 1.1, 0.4, 0, -0.7 ],
 		"light_offset": [0, 1]

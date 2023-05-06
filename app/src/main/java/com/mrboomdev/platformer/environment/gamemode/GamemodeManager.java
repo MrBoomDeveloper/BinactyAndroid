@@ -32,11 +32,10 @@ public class GamemodeManager {
 	private boolean isBroken;
 	
 	public GamemodeManager(GamemodeScript scriptOld, FileUtil scenario) {
+		game.environment.gamemode = this;
+		this.script = scriptOld;
 		game.script = new ScriptManager(scenario);
 		if(!game.settings.enableEditor) game.script.eval(scenario.readString(true));
-		
-		this.script = scriptOld;
-		scriptOld.start.forEach(function -> stack.add(new StackOperation(function, null)));
 	}
 	
 	public GamemodeManager build(FileUtil source, Runnable callback) {
@@ -57,17 +56,6 @@ public class GamemodeManager {
 		stack.add(new StackOperation(function, function));
 	}
 	
-	private boolean resolveConditions(StackOperation operation) {
-		if(operation.function.conditions == null) return true;
-		var conditions = operation.function.conditions;
-		
-		if(operation.caller != null) {
-			var caller = operation.caller;
-			if(conditions.target != null && (conditions.target != caller.options.target)) return false;
-		}
-		return true;
-	}
-	
 	public void update() {
 		if(game.settings.enableEditor || isBroken) {
 			isBroken = true;
@@ -77,11 +65,10 @@ public class GamemodeManager {
 		for(var operation : stack) {
 			var function = operation.function;
 			operation.progress += Gdx.graphics.getDeltaTime();
-			if(!resolveConditions(operation)) continue;
 			
 			switch(function.action) {
 				case GAME_OVER:
-					game.stats.isWin = time == 0 ? true : false;
+					game.stats.isWin = time == 0;
 					gameOverTimeout = 1;
 					fade.start(0, 1, .5f);
 					break;
@@ -147,11 +134,10 @@ public class GamemodeManager {
 		if(time == 0) {
 			isTimerEnd = true;
 			game.script.uiBridge.callListener(UiBridge.Function.TIMER_END);
-			runFunction(new GamemodeFunction(Action.TIMER_END, null, null));
 		}
 	}
 	
-	public class StackOperation {
+	public static class StackOperation {
 		public float progress = 0;
 		public boolean isFinished = false;
 		public GamemodeFunction function;

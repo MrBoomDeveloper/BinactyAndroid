@@ -7,54 +7,55 @@
 	"skin": {
 		"texture": "skin.png",
 		"animations": {
-			"IDLE": {
+			"idle": {
 				"delay": 0.2,
 				"size": [ 1.1, 1.8 ],
 				"frames": [
-					{ "region": [ 0, 0, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 21, 0, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 42, 0, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 63, 0, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 84, 0, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 105, 0, 21, 40 ], "hand_position": [0, 0] }
+					{ "region": [ 0, 0, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 21, 0, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 42, 0, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 63, 0, 21, 40 ], "hand_position": [0.4, -0.25] },
+					{ "region": [ 84, 0, 21, 40 ], "hand_position": [0.4, -0.25] },
+					{ "region": [ 105, 0, 21, 40 ], "hand_position": [0.4, -0.21] }
 				]
 			},
 			
-			"WALK": {
+			"walk": {
 				"delay": 0.07,
+				"delay": 1,
 				"size": [ 1.1, 1.8 ],
 				"frames": [
-					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0, 0] }
+					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0.32, -0.2] },
+					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0.35, -0.2] },
+					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
+					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
+					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
+					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0.47, -0.2] },
+					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0.44, -0.2] },
+					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0.36, -0.2] },
+					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0.33, -0.2] }
 				]
 			},
 			
-			"RUN": {
+			"run": {
 				"delay": 0.035,
 				"size": [ 1.1, 1.8 ],
 				"frames": [
-					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0, 0] },
-					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0, 0] }
+					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0.4, -0.2] },
+					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0.4, -0.2] }
 				]
 			}
 		}
 	},
 	
-	"worldBody": {
+	"body": {
 		"size": [ 1.1, 1.8 ],
 		"bottom": [ 1.1, 0.4, 0, -0.7 ],
 		"light_offset": [0, 1]

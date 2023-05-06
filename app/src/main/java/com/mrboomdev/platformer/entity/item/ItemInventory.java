@@ -20,9 +20,20 @@ public class ItemInventory {
 		return false;
 	}
 	
-	public void draw(SpriteBatch batch, Vector2 position, CharacterSkin characterSkin) {
+	public void draw(SpriteBatch batch, Vector2 position, CharacterSkin characterSkin, boolean isFlip) {
 		if(items.isEmpty() || (current >= items.size) || (items.get(current) == null)) return;
-		var sprite = new Sprite(items.get(current).getSprite(position, characterSkin));
+		
+		var item = items.get(current);
+		var offset = item.getOffset(characterSkin);
+		var sprite = new Sprite(item.getSprite());
+		
+		sprite.setFlip(isFlip, false);
+		if(!isFlip) {
+			sprite.setCenter(position.x + offset.x, position.y + offset.y);
+		} else {
+			sprite.setCenter(position.x - offset.x, position.y + offset.y);
+		}
+		
 		sprite.draw(batch);
 	}
 }

@@ -140,6 +140,11 @@ public class GameDebugMenu {
 			prefs.edit().putBoolean("debugRaysDisable", isActive).apply();
 		});
 		
+		Switch stageSwitch = view.findViewById(R.id.debugStage);
+		stageSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
+			settings.debugStage = isActive;
+		});
+		
 		Switch editorSwitch = view.findViewById(R.id.editorSwitch);
 		editorSwitch.setChecked(settings.enableEditor);
 		editorSwitch.setOnCheckedChangeListener((toggle, isActive) -> {

@@ -81,4 +81,14 @@ public class Entity {
 		public float[] offset = {0, 0};
 		public int rays = 6;
 	}
+	
+	public static class Stats {
+		public int health;
+		public int maxHealth;
+		public float stamina;
+		public float maxStamina;
+		public float speed;
+		public float shield;
+		public int damage;
+	}
 }

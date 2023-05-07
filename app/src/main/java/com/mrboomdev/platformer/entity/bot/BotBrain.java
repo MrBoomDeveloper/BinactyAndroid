@@ -4,6 +4,7 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.PerformanceCounter;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.bot.ai.*;
 import com.mrboomdev.platformer.entity.character.CharacterBrain;
@@ -12,6 +13,7 @@ import com.mrboomdev.platformer.environment.path.PathGraph;
 import com.mrboomdev.platformer.environment.path.PathPoint;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.AudioUtil;
+import com.mrboomdev.platformer.util.io.LogUtil;
 
 public class BotBrain extends CharacterBrain {
 	public GraphPath<PathPoint> path;
@@ -40,6 +42,8 @@ public class BotBrain extends CharacterBrain {
 	}
 	
 	public void scanMap() {
+		var startedScanningMapMs = System.currentTimeMillis();
+		
 		this.graph = new PathGraph();
 		var points = new Array<PathPoint>();
 		for(var tile : game.environment.map.tilesMap.values()) {
@@ -59,6 +63,8 @@ public class BotBrain extends CharacterBrain {
 				this.graph.connectPoints(points.get(i), points.get(a));
 			}
 		}
+		
+		LogUtil.debug(LogUtil.Tag.BOT, "Map scanned for: " + (System.currentTimeMillis() - startedScanningMapMs) + "ms");
 	}
 	
 	@Override

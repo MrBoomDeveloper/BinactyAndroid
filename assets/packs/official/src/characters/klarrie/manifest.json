@@ -22,34 +22,33 @@
 			
 			"walk": {
 				"delay": 0.07,
-				"delay": 1,
 				"size": [ 1.1, 1.8 ],
 				"frames": [
-					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0.32, -0.2] },
+					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0.32, -0.22] },
 					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0.35, -0.2] },
 					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
 					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
 					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
-					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0.47, -0.2] },
+					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0.47, -0.22] },
 					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0.44, -0.2] },
-					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0.36, -0.2] },
-					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0.33, -0.2] }
+					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0.34, -0.22] },
+					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0.3, -0.24] }
 				]
 			},
 			
 			"run": {
-				"delay": 0.035,
+				"delay": 0.04,
 				"size": [ 1.1, 1.8 ],
 				"frames": [
-					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
-					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
-					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
-					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
-					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0.4, -0.2] },
-					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0.4, -0.2] },
-					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0.4, -0.2] },
-					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0.4, -0.2] },
-					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0.4, -0.2] }
+					{ "region": [ 1, 40, 21, 40 ], "hand_position": [0.32, -0.22] },
+					{ "region": [ 23, 40, 21, 40 ], "hand_position": [0.35, -0.2] },
+					{ "region": [ 45, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
+					{ "region": [ 67, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
+					{ "region": [ 89, 40, 21, 40 ], "hand_position": [0.39, -0.2] },
+					{ "region": [ 1, 80, 21, 40 ], "hand_position": [0.47, -0.22] },
+					{ "region": [ 23, 80, 21, 40 ], "hand_position": [0.44, -0.2] },
+					{ "region": [ 45, 80, 21, 40 ], "hand_position": [0.34, -0.22] },
+					{ "region": [ 67, 80, 21, 40 ], "hand_position": [0.3, -0.24] }
 				]
 			}
 		}

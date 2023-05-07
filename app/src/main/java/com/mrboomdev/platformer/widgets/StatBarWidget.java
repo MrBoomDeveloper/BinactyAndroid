@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Align;
-import com.mrboomdev.platformer.entity.character.CharacterConfig;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
@@ -52,14 +51,14 @@ public class StatBarWidget extends ActorUtil {
 	}
 	
 	private float getProgress() {
-		CharacterConfig.Stats stats = connectedEntity.config.stats;
+		if(connectedEntity.stats.maxHealth == 0 || connectedEntity.stats.maxStamina == 0) return 0;
 		float result = 0;
 		switch(track) {
 			case HEALTH:
-				result = stats.health * 100 / stats.maxHealth;
+				result = connectedEntity.stats.health * 100 / connectedEntity.stats.maxHealth;
 				break;
 			case STAMINA:
-				result = stats.stamina * 100 / stats.maxStamina;
+				result = connectedEntity.stats.stamina * 100 / connectedEntity.stats.maxStamina;
 				break;
 		}
 		result = currentProgress + (result - currentProgress) * .2f;
@@ -68,12 +67,11 @@ public class StatBarWidget extends ActorUtil {
 	}
 	
 	private String getData() {
-		CharacterConfig.Stats stats = connectedEntity.config.stats;
 		switch(track) {
 			case HEALTH:
-				return stats.health + " / " + stats.maxHealth;
+				return connectedEntity.stats.health + " / " + connectedEntity.stats.maxHealth;
 			case STAMINA:
-				return (int)stats.stamina + " / " + (int)stats.maxStamina;
+				return (int)connectedEntity.stats.stamina + " / " + (int)connectedEntity.stats.maxStamina;
 			default:
 				return "0 / 0";
 		}

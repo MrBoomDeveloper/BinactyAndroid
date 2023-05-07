@@ -8,7 +8,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import com.badlogic.gdx.Gdx;
 import com.google.android.material.color.DynamicColors;
-import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
@@ -20,7 +19,6 @@ public class GameDebugLauncher extends GameLauncher {
 	
 	@Override
 	public void onCreate(Bundle bundle) {
-		LogSender.startLogging(this);
 		super.onCreate(bundle);
 		var game = GameHolder.getInstance();
 		game.gamemodeFile = FileUtil.internal("packs/fnaf/gamemode.java");

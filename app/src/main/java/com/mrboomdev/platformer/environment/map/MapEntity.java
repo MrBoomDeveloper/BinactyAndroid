@@ -26,7 +26,7 @@ public class MapEntity extends MapObject {
     @Override
     public Vector2 getPosition(boolean isBottom) {
 		if(!isBottom) return entity.body.getPosition();
-		return entity.body.getPosition().add(0, entity.config.body3D[3]);
+		return entity.body.getPosition().add(0, entity.worldBody.bottom[3]);
     }
 	
 	@Override

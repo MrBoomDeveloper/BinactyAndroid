@@ -10,6 +10,7 @@
 			"idle": {
 				"delay": 0.2,
 				"size": [ 1, 2 ],
+				"hand_position": [0.4, -0.2],
 				"frames": [
 					{ "region": [ 8, 2, 19, 42 ] }
 				]
@@ -18,6 +19,7 @@
 			"walk": {
 				"delay": 0.05,
 				"size": [ 1, 2 ],
+				"hand_position": [0.4, -0.2],
 				"frames": [
 					{ "region": [ 8, 2, 19, 42 ] }
 				]

@@ -11,6 +11,7 @@
 				"delay": 0.3,
 				"mode": "LOOP_PINGPONG",
 				"size": [ 1.1, 1.8 ],
+				"hand_position": [0.4, -0.2],
 				"frames": [
 					{ "region": [ 0,  0, 21, 42 ] },
 					{ "region": [ 0,  0, 21, 42 ] },
@@ -24,6 +25,7 @@
 				"delay": 0.1,
 				"mode": "NORMAL",
 				"size": [ 1.1, 1.8 ],
+				"hand_position": [0.4, -0.2],
 				"frames": [
 					{ "region": [ 64,  0, 22, 42 ] },
 					{ "region": [ 86,  0, 22, 42 ] },
@@ -35,6 +37,7 @@
 				"delay": 0.05,
 				"mode": "LOOP",
 				"size": [1.4, 1.8],
+				"hand_position": [0.4, -0.2],
 				"frames": [
 					{ "region": [ 0, 43, 26, 42 ] },
 					{ "region": [ 27, 43, 26, 42 ] },

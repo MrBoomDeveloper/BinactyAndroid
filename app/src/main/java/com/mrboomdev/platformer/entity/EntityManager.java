@@ -61,7 +61,7 @@ public class EntityManager {
 			mainLight.setSoftnessLength(1);
 			mainLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
 		}
-		mainLight.attachToBody(character.body, character.config.lightOffset[0], character.config.lightOffset[1]);
+		mainLight.attachToBody(character.body, character.worldBody.lightOffset[0], character.worldBody.lightOffset[1]);
 	}
 	
 	public void render(SpriteBatch batch) {

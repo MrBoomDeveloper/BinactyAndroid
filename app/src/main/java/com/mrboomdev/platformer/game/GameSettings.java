@@ -8,8 +8,8 @@ public class GameSettings {
 	public String playerName = "Player";
 	public CharacterEntity mainPlayer;
 	public int screenInset = 60;
-	public boolean enableEditor, pause, ignoreScriptErrors;
-	public boolean debugRenderer, debugValues, debugRaysDisable, isBeta;
+	public boolean enableEditor, pause, ignoreScriptErrors, isBeta;
+	public boolean debugRenderer, debugValues, debugRaysDisable, debugStage;
 	
 	public static GameSettings getFromSharedPreferences(SharedPreferences prefs) {
 		var settings = new GameSettings();

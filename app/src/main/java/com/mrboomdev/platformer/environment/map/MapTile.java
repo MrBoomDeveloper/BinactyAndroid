@@ -29,7 +29,7 @@ public class MapTile extends MapObject {
 	public boolean flipX, flipY;
 	public String texture, devTexture;
 	public Entity.Light light;
-	public float[] size, colission, shadowColission, position, offset = {0, 0};
+	public float[] size, colission, shadowColission, position, offset = {0, 0}, scale;
 	public int[] region, connectedTile;
 	public TileInteraction interaction;
 	public TileStyle style;
@@ -65,6 +65,7 @@ public class MapTile extends MapObject {
 		    if(style != null) {
 				sprite = style.getSprite(getPosition(false), this);
 				sprite.setFlip(flipX, flipY);
+				if(scale != null) sprite.setScale(scale[0], scale[1]);
 			}
 			if(sprite != null) sprite.draw(batch);
 			if(devSprite != null) devSprite.draw(batch);

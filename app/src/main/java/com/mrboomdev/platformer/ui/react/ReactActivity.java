@@ -21,7 +21,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.soloader.SoLoader;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInCredential;
-import com.itsaky.androidide.logsender.LogSender;
 import com.mrboomdev.platformer.*;
 import com.mrboomdev.platformer.game.pack.*;
 import com.mrboomdev.platformer.ui.ActivityManager;
@@ -44,7 +43,6 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 
     @Override
     protected void onCreate(Bundle bundle) {
-        LogSender.startLogging(this);
         super.onCreate(bundle);
         SoLoader.init(this, false);
         ActivityManager.current = this;

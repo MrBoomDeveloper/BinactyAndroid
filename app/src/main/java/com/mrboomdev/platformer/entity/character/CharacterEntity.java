@@ -15,7 +15,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
-import com.google.gson.Gson;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
@@ -32,13 +31,12 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 
 public class CharacterEntity extends EntityAbstract {
-	public CharacterConfig.Stats stats;
+	public Entity.Stats stats;
 	public CharacterSkin skin;
 	@Json(name = "body") public CharacterBody worldBody;
 	@Json(ignore = true) public ItemInventory inventory;
 	@Json(ignore = true) public Fixture bottomFixture;
 	@Json(ignore = true) public CharacterBrain brain;
-	@Json(ignore = true) public CharacterConfig config;
 	@Json(ignore = true) public String name;
 	@Json(ignore = true) public TileInteraction nearInteraction;
 	@Json(ignore = true) float dashProgress, dashReloadProgress;
@@ -53,25 +51,19 @@ public class CharacterEntity extends EntityAbstract {
 	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	public CharacterEntity cpy(String name, FileUtil source) {
-		var copy = new CharacterEntity(name);
+		var copy = new CharacterEntity(name, stats);
 		copy.healthPhantom = stats.health;
-		copy.config = new CharacterConfig();
-		copy.config.stats = stats;
-		copy.stats = stats;
 		copy.name = name;
-		copy.config.body3D = worldBody.bottom;
-		copy.config.bodySize = worldBody.size;
-		copy.config.lightOffset = worldBody.lightOffset;
-		copy.config.build();
+		copy.worldBody = worldBody;
 		copy.skin = skin.build(source);
 		return copy;
 	}
 	
-	public CharacterEntity() {}
-	
-	public CharacterEntity(String name) {
+	public CharacterEntity(String name, Entity.Stats stats) {
 		this.name = name;
+		this.stats = stats;
 		shape = new ShapeRenderer();
+		inventory = new ItemInventory();
 		
 		font = game.assets.get("nick.ttf", false);
 		font.setUseIntegerPositions(false);
@@ -80,26 +72,25 @@ public class CharacterEntity extends EntityAbstract {
 		shadow = new Sprite(game.assets.get("world/effects/shadow.png", Texture.class));
 		shadow.setAlpha(.75f);
 		
-		inventory = new ItemInventory();
+		stats.maxHealth = stats.health;
+		stats.maxStamina = stats.stamina;
 	}
 	
 	public CharacterEntity create(World world) {
-		if(config.body3D == null)
-			config.body3D = new float[]{config.bodySize[0], config.bodySize[1], 0, 0};
-		
+		worldBody.build();
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(config.bodySize[0] / 2, config.bodySize[1] / 2);
+		shape.setAsBox(worldBody.size[0] / 2, worldBody.size[1] / 2);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.filter.categoryBits = Entity.CHARACTER;
 		fixtureDef.filter.maskBits = Entity.ATTACK | Entity.BULLET | Entity.INTERACTABLE;
 		
 		PolygonShape shape3D = new PolygonShape();
-		shape3D.setAsBox(config.body3D[0] / 2, config.body3D[1] / 2,
-			new Vector2(config.body3D[2], config.body3D[3]), 0);
+		shape3D.setAsBox(worldBody.bottom[0] / 2, worldBody.bottom[1] / 2,
+			new Vector2(worldBody.bottom[2], worldBody.bottom[3]), 0);
 		FixtureDef fixture3D = new FixtureDef();
 		fixture3D.shape = shape3D;
 		fixture3D.filter.categoryBits = Entity.CHARACTER_BOTTOM;
@@ -113,7 +104,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		shape.dispose();
 		shape3D.dispose();
-		shadow.setSize(config.body3D[0], config.body3D[1]);
+		shadow.setSize(worldBody.bottom[0], worldBody.bottom[1]);
 		
 		projectileManager = new ProjectileManager(world, this)
 			.setAttackConfig(new ProjectileAttack.AttackStats()
@@ -154,7 +145,7 @@ public class CharacterEntity extends EntityAbstract {
 		}
 		if(brain != null) brain.update();
 		
-		shadow.setCenter(getPosition().x, getPosition().y - config.bodySize[1] / 2);
+		shadow.setCenter(getPosition().x, getPosition().y - worldBody.size[1] / 2);
 		shadow.draw(batch);
 		skin.draw(batch, body.getPosition(), getDirection());
 		if(game.settings.isBeta) inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
@@ -187,14 +178,14 @@ public class CharacterEntity extends EntityAbstract {
 			shape.setProjectionMatrix(game.environment.camera.combined);
 			shape.begin(ShapeRenderer.ShapeType.Filled);
 			shape.setColor(1, 0, 0, 1);
-			float progress = config.bodySize[0] / stats.maxHealth * stats.health;
-			shape.rect(getPosition().x - config.bodySize[0] / 2, getPosition().y - config.bodySize[1] / 2 - .4f, progress, .2f);
+			float progress = worldBody.size[0] / stats.maxHealth * stats.health;
+			shape.rect(getPosition().x - worldBody.size[0] / 2, getPosition().y - worldBody.size[1] / 2 - .4f, progress, .2f);
 			shape.end();
 		}
 		batch.begin();
 		font.draw(batch, name,
 			body.getPosition().x - 1,
-			body.getPosition().y + (config.bodySize[1] / 2) + .4f,
+			body.getPosition().y + (worldBody.size[1] / 2) + .4f,
 			2, Align.center, false);
 	}
 
@@ -220,7 +211,7 @@ public class CharacterEntity extends EntityAbstract {
 		if(stats.stamina < Entity.DASH_COST) return;
 		if(isDashing || dashReloadProgress < Entity.DASH_DELAY) return;
 		
-		config.stats.stamina -= Entity.DASH_COST;
+		stats.stamina -= Entity.DASH_COST;
 		dashProgress = 0;
 		isDashing = true;
 		staminaReloadMultiply = .05f;
@@ -294,5 +285,14 @@ public class CharacterEntity extends EntityAbstract {
 		public float[] size;
 		public float[] bottom;
 		@Json(name = "light_offset") public float[] lightOffset;
+		
+		public CharacterBody build() {
+			if(bottom == null) {
+				bottom = new float[]{size[0], size[1], 0, 0};
+			}
+			return this;
+		}
 	}
+	
+	protected CharacterEntity() {}
 }

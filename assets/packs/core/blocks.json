@@ -11,6 +11,10 @@
 	
 		"triggerSpawn": {
 			"devTexture": "tiles/trigger_spawn.png", "size": [2, 2]
+		},
+		
+		"shadow_square": {
+			"texture": "tiles/shadow_square.png", "size": [2, 2]
 		}
 	}
 }

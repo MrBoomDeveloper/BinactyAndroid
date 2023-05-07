@@ -61,6 +61,7 @@ public class GameplayUi extends CoreUi {
 	@Override
 	public void render(float delta) {
 		stage.act(delta);
+		stage.setDebugAll(game.settings.debugStage);
 		stage.draw();
 		super.render(delta);
 	}

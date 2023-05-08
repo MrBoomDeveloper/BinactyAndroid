@@ -1,7 +1,6 @@
 package com.mrboomdev.platformer.entity.character;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -15,11 +14,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
-import com.mrboomdev.platformer.entity.Entity;
-import com.mrboomdev.platformer.entity.EntityAbstract;
+import com.mrboomdev.platformer.entity.*;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
-import com.mrboomdev.platformer.entity.item.Item;
-import com.mrboomdev.platformer.entity.item.ItemInventory;
+import com.mrboomdev.platformer.entity.item.*;
 import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.*;
@@ -34,10 +31,10 @@ public class CharacterEntity extends EntityAbstract {
 	public Entity.Stats stats;
 	public CharacterSkin skin;
 	@Json(name = "body") public CharacterBody worldBody;
+	@Json(ignore = true) public String name;
 	@Json(ignore = true) public ItemInventory inventory;
 	@Json(ignore = true) public Fixture bottomFixture;
 	@Json(ignore = true) public CharacterBrain brain;
-	@Json(ignore = true) public String name;
 	@Json(ignore = true) public TileInteraction nearInteraction;
 	@Json(ignore = true) float dashProgress, dashReloadProgress;
 	@Json(ignore = true) float damagedProgress = 1;
@@ -51,17 +48,14 @@ public class CharacterEntity extends EntityAbstract {
 	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	public CharacterEntity cpy(String name, FileUtil source) {
-		var copy = new CharacterEntity(name, stats);
-		copy.healthPhantom = stats.health;
-		copy.name = name;
-		copy.worldBody = worldBody;
-		copy.skin = skin.build(source);
-		return copy;
+		return new CharacterEntity(name, skin.build(source), worldBody, stats);
 	}
 	
-	public CharacterEntity(String name, Entity.Stats stats) {
+	public CharacterEntity(String name, CharacterSkin skin, CharacterBody worldBody, Entity.Stats stats) {
 		this.name = name;
 		this.stats = stats;
+		this.skin = skin;
+		this.worldBody = worldBody;
 		shape = new ShapeRenderer();
 		inventory = new ItemInventory();
 		
@@ -72,6 +66,7 @@ public class CharacterEntity extends EntityAbstract {
 		shadow = new Sprite(game.assets.get("world/effects/shadow.png", Texture.class));
 		shadow.setAlpha(.75f);
 		
+		healthPhantom = stats.health;
 		stats.maxHealth = stats.health;
 		stats.maxStamina = stats.stamina;
 	}
@@ -127,7 +122,10 @@ public class CharacterEntity extends EntityAbstract {
 		if(isDead && !isDestroyed) destroy();
 		if(isDestroyed) return;
 		
-		stats.stamina = Math.min(stats.maxStamina, isRunning ? stats.stamina : stats.stamina + staminaReloadMultiply);
+		stats.stamina = Math.min(stats.maxStamina, isRunning
+			? stats.stamina
+			: stats.stamina + staminaReloadMultiply);
+		
 		dashProgress += Gdx.graphics.getDeltaTime();
 		dashReloadProgress += Gdx.graphics.getDeltaTime();
 		staminaReloadMultiply = Math.min(.3f, staminaReloadMultiply * 1.02f);
@@ -147,7 +145,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		shadow.setCenter(getPosition().x, getPosition().y - worldBody.size[1] / 2);
 		shadow.draw(batch);
-		skin.draw(batch, body.getPosition(), getDirection());
+		skin.draw(batch, getPosition(), getDirection());
 		if(game.settings.isBeta) inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
 		
 		//drawDebug(batch);
@@ -179,14 +177,14 @@ public class CharacterEntity extends EntityAbstract {
 			shape.begin(ShapeRenderer.ShapeType.Filled);
 			shape.setColor(1, 0, 0, 1);
 			float progress = worldBody.size[0] / stats.maxHealth * stats.health;
-			shape.rect(getPosition().x - worldBody.size[0] / 2, getPosition().y - worldBody.size[1] / 2 - .4f, progress, .2f);
+			shape.rect(
+				getPosition().x - worldBody.size[0] / 2,
+				getPosition().y - worldBody.size[1] / 2 - .4f,
+				progress, .2f);
 			shape.end();
 		}
 		batch.begin();
-		font.draw(batch, name,
-			body.getPosition().x - 1,
-			body.getPosition().y + (worldBody.size[1] / 2) + .4f,
-			2, Align.center, false);
+		font.draw(batch, name, getPosition().x - 1, getPosition().y + (worldBody.size[1] / 2) + .4f, 2, Align.center, false);
 	}
 
 	public void attack(Vector2 power) {
@@ -197,8 +195,7 @@ public class CharacterEntity extends EntityAbstract {
 	public void shoot(Vector2 power) {
 		if(isDead) return;
 		projectileManager.shoot(getDirection().isForward() ? new Vector2(5, 0) : new Vector2(-5, 0));
-		AssetManager assets = GameHolder.getInstance().assets;
-		AudioUtil.play3DSound(assets.get("audio/sounds/shot.wav"), .3f, 15, body.getPosition());
+		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .3f, 15, body.getPosition());
 	}
 	
 	public void interact() {
@@ -218,7 +215,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		if(wasPower.isZero()) wasPower = new Vector2(5, 0);
 		body.setLinearVelocity(wasPower.scl(100).limit(18));
-		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, body.getPosition());
+		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, getPosition());
 		
 	}
 	
@@ -232,7 +229,7 @@ public class CharacterEntity extends EntityAbstract {
 		healthPhantom = stats.health;
 		damagedPower = power;
 		
-		if(stats.health <= 0) die();
+		if(stats.health <= 0) die(false);
 		if(game.settings.mainPlayer == this) {
 			CameraUtil.setCameraShake(.1f, .5f);
 		}
@@ -276,8 +273,9 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	@Override
-	public void die() {
-		super.die();
+	public void die(boolean silently) {
+		super.die(silently);
+		if(silently) return;
 		game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);
 	}
 	
@@ -294,5 +292,6 @@ public class CharacterEntity extends EntityAbstract {
 		}
 	}
 	
+	/* Dont use this. It is only for the CharacterGroup */
 	protected CharacterEntity() {}
 }

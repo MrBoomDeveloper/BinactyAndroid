@@ -80,12 +80,11 @@ public class MapManager {
 				tilesPresets.putAll(tilesPreset);
 			}
 		
-			ArrayList<LoadingFiles.File> files = new ArrayList<>();
 			for(MapTile tile : tilesPresets.values()) {
-				if(tile.devTexture != null && game.settings.enableEditor) {
+				if(tile.devTexture != null && game.settings.enableEditor && !tile.source.goTo(tile.devTexture).isAddedToAsyncLoading()) {
 					tile.source.goTo(tile.devTexture).loadAsync(Texture.class);
 				}
-				if(tile.texture == null) continue;
+				if(tile.texture == null || tile.source.goTo(tile.texture).isAddedToAsyncLoading()) continue;
 				tile.source.goTo(tile.texture).loadAsync(Texture.class);
 			}
 			status = Status.LOADING_RESOURCES;

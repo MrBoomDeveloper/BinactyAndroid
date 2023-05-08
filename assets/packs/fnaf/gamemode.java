@@ -22,6 +22,11 @@ boolean isGameEnded = false;
 int power = 100, usage = 1;
 var powerWidget, usageWidget;
 
+var freddy = entities.createCharacter("characters/freddy").setSpawnTiles(new String[]{"#id:freddySpawn"});
+var bonnie = entities.createCharacter("characters/bonnie").setSpawnTiles(new String[]{"#id:bonnieSpawn"});
+var chica = entities.createCharacter("characters/chica").setSpawnTiles(new String[]{"#id:chicaSpawn"});
+var foxy = entities.createCharacter("characters/foxy").setSpawnTiles(new String[]{"#id:foxySpawn"});
+
 var freddyBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
 	getWaypoints() { return waypoints; }
 	
@@ -54,24 +59,21 @@ var foxyBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
 	}
 }).build();
 
-var bots = new ArrayList();
-bots.add(entities.createCharacter("characters/freddy").setSpawnTiles(new String[]{"#id:freddySpawn"}));
-bots.add(entities.createCharacter("characters/bonnie").setSpawnTiles(new String[]{"#id:bonnieSpawn"}));
-bots.add(entities.createCharacter("characters/chica").setSpawnTiles(new String[]{"#id:chicaSpawn"}));
-bots.add(entities.createCharacter("characters/foxy").setSpawnTiles(new String[]{"#id:foxySpawn"}));
-for(var bot : bots) { bot.create(); }
+freddy.create();
+bonnie.create();
+chica.create();
+foxy.create();
 
 var staticLights = new ArrayList();
 for(int i = 1; i <= 18; i++) {
 	staticLights.add(map.getById("staticLight" + i));
 }
 
-game.setTimer(new Runnable() {run() {
-	bots.get(0).setBot(freddyBrain);
-	bots.get(1).setBot(bonnieBrain);
-	bots.get(2).setBot(chicaBrain);
-	bots.get(3).setBot(foxyBrain);
-}}, 15);
+game.setTimer(new Runnable() {run() { bonnie.setBot(bonnieBrain); }}, Math.round(Math.random() * 15 + 15));
+game.setTimer(new Runnable() {run() { chica.setBot(chicaBrain); }}, Math.round(Math.random() * 15 + 15));
+game.setTimer(new Runnable() {run() { freddy.setBot(freddyBrain); }}, Math.round(Math.random() * 25 + 25));
+game.setTimer(new Runnable() {run() { foxy.setBot(foxyBrain); }}, Math.round(Math.random() * 50 + 50));
+
 
 var doorRight = map.getById("doorRight"), doorLeft = map.getById("doorLeft");
 boolean isDoorRightOpened = true, isDoorLeftOpened = true;
@@ -152,13 +154,15 @@ void checkIfNoPower() {
 			light.pointLight.setActive(false);
 		}
 		
-		for(var bot : bots) {
-			bot.entity.stats.speed *= 3;
-			bot.entity.stats.damage *= 3;
-			bot.entity.stats.maxHealth *= 3;
-			bot.entity.stats.stamina *= 3;
-			bot.entity.gainDamage(-999);
-		}
+		bonnie.entity.die(true);
+		chica.entity.die(true);
+		foxy.entity.die(true);
+		
+		freddy.entity.stats.speed *= 3;
+		freddy.entity.stats.damage *= 5;
+		freddy.entity.stats.maxHealth = 999;
+		freddy.entity.stats.stamina = 999;
+		freddy.entity.gainDamage(-999);
 		
 		game.setTimer(new Runnable() {run() {
 			if(isGameEnded) return;
@@ -179,7 +183,12 @@ ui.setListener(new UiListener() {
 		game.setTimer(new Runnable() {run() {
 			audio.playSound("sounds/win.wav", 1);
 		}}, 6);
-		for(var bot : bots) { bot.entity.gainDamage(99999); }
+		
+		freddy.entity.die(true);
+		bonnie.entity.die(true);
+		chica.entity.die(true);
+		foxy.entity.die(true);
+		
 		game.setTimer(new Runnable() {run() {
 			game.over(entities.getCharacter(Target.MAIN_PLAYER), true);
 		}}, 8);
@@ -215,7 +224,7 @@ game.setListener(new GameListener() {
 		lightRight.pointLight.setActive(false);
 		
 		game.setTimer(new Runnable() {run() {
-			if(isGameEnded || bots.get(3).entity.isDead) return;
+			if(isGameEnded || foxy.entity.isDead) return;
 			audio.playSound("sounds/foxy_song.wav", 0.1f);
 		}}, (float)(Math.random() * 600 + 30));
 		

@@ -8,8 +8,6 @@ plugins {
 	id "com.facebook.react"
 }
 
-def enableSeparateBuildPerCPUArchitecture = false
-
 def reactNativeArchitectures() {
 	def value = project.getProperties().get("reactNativeArchitectures")
 	return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
@@ -37,14 +35,14 @@ android {
 		minSdkVersion 24
 		targetSdkVersion 32
 		versionCode 12
-		versionName "0.3.2"
+		versionName "0.4.0"
 		multiDexEnabled true
 	}
 	
 	splits {
 		abi {
 			reset()
-			enable enableSeparateBuildPerCPUArchitecture
+			enable false
 			universalApk false
 			include (*reactNativeArchitectures())
 		}
@@ -99,43 +97,50 @@ repositories {
 configurations { natives }
 
 dependencies {
+	
+	/* Compatiability and local libraries */
 	implementation fileTree(dir: "libs", include: ["*.jar"])
 	coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:1.1.5"
+	
+	/* Firebase */
 	implementation platform("com.google.firebase:firebase-bom:31.1.1")
 	implementation "com.google.firebase:firebase-crashlytics"
 	implementation "com.google.firebase:firebase-messaging"
 	implementation "com.google.firebase:firebase-analytics"
 	implementation "com.google.android.gms:play-services-auth:20.5.0"
 	
+	/* Util libraries */
 	implementation "com.google.code.gson:gson:2.10"
 	implementation "com.squareup.moshi:moshi:1.14.0"
 	implementation "com.serjltt.moshi:moshi-lazy-adapters:2.2"
 	
+	/* Android libraries */
 	implementation "com.google.android.material:material:1.7.0"
 	implementation "androidx.appcompat:appcompat:1.5.0"
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 	debugImplementation "com.squareup.leakcanary:leakcanary-android:2.10"
 	
+	/* React Native */
 	implementation "com.facebook.react:react-android"
 	implementation "org.webkit:android-jsc:+"
 	
+	/* LibGDX libraries */
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"
-	implementation "com.badlogicgames.box2dlights:box2dlights:1.4"
 	implementation "com.badlogicgames.gdx:gdx-ai:1.8.1"
-	implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-	implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-	
 	implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
 
+	implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+	implementation "com.badlogicgames.box2dlights:box2dlights:1.4"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-arm64-v8a"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-x86"
 	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-x86_64"
 	 
+	implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-arm64-v8a"
 	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"

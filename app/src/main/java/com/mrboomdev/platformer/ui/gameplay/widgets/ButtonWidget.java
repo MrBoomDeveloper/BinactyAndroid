@@ -85,7 +85,7 @@ public class ButtonWidget extends ActorUtil {
 	public void draw(Batch batch, float alpha) {
 		float[] textPosition = new float[2];
 		switch(style) {
-			case BULLET:
+			case BULLET: {
 				if(foregroundImage != null) {
 					foregroundImage.setPosition(getX() + padding * 1.5f, getY() + padding);
 					setWidth(glyph.width + foregroundImage.getWidth() + padding * 6);
@@ -107,15 +107,15 @@ public class ButtonWidget extends ActorUtil {
 					Gdx.gl.glDisable(GL20.GL_BLEND);
 					batch.begin();
 				}
-				break;
+			} break;
 				
-			case CARD:
+			case CARD: {
 				if(backgroundImage != null) {
 					backgroundImage.setPosition(getX(), getY());
 					backgroundImage.setSize(getWidth(), getHeight());
-					backgroundImage.draw(batch);
+					backgroundImage.setAlpha(getColor().a);
 				}
-				break;
+			} break;
 		}
 		
 		if(backgroundImage != null) backgroundImage.draw(batch);

@@ -50,7 +50,10 @@ public class EditorManager implements CoreUi.UiDrawer {
 				: tile.getValue().devSprite;
 			
 			tilesGrid.add(new ButtonWidget(tileSprite, tile.getKey())
-				.onClick(() -> current = tile.getKey())
+				.onClick(() -> {
+					current = tile.getKey();
+					game.environment.ui.editor.selectTile(null);
+				})
 				.connectToScroller(tilesGrid)
 				.addTo(stage));
 		}

@@ -18,7 +18,7 @@ public abstract class EntityAbstract implements BotTarget {
 	
 	public abstract void draw(SpriteBatch batch);
 	
-	public void die() {
+	public void die(boolean silently) {
 		if(isDead) return;
 		isDead = true;
 	}

@@ -26,21 +26,62 @@ import java.nio.charset.StandardCharsets;
 public class EditorScreen {
 	public MapTile selectedTile;
 	private GameHolder game = GameHolder.getInstance();
-	private ObjectMap<String, ActorUtil> widgets = new ObjectMap<>();
+	private ObjectMap<String, ActorUtil> widgets;
 	private Stage stage;
 
 	public void selectTile(MapTile tile) {
 		if(selectedTile != null) selectedTile.isSelected = false;
 		if(tile != null) tile.isSelected = true;
 		selectedTile = tile;
-		if(!widgets.containsKey("lightEdit")) {
+		if(widgets == null) {
+			widgets = new ObjectMap<String, ActorUtil>();
+			widgets.put("DownScaleY", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Downscale Y", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					if(selectedTile.scale == null) selectedTile.scale = new float[]{1, 1};
+					selectedTile.scale[1] -= .1f;
+					selectedTile.update();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 11 + 220)
+				.addTo(stage));
+			
+			widgets.put("ScaleY", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Scale Y", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					if(selectedTile.scale == null) selectedTile.scale = new float[]{1, 1};
+					selectedTile.scale[1] += .1f;
+					selectedTile.update();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 10 + 200)
+				.addTo(stage));
+				
+			widgets.put("DownScaleX", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Downscale X", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					if(selectedTile.scale == null) selectedTile.scale = new float[]{1, 1};
+					selectedTile.scale[0] -= .1f;
+					selectedTile.update();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 9 + 180)
+				.addTo(stage));
+			
+			widgets.put("ScaleX", new ButtonWidget(ButtonWidget.Style.BULLET)
+				.setText("Scale X", game.assets.get("bulletButton.ttf"))
+				.onClick(() -> {
+					if(selectedTile.scale == null) selectedTile.scale = new float[]{1, 1};
+					selectedTile.scale[0] += .1f;
+					selectedTile.update();
+				})
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 8 + 160)
+				.addTo(stage));
+			
 			widgets.put("moveUp", new ButtonWidget(ButtonWidget.Style.BULLET)
 				.setText("More Up", game.assets.get("bulletButton.ttf"))
 				.onClick(() -> {
 					selectedTile.offset[1] += .2f;
 					selectedTile.rebuild();
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 8 + 160)
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 7 + 140)
 				.addTo(stage));
 				
 			widgets.put("moveDown", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -49,7 +90,7 @@ public class EditorScreen {
 					selectedTile.offset[1] -= .2f;
 					selectedTile.rebuild();
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 7 + 140)
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 6 + 120)
 				.addTo(stage));
 				
 			widgets.put("moveRight", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -58,7 +99,7 @@ public class EditorScreen {
 					selectedTile.offset[0] += .2f;
 					selectedTile.rebuild();
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 6 + 120)
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 5 + 100)
 				.addTo(stage));
 				
 			widgets.put("moveLeft", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -67,7 +108,7 @@ public class EditorScreen {
 					selectedTile.offset[0] -= .2f;
 					selectedTile.rebuild();
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 5 + 100)
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 4 + 80)
 				.addTo(stage));
 			
 			widgets.put("setId", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -86,7 +127,7 @@ public class EditorScreen {
 					}));
 					dialog.show();
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 4 + 80)
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 3 + 60)
 				.addTo(stage));
 				
 			widgets.put("toggleStyle", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -99,7 +140,7 @@ public class EditorScreen {
 						? 0 : style.currentId + 1;
 					style.selectStyle((String)types.toArray()[style.currentId]);
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 3 + 60)
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 2 + 40)
 				.addTo(stage));
 				
 			widgets.put("flipX", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -108,7 +149,7 @@ public class EditorScreen {
 					selectedTile.flipX = !selectedTile.flipX;
 					selectedTile.update();
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 2 + 40)
+				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT + 20)
 				.addTo(stage));
 				
 			widgets.put("flipY", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -117,19 +158,11 @@ public class EditorScreen {
 					selectedTile.flipY = !selectedTile.flipY;
 					selectedTile.update();
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT + 20)
-				.addTo(stage));
-				
-			widgets.put("lightEdit", new ButtonWidget(ButtonWidget.Style.BULLET)
-				.setText("Edit Light", game.assets.get("bulletButton.ttf"))
-				.onClick(() -> {
-					
-				})
 				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset)
 				.addTo(stage));
 		}
 		
-		widgets.values().forEach(widget -> widget.setVisible(tile != null));
+		widgets.forEach(widget -> widget.value.setVisible(selectedTile != null));
 	}
 	
 	public void create(Stage stage) {
@@ -221,14 +254,20 @@ public class EditorScreen {
 		new ButtonWidget(ButtonWidget.Style.BULLET)
 			.setText("Eraser", game.assets.get("bulletButton.ttf"))
 			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 49, 1, 14, 14))
-			.onClick(() -> EditorManager.current = "ERASER")
+			.onClick(() -> {
+				EditorManager.current = "ERASER";
+				selectTile(null);
+			})
 			.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 400, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
 			.addTo(stage);
 			
 		new ButtonWidget(ButtonWidget.Style.BULLET)
 			.setText("Select", game.assets.get("bulletButton.ttf"))
 			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 49, 33, 14, 14))
-			.onClick(() -> EditorManager.current = "SELECT")
+			.onClick(() -> {
+				EditorManager.current = "SELECT";
+				selectTile(null);
+			})
 			.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 400, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT * 2 - 20 - game.settings.screenInset)
 			.addTo(stage);
 	}

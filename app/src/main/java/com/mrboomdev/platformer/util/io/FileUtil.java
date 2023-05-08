@@ -139,6 +139,7 @@ public class FileUtil {
 	
 	public void loadAsync(Class<?> clazz) {
 		var game = GameHolder.getInstance();
+		loadAsync = true;
 		switch(source) {
 			case INTERNAL: {
 				game.assets.load(getPath(), clazz);
@@ -151,15 +152,20 @@ public class FileUtil {
 		}
 	}
 	
+	public boolean isAddedToAsyncLoading() {
+		var game = GameHolder.getInstance();
+		switch(source) {
+			case INTERNAL: return game.assets.contains(getPath());
+			case EXTERNAL: return game.externalAssets.contains(getPath());
+			default: return false;
+		}
+	}
+	
 	public <T> T getLoaded(Class<T> clazz) {
 		var game = GameHolder.getInstance();
 		switch(source) {
-			case INTERNAL: {
-				return game.assets.get(getPath(), clazz);
-			}
-			case EXTERNAL: {
-				return game.externalAssets.get(getPath(), clazz);
-			}
+			case INTERNAL: return game.assets.get(getPath(), clazz);
+			case EXTERNAL: return game.externalAssets.get(getPath(), clazz);
 			default: return null;
 		}
 	}

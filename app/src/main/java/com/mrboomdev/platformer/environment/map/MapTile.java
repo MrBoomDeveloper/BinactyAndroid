@@ -18,7 +18,6 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.environment.map.tile.TileStyle;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.ToJson;
@@ -65,7 +64,6 @@ public class MapTile extends MapObject {
 		    if(style != null) {
 				sprite = style.getSprite(getPosition(false), this);
 				sprite.setFlip(flipX, flipY);
-				if(scale != null) sprite.setScale(scale[0], scale[1]);
 			}
 			if(sprite != null) sprite.draw(batch);
 			if(devSprite != null) devSprite.draw(batch);
@@ -83,13 +81,17 @@ public class MapTile extends MapObject {
 	}
 	
 	public void update() {
-		setPosition(getPosition(false));
-		if(sprite != null) sprite.setFlip(flipX, flipY);
+		if(sprite != null) {
+			sprite.setFlip(flipX, flipY);
+			if(scale != null) sprite.setSize(size[0] * scale[0], size[1] * scale[1]);
+		}
+		
 		if(pointLight != null) {
 			pointLight.attachToBody(body,
 				flipX ? -light.offset[0] : light.offset[0],
 				flipY ? -light.offset[1] : light.offset[1]);
 		}
+		setPosition(getPosition(false));
 	}
 	
 	public void build(World world) {
@@ -241,6 +243,7 @@ public class MapTile extends MapObject {
 			serialized.connectedTile = tile.connectedTile;
 			if(tile.style != null) serialized.style = tile.style.getSerialized();
 			if(tile.interaction != null) serialized.interaction = tile.interaction.getSerialized();
+			serialized.scale = tile.scale;
 			serialized.layer = tile.layer;
 			serialized.flipX = tile.flipX;
 			serialized.flipY = tile.flipY;

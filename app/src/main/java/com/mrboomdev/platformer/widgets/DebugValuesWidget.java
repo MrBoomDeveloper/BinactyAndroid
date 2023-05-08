@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.widgets;
 
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.game.GameHolder;
 import java.util.TreeMap;
@@ -14,10 +15,13 @@ public class DebugValuesWidget extends ActorUtil {
     private BitmapFont font;
 	private GlyphLayout glyph;
     private TreeMap<String, String> values = new TreeMap<>();
+	private GLProfiler profiler;
     
     public DebugValuesWidget() {
 		font = GameHolder.getInstance().assets.get("debug.ttf", BitmapFont.class);
 		glyph = new GlyphLayout(font, "DEBUG WIDGET WAITING FOR UPDATES");
+		profiler = new GLProfiler(Gdx.graphics);
+		profiler.enable();
     }
     
     public void setValue(String key, String value) {
@@ -28,8 +32,12 @@ public class DebugValuesWidget extends ActorUtil {
 	public void act(float delta) {
 		setValue("Screen Fps", String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		setValue("Screen Delta", String.valueOf(delta));
-		Vector2 pos = connectedEntity.body.getPosition();
-		setValue("Player Position", "[ " + (pos.x) + " : " + (pos.y) + " ]");
+		setValue("Player Position", "[ " + (connectedEntity.getPosition().x) + " : " + (connectedEntity.getPosition().y) + " ]");
+		setValue("Gl Total draws", String.valueOf(profiler.getDrawCalls()));
+		setValue("Gl Texture bimdings", String.valueOf(profiler.getTextureBindings()));
+		setValue("Gl Calls", String.valueOf(profiler.getCalls()));
+		setValue("Gl Shader switches", String.valueOf(profiler.getShaderSwitches()));
+		profiler.reset();
 	}
 	
 	@Override

@@ -122,7 +122,7 @@ public class GameDebugMenu {
 		});
 		
 		Button gameOverButton = view.findViewById(R.id.gameOverButton);
-		gameOverButton.setOnClickListener(button -> settings.mainPlayer.die());
+		gameOverButton.setOnClickListener(button -> settings.mainPlayer.die(false));
 	}
 	
 	private void setupSwitchTriggers(View view, GameSettings settings) {

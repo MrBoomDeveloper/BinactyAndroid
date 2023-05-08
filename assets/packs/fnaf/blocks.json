@@ -1,78 +1,84 @@
 {
 	"tiles": {
 		"wall": {
-			"texture": "tiles/wall.png", "size": [2, 4], "region": [0, 0, 16, 26],
+			"texture": "tiles/atlas_1.png", "size": [2, 4], "region": [42, 97, 16, 26],
 			"colission": [2, 3, 0, -1], "shadowColission": [2, 0.8, 0, 3.2]
 		},
 	
 		"wallSide": {
-			"texture": "tiles/wall.png", "size": [2, 4], "region": [16, 0, 16, 26],
+			"texture": "tiles/atlas_1.png", "size": [2, 4], "region": [59, 97, 16, 26],
 			"colission": [2, 3.2, 0, -0.8], "shadowColission": [2, 1, 0, 3]
 		},
 	
 		"floor": {
-			"texture": "tiles/floor.png", "size": [2, 2]
+			"texture": "tiles/atlas_1.png", "size": [2, 2], "region": [196, 110, 18, 18]
 		},
 	
 		"guardTable": {
-			"texture": "tiles/guard_table.png", "size": [4, 2],
+			"texture": "tiles/atlas_1.png", "size": [4, 2], "region": [189, 1, 66, 32],
 			"colission": [4, 1.2, 0, -0.3]
 		},
 	
 		"pirateBay": {
-			"texture": "tiles/pirate_bay.png", "size": [3, 6],
+			"texture": "tiles/atlas_1.png", "size": [3, 6], "region": [1, 1, 32, 64],
 			"colission": [3, 4, 0, -2]
 		},
 	
 		"guardChair": {
-			"texture": "tiles/guard_chair.png", "size": [1, 1.5],
+			"texture": "tiles/atlas_1.png", "size": [1, 1.5], "region": [176, 29, 12, 18],
 			"colission": [1, 0.75, 0, -0.75]
 		},
 	
 		"chair": {
-			"texture": "tiles/chair.png", "size": [1, 1.5],
+			"texture": "tiles/atlas_1.png", "size": [1, 1.5], "region": [247, 111, 8, 16],
 			"colission": [1, 0.7, 0, -0.8]
 		},
 	
 		"soundBooster": {
-			"texture": "tiles/sound_booster.png", "size": [1, 1.2],
+			"texture": "tiles/atlas_1.png", "size": [1, 1.2], "region": [76, 111, 13, 16],
 			"colission": [1, 1.2, 0, 0]
 		},
 	
 		"robotDesk": {
-			"texture": "tiles/robot_desk.png", "size": [2, 3],
+			"texture": "tiles/atlas_1.png", "size": [2, 3], "region": [50, 72, 16, 24],
 			"colission": [2, 2.5, 0, -0.5]
 		},
 	
 		"robotShelf": {
-			"texture": "tiles/robot_shelf.png", "size": [5, 3],
+			"texture": "tiles/atlas_1.png", "size": [5, 3], "region": [34, 1, 64, 32],
 			"colission": [5, 2.5, 0, -0.5]
 		},
 	
 		"gift": {
-			"texture": "tiles/gift.png", "size": [0.7, 0.8],
+			"texture": "tiles/atlas_1.png", "size": [0.7, 0.8], "region": [89, 111, 7, 9],
 			"colission": [0.7, 0.4, 0, -0.2]
 		},
 	
 		"tip": {
-			"texture": "tiles/tip.png", "size": [0.5, 0.5]
+			"texture": "tiles/atlas_1.png", "size": [0.5, 0.5], "region": [67, 89, 15, 7],
+			"style": {
+				"types": {
+					"default": { "region": [0, 0, 7, 7] },
+					"second": { "region": [8, 0, 7, 7] }
+				}
+			}
 		},
 	
 		"stage": {
-			"texture": "tiles/stage.png", "size": [8, 2.5],
+			"texture": "tiles/atlas_1.png", "size": [8, 2.5], "region": [99, 1, 89, 27],
 			"colission": [8, 2.5, 0, 0]
 		},
 	
 		"pizza": {
-			"texture": "tiles/pizza.png", "size": [1, 1]
+			"texture": "tiles/atlas_1.png", "size": [1, 1], "region": [67, 71, 16, 16]
 		},
 	
 		"sun": {
-			"texture": "tiles/sun.png", "size": [1, 1]
+			"texture": "tiles/atlas_1.png", "size": [1, 1], "region": [1, 66, 32, 32]
 		},
 	
 		"gameMachine": {
-			"texture": "tiles/game_machine.png", "size": [1.8, 3],
+			"texture": "tiles/atlas_1.png", "size": [1.8, 3], "region": [165, 29, 10, 20],
 			"colission": [1.8, 2, 0, -1],
 			"light": {
 				"distance": 2, "offset": [0, 0],
@@ -81,26 +87,26 @@
 		},
 	
 		"table": {
-			"texture": "tiles/table.png", "size": [2, 4.5],
+			"texture": "tiles/atlas_1.png", "size": [2, 4.5], "region": [150, 29, 14, 32],
 			"colission": [2, 4, 0, -0.5]
 		},
 	
 		"clean": {
-			"texture": "tiles/clean.png", "size": [0.6, 1.5],
+			"texture": "tiles/atlas_1.png", "size": [0.6, 1.5], "region": [87, 34, 7, 20],
 			"colission": [0.6, 0.75, 0, -0.75]
 		},
 	
 		"shelf": {
-			"texture": "tiles/shelf.png", "size": [1, 5],
+			"texture": "tiles/atlas_1.png", "size": [1, 5], "region": [34, 72, 5, 24],
 			"colission": [1, 3, 0, -2], "shadowColission": [0.2, 3, 1, -2]
 		},
 	
 		"cloud": {
-			"texture": "tiles/cloud.png", "size": [3, 2]
+			"texture": "tiles/atlas_1.png", "size": [3, 2], "region": [98, 1, 40, 25]
 		},
 	
 		"poster": {
-			"texture": "tiles/posters.png",
+			"texture": "tiles/atlas_1.png", "region": [191, 34, 64, 76],
 			"interaction": {
 				"timeout": 0.2, "selectable": true, "range": [1, 1]
 			},
@@ -109,45 +115,51 @@
 					"default": { "region": [0, 0, 22, 33], "size": [1.1, 1.4] },
 					"chica": { "region": [0, 34, 22, 30], "size": [0.8, 1] },
 					"bonnie": { "region": [23, 0, 21, 33], "size": [0.75, 1] },
-					"sus": { "region": [23, 34, 21, 33], "size": [0.75, 1] },
-					"guy": { "region": [45, 0, 19, 33], "size": [0.7, 1] },
-					"puppet": { "region": [45, 34, 19, 33], "size": [0.7, 1] }
+					"sus": { "region": [23, 34, 21, 30], "size": [0.75, 1] },
+					"guy": { "region": [45, 0, 19, 33], "size": [0.7, 0.9] },
+					"puppet": { "region": [45, 34, 19, 30], "size": [0.7, 1] },
+					"mini_freddy": { "region": [0, 65, 8, 10], "size": [0.7, 0.8] },
+					"mini_pg": { "region": [9, 65, 10, 10], "size": [0.7, 0.7] },
+					"mini_gfreddy": { "region": [20, 65, 10, 10], "size": [0.8, 0.8] },
+					"mini_foxy": { "region": [31, 65, 9, 10], "size": [0.7, 0.8] },
+					"mini_child": { "region": [41, 65, 11, 11], "size": [0.9, 0.9] },
+					"mini_boom": { "region": [53, 65, 11, 11], "size": [0.8, 0.8] }
 				}
 			}
 		},
 		
 		"hat": {
-			"texture": "tiles/hats.png", "size": [0.4, 0.5],
+			"texture": "tiles/atlas_1.png", "size": [0.4, 0.5], "region": [215, 110, 31, 18],
 			"style": {
 				"types": {
-					"default": { "region": [0, 0, 7, 8] },
-					"pink": { "region": [7, 0, 7, 8] },
-					"purple": { "region": [0, 8, 7, 8] },
-					"cyan": { "region": [7, 8, 7, 8] },
-					"green": { "region": [0, 16, 7, 8] },
-					"yellow": { "region": [7, 16, 7, 8] },
-					"red": { "region": [0, 24, 7, 8] },
-					"blue": { "region": [7, 24, 7, 8] }
+					"default": { "region": [8, 0, 7, 8] },
+					"pink": { "region": [0, 0, 7, 8] },
+					"purple": { "region": [8, 10, 7, 8] },
+					"cyan": { "region": [0, 10, 7, 8] },
+					"green": { "region": [16, 10, 7, 8] },
+					"yellow": { "region": [16, 0, 7, 8] },
+					"red": { "region": [24, 0, 7, 8] },
+					"blue": { "region": [24, 9, 7, 8] }
 				}
 			}
 		},
 		
 		"warning": {
-			"texture": "tiles/warning.png", "size": [1, 1],
+			"texture": "tiles/atlas_1.png", "size": [1, 1], "region": [34, 34, 28, 20],
 			"colission": [1, 0.3, 0, -0.7]
 		},
 	
 		"tvsSide": {
-			"texture": "tiles/tvs_side.png", "size": [0.8, 2],
+			"texture": "tiles/atlas_1.png", "size": [0.8, 2], "region": [87, 55, 7, 14],
 			"colission": [0.8, 1.8, 0, -0.2]
 		},
 	
 		"star": {
-			"texture": "tiles/star.png", "size": [0.4, 1]
+			"texture": "tiles/atlas_1.png", "size": [0.4, 1], "region": [95, 34, 15, 32]
 		},
 		
 		"coke": {
-			"texture": "tiles/coke.png", "size": [1.5, 4],
+			"texture": "tiles/atlas_1.png", "size": [1.5, 4], "region": [40, 72, 9, 24],
 			"colission": [1.5, 2, 0, -2], "shadowColission": [0.2, 2, 1.2, -2],
 			"light": {
 				"distance": 5, "rays": 6, "offset": [-1, 0],
@@ -156,7 +168,7 @@
 		},
 		
 		"balls": {
-			"texture": "tiles/balls.png", "size": [5.2, 3],
+			"texture": "tiles/atlas_1.png", "size": [5.2, 3], "region": [34, 55, 28, 16],
 			"colission": [5.2, 2, 0, -1]
 		},
 		
@@ -177,7 +189,7 @@
 		},
 		
 		"buttonToggle": {
-			"texture": "tiles/buttons.png", "size": [0.25, 0.5],
+			"texture": "tiles/atlas_1.png", "size": [0.25, 0.5], "region": [76, 97, 7, 13],
 			"interaction": {
 				"timeout": 0.2, "selectable": true, "range": [1, 1]
 			},
@@ -185,13 +197,13 @@
 			"style": {
 				"types": {
 					"default": { "region": [0, 0, 3, 6] },
-					"on": { "region": [3, 0, 3, 6] }
+					"on": { "region": [4, 0, 3, 6] }
 				}
 			}
 		},
 		
 		"door": {
-			"texture": "tiles/door.png", "size": [1, 6],
+			"texture": "tiles/atlas_1.png", "size": [1, 6], "region": [84, 72, 8, 38],
 			"colission": [1, 6, 0, 0], "shadowColission": [1, 6, 0, 0],
 			"style": {
 				"types": {
@@ -209,22 +221,8 @@
 		},
 		
 		"toilet": {
-			"texture": "tiles/toilet.png",
-			"size": [2.8, 3.2],
+			"texture": "tiles/atlas_1.png", "size": [2.8, 3.2], "region": [63, 34, 23, 36],
 			"colission": [2.8, 3.2, 0, 0]
-		},
-		
-		"tv": {
-			"texture": "../core/tiles/error.png", "size": [1, 1],
-			"styles": {
-				"active": {
-					"speed": 0.2,
-					"mode": "LOOP",
-					"frames": [
-						{ "region": [0, 0, 0, 0] }
-					]
-				}
-			}
 		}
 	}
 }

@@ -46,8 +46,8 @@ public class LoadingFiles {
 	}
 	
 	public static class Scene {
-		public ArrayList<File> load = new ArrayList<>();
-		public ArrayList<String> unload = new ArrayList<>();
+		public List<File> load;
+		public List<String> unload;
 	}
 	
 	public static class File {

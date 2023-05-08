@@ -4,13 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.ActorUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
-import com.mrboomdev.platformer.util.io.ZipUtil;
-import com.mrboomdev.platformer.widgets.JoystickWidget;
-import com.serjltt.moshi.adapters.DeserializeOnly;
 import com.squareup.moshi.Moshi;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
@@ -20,8 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class EditorScreen {
 	public MapTile selectedTile;
@@ -181,7 +175,7 @@ public class EditorScreen {
 			.toPosition(game.settings.screenInset + 135, Gdx.graphics.getHeight() - ButtonWidget.BULLET_HEIGHT - game.settings.screenInset)
 			.onClick(() -> {
 				try {
-					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).add(DeserializeOnly.ADAPTER_FACTORY).build();
+					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
 					var adapter = moshi.adapter(MapManager.class);
 					var map = game.environment.map;
 					if(game.mapFile.source == FileUtil.Source.EXTERNAL) {

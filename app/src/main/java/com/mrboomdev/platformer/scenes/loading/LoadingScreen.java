@@ -1,25 +1,23 @@
 package com.mrboomdev.platformer.scenes.loading;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.google.gson.Gson;
 import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
-import com.mrboomdev.platformer.util.io.FileUtil;
 import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.*;
+import com.squareup.moshi.Moshi;
+import java.io.IOException;
 
 public class LoadingScreen extends CoreScreen {
     private GameHolder game = GameHolder.getInstance();
     private LoadScene loadScene;
-    private AssetManager asset;
     private Sprite banner;
     private SpriteBatch batch;
 	private BitmapFont font;
@@ -29,19 +27,23 @@ public class LoadingScreen extends CoreScreen {
 
     public LoadingScreen(LoadScene scene) {
         this.loadScene = scene;
-        this.asset = game.assets;
         this.batch = new SpriteBatch();
-        this.banner = new Sprite(asset.get("packs/fnaf/src/banner.png", Texture.class));
+        this.banner = new Sprite(game.assets.get("packs/fnaf/src/banner.png", Texture.class));
         this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.banner.setCenter(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		this.font = asset.get("loading.ttf", BitmapFont.class);
+		this.font = game.assets.get("loading.ttf", BitmapFont.class);
     }
 
     @Override
     public void show() {
-		Gson gson = new Gson();
-		LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
-		files.loadToManager(asset, loadScene.name());
+		try {
+			var moshi = new Moshi.Builder().build();
+			var adapter = moshi.adapter(LoadingFiles.class);
+			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
+			files.loadToManager(game.assets, loadScene.name());
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 		
         switch(loadScene) {
             case LOBBY:
@@ -77,7 +79,7 @@ public class LoadingScreen extends CoreScreen {
 		}
         batch.end();
 		
-		if(asset.update(17) && game.externalAssets.update(17) && loadStep == RESOURCES) {
+		if(game.assets.update(17) && game.externalAssets.update(17) && loadStep == RESOURCES) {
             switch(loadScene) {
                 case GAMEPLAY:
                     game.setScreen(new GameplayScreen(environment));

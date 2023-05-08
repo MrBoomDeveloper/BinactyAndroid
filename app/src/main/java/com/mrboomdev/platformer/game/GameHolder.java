@@ -10,15 +10,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
-import com.google.gson.Gson;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
-import com.mrboomdev.platformer.game.GameStatistics;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.squareup.moshi.Moshi;
+import java.io.IOException;
 
 public class GameHolder extends Game {
 	public GameLauncher launcher;
@@ -34,14 +34,20 @@ public class GameHolder extends Game {
 	@Override
 	public void create() {
 		analytics.log("GameHolder", "create");
-		
 		FunUtil.timerTasks.clear();
-		Gson gson = new Gson();
-		LoadingFiles files = gson.fromJson(Gdx.files.internal("etc/loadFiles.json").readString(), LoadingFiles.class);
-		files.loadToManager(assets, "LOADING");
-		files.loadToManager(assets, "LOBBY");
-		assets.finishLoading();
 		
+		try {
+			var moshi = new Moshi.Builder().build();
+			var adapter = moshi.adapter(LoadingFiles.class);
+			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
+			
+			files.loadToManager(assets, "LOADING");
+			files.loadToManager(assets, "LOBBY");
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		assets.finishLoading();
 		setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
 	}
 	

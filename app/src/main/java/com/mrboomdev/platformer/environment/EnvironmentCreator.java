@@ -9,8 +9,6 @@ import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.io.FileUtil;
-import com.serjltt.moshi.adapters.DeserializeOnly;
-import com.serjltt.moshi.adapters.Transient;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -32,7 +30,7 @@ public class EnvironmentCreator {
 	public EnvironmentCreator create() {
 		new Thread(() -> {
 			try {
-				Moshi moshi = new Moshi.Builder().add(Transient.ADAPTER_FACTORY).build();
+				Moshi moshi = new Moshi.Builder().build();
 				JsonAdapter<MapManager> adapter = moshi.adapter(MapManager.class);
 				manager.map = adapter.fromJson(game.mapFile.readString(true)).build(manager.world, game.mapFile, () -> loadGamemode());
 				status = BUILDING_MAP;

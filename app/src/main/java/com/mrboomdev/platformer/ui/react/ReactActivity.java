@@ -39,9 +39,8 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
     public SharedPreferences prefs;
 	public boolean isGameStarted;
 	private long lastBackPressed;
-	private ReactRootView root;
 
-    @Override
+	@Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         SoLoader.init(this, false);
@@ -49,7 +48,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
         ActivityManager.reactActivity = this;
 
         instance = this;
-        root = new ReactRootView(this);
+		ReactRootView root = new ReactRootView(this);
         List<ReactPackage> packages = new PackageList(getApplication()).getPackages();
         packages.add(new ReactGame());
         reactInstance = ReactInstanceManager.builder()
@@ -86,8 +85,8 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
                     .putString("nick", nameField.getText()).apply();
 					
                 Intent intent = new Intent(this, ReactActivity.class);
-                startActivity(intent);
-                finish();
+				startActivity(intent);
+				finish();
 				dialog.close();
 			}));
 			dialog.show();
@@ -175,7 +174,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 						SignInCredential credentials = Identity.getSignInClient(this).getSignInCredentialFromIntent(intent);
 						OnlineManager.getInstance().auth.signIn(credentials.getGoogleIdToken(), (result, extra) -> {
 							if(result.getIsOk()) {
-								if(!extra.isValid()) throw new BoomException("Invalid authentirication data!");
+								if(!extra.isValid()) throw new BoomException("Invalid authentication data!");
 								prefs.edit()
 									.putString("nick", credentials.getDisplayName())
 									.putString("avatar", credentials.getProfilePictureUri().toString())

@@ -18,19 +18,16 @@ import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import java.io.IOException;
 
 public class GameLauncher extends AndroidApplication {
-	private FirebaseAnalytics analytics;
-	private FirebaseCrashlytics crashlytics;
 	private GameHolder game;
 	private boolean isFinished;
 	
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
-		analytics = FirebaseAnalytics.getInstance(this);
-		crashlytics = FirebaseCrashlytics.getInstance();
+		FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(this);
+		FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 		
 		var prefs = getSharedPreferences("Save", 0);
 		if(!prefs.getBoolean("crashlytics", true) || BuildConfig.DEBUG) {

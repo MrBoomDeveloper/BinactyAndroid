@@ -1,8 +1,8 @@
 package com.mrboomdev.platformer.online.profile;
 
+import androidx.annotation.NonNull;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.online.Online;
-import com.mrboomdev.platformer.online.OnlineManager;
 import com.mrboomdev.platformer.online.ResultData;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
@@ -17,7 +17,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ProfileAuthentication {
-	private OkHttpClient client;
+	private final OkHttpClient client;
 	
 	public ProfileAuthentication(OkHttpClient client) {
 		this.client = client;
@@ -43,7 +43,7 @@ public class ProfileAuthentication {
 		var call = client.newCall(request);
 		call.enqueue(new Callback() {
 			@Override
-			public void onResponse(Call call, Response response) {
+			public void onResponse(@NonNull Call call, @NonNull Response response) {
 				try {
 					var moshi = new Moshi.Builder().build();
 					var adapter = moshi.adapter(AuthResponse.class);
@@ -54,7 +54,7 @@ public class ProfileAuthentication {
 			}
 			
 			@Override
-			public void onFailure(Call call, IOException e) {
+			public void onFailure(@NonNull Call call, @NonNull IOException e) {
 				callback.onResult(ResultData.builder().setIsOK(false).setException(e).build(), null);
 			}
 		});
@@ -69,9 +69,7 @@ public class ProfileAuthentication {
 	}
 	
 	public static class AuthResponse {
-		public String session_token, player_name, player_uid;
-		public int player_id;
-		public boolean success;
+		public String session_token, player_uid;
 		
 		public boolean isValid() {
 			return true;
@@ -79,6 +77,6 @@ public class ProfileAuthentication {
 	}
 	
 	public interface AuthCallback {
-		public void onResult(ResultData result, AuthResponse response);
+		void onResult(ResultData result, AuthResponse response);
 	}
 }

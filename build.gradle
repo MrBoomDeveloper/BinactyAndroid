@@ -10,13 +10,14 @@ buildscript {
 		mavenLocal()
 		mavenCentral()
 		google()
-		maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:$androidPluginVersion'
-		classpath 'com.google.gms:google-services:4.3.13'
-		classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
+		classpath "com.android.tools.build:gradle:$androidPluginVersion"
+		classpath 'com.google.gms:google-services:4.3.15'
+		classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.5'
 		classpath 'com.facebook.react:react-native-gradle-plugin'
+		classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20'
 	}
 }
 

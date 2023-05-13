@@ -40,7 +40,7 @@ public class GameHolder extends Game {
 			var moshi = new Moshi.Builder().build();
 			var adapter = moshi.adapter(LoadingFiles.class);
 			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
-			
+
 			files.loadToManager(assets, "LOADING");
 			files.loadToManager(assets, "LOBBY");
 		} catch(IOException e) {
@@ -83,8 +83,8 @@ public class GameHolder extends Game {
 		super.dispose();
 	}
 	
-	private class Assets extends AssetManager {
-		private GameAnalytics analytics;
+	private static class Assets extends AssetManager {
+		private final GameAnalytics analytics;
 		
 		public Assets(GameAnalytics analytics, FileHandleResolver resolver) {
 			super(resolver);
@@ -100,7 +100,7 @@ public class GameHolder extends Game {
 		}
 		
 		@Override
-		public synchronized <T extends Object> void load(String file, Class<T> fileClass) {
+		public synchronized <T> void load(String file, Class<T> fileClass) {
 			analytics.log("Assets", "Load file: " + file);
 			super.load(file, fileClass);
 		}

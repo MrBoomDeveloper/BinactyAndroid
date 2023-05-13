@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -23,6 +22,7 @@ import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.mrboomdev.platformer.*;
 import com.mrboomdev.platformer.game.pack.*;
+import com.mrboomdev.platformer.online.OnlineManager;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.helper.BoomException;
@@ -74,7 +74,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 
         prefs = getSharedPreferences("Save", 0);
         if(!prefs.getBoolean("isNickSetup", false)) {
-			var dialog = new AndroidDialog().setTitle("Welcome to the Action Platformer!").setCancelable(false);
+			var dialog = new AndroidDialog().setTitle("Welcome to Binacty!").setCancelable(false);
 					
 			dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Please enter your nickname here."));
 			var nameField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT);
@@ -173,14 +173,23 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 				if(resultCode == Activity.RESULT_OK) {
 					try {
 						SignInCredential credentials = Identity.getSignInClient(this).getSignInCredentialFromIntent(intent);
-						prefs.edit()
-							.putBoolean("isSignedIn", true)
-							.putString("signedInMethod", "google")
-							.putString("nick", credentials.getDisplayName())
-							.putString("avatar", credentials.getProfilePictureUri().toString())
-							.apply();
-							
-						ActivityManager.forceExit();
+						OnlineManager.getInstance().auth.signIn(credentials.getGoogleIdToken(), (result, extra) -> {
+							if(result.getIsOk()) {
+								if(!extra.isValid()) throw new BoomException("Invalid authentirication data!");
+								prefs.edit()
+									.putString("nick", credentials.getDisplayName())
+									.putString("avatar", credentials.getProfilePictureUri().toString())
+									.putBoolean("isSignedIn", true)
+									.putString("signInMethod", "google")
+									.putString("sessionToken", extra.session_token)
+									.putString("player	UID", extra.player_uid)
+									.apply();
+									
+								ActivityManager.forceExit();
+							} else {
+								AndroidDialog.createMessageDialog("Failed to connect the server", "Stacktrace:\n" + Log.getStackTraceString(result.getException())).show();
+							}
+						});
 					} catch(Exception e) {
 						e.printStackTrace();
 						AndroidDialog.createMessageDialog("Failed to get the data", "Stacktrace:\n" + Log.getStackTraceString(e)).show();

@@ -102,7 +102,7 @@
 		},
 	
 		"cloud": {
-			"texture": "tiles/atlas_1.png", "size": [3, 2], "region": [98, 1, 40, 25]
+			"texture": "tiles/atlas_1.png", "size": [3, 2], "region": [1, 98, 40, 25]
 		},
 	
 		"poster": {

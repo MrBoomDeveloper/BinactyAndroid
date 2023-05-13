@@ -33,7 +33,7 @@ public class ProjectileColission implements ContactListener {
                 ProjectileBullet bullet = (ProjectileBullet) me;
                 CharacterEntity player2 = (CharacterEntity) enemy;
                 if (bullet.owner == player2) return;
-                player2.gainDamage(bullet.stats.damage, Vector2.Zero);
+                player2.gainDamage(bullet.stats.damage, bullet.power);
             }
 
             if (me instanceof ProjectileAttack) {

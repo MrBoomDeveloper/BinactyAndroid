@@ -26,7 +26,7 @@ public class AiTargeter {
 			ignoredTarget = null;
 		}
 		
-		if(myPoint.position.dst(targetPoint.position) > visionDistance || game.settings.enableEditor || game.settings.mainPlayer == ignoredTarget) {
+		if(myPoint.position.dst(targetPoint.position) > visionDistance || game.settings.enableEditor || game.settings.mainPlayer == ignoredTarget || game.settings.mainPlayer.isDead) {
 			visionDistance = 8;
 			if(exploreTimeoutProgress <= 0) {
 				brain.target = brain.graph.points.random();

@@ -36,8 +36,8 @@
 	"stats": {
 		"health": 250,
 		"damage": 50,
-		"speed": 1,
+		"speed": 0.8,
 		"shield": 50,
-		"stamina": 100
+		"stamina": 50
 	}
 }

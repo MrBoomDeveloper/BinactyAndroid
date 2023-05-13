@@ -146,7 +146,7 @@ public class CharacterEntity extends EntityAbstract {
 		shadow.setCenter(getPosition().x, getPosition().y - worldBody.size[1] / 2);
 		shadow.draw(batch);
 		skin.draw(batch, getPosition(), getDirection());
-		if(game.settings.isBeta) inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
+		inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
 		
 		//drawDebug(batch);
 	}
@@ -189,12 +189,12 @@ public class CharacterEntity extends EntityAbstract {
 
 	public void attack(Vector2 power) {
 		if(isDead) return;
-		projectileManager.attack(this.wasPower);
+		projectileManager.attack(power);
 	}
 	
 	public void shoot(Vector2 power) {
 		if(isDead) return;
-		projectileManager.shoot(getDirection().isForward() ? new Vector2(5, 0) : new Vector2(-5, 0));
+		projectileManager.shoot(power);
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .3f, 15, body.getPosition());
 	}
 	

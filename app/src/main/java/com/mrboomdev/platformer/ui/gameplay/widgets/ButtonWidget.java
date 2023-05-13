@@ -59,18 +59,30 @@ public class ButtonWidget extends ActorUtil {
 			case CARD:
 				setHeight(75);
 				setWidth(60);
+				padding = 5;
 				break;
 		}
 	}
 	
 	public ButtonWidget setBackgroundImage(Sprite sprite) {
+		if(sprite == null) {
+			backgroundImage = null;
+			return this;
+		}
 		backgroundImage = new Sprite(sprite);
 		return this;
 	}
 	
 	public ButtonWidget setForegroundImage(Sprite sprite) {
+		if(sprite == null) {
+			foregroundImage = null;
+			return this;
+		}
 		foregroundImage = new Sprite(sprite);
-		float proportion = (getHeight() - padding * 2) / foregroundImage.getHeight();
+		float proportion = foregroundImage.getHeight() > foregroundImage.getWidth()
+			? ((getHeight() - padding * 5) / foregroundImage.getHeight())
+			: ((getWidth() - padding * 5) / foregroundImage.getWidth());
+			
 		foregroundImage.setSize(foregroundImage.getWidth() * proportion, foregroundImage.getHeight() * proportion);
 		return this;
 	}
@@ -114,6 +126,10 @@ public class ButtonWidget extends ActorUtil {
 					backgroundImage.setPosition(getX(), getY());
 					backgroundImage.setSize(getWidth(), getHeight());
 					backgroundImage.setAlpha(getColor().a);
+				}
+				if(foregroundImage != null) {
+					foregroundImage.setCenter(getX() + getWidth() / 2, getY() + getHeight() / 2);
+					foregroundImage.setAlpha(getColor().a);
 				}
 			} break;
 		}

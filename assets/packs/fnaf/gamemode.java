@@ -69,10 +69,10 @@ for(int i = 1; i <= 18; i++) {
 	staticLights.add(map.getById("staticLight" + i));
 }
 
-game.setTimer(new Runnable() {run() { bonnie.setBot(bonnieBrain); }}, Math.round(Math.random() * 15 + 15));
-game.setTimer(new Runnable() {run() { chica.setBot(chicaBrain); }}, Math.round(Math.random() * 15 + 15));
-game.setTimer(new Runnable() {run() { freddy.setBot(freddyBrain); }}, Math.round(Math.random() * 25 + 25));
-game.setTimer(new Runnable() {run() { foxy.setBot(foxyBrain); }}, Math.round(Math.random() * 50 + 50));
+game.setTimer(new Runnable() {run() { bonnie.setBot(bonnieBrain); }}, Math.round(Math.random() * 25 + 25));
+game.setTimer(new Runnable() {run() { chica.setBot(chicaBrain); }}, Math.round(Math.random() * 25 + 25));
+game.setTimer(new Runnable() {run() { freddy.setBot(freddyBrain); }}, Math.round(Math.random() * 35 + 35));
+game.setTimer(new Runnable() {run() { foxy.setBot(foxyBrain); }}, Math.round(Math.random() * 60 + 60));
 
 
 var doorRight = map.getById("doorRight"), doorLeft = map.getById("doorLeft");

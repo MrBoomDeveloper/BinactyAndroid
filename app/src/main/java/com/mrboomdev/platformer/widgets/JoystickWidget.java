@@ -20,7 +20,7 @@ public class JoystickWidget extends ActorUtil {
     private int usedPointer = 999;
     private float pointOpacity = .5f;
     private Vector2 offset;
-    private UpdateListener listener;
+    private UpdateListener listener, useListener;
     private GameHolder game = GameHolder.getInstance();
 
     public JoystickWidget() {
@@ -48,6 +48,9 @@ public class JoystickWidget extends ActorUtil {
                     public void touchUp(
                             InputEvent event, float x, float y, int pointer, int button) {
                         if (pointer == usedPointer) {
+							if(useListener != null) {
+								useListener.update(getPower());
+							}
                             usedPointer = 999;
                             updatePointer(null);
                             isActive = false;
@@ -66,6 +69,11 @@ public class JoystickWidget extends ActorUtil {
         this.listener = listener;
         return (T) this;
     }
+	
+	public <T extends JoystickWidget> T onUse(UpdateListener listener) {
+        this.useListener = listener;
+        return (T) this;
+    }
 
     @Override
     public void act(float delta) {
@@ -76,14 +84,16 @@ public class JoystickWidget extends ActorUtil {
         }
         point.setAlpha(Math.min(1, pointOpacity));
     }
+	
+	public Vector2 getPower() {
+		return !isActive ? Vector2.Zero
+            : offset.cpy().add(point.getX(), point.getY()).scl(.1f);
+	}
 
     @Override
     public void draw(Batch batch, float alpha) {
         if (listener != null) {
-            listener.update(
-                    isActive
-                            ? offset.cpy().add(point.getX(), point.getY()).scl(.1f)
-                            : Vector2.Zero);
+            listener.update(getPower());
         }
         holder.draw(batch);
         point.draw(batch);

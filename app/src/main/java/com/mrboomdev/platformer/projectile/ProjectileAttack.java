@@ -55,8 +55,7 @@ public class ProjectileAttack {
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.KinematicBody;
-		isForward = owner.getDirection().isForward();
-		bodyDef.position.set(owner.body.getPosition().add(isForward ? 0.75f : -0.75f, 0));
+		bodyDef.position.set(owner.body.getPosition().add(power.limit(1.2f)));
 		body = world.createBody(bodyDef);
 		
 		PolygonShape shape = new PolygonShape();

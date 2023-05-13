@@ -6,6 +6,10 @@ public class BoomException extends RuntimeException {
 		super(object.toString());
 	}
 	
+	public BoomException(Object object, Throwable t) {
+		super(object.toString(), t);
+	}
+	
 	public BoomException(Throwable t) {
 		super(t);
 	}

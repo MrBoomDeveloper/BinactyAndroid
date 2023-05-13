@@ -1,6 +1,6 @@
 package com.mrboomdev.platformer.projectile;
 
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,30 +12,26 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
-import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.util.Direction;
 
 public class ProjectileBullet {
-    private World world;
-    private Body body;
-    private Sprite sprite;
-    private Vector2 power;
+    public Body body;
     public ProjectileStats stats;
     public EntityAbstract owner;
+	public Vector2 power;
     public boolean isDied;
+	private Sprite sprite;
+	private World world;
 
     public ProjectileBullet(World world, EntityAbstract owner, ProjectileStats stats, Vector2 power) {
         this.world = world;
         this.owner = owner;
         this.power = power;
-        this.stats = stats;
-		AssetManager assets = GameHolder.getInstance().assets;
-        sprite = new Sprite(assets.get("world/player/weapon/projectile/bullet_fire.png", Texture.class));
+        this.stats = new ProjectileStats();
+        sprite = new Sprite(new Texture(Gdx.files.internal("world/effects/boom.png")));
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        Direction direction = new Direction(power.x);
-        bodyDef.position.set(owner.body.getPosition().add(direction.isForward() ? 0.75f : -0.75f, 0));
+        bodyDef.position.set(owner.body.getPosition().add(power.limit(1.2f)));
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
@@ -49,9 +45,7 @@ public class ProjectileBullet {
         body.createFixture(fixtureDef);
         shape.dispose();
         body.setUserData(this);
-        body.setLinearVelocity(power.scl(100).limit(stats.speed).add(
-			(float) (Math.random() * stats.random),
-			(float) (Math.random() * stats.random)));
+        body.setLinearVelocity(power.scl(100).limit(this.stats.speed));
     }
 
     public void draw(SpriteBatch batch) {
@@ -69,42 +63,8 @@ public class ProjectileBullet {
     }
 
     public static class ProjectileStats {
-        public int damage = 15;
-        public int amount = 100, amountPerReload = 10;
-        public float speed = 25;
-        public float random = 0;
-        public float delay = .1f;
-        public float reloadTime = 1;
-
-        public ProjectileStats setDamage(int damage) {
-            this.damage = damage;
-            return this;
-        }
-
-        public ProjectileStats setAmount(int amount, int amountPerReload) {
-            this.amount = amount;
-			this.amountPerReload = amountPerReload;
-            return this;
-        }
-
-        public ProjectileStats setSpeed(float speed) {
-            this.speed = speed;
-            return this;
-        }
-
-        public ProjectileStats setRandom(float random) {
-            this.random = random;
-            return this;
-        }
-		
-		public ProjectileStats setDelay(float delay) {
-			this.delay = delay;
-			return this;
-		}
-		
-		public ProjectileStats setReloadTime(float reloadTime) {
-			this.reloadTime = reloadTime;
-			return this;
-		}
+        public int damage = 25;
+        public float speed = 15;
+        public float delay = .25f;
     }
 }

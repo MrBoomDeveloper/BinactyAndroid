@@ -36,17 +36,10 @@ public class GameplayUi {
 	}
 	
 	public void createCombat(Stage stage) {
-		new ActionButton(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 17, 33, 14, 14))
-			.toPosition(
-				Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset - 25,
-				game.settings.screenInset + 25)
-			.onClick(() -> connectedEntity.attack(Vector2.Zero))
-			.addTo(stage);
-		
 		new ActionButton(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 17, 14, 14))
 			.toPosition(
 				Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset - 25,
-				ActionButton.size + 50 + game.settings.screenInset)
+				ActionButton.size + 150 + game.settings.screenInset)
 			.onClick(() -> connectedEntity.dash())
 			.addTo(stage);
 		
@@ -54,7 +47,7 @@ public class GameplayUi {
 			.setActive(false)
 			.onClick(() -> connectedEntity.interact())
 			.toPosition(
-				Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 55,
+				Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 155,
 				game.settings.screenInset)
 			.addTo(stage));
 			
@@ -67,19 +60,24 @@ public class GameplayUi {
 			})
 			.addTo(stage);
 		
-		if(game.settings.isBeta) {
-			widgets.put("inventory", new InventoryLayout()
-				.toPosition(Gdx.graphics.getWidth() / 2, game.settings.screenInset)
-				.addTo(stage));
-		}
+		widgets.put("inventory", new InventoryLayout()
+			.toPosition(Gdx.graphics.getWidth() / 2, game.settings.screenInset)
+			.addTo(stage));
 		
-		/*new JoystickWidget()
+		new JoystickWidget()
 			.onUpdate(power -> {
-				
+				//TODO: Develop aiming for punches and shooting
 			})
-			.toPosition(Gdx.graphics.getWidth() - 200 - game.settings.screenInset, game.settings.screenInset)
-			.toSize(200, 200)
-			.addTo(stage);*/
+			.onUse(power -> {
+				if(connectedEntity.inventory.current == 5) {
+					connectedEntity.shoot(power);
+					return;
+				}
+				connectedEntity.attack(power);
+			})
+			.toPosition(Gdx.graphics.getWidth() - 225 - game.settings.screenInset, game.settings.screenInset)
+			.toSize(225, 225)
+			.addTo(stage);
 	}
 	
 	public void createEditor(Stage stage) {

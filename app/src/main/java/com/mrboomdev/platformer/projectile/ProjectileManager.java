@@ -35,7 +35,7 @@ public class ProjectileManager {
 	}
     
     public void shoot(Vector2 power) {
-		if(delayProgress < stats.delay) return;
+		if(delayProgress < .1f) return;
         bullets.add(new ProjectileBullet(world, owner, stats, power));
 		delayProgress = 0;
     }

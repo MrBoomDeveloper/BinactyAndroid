@@ -12,25 +12,27 @@ import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.*;
+
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.squareup.moshi.Moshi;
 import java.io.IOException;
 
 public class LoadingScreen extends CoreScreen {
-    private GameHolder game = GameHolder.getInstance();
-    private LoadScene loadScene;
-    private Sprite banner;
-    private SpriteBatch batch;
-	private BitmapFont font;
+    private final GameHolder game = GameHolder.getInstance();
+    private final LoadScene loadScene;
+    private final Sprite banner;
+    private final SpriteBatch batch;
+	private final BitmapFont font;
 	private EnvironmentCreator environmentCreator;
 	private EnvironmentManager environment;
-	private LoadStep loadStep = PREPAIRING;
+	private LoadStep loadStep = PREPARING;
 
     public LoadingScreen(LoadScene scene) {
         this.loadScene = scene;
         this.batch = new SpriteBatch();
         this.banner = new Sprite(game.assets.get("packs/fnaf/src/banner.png", Texture.class));
         this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.banner.setCenter(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        this.banner.setCenter((float)Gdx.graphics.getWidth() / 2, (float)Gdx.graphics.getHeight() / 2);
 		this.font = game.assets.get("loading.ttf", BitmapFont.class);
     }
 
@@ -40,6 +42,7 @@ public class LoadingScreen extends CoreScreen {
 			var moshi = new Moshi.Builder().build();
 			var adapter = moshi.adapter(LoadingFiles.class);
 			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
+			if(files == null) throw new BoomException("LoadingFiles cannot be null.");
 			files.loadToManager(game.assets, loadScene.name());
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -80,11 +83,8 @@ public class LoadingScreen extends CoreScreen {
         batch.end();
 		
 		if(game.assets.update(17) && game.externalAssets.update(17) && loadStep == RESOURCES) {
-            switch(loadScene) {
-                case GAMEPLAY:
-                    game.setScreen(new GameplayScreen(environment));
-                    break;
-            }
+			if(loadScene != LoadScene.GAMEPLAY) return;
+			game.setScreen(new GameplayScreen(environment));
         }
     }
 	
@@ -95,7 +95,7 @@ public class LoadingScreen extends CoreScreen {
 			case RESOURCES:
 				return "Loading resources...";
 			default:
-				return "Prepairing...";
+				return "Preparing...";
 		}
 	}
     
@@ -110,7 +110,7 @@ public class LoadingScreen extends CoreScreen {
     }
 	
 	public enum LoadStep {
-		PREPAIRING,
+		PREPARING,
 		MAP,
 		RESOURCES
 	}

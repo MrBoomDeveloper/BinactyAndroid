@@ -1,11 +1,11 @@
 {
 	"name": "Pistol",
-	"description": "ajwjwjakaiaiaia",
+	"description": "This thing makes boom!",
 	"author": { "name": "MrBoomDev" },
 	"type": "PISTOL",
 	
 	"skin": {
-		"texture": "texture.jpg",
+		"texture": "texture.png",
 		"size": [1, 1]
 	},
 	

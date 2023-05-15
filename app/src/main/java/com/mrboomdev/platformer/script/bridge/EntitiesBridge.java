@@ -2,22 +2,21 @@ package com.mrboomdev.platformer.script.bridge;
 
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityManager;
-import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.bot.BotBrainBuilder;
 import com.mrboomdev.platformer.entity.character.CharacterCreator;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.character.CharacterGroup;
 import com.mrboomdev.platformer.entity.item.Item;
-import com.mrboomdev.platformer.environment.map.MapEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
+@SuppressWarnings("unused")
 public class EntitiesBridge {
-	private GameHolder game = GameHolder.getInstance();
-	private EntityManager entities = game.environment.entities;
+	private final GameHolder game = GameHolder.getInstance();
+	private final EntityManager entities = game.environment.entities;
+	private final FileUtil source;
 	private EntityListener listener;
-	private FileUtil source;
 	
 	public EntitiesBridge(FileUtil source) {
 		this.source = source;
@@ -27,6 +26,9 @@ public class EntitiesBridge {
 		if(listener == null) return;
 		switch(function) {
 			case DIED: listener.died((CharacterEntity)args[0]); break;
+			case SPAWNED: listener.spawned((CharacterEntity)args[0]); break;
+			case DAMAGED: listener.damaged((CharacterEntity)args[0]); break;
+			case ATTACKED: listener.attacked((CharacterEntity)args[0]); break;
 		}
 	}
 	
@@ -35,8 +37,7 @@ public class EntitiesBridge {
 			throw BoomException.builder("Tried to create a character, which wasn't been loaded: ").addQuoted(name).build();
 		}
 		var character = entities.presets.get(name).cpy("", source.getParent().goTo(name));
-		var creator = new CharacterCreator(character);
-		return creator;
+		return new CharacterCreator(character);
 	}
 	
 	public CharacterEntity getCharacter(Entity.Target target) {
@@ -51,8 +52,7 @@ public class EntitiesBridge {
 		if(!entities.itemPresets.containsKey(name)) {
 			throw BoomException.builder("Tried to create a item, which wasn't been loaded: ").addQuoted(name).build();
 		}
-		var item = entities.itemPresets.get(name).cpy();
-		return item;
+		return entities.itemPresets.get(name).cpy();
 	}
 
 	public void setListener(EntityListener listener) {
@@ -65,9 +65,15 @@ public class EntitiesBridge {
 	
 	public interface EntityListener {
 		void died(CharacterEntity character);
+		void damaged(CharacterEntity entity);
+		void attacked(CharacterEntity entity);
+		void spawned(CharacterEntity entity);
 	}
 	
 	public enum Function {
-		DIED
+		DIED,
+		DAMAGED,
+		ATTACKED,
+		SPAWNED
 	}
 }

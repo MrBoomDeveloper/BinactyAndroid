@@ -22,7 +22,7 @@
 			},
 			
 			"walk": {
-				"delay": 0.1,
+				"delay": 0.075,
 				"size": [1,2, 2],
 				"hand_position": [0.4, -0.2],
 				"frames": [

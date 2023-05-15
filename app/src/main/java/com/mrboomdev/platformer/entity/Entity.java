@@ -9,21 +9,19 @@ import java.util.Map;
 public class Entity {
 
 	public static final short NONE = 0,
-		CHARACTER = 1,
-		BLOCK = 2,
-		BULLET = 4,
-		ATTACK = 8,
-		LIGHT = 16,
-		WEAPON = 32,
-		CHARACTER_BOTTOM = 64,
-		TILE_BOTTOM = 128,
-		INTERACTABLE = 256;
+			CHARACTER = 1,
+			CHARACTER_BOTTOM = 2,
+			BULLET = 4,
+			ATTACK = 8,
+			LIGHT = 16,
+			BLOCK = 32,
+			TILE_BOTTOM = 64,
+			INTRACTABLE = 128;
 	
-	public static final float DASH_COST = 30,
-		DASH_DELAY = 1f,
-		DASH_DURATION = .25f,
-		DASH_SPEED = 5;
-	
+	public static final float DASH_COST = 30;
+	public static final float DASH_DELAY = 1f;
+	public static final float DASH_DURATION = .25f;
+
 	public enum AnimationType {
 		@Json(name = "idle")   IDLE,
 		@Json(name = "bored")  BORED,
@@ -49,13 +47,12 @@ public class Entity {
 		@Json(name = "hand_position") public float[] handPosition;
 		@Json(ignore = true) public Sprite sprite;
 		
-		public Frame fillEmpty(Animation parent) {
+		public void fillEmpty(Animation parent) {
 			if(handPosition == null) handPosition = parent.handPosition != null ? parent.handPosition : new float[]{0, 0};
 			if(position == null) position = parent.position != null ? parent.position : new float[]{0, 0};
 			if(size == null) size = parent.size;
 			if(region == null) region = parent.region;
 			if(texture == null) texture = parent.texture;
-			return this;
 		}
 	}
 	
@@ -64,7 +61,8 @@ public class Entity {
 		public Frame[] frames;
 		public PlayMode mode;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public static class States {
 		public String initial;
 		public Map<String, State> types;
@@ -72,7 +70,6 @@ public class Entity {
 	
 	public static class State {
 		public Frame[] skin;
-		public Light[] light;
 	}
 	
 	public static class Light {
@@ -88,7 +85,6 @@ public class Entity {
 		public float stamina;
 		public float maxStamina;
 		public float speed;
-		public float shield;
 		public int damage;
 	}
 }

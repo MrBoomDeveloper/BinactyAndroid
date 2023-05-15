@@ -26,7 +26,7 @@
 	},
 	
 	"flags": {
-		"is_togglable": true,
+		"is_toggleable": true,
 		"is_aimable": true
 	},
 	

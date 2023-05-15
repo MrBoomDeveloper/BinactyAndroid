@@ -1,4 +1,3 @@
 rootProject.name = 'PlatformerReact'
-include 'app'
+include 'app', ':desktop', ':game'
 includeBuild('../node_modules/react-native-gradle-plugin')
-include ':desktop'

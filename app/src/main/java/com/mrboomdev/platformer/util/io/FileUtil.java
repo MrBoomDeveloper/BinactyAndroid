@@ -1,7 +1,6 @@
 package com.mrboomdev.platformer.util.io;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.ActivityManager;
@@ -11,10 +10,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 public class FileUtil {
 	public String path;
@@ -24,16 +23,11 @@ public class FileUtil {
 	@Json(ignore = true) static final String errorMessageIO = errorMessageBase + "We don't know the reason of the error. Only the type. It is IOException!";
 	@Json(ignore = true) static final String errorMessageNotFound = errorMessageBase + "File not found! ";
 	@Json(ignore = true) static final String errorMessageUnknown = errorMessageBase + "Something unexpected has happened! ";
-	@Json(ignore = true) boolean loadAsync = false;
-	
-	public FileUtil(String path, Source source, boolean loadAsync) {
-		this.path = path;
-		this.source = source;
-		this.loadAsync = loadAsync;
-	}
+
 	
 	public FileUtil(String path, Source source) {
-		this(path, source, false);
+		this.path = path;
+		this.source = source;
 	}
 	
 	public static FileUtil external(String path) {
@@ -49,11 +43,9 @@ public class FileUtil {
 			case INTERNAL: if(isGdxThread) {
 				return getFileHandle().readString();
 			} else {
-				try {
-					var stream = ActivityManager.current.getAssets().open(getPath());
-          	      var buffer = new byte[stream.available()];
-              	  stream.read(buffer);
-               	 stream.close();
+				try(var stream = ActivityManager.current.getAssets().open(getPath())) {
+					var buffer = new byte[stream.available()];
+					stream.read(buffer);
 					return new String(buffer);
 				} catch(IOException e) {
 					e.printStackTrace();
@@ -91,25 +83,23 @@ public class FileUtil {
 		}
 	}
 	
-	public boolean writeString(String text, boolean isGdxThread) {
-		switch(source) {
-			case EXTERNAL: if(isGdxThread) {
-				Gdx.files.external(path).writeString(text, false);
-				return true;
-			} else {
-				try {
-					File file = new File(ActivityManager.current.getExternalFilesDir(null), path);
-					if(!file.getParentFile().exists()) file.getParentFile().mkdirs();
-               	 Files.write(file.toPath(), text.getBytes(StandardCharsets.UTF_8));
-					return true;
-				} catch(IOException e) {
-					e.printStackTrace();
-					return false;
-				}
-			}
-			case INTERNAL: return false;
+	public void writeString(String text, boolean isGdxThread) {
+		if(source != Source.EXTERNAL) return;
+
+		if(isGdxThread) {
+			Gdx.files.external(path).writeString(text, false);
+			return;
 		}
-		return false;
+
+		File file = new File(ActivityManager.current.getExternalFilesDir(null), path);
+		File parent = file.getParentFile();
+		if(parent != null && !parent.exists() && !parent.mkdirs()) return;
+
+		try(FileOutputStream stream = new FileOutputStream(file)) {
+			stream.write(text.getBytes());
+		} catch(Exception e) {
+			throw new BoomException(e);
+		}
 	}
 	
 	public String getName() {
@@ -132,23 +122,17 @@ public class FileUtil {
 	public String getPath() {
 		String result = path;
 		if(result.startsWith("/")) {
-			result = result.substring(1, result.length());
+			result = result.substring(1);
 		}
 		return result;
 	}
 	
 	public void loadAsync(Class<?> clazz) {
 		var game = GameHolder.getInstance();
-		loadAsync = true;
-		switch(source) {
-			case INTERNAL: {
-				game.assets.load(getPath(), clazz);
-				break;
-			}
-			case EXTERNAL: {
-				game.externalAssets.load(getPath(), clazz);
-				break;
-			}
+		if(source == Source.EXTERNAL) {
+			game.externalAssets.load(getPath(), clazz);
+		} else {
+			game.assets.load(getPath(), clazz);
 		}
 	}
 	
@@ -193,7 +177,9 @@ public class FileUtil {
 			case EXTERNAL: {
 				var file = new File(getFullPath(false));
 				if(file.isDirectory()) {
-					for(var child : file.listFiles()) {
+					var list = file.listFiles();
+					if(list == null) return;
+					for(var child : list) {
 						new FileUtil(child.getAbsolutePath(), Source.FULL).remove();
 					}
 				}
@@ -215,26 +201,13 @@ public class FileUtil {
 	}
 	
 	public File getFile() {
-		switch(source) {
-			case EXTERNAL: return new File(ActivityManager.current.getExternalFilesDir(null), path);
-			default: return new File(getPath());
-		}
-	}
-	
-	public <T> void load(Class<T> className) {
-		if(!loadAsync) return;
-		
-		var game = GameHolder.getInstance();
-		if(source == Source.INTERNAL) game.assets.load(getPath(), className);
-		if(source == Source.EXTERNAL) game.externalAssets.load(getPath(), className);
-		if(source == Source.NETWORK) game.externalAssets.load("cache/" + getPath(), className);
+		if(source != Source.EXTERNAL) return new File(getPath());
+		return new File(ActivityManager.current.getExternalFilesDir(null), path);
 	}
 	
 	public FileHandle getFileHandle() {
-		switch(source) {
-			case EXTERNAL: return Gdx.files.external(getPath());
-			default: return Gdx.files.internal(getPath());
-		}
+		if(source == Source.EXTERNAL) return Gdx.files.external(getPath());
+		return Gdx.files.internal(getPath());
 	}
 	
 	@Override
@@ -242,14 +215,12 @@ public class FileUtil {
 		if(!(object instanceof FileUtil)) return false;
 		var file = (FileUtil)object;
 		if(!file.getPath().equals(getPath())) return false;
-		if(file.source != source) return false;
-		return true;
+		return file.source == source;
 	}
 	
 	public enum Source {
 		INTERNAL,
 		EXTERNAL,
-		FULL,
-		NETWORK
+		FULL
 	}
 }

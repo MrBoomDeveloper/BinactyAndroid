@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.game.pack;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
@@ -26,9 +27,9 @@ public class PackLoader {
 
 	public static List<PackData.Manifest> getPacks() {
 		if(packs == null) {
-			packs = new ArrayList<PackData.Manifest>();
+			packs = new ArrayList<>();
 			if(configs == null) {
-				configs = new ArrayList<PackData.Config>();
+				configs = new ArrayList<>();
 			}
 			reloadPacks();
 		}
@@ -37,7 +38,7 @@ public class PackLoader {
 	
 	public static List<PackData.GamemodesRow> getGamemodes() {
 		if(gamemodes == null) {
-			gamemodes = new ArrayList<PackData.GamemodesRow>();
+			gamemodes = new ArrayList<>();
 			reloadGamemodes();
 		}
 		return gamemodes;
@@ -52,6 +53,7 @@ public class PackLoader {
 			for(var pack : packs) {
 				if(!pack.config.active || pack.resources == null || pack.resources.gamemodes == null) continue;
 				List<PackData.GamemodesRow> rows = adapter.fromJson(pack.source.goTo(pack.resources.gamemodes).readString(false));
+				if(rows == null) return;
 				for(var row : rows) {
 					for(var gamemode : row.data) {
 						gamemode.source = pack.source.goTo(pack.resources.gamemodes).getParent();
@@ -74,9 +76,11 @@ public class PackLoader {
 			Moshi moshi = new Moshi.Builder().build();
 			JsonAdapter<List<PackData.Config>> adapter = moshi.adapter(Types.newParameterizedType(List.class, PackData.Config.class));
 			configs = adapter.fromJson(FileUtil.external("packs/installed.json").readString(false));
+			if(configs == null) return;
 			for(var config : configs) {
 				JsonAdapter<PackData.Manifest> manifestAdapter = moshi.adapter(PackData.Manifest.class);
 				var manifest = manifestAdapter.fromJson(config.file.goTo("manifest.json").readString(false));
+				if(manifest == null) continue;
 				manifest.source = config.file.goTo("");
 				manifest.config = config;
 				packs.add(manifest);
@@ -101,7 +105,8 @@ public class PackLoader {
 		JsonAdapter<List<PackData.Config>> adapter = moshi.adapter(Types.newParameterizedType(List.class, PackData.Config.class));
 		FileUtil.external("packs/installed.json").writeString(adapter.toJson(PackLoader.getConfigs()), false);
 	}
-	
+
+	@SuppressLint("VisibleForTests")
 	private static void showErrorDialog(Exception e) {
 		var dialog = new AndroidDialog().setTitle("Failed to load Packs").setCancelable(false);
 		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setText("Something went wrong while loading Packs. Stacktrace:\n" + Log.getStackTraceString(e)));
@@ -112,6 +117,7 @@ public class PackLoader {
 			reloadPacks();
 			reloadGamemodes();
 			ReactContext context = ActivityManager.reactActivity.reactInstance.getCurrentReactContext();
+			if(context == null) return;
 			context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
 			dialog.close();
 		}));
@@ -123,5 +129,9 @@ public class PackLoader {
 			if(pack.id.equals(id)) return pack;
 		}
 		throw BoomException.builder("Failed to find a pack. No item with a such name were found: ").addQuoted(id).build();
+	}
+
+	public static FileUtil resolvePath(String path) {
+		return null;
 	}
 }

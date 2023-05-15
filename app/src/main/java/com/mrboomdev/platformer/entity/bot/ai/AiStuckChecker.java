@@ -1,14 +1,14 @@
 package com.mrboomdev.platformer.entity.bot.ai;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.math.Vector2;
 
 public class AiStuckChecker {
 	private Vector2 lastCheckPosition;
 	private long lastCheckTime;
-	private float expectedSpeed;
-	
-	public void setDestination(Vector2 destinationposition, float expectedSpeed) {
-		this.expectedSpeed = expectedSpeed;
+
+	public void setDestination(Vector2 destinationPosition, float expectedSpeed) {
 		reset();
 	}
 	
@@ -29,7 +29,7 @@ public class AiStuckChecker {
 		lastCheckTime = 0;
 	}
 	
-	private void update(Vector2 position) {
+	private void update(@NonNull Vector2 position) {
 		lastCheckPosition = position.cpy();
 		lastCheckTime = System.currentTimeMillis();
 	}

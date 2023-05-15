@@ -2,10 +2,9 @@ package com.mrboomdev.platformer.entity.character;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.mrboomdev.platformer.entity.character.CharacterEntity;
 
 public class CharacterGroup extends CharacterEntity {
-	private Array<CharacterEntity> list;
+	private final Array<CharacterEntity> list;
 	
 	public CharacterGroup(Array<CharacterEntity> list) {
 		this.list = list;

@@ -42,7 +42,7 @@ public class TileInteraction {
 		
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.isSensor = true;
-		fixtureDef.filter.categoryBits = Entity.INTERACTABLE;
+		fixtureDef.filter.categoryBits = Entity.INTRACTABLE;
 		fixtureDef.filter.maskBits = Entity.CHARACTER;
 		PolygonShape shape = new PolygonShape();
 		if(range != null) {

@@ -81,7 +81,7 @@ public class CharacterEntity extends EntityAbstract {
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.filter.categoryBits = Entity.CHARACTER;
-		fixtureDef.filter.maskBits = Entity.ATTACK | Entity.BULLET | Entity.INTERACTABLE;
+		fixtureDef.filter.maskBits = Entity.ATTACK | Entity.BULLET | Entity.INTRACTABLE;
 		
 		PolygonShape shape3D = new PolygonShape();
 		shape3D.setAsBox(worldBody.bottom[0] / 2, worldBody.bottom[1] / 2,

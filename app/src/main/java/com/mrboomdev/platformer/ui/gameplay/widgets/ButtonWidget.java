@@ -79,7 +79,7 @@ public class ButtonWidget extends ActorUtil {
 			return this;
 		}
 		foregroundImage = new Sprite(sprite);
-		float proportion = foregroundImage.getHeight() > foregroundImage.getWidth()
+		float proportion = (foregroundImage.getHeight() > foregroundImage.getWidth())
 			? ((getHeight() - padding * 5) / foregroundImage.getHeight())
 			: ((getWidth() - padding * 5) / foregroundImage.getWidth());
 			

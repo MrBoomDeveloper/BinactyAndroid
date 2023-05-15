@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.environment.map;
 
+import androidx.annotation.NonNull;
+
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,7 +13,6 @@ import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.game.pack.PackLoader;
-import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
@@ -27,27 +28,28 @@ public class MapManager {
 	public Atmosphere atmosphere;
 	public Rules rules;
 	private List<MapTile> tiles;
+	private long lastSortedTime;
 	@Json(ignore = true) public RayHandler rayHandler;
 	@Json(ignore = true) public Map<String, MapTile> tilesPresets = new HashMap<>();
 	@Json(ignore = true) public ObjectMap<String, MapTile> tilesMap = new ObjectMap<>();
 	@Json(ignore = true) public Array<MapObject> pendingRemoves = new Array<>();
 	@Json(ignore = true) public ArrayList<MapObject> objects = new ArrayList<>();
-	@Json(ignore = true) int currentHistoryStep;
-	@Json(ignore = true) Array<HistoryStep> history = new Array<>();
-	@Json(ignore = true) LoadingFiles loadFiles;
 	@Json(ignore = true) FileUtil source;
 	@Json(ignore = true) World world;
 	@Json(ignore = true) Runnable buildCallback;
-	@Json(ignore = true) Status status = Status.PREPAIRING;
+	@Json(ignore = true) Status status = Status.PREPARING;
 	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	public void render(SpriteBatch batch) {
-		pendingRemoves.forEach(obj -> obj.remove());
+		pendingRemoves.forEach(MapObject::remove);
 		pendingRemoves.clear();
-		try {
-			Collections.sort(objects);
-		} catch(Exception e) {
-			e.printStackTrace();
+		if(System.currentTimeMillis() > lastSortedTime + 500) {
+			lastSortedTime = System.currentTimeMillis();
+			try {
+				Collections.sort(objects);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 		for(MapObject object : objects) {
 			object.draw(batch);
@@ -67,7 +69,7 @@ public class MapManager {
 				if(pack.startsWith("$")) {
 					var packName = pack.substring(1, pack.indexOf("/"));
 					var dir = PackLoader.findById(packName).source;
-					var file = dir.goTo(pack.substring(pack.indexOf("/") + 1, pack.length()));
+					var file = dir.goTo(pack.substring(pack.indexOf("/") + 1));
 					tilesPreset = adapter.fromJson(file.readString(true)).tiles;
 					for(var tile : tilesPreset.values()) {
 						tile.source = file.getParent();
@@ -96,9 +98,9 @@ public class MapManager {
 		return this;
 	}
 	
-	private void addPrefix(Map<String, MapTile> hashMap, String prefix) {
+	private void addPrefix(@NonNull Map<String, MapTile> hashMap, String prefix) {
     	Map<String, MapTile> newHashMap = new HashMap<>();
-    	for(var entry : hashMap.entrySet()) {
+		for(var entry : hashMap.entrySet()) {
         	String newKey = prefix + entry.getKey();
         	MapTile value = entry.getValue();
         	newHashMap.put(newKey, value);
@@ -108,16 +110,16 @@ public class MapManager {
 	}
 
 	
-	//Prevents from dublicate tiles
-	private String getTextPosition(float[] position, int layer) {
+	//Prevents from duplicate tiles
+	private String getTextPosition(@NonNull float[] position, int layer) {
 		return Math.round(position[0]) + ":" + Math.round(position[1]) + ":" + layer;
 	}
 	
 	public void addTile(String name, float[] position, int layer) {
-		if(name == "ERASER") {
+		if(name.equals("ERASER")) {
 			removeTile(position, layer);
 			return;
-		} else if(name == "SELECT") {
+		} else if(name.equals("SELECT")) {
 			var pos = getTextPosition(position, layer);
 			game.environment.ui.editor.selectTile(tilesMap.containsKey(pos) ? tilesMap.get(pos) : null);
 			return;
@@ -141,7 +143,6 @@ public class MapManager {
 		objects.add(tile);
 		tiles.add(tile);
 		tilesMap.put(pos, tile);
-		history.add(new HistoryStep(HistoryStep.Type.ADD));
 	}
 	
 	public void removeTile(float[] position, int layer) {
@@ -150,10 +151,9 @@ public class MapManager {
 		
 		var removed = tilesMap.get(pos);
 		pendingRemoves.add(removed);
-		objects.remove(objects.indexOf(removed));
-		tiles.remove(tiles.indexOf(removed));
+		objects.remove(removed);
+		tiles.remove(removed);
 		tilesMap.remove(pos);
-		history.add(new HistoryStep(HistoryStep.Type.REMOVE));
 	}
 	
 	public void ping() {
@@ -190,32 +190,12 @@ public class MapManager {
 	}
 	
 	public static class Rules {
-		public float[] worldBorder = {-1000, -1000, 1000, 1000};
-		public float[] cameraBorder = {-1000, -1000, 1000, 1000};
-	}
-	
-	private static class HistoryStep {
-		public Type type;
-		public String target;
-		
-		public HistoryStep(Type type) {
-			this.type = type;
-		}
-		
-		public void use() {
-			
-		}
-	
-		public enum Type {
-			ADD,
-			REMOVE,
-			FLIP,
-			ATMOSPHERE_COLOR
-		}
+		@Json(name = "world_border") public float[] worldBorder = {-1000, -1000, 1000, 1000};
+		@Json(name = "camera_border") public float[] cameraBorder = {-1000, -1000, 1000, 1000};
 	}
 	
 	private enum Status {
-		PREPAIRING,
+		PREPARING,
 		LOADING_RESOURCES,
 		BUILDING_BLOCKS,
 		DONE

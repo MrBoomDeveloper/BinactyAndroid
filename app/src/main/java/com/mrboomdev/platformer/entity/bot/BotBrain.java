@@ -2,11 +2,10 @@ package com.mrboomdev.platformer.entity.bot;
 
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.PerformanceCounter;
 import com.mrboomdev.platformer.entity.EntityManager;
-import com.mrboomdev.platformer.entity.bot.ai.*;
+import com.mrboomdev.platformer.entity.bot.ai.AiStuckChecker;
+import com.mrboomdev.platformer.entity.bot.ai.AiTargeter;
 import com.mrboomdev.platformer.entity.character.CharacterBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.path.PathGraph;
@@ -106,7 +105,7 @@ public class BotBrain extends CharacterBrain {
 	}
 	
 	public interface Responder {
-		public String[] getWaypoints();
-		public BotTarget getTarget();
+		String[] getWaypoints();
+		BotTarget getTarget();
 	}
 }

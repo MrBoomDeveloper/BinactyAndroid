@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.util.io;
 
+import androidx.annotation.NonNull;
+
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import java.io.ByteArrayOutputStream;
@@ -42,11 +44,9 @@ public class ZipUtil {
 		return string.toString();
 	}
 	
-	public static void unzipFile(FileUtil target, FileUtil destination, Runnable callback) {
+	public static void unzipFile(FileUtil target, @NonNull FileUtil destination, Runnable callback) {
 		if(destination.source == FileUtil.Source.INTERNAL) {
 			throw BoomException.builder("Failed to unzip archive. Internal storage isn't editable! Path: ").addQuoted(destination.getPath()).build();
-		} else if(destination.source == FileUtil.Source.NETWORK) {
-			throw BoomException.builder("Failed to unzip archive. Internet isn't editable! Path: ").addQuoted(destination.getPath()).build();
 		}
 		
 		File dir = new File(destination.getFullPath(false));

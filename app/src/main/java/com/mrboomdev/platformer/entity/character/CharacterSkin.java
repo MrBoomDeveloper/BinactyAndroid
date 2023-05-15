@@ -1,5 +1,13 @@
 package com.mrboomdev.platformer.entity.character;
 
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.DAMAGE;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.DASH;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.IDLE;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.RUN;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.WALK;
+
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -14,10 +22,10 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.Direction;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Json;
+
 import java.util.HashMap;
-import com.mrboomdev.platformer.entity.Entity;
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.*;
 import java.util.Map;
 
 public class CharacterSkin {
@@ -31,13 +39,14 @@ public class CharacterSkin {
 	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	public void setAnimation(Entity.AnimationType animation) {
-		if(currentAnimation == animation) return;
+		if(getValidAnimation(currentAnimation) == animation) return;
 		var selectedAnimation = getValidAnimation(animation);
 		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
 		animationProgress = (float)(Math.random() * 5);
+		LogUtil.debug(LogUtil.Tag.ANIMATION, "Set character animation to: " + animation.name());
 	}
 	
-	private Entity.AnimationType getValidAnimation(Entity.AnimationType animation) {
+	private Entity.AnimationType getValidAnimation(@NonNull Entity.AnimationType animation) {
 		switch(animation) {
 			case WALK: return animations.containsKey(WALK) ? WALK : RUN;
 			case RUN: return animations.containsKey(RUN) ? RUN : WALK;

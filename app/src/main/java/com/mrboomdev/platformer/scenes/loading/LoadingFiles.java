@@ -7,15 +7,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.mrboomdev.platformer.util.ColorUtil;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LoadingFiles {
 	public Map<String, Scene> scenes;
 	
 	public void loadToManager(AssetManager manager, String scene) {
-		LoadingFiles.loadToManager(scenes.get(scene).load, "", manager);
+		LoadingFiles.loadToManager(Objects.requireNonNull(scenes.get(scene)).load, "", manager);
 	}
 	
 	public static void loadToManager(List<File> files, String source, AssetManager manager) {
@@ -47,24 +47,11 @@ public class LoadingFiles {
 	
 	public static class Scene {
 		public List<File> load;
-		public List<String> unload;
 	}
 	
 	public static class File {
 		public String path, as, type;
 		public Font font;
-		
-		public File(String path, String type) {
-			this.path = path;
-			this.type = type;
-		}
-		
-		public File(String path, String as, Font font) {
-			this.path = path;
-			this.as = as;
-			this.type = "font";
-			this.font = font;
-		}
 	}
 	
 	public static class Font {

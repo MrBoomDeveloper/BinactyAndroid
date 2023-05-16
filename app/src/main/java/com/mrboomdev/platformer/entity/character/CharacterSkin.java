@@ -39,7 +39,7 @@ public class CharacterSkin {
 	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	public void setAnimation(Entity.AnimationType animation) {
-		if(getValidAnimation(currentAnimation) == animation) return;
+		if(currentAnimation == getValidAnimation(animation)) return;
 		var selectedAnimation = getValidAnimation(animation);
 		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
 		animationProgress = (float)(Math.random() * 5);

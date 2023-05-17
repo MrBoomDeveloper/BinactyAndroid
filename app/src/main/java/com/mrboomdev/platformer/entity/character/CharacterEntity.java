@@ -1,5 +1,13 @@
 package com.mrboomdev.platformer.entity.character;
 
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.DAMAGE;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.DASH;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.IDLE;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.RUN;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.WALK;
+
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,16 +22,18 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
-import com.mrboomdev.platformer.entity.*;
+import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
-import com.mrboomdev.platformer.entity.item.*;
+import com.mrboomdev.platformer.entity.item.Item;
+import com.mrboomdev.platformer.entity.item.ItemInventory;
 import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.projectile.*;
+import com.mrboomdev.platformer.projectile.ProjectileAttack;
+import com.mrboomdev.platformer.projectile.ProjectileManager;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.*;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 
@@ -51,7 +61,7 @@ public class CharacterEntity extends EntityAbstract {
 		return new CharacterEntity(name, skin.build(source), worldBody, stats);
 	}
 	
-	public CharacterEntity(String name, CharacterSkin skin, CharacterBody worldBody, Entity.Stats stats) {
+	public CharacterEntity(String name, CharacterSkin skin, CharacterBody worldBody, @NonNull Entity.Stats stats) {
 		this.name = name;
 		this.stats = stats;
 		this.skin = skin;
@@ -71,7 +81,7 @@ public class CharacterEntity extends EntityAbstract {
 		stats.maxStamina = stats.stamina;
 	}
 	
-	public CharacterEntity create(World world) {
+	public CharacterEntity create(@NonNull World world) {
 		worldBody.build();
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -109,8 +119,8 @@ public class CharacterEntity extends EntityAbstract {
 		
 		return this;
 	}
-	
-	public CharacterEntity setBrain(CharacterBrain brain) {
+
+	public CharacterEntity setBrain(@NonNull CharacterBrain brain) {
 		brain.setEntity(this);
 		this.brain = brain;
 		return this;
@@ -189,13 +199,11 @@ public class CharacterEntity extends EntityAbstract {
 
 	public void attack(Vector2 power) {
 		if(isDead) return;
+		if(inventory.items.size > inventory.current) {
+			inventory.getCurrentItem().attack(power, projectileManager);
+			return;
+		}
 		projectileManager.attack(power);
-	}
-	
-	public void shoot(Vector2 power) {
-		if(isDead) return;
-		projectileManager.shoot(power);
-		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .3f, 15, body.getPosition());
 	}
 	
 	public void interact() {
@@ -220,7 +228,7 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void gainDamage(int damage, Vector2 power) {
-		if(damagedProgress < 1) return;
+		if(damagedProgress < 1 || isDashing) return;
 		
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/damage.mp3", Sound.class), .25f, 10, getPosition());
 		damagedProgress = (Math.random() > .8f) ? 0 : .8f;
@@ -238,7 +246,7 @@ public class CharacterEntity extends EntityAbstract {
 	public void gainDamage(int damage) {
 		this.gainDamage(damage, Vector2.Zero);
 	}
-	
+
 	public boolean giveItem(Item item) {
 		return inventory.add(item);
 	}
@@ -292,6 +300,6 @@ public class CharacterEntity extends EntityAbstract {
 		}
 	}
 	
-	/* Dont use this. It is only for the CharacterGroup */
+	/* Don't use this. It is only for the CharacterGroup */
 	protected CharacterEntity() {}
 }

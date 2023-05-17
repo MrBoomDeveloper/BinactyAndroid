@@ -1,6 +1,5 @@
 {
 	"name": "Flashlight",
-	"author": { "name": "MrBoomDev" },
 	
 	"skin": {
 		"texture": "texture.png",
@@ -33,5 +32,9 @@
 	"stats": {
 		"max_count": 1,
 		"reload_duration": 1
+	},
+
+	"attack": {
+		"type": "punch"
 	}
 }

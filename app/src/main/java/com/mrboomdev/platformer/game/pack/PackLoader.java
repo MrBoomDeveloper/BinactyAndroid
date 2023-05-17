@@ -2,6 +2,9 @@ package com.mrboomdev.platformer.game.pack;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mrboomdev.platformer.ui.ActivityManager;
@@ -124,6 +127,7 @@ public class PackLoader {
 		dialog.addSpace(15).show();
 	}
 	
+	@NonNull
 	public static PackData.Manifest findById(String id) {
 		for(var pack : getPacks()) {
 			if(pack.id.equals(id)) return pack;
@@ -131,7 +135,13 @@ public class PackLoader {
 		throw BoomException.builder("Failed to find a pack. No item with a such name were found: ").addQuoted(id).build();
 	}
 
-	public static FileUtil resolvePath(String path) {
-		return null;
+	public static FileUtil resolvePath(FileUtil contextDir, @NonNull String path) {
+		if(path.startsWith("$")) {
+			var packName = path.substring(1, path.indexOf("/"));
+			var dir = findById(packName).source;
+			return dir.goTo(path.substring(path.indexOf("/") + 1));
+		} else {
+			return contextDir.goTo(path);
+		}
 	}
 }

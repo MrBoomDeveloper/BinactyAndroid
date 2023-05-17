@@ -1,0 +1,12 @@
+{
+	"name": "Pistol",
+	
+	"skin": {
+		"texture": "texture.png",
+		"size": [1, 1], "position": [0, 0]
+	},
+
+	"attack": {
+		"type": "throw_child"
+	}
+}

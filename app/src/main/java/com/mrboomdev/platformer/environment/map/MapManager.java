@@ -2,27 +2,28 @@ package com.mrboomdev.platformer.environment.map;
 
 import androidx.annotation.NonNull;
 
-import box2dLight.RayHandler;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import box2dLight.RayHandler;
 
 public class MapManager {
 	public Atmosphere atmosphere;
@@ -65,20 +66,15 @@ public class MapManager {
 			this.buildCallback = callback;
 		
 			for(String pack : atmosphere.tiles) {
-				Map<String, MapTile> tilesPreset;
+				var tilesFile = PackLoader.resolvePath(source.getParent(), pack);
+				var tilesPreset = adapter.fromJson(tilesFile.readString(true)).tiles;
+				tilesPreset.values().forEach(tile -> tile.source = tilesFile.getParent());
+
 				if(pack.startsWith("$")) {
 					var packName = pack.substring(1, pack.indexOf("/"));
-					var dir = PackLoader.findById(packName).source;
-					var file = dir.goTo(pack.substring(pack.indexOf("/") + 1));
-					tilesPreset = adapter.fromJson(file.readString(true)).tiles;
-					for(var tile : tilesPreset.values()) {
-						tile.source = file.getParent();
-					}
 					addPrefix(tilesPreset, packName + ":");
-				} else {
-					tilesPreset = adapter.fromJson(source.getParent().goTo(pack).readString(true)).tiles;
-					tilesPreset.values().forEach(tile -> tile.source = source.getParent().goTo(pack).getParent());
 				}
+
 				tilesPresets.putAll(tilesPreset);
 			}
 		
@@ -91,9 +87,8 @@ public class MapManager {
 			}
 			status = Status.LOADING_RESOURCES;
 		} catch(Exception e) {
-			Gdx.files.external("crash.txt").writeString("Crashed while building the map.\n" + e.getMessage(), false);
+			LogUtil.crash("Failed to build a map.", "Stacktrace:\n" + LogUtil.throwableToString(e));
 			e.printStackTrace();
-			game.launcher.exit(GameLauncher.Status.CRASH);
 		}
 		return this;
 	}

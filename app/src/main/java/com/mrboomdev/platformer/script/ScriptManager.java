@@ -1,20 +1,17 @@
 package com.mrboomdev.platformer.script;
 
-import android.util.Log;
-import bsh.EvalError;
-import bsh.Interpreter;
-import com.badlogic.gdx.Gdx;
+import androidx.annotation.NonNull;
+
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.script.bridge.AudioBridge;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.script.bridge.MapBridge;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
-import com.mrboomdev.platformer.ui.ActivityManager;
-import com.mrboomdev.platformer.ui.android.AndroidDialog;
-import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.LogUtil;
+import bsh.EvalError;
+import bsh.Interpreter;
 
 public class ScriptManager {
 	public GameBridge gameBridge;
@@ -22,12 +19,9 @@ public class ScriptManager {
 	public UiBridge uiBridge;
 	public AudioBridge audioBridge;
 	public MapBridge mapBridge;
-	private GameHolder game = GameHolder.getInstance();
-	private Interpreter interpreter;
-	private FileUtil source;
-	
+	private final Interpreter interpreter;
+
 	public ScriptManager(FileUtil source) {
-		this.source = source;
 		this.interpreter = new Interpreter();
 		this.gameBridge = new GameBridge(source);
 		this.mapBridge = new MapBridge();
@@ -48,17 +42,16 @@ public class ScriptManager {
 		this.put("map", mapBridge);
 		this.put("entities", entitiesBridge);
 		this.put("audio", audioBridge);
+
+		GameHolder game = GameHolder.getInstance();
 		this.put("core", game);
 	}
 	
 	public void eval(String code) {
 		try {
 			interpreter.eval(code);
-		} catch(EvalError e) {
-			handleException(e);
 		} catch(Exception e) {
 			handleException(e);
-			AndroidDialog.createMessageDialog("Exception happened, while evaluating a script.", Log.getStackTraceString(e)).show();
 		}
 	}
 	
@@ -70,13 +63,8 @@ public class ScriptManager {
 		}
 	}
 	
-	private void handleException(Throwable t) {
+	private void handleException(@NonNull Throwable t) {
 		t.printStackTrace();
-		Gdx.files.external("crash.txt").writeString(Log.getStackTraceString(t), false);
-		if(game.settings.ignoreScriptErrors) {
-			ActivityManager.toast("Script error has happened! Check the logs!", true);
-		} else {
-			game.launcher.exit(GameLauncher.Status.CRASH);
-		}
+		LogUtil.crash("Script error has occurred!", LogUtil.throwableToString(t));
 	}
 }

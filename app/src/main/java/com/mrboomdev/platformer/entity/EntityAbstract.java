@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.entity;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -29,13 +31,18 @@ public abstract class EntityAbstract implements BotTarget {
 		isDestroyed = true;
 	}
 	
-	public float getSpeed(Vector2 power) {
+	public float getSpeed(@NonNull Vector2 power) {
 		return Math.max(
 			Math.abs(power.x),
 			Math.abs(power.y)
 		);
 	}
-	
+
+	/**
+	 * @param power - Vector2 with direction of movement
+	 * @param speed Power will be maxed to this value
+	 * @param isBot Makes movement a little bit laggy
+	 */
 	public void usePower(Vector2 power, float speed, boolean isBot) {
 		if(isDead) return;
 		body.setLinearVelocity(isBot
@@ -54,14 +61,17 @@ public abstract class EntityAbstract implements BotTarget {
 	public Direction getDirection() {
 		return new Direction(wasPower.x);
 	}
-	
-	public boolean isTarget(Entity.Target target) {
+
+	public boolean isTarget(@NonNull Entity.Target target) {
 		switch(target) {
 			case MAIN_PLAYER: return this == game.settings.mainPlayer;
 			default: return false;
 		}
 	}
-	
+
+	/**
+	 * @return Current position of entity in the world.
+	 */
 	@Override
 	public Vector2 getPosition() {
 		return body.getPosition();

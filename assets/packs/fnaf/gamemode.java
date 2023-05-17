@@ -5,11 +5,15 @@ game.load("sound", "sounds/error.wav");
 game.load("sound", "sounds/foxy_song.wav");
 game.load("sound", "sounds/win.wav");
 game.load("sound", "sounds/scream.wav");
+
 game.load("character", "characters/freddy");
 game.load("character", "characters/bonnie");
 game.load("character", "characters/chica");
 game.load("character", "characters/foxy");
+
 game.load("item", "items/flashlight");
+game.load("item", "$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol");
+
 game.load("music", "music/music_box.wav");
 game.load("music", "music/6am.wav");
 game.load("music", "music/light.wav");
@@ -227,8 +231,10 @@ game.setListener(new GameListener() {
 			if(isGameEnded || foxy.entity.isDead) return;
 			audio.playSound("sounds/foxy_song.wav", 0.1f);
 		}}, (float)(Math.random() * 600 + 30));
-		
-		core.settings.mainPlayer.giveItem(entities.createItem("items/flashlight"));
+
+		var me = core.settings.mainPlayer;
+		me.giveItem(entities.createItem("items/flashlight"));
+		me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
 	}
 });
 

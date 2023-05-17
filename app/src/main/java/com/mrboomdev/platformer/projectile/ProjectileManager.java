@@ -6,12 +6,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.EntityAbstract;
+import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileAttack.AttackStats;
 import com.mrboomdev.platformer.projectile.ProjectileBullet.ProjectileStats;
+import com.mrboomdev.platformer.util.AudioUtil;
 
 public class ProjectileManager {
     private World world;
 	private int activeBullets;
+	private GameHolder game = GameHolder.getInstance();
 	private ProjectileStats stats;
 	private AttackStats attackStats;
 	private Array<ProjectileBullet> bullets = new Array<>();
@@ -24,11 +27,6 @@ public class ProjectileManager {
 		this.owner = owner;
     }
 	
-	public ProjectileManager setBulletConfig(ProjectileStats stats) {
-		this.stats = stats;
-		return this;
-	}
-	
 	public ProjectileManager setAttackConfig(AttackStats attackStats) {
 		this.attackStats = attackStats;
 		return this;
@@ -38,6 +36,7 @@ public class ProjectileManager {
 		if(delayProgress < .1f) return;
         bullets.add(new ProjectileBullet(world, owner, stats, power));
 		delayProgress = 0;
+		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .3f, 15, owner.getPosition());
     }
 	
 	public void attack(Vector2 power) {

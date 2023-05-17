@@ -3,7 +3,6 @@ package com.mrboomdev.platformer.ui.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
@@ -68,13 +67,7 @@ public class GameplayUi {
 			.onUpdate(power -> {
 				//TODO: Develop aiming for punches and shooting
 			})
-			.onUse(power -> {
-				if(connectedEntity.inventory.current == 5) {
-					connectedEntity.shoot(power);
-					return;
-				}
-				connectedEntity.attack(power);
-			})
+			.onUse(power -> connectedEntity.attack(power))
 			.toPosition(Gdx.graphics.getWidth() - 225 - game.settings.screenInset, game.settings.screenInset)
 			.toSize(225, 225)
 			.addTo(stage);

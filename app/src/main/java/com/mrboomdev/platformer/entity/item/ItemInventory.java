@@ -9,6 +9,10 @@ import com.mrboomdev.platformer.entity.character.CharacterSkin;
 public class ItemInventory {
 	public Array<Item> items = new Array<>();
 	public int current, capacity = 6;
+
+	public Item getCurrentItem() {
+		return items.get(current);
+	}
 	
 	public boolean add(Item newItem) {
 		var existingItem = items.select(foundItem -> foundItem.name.equals(newItem));

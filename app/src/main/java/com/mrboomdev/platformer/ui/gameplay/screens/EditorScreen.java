@@ -19,7 +19,7 @@ import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget;
 
 public class EditorScreen {
 	public MapTile selectedTile;
-	private GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	private ObjectMap<String, ActorUtil> widgets;
 	private Stage stage;
 
@@ -28,7 +28,7 @@ public class EditorScreen {
 		if(tile != null) tile.isSelected = true;
 		selectedTile = tile;
 		if(widgets == null) {
-			widgets = new ObjectMap<String, ActorUtil>();
+			widgets = new ObjectMap<>();
 			widgets.put("DownScaleY", new ButtonWidget(ButtonWidget.Style.BULLET)
 				.setText("Downscale Y", game.assets.get("bulletButton.ttf"))
 				.onClick(() -> {
@@ -183,22 +183,16 @@ public class EditorScreen {
 					} else {
 						Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
 					}
-					/*String compressedFile = new String(ZipUtil.getCompressedString(adapter.toJson(map)), StandardCharsets.UTF_8);
-					Gdx.files.external("exportedMapCompressed.booma").writeString(compressedFile, false);*/
-					
+
 					var dialog = new AndroidDialog().setTitle("Saved successfully!");
 					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Everything is ok, you can continue."));
-					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> {
-						dialog.close();
-					})).addSpace(30);
+					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> dialog.close())).addSpace(30);
 					dialog.show();
 				} catch(Exception e) {
 					e.printStackTrace();
 					var dialog = new AndroidDialog().setTitle("Error while saving the file!");
 					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText(e.getMessage()));
-					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> {
-						dialog.close();
-					})).addSpace(30);
+					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> dialog.close())).addSpace(30);
 					dialog.show();
 				}
 				
@@ -209,7 +203,7 @@ public class EditorScreen {
 			final int a = i;
 			new ButtonWidget(ButtonWidget.Style.BULLET)
 				.setText("Use layer " + i, game.assets.get("bulletButton.ttf"))
-				.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() / 2 - i * 70 + 50)
+				.toPosition(game.settings.screenInset, (float)Gdx.graphics.getHeight() / 2 - i * 70 + 50)
 				.onClick(() -> EditorManager.layer = a)
 				.addTo(stage);
 		}

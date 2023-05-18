@@ -45,7 +45,6 @@
 		"health": 250,
 		"damage": 50,
 		"speed": 0.8,
-		"shield": 50,
 		"stamina": 50
 	}
 }

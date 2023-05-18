@@ -1,14 +1,14 @@
 package com.mrboomdev.platformer.entity.character;
 
+import androidx.annotation.NonNull;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.environment.map.MapEntity;
-import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 
 public class CharacterCreator {
 	public CharacterEntity entity;
-	private GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	private String spawnTile;
 	
 	public CharacterCreator(CharacterEntity entity) {
@@ -16,11 +16,11 @@ public class CharacterCreator {
 	}
 	
 	public CharacterCreator setSpawnTiles(String[] tiles) {
-		spawnTile = new Array<String>(tiles).random();
+		spawnTile = new Array<>(tiles).random();
 		return this;
 	}
 
-	public CharacterCreator setBot(BotBrain brain) {
+	public CharacterCreator setBot(@NonNull BotBrain brain) {
 		entity.setBrain(brain.start(game.environment.entities));
 		return this;
 	}
@@ -28,9 +28,9 @@ public class CharacterCreator {
 	public CharacterEntity create() {
 		entity.create(game.environment.world);
 		if(spawnTile != null && spawnTile.startsWith("#id:")) {
-			var results = game.environment.map.tilesMap.values().toArray().select((var tile) -> {
-				return tile.id != null && tile.id.equals(spawnTile.substring(4, spawnTile.length()));
-			});
+			var results = game.environment.map.tilesMap.values().toArray()
+					.select((var tile) -> tile.id != null && tile.id.equals(spawnTile.substring(4)));
+
 			for(var result : results) {
 				entity.body.setTransform(result.getPosition(false), 0);
 			}

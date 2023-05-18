@@ -69,7 +69,7 @@ chica.create();
 foxy.create();
 
 var staticLights = new ArrayList();
-for(int i = 1; i <= 18; i++) {
+for(int i = 1; i <= 17; i++) {
 	staticLights.add(map.getById("staticLight" + i));
 }
 
@@ -165,6 +165,7 @@ void checkIfNoPower() {
 		freddy.entity.stats.speed *= 3;
 		freddy.entity.stats.damage *= 5;
 		freddy.entity.stats.maxHealth = 999;
+		freddy.entity.stats.maxStamina = 999;
 		freddy.entity.stats.stamina = 999;
 		freddy.entity.gainDamage(-999);
 		

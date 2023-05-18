@@ -2,11 +2,32 @@
 	"name": "Pistol",
 	
 	"skin": {
-		"texture": "texture.png",
-		"size": [1, 1], "position": [0, 0]
+		"texture": "texture.png", "region": [1, 1, 10, 7],
+		"size": [0.4, 0.3], "position": [0.04, 0.06]
 	},
 
 	"attack": {
-		"type": "throw_child"
+		"type": "throw_child",
+		"child": {
+			"skin": {
+				"types": {
+					"default": {
+						"texture": "texture.png", "region": [1, 1, 10, 10],
+						"delay": 0.075, "size": [1, 1],
+						"frames": [
+							{ "region":  [1, 1, 10, 10] },
+							{ "region":  [1, 1, 10, 10] },
+							{ "region":  [1, 1, 10, 10] },
+							{ "region":  [1, 1, 10, 10] }
+						]
+					}
+				}
+			},
+
+			"stats": {
+				"speed": 10,
+				"damage": 25
+			}
+		}
 	}
 }

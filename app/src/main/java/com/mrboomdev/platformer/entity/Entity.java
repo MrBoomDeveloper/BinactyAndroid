@@ -44,8 +44,10 @@ public class Entity {
 		public String texture = "texture.png";
 		public int[] region;
 		public float[] size, position;
-		@Json(name = "hand_position") public float[] handPosition;
-		@Json(ignore = true) public Sprite sprite;
+		@Json(name = "hand_position")
+		public float[] handPosition;
+		@Json(ignore = true)
+		public Sprite sprite;
 		
 		public void fillEmpty(Animation parent) {
 			if(handPosition == null) handPosition = parent.handPosition != null ? parent.handPosition : new float[]{0, 0};

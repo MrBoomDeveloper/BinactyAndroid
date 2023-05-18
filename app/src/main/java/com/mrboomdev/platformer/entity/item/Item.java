@@ -12,9 +12,9 @@ import com.squareup.moshi.Json;
 
 public class Item {
     public String name;
-    public Stats stats;
-    public Flags flags;
+    public Entity.Stats stats;
     public Attack attack;
+    public Child child;
     public Entity.Frame skin;
     public Entity.States state;
     @Json(ignore = true)
@@ -39,7 +39,11 @@ public class Item {
 
     public Sprite getSprite() {
         if(sprite == null) {
-            sprite = new Sprite(new Texture(source.goTo(skin.texture).getFileHandle()));
+            sprite = (skin.region != null)
+                    ? (new Sprite(new Texture(source.goTo(skin.texture).getFileHandle()),
+                        skin.region[0], skin.region[1], skin.region[2], skin.region[3]))
+                    : new Sprite(new Texture(source.goTo(skin.texture).getFileHandle()));
+
             sprite.setSize(skin.size[0], skin.size[1]);
         }
         return sprite;
@@ -54,22 +58,17 @@ public class Item {
         var copy = new Item();
         copy.name = name;
         copy.stats = stats;
-        copy.flags = flags;
         copy.source = source;
         copy.state = state;
         copy.skin = skin;
+        copy.child = child;
         copy.attack = attack;
         return copy;
     }
 
-    public static class Stats {
-        @Json(name = "max_count") public int maxCount;
-        @Json(name = "reload_duration") public int reloadDuration;
-    }
-
-    public static class Flags {
-        @Json(name = "is_toggleable") public boolean isToggleable;
-        @Json(name = "is_aimable") public boolean isAimable;
+    public static class Child {
+        public Entity.Stats stats;
+        public Entity.Frame skin;
     }
 
     public static class Attack {

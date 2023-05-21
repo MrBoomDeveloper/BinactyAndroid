@@ -51,7 +51,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
         SoLoader.init(this, false);
 		ReactRootView root = new ReactRootView(this);
 
-        instance = this;
+		instance = this;
 		ActivityManager.current = this;
 		ActivityManager.reactActivity = this;
 		GameManager.fileUtilProvider = new AndroidFileUtilProvider();

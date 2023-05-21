@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.environment.map.tile;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -7,7 +9,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.environment.map.MapTile;
-import com.mrboomdev.platformer.game.GameHolder;
 import com.squareup.moshi.Json;
 
 public class TileInteraction {
@@ -16,11 +17,9 @@ public class TileInteraction {
 	public boolean selectable;
 	@Json(ignore = true) public InteractionListener listener;
 	@Json(ignore = true) public MapTile owner;
-	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
-	
+
 	public TileInteraction getSerialized() {
-		var copy = new TileInteraction(null);
-		return copy;
+		return new TileInteraction(null);
 	}
 	
 	public TileInteraction(TileInteraction interaction) {
@@ -34,7 +33,7 @@ public class TileInteraction {
 		selectable = interaction.selectable;
 	}
 	
-	public void build(World world, Vector2 position) {
+	public void build(@NonNull World world, Vector2 position) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.StaticBody;
 		bodyDef.position.set(position);

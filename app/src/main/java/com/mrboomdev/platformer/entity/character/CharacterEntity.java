@@ -155,7 +155,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		shadow.setCenter(getPosition().x, getPosition().y - worldBody.size[1] / 2);
 		shadow.draw(batch);
-		skin.draw(batch, getPosition(), getDirection());
+		skin.draw(batch, getPosition(), getDirection(), this);
 		inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
 		
 		//drawDebug(batch);

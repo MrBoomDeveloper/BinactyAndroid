@@ -1,6 +1,5 @@
 package com.mrboomdev.platformer.environment;
 
-import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.platformer.entity.EntityManager;
+import com.mrboomdev.platformer.entity.particle.ParticleManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
@@ -15,6 +15,9 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.ui.gameplay.GameplayUi;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.util.io.FileUtil;
+
+import box2dLight.RayHandler;
 
 public class EnvironmentManager {
 	public MapManager map;
@@ -25,17 +28,23 @@ public class EnvironmentManager {
 	public Stage stage;
 	public GameplayUi ui;
 	public EntityManager entities;
-	private GameHolder game = GameHolder.getInstance();
+	public ParticleManager particles;
+	private final GameHolder game = GameHolder.getInstance();
 	
 	public EnvironmentManager() {
 		Box2D.init();
+		game.environment = this;
 		world = new World(new Vector2(0, 0), true);
-		GameHolder.getInstance().environment = this;
+
+		var particlesDir = FileUtil.internal("packs/official/src/particles");
+		particles = new ParticleManager(world);
+		particles.loadParticle(particlesDir.goTo("dust"), "__dust");
 	}
 	
 	public void render(SpriteBatch batch) {
 		map.render(batch);
 		entities.render(batch);
+		particles.draw(batch);
 		//stage.draw();
 	}
 	

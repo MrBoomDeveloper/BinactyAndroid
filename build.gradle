@@ -1,3 +1,6 @@
+ext {
+    gdxPlatformVersion = gdxVersion
+}
 buildscript {
 	ext {
 		buildToolsVersion = "32.0.0"

@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.projectile;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -20,9 +22,9 @@ public class ProjectileBullet {
 	public Vector2 power;
     public boolean isDied;
 	private Sprite sprite;
-	private World world;
+	private final World world;
 
-    public ProjectileBullet(World world, EntityAbstract owner, ProjectileStats stats, Vector2 power) {
+    public ProjectileBullet(@NonNull World world, @NonNull EntityAbstract owner, ProjectileStats stats, @NonNull Vector2 power) {
         this.world = world;
         this.owner = owner;
         this.power = power;
@@ -31,7 +33,7 @@ public class ProjectileBullet {
 
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(owner.body.getPosition().add(power.limit(1.2f)));
+        bodyDef.position.set(owner.body.getPosition().add(power.limit(1f)));
         body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
@@ -39,8 +41,8 @@ public class ProjectileBullet {
         sprite.setSize(0.25f, 0.25f);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-		fixtureDef.filter.categoryBits = Entity.BULLET;
-		fixtureDef.filter.maskBits = Entity.CHARACTER | Entity.TILE_BOTTOM;
+        fixtureDef.filter.categoryBits = Entity.BULLET;
+        fixtureDef.filter.maskBits = Entity.CHARACTER | Entity.TILE_BOTTOM;
 		
         body.createFixture(fixtureDef);
         shape.dispose();

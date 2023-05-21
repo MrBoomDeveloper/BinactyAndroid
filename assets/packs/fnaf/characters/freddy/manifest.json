@@ -59,7 +59,7 @@
 	},
 	
 	"stats": {
-		"health": 500,
+		"health": 1000,
 		"damage": 45,
 		"speed": 0.9,
 		"stamina": 50

@@ -35,7 +35,7 @@ public class CharacterSkin {
 	@Json(ignore = true) Entity.AnimationType currentAnimation;
 	@Json(ignore = true) Sprite sprite;
 	@Json(ignore = true) float animationProgress;
-	@Json(ignore = true) int lastframeIndex;
+	@Json(ignore = true) int lastFrameIndex;
 	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
 	
 	public void setAnimation(Entity.AnimationType animation) {
@@ -56,7 +56,7 @@ public class CharacterSkin {
 		}
 	}
 	
-	public void draw(SpriteBatch batch, Vector2 position, Direction direction) {
+	public void draw(SpriteBatch batch, @NonNull Vector2 position, @NonNull Direction direction, CharacterEntity entity) {
 		var activeAnimation = animations.get(currentAnimation);
 		animationProgress += Gdx.graphics.getDeltaTime();
 		
@@ -70,11 +70,16 @@ public class CharacterSkin {
 		sprite.draw(batch);
 		
 		int frameIndex = activeAnimation.getKeyFrameIndex(animationProgress);
-		if((frameIndex == 1 || frameIndex == 6) && frameIndex != lastframeIndex &&
+		if((frameIndex == 1 || frameIndex == 6) && frameIndex != lastFrameIndex &&
 		  (currentAnimation == WALK || currentAnimation == RUN)) {
 			AudioUtil.play3DSound(game.assets.get("audio/sounds/step.mp3"), .2f, 15, position);
 		}
-		lastframeIndex = frameIndex;
+		lastFrameIndex = frameIndex;
+
+		if(currentAnimation == RUN && frameIndex == 1) {
+			game.environment.particles.createParticle("__dust",
+					position.cpy().add(0, entity.worldBody.bottom[3]), direction.isBackward());
+		}
 	}
 	
 	public Entity.Frame getCurrentFrame() {
@@ -82,7 +87,7 @@ public class CharacterSkin {
 		return activeAnimation.getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL);
 	}
 	
-	public CharacterSkin build(FileUtil source) {
+	public CharacterSkin build(@NonNull FileUtil source) {
 		Texture texture = new Texture(source.goTo(texturePath).getFileHandle());
 		for(HashMap.Entry<Entity.AnimationType, Entity.Animation> entry : animationsJson.entrySet()) {
 			Array<Entity.Frame> frames = Array.with(entry.getValue().frames);

@@ -1,7 +1,7 @@
 package com.mrboomdev.platformer.environment.map;
 
-import box2dLight.PointLight;
-import box2dLight.RayHandler;
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -22,13 +22,17 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.ToJson;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
+
 public class MapTile extends MapObject {
 	public String name, id;
 	public int layer;
 	public boolean flipX, flipY;
 	public String texture, devTexture;
 	public Entity.Light light;
-	public float[] size, colission, shadowColission, position, offset = {0, 0}, scale;
+	public float[] size, collision, position, offset = {0, 0}, scale;
+	@Json(name = "shadow_collision") public float[] shadowCollision;
 	public int[] region, connectedTile;
 	public TileInteraction interaction;
 	public TileStyle style;
@@ -46,38 +50,41 @@ public class MapTile extends MapObject {
 	@Override
 	public void draw(SpriteBatch batch) {
 		if(isDestroyed) return;
+
+		//Update the size just to check if the texture in the camera bounds
+		if(style != null && style.current != null && style.current.size != null) size = style.current.size;
+		if(!isVisible()) return;
+
+		if(style != null) {
+			sprite = style.getSprite(getPosition(false), this);
+			sprite.setFlip(flipX, flipY);
+		}
+		if(sprite != null) sprite.draw(batch);
+		if(devSprite != null) devSprite.draw(batch);
+		if(shape != null && isSelected) {
+			batch.end();
+			shape.setProjectionMatrix(game.environment.camera.combined);
+			Gdx.gl.glLineWidth(3);
+			shape.begin(ShapeRenderer.ShapeType.Line);
+			shape.setColor(1, 1, 1, 1);
+			shape.rect(getPosition(false).x - size[0] / 2, getPosition(false).y - size[1] / 2, size[0], size[1]);
+			shape.end();
+			batch.begin();
+		}
+	}
+
+	private boolean isVisible() {
 		var camera = game.environment.camera;
 
 		float viewportWidth = camera.viewportWidth * camera.zoom;
 		float viewportHeight = camera.viewportHeight * camera.zoom;
 		float cameraX = camera.position.x - viewportWidth / 2;
 		float cameraY = camera.position.y - viewportHeight / 2;
-		
-		//Update the size just to check if the texture in the camera bounds
-		if(style != null && style.current != null && style.current.size != null) size = style.current.size;
 
-		// Check if object is within viewport
-		if(getPosition(false).x - size[0] * .5f + size[0] > cameraX &&
-		   getPosition(false).x - size[0] * .5f < cameraX + viewportWidth &&
-    	   getPosition(false).y - size[1] * .5f + size[1] > cameraY &&
-		   getPosition(false).y - size[1] * .5f < cameraY + viewportHeight) {
-		    if(style != null) {
-				sprite = style.getSprite(getPosition(false), this);
-				sprite.setFlip(flipX, flipY);
-			}
-			if(sprite != null) sprite.draw(batch);
-			if(devSprite != null) devSprite.draw(batch);
-			if(shape != null && isSelected) {
-				batch.end();
-				shape.setProjectionMatrix(game.environment.camera.combined);
-				Gdx.gl.glLineWidth(3);
-				shape.begin(ShapeRenderer.ShapeType.Line);
-				shape.setColor(1, 1, 1, 1);
-				shape.rect(getPosition(false).x - size[0] / 2, getPosition(false).y - size[1] / 2, size[0], size[1]);
-				shape.end();
-				batch.begin();
-			}
-		}
+		return (getPosition(false).x - size[0] * .5f + size[0] > cameraX &&
+				getPosition(false).x - size[0] * .5f < cameraX + viewportWidth &&
+				getPosition(false).y - size[1] * .5f + size[1] > cameraY &&
+				getPosition(false).y - size[1] * .5f < cameraY + viewportHeight);
 	}
 	
 	public void update() {
@@ -111,12 +118,12 @@ public class MapTile extends MapObject {
 		body = world.createBody(bodyDef);
 		body.setUserData(this);
 		
-		if(colission != null) {
-			bodyDef.position.add(colission[2], colission[3]);
+		if(collision != null) {
+			bodyDef.position.add(collision[2], collision[3]);
 			FixtureDef fixtureDef = new FixtureDef();
 			PolygonShape shape = new PolygonShape();
-			shape.setAsBox(colission[0] / 2, colission[1] / 2,
-				new Vector2(colission[2] / 2, colission[3] / 2), 0);
+			shape.setAsBox(collision[0] / 2, collision[1] / 2,
+				new Vector2(collision[2] / 2, collision[3] / 2), 0);
 			fixtureDef.filter.categoryBits = Entity.TILE_BOTTOM;
 			fixtureDef.filter.maskBits = Entity.CHARACTER_BOTTOM | Entity.BULLET;
 			fixtureDef.shape = shape;
@@ -124,11 +131,11 @@ public class MapTile extends MapObject {
 			shape.dispose();
 		}
 		
-		if(shadowColission != null) {
+		if(shadowCollision != null) {
 			FixtureDef shadowFixtureDef = new FixtureDef();
             PolygonShape shadowShape = new PolygonShape();
-			shadowShape.setAsBox(shadowColission[0] / 2, shadowColission[1] / 2,
-				new Vector2(shadowColission[2] / 2 * (flipX ? -1 : 1), shadowColission[3] / 2 * (flipY ? -1 : 1)), 0);
+			shadowShape.setAsBox(shadowCollision[0] / 2, shadowCollision[1] / 2,
+				new Vector2(shadowCollision[2] / 2 * (flipX ? -1 : 1), shadowCollision[3] / 2 * (flipY ? -1 : 1)), 0);
 			shadowFixtureDef.shape = shadowShape;
 			shadowFixtureDef.filter.categoryBits = Entity.BLOCK;
 			shadowFixtureDef.filter.maskBits = Entity.LIGHT;
@@ -161,7 +168,7 @@ public class MapTile extends MapObject {
 
     @Override
     public void setPosition(Vector2 position) {
-        body.setTransform(position, 0);
+		body.setTransform(position, 0);
 		if(sprite != null) sprite.setCenter(getPosition(false).x, getPosition(false).y);
 		if(devSprite != null) devSprite.setCenter(getPosition(false).x, getPosition(false).y);
     }
@@ -172,9 +179,9 @@ public class MapTile extends MapObject {
 		if(pointLight != null) pointLight.remove();
 	}
 	
-	public void copyData(MapTile tile) {
-		colission = tile.colission;
-		shadowColission = tile.shadowColission;
+	public void copyData(@NonNull MapTile tile) {
+		collision = tile.collision;
+		shadowCollision = tile.shadowCollision;
 		light = tile.light;
 		size = tile.size;
 		texture = tile.texture;
@@ -233,9 +240,10 @@ public class MapTile extends MapObject {
 	public int getLayer() {
 		return layer;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public static class Adapter {
-		@ToJson MapTile toJson(MapTile tile) {
+		@ToJson MapTile toJson(@NonNull MapTile tile) {
 			var serialized = new MapTile();
 			serialized.name = tile.name;
 			serialized.position = tile.position;
@@ -243,6 +251,7 @@ public class MapTile extends MapObject {
 			serialized.connectedTile = tile.connectedTile;
 			if(tile.style != null) serialized.style = tile.style.getSerialized();
 			if(tile.interaction != null) serialized.interaction = tile.interaction.getSerialized();
+			serialized.offset = (tile.offset[0] == 0 && tile.offset[1] == 0) ? null : tile.offset;
 			serialized.scale = tile.scale;
 			serialized.layer = tile.layer;
 			serialized.flipX = tile.flipX;

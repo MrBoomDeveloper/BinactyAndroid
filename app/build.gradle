@@ -103,7 +103,8 @@ dependencies {
 	implementation "com.google.android.gms:play-services-auth:20.5.0"
 	
 	/* Util libraries */
-	implementation "com.squareup.moshi:moshi:1.14.0"
+	implementation 'com.squareup.moshi:moshi:1.15.0'
+	implementation "com.squareup.moshi:moshi-kotlin:1.15.0"
 	implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.11"
 	
 	/* Android libraries */
@@ -118,7 +119,7 @@ dependencies {
 	
 	/* LibGDX libraries */
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"
-	implementation "com.badlogicgames.gdx:gdx-ai:1.8.1"
+	implementation 'com.badlogicgames.gdx:gdx-ai:1.8.2'
 	implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
@@ -127,10 +128,10 @@ dependencies {
 
 	implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
 	implementation "com.badlogicgames.box2dlights:box2dlights:1.4"
-	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-armeabi-v7a"
-	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-arm64-v8a"
-	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-x86"
-	natives "com.badlogicgames.gdx:gdx-box2d-platform:1.9.9:natives-x86_64"
+	natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+	natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+	natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+	natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
 	 
 	implementation "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"

@@ -2,7 +2,7 @@
 	"tiles": {
 		"barrier": {
 			"devTexture": "tiles/barrier.png", "size": [2, 2],
-			"colission": [2, 2, 0, 0]
+			"collision": [2, 2, 0, 0]
 		},
 	
 		"triggerAi": {

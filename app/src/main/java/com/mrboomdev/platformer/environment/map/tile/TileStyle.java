@@ -1,11 +1,13 @@
 package com.mrboomdev.platformer.environment.map.tile;
 
-import com.badlogic.gdx.graphics.g2d.Animation;
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.squareup.moshi.Json;
+
 import java.util.List;
 import java.util.Map;
 
@@ -21,22 +23,22 @@ public class TileStyle {
 	
 	public TileStyle() {}
 	
-	public TileStyle(TileStyle style) {
+	public TileStyle(@NonNull TileStyle style) {
 		this.queue = style.queue;
 		this.types = style.types;
 	}
 	
 	public Sprite getSprite(Vector2 position, MapTile tile) {
-		if(current.colission != null && !lastWas.equals(current.id)) {
+		if(current.collision != null && !lastWas.equals(current.id)) {
 			((PolygonShape)owner.fixture.getShape()).setAsBox(
-				current.colission[0] / 2, current.colission[1] / 2,
-				new Vector2(current.colission[2] / 2, current.colission[3] / 2), 0);
+				current.collision[0] / 2, current.collision[1] / 2,
+				new Vector2(current.collision[2] / 2, current.collision[3] / 2), 0);
 		}
-		if(current.shadowColission != null && !lastWas.equals(current.id)) {
+		if(current.shadow_collision != null && !lastWas.equals(current.id)) {
 			((PolygonShape)owner.shadowFixture.getShape()).setAsBox(
-				current.shadowColission[0] / 2, current.shadowColission[1] / 2, new Vector2(
-				current.shadowColission[2] / 2 * (owner.flipX ? -1 : 1),
-				current.shadowColission[3] / 2 * (owner.flipY ? -1 : 1)), 0);
+				current.shadow_collision[0] / 2, current.shadow_collision[1] / 2, new Vector2(
+				current.shadow_collision[2] / 2 * (owner.flipX ? -1 : 1),
+				current.shadow_collision[3] / 2 * (owner.flipY ? -1 : 1)), 0);
 		}
 		
 		var sprite = current.getSprite(atlas, tile);
@@ -74,10 +76,9 @@ public class TileStyle {
 	
 	public static class Style {
 		public int[] region;
-		public float[] size, colission, shadowColission;
+		public float[] size, collision, shadow_collision;
 		public Frame[] frames;
 		public float speed;
-		public Animation.PlayMode mode;
 		@Json(ignore = true) public String id;
 
 		public Sprite getSprite(Sprite sprite, MapTile tile) {

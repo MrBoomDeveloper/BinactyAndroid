@@ -5,6 +5,7 @@ game.load("sound", "sounds/error.wav");
 game.load("sound", "sounds/foxy_song.wav");
 game.load("sound", "sounds/win.wav");
 game.load("sound", "sounds/scream.wav");
+game.load("music", "sounds/fan.wav");
 
 game.load("character", "characters/freddy");
 game.load("character", "characters/bonnie");
@@ -25,6 +26,7 @@ String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerA
 boolean isGameEnded = false;
 int power = 100, usage = 1;
 var powerWidget, usageWidget;
+var fanSound, lightSound;
 
 var freddy = entities.createCharacter("characters/freddy").setSpawnTiles(new String[]{"#id:freddySpawn"});
 var bonnie = entities.createCharacter("characters/bonnie").setSpawnTiles(new String[]{"#id:bonnieSpawn"});
@@ -98,6 +100,7 @@ map.getById("buttonLightRight").setListener(new InteractionListener() {use() {
 	lightRight.pointLight.setActive(isLightRightOn);
 	usage += (isLightRightOn ? 1 : -1);
 	uiUpdate();
+	updateLight();
 }});
 
 map.getById("buttonLightLeft").setListener(new InteractionListener() {use() {
@@ -109,6 +112,7 @@ map.getById("buttonLightLeft").setListener(new InteractionListener() {use() {
 	lightLeft.pointLight.setActive(isLightLeftOn);
 	usage += (isLightLeftOn ? 1 : -1);
 	uiUpdate();
+	updateLight();
 }});
 
 map.getById("buttonDoorRight").setListener(new InteractionListener() {use() {
@@ -135,24 +139,27 @@ map.getById("buttonDoorLeft").setListener(new InteractionListener() {use() {
 	uiUpdate();
 }});
 
+void updateLight() {
+	lightSound.stop();
+	if(isLightRightOn || isLightLeftOn) lightSound.play();
+}
+
 void checkIfNoPower() {
 	if(isGameEnded) return;
 	if(power == 0) {
+		core.environment.entities.mainLight.setColor(0.25f, 0.25f, 0.5f, 0.4f);
 		doorLeft.style.selectStyle("default");
 		doorRight.style.selectStyle("default");
-		if(!isDoorLeftOpened) {
-			audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
-		}
-		if(!isDoorRightOpened) {
-			audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
-		}
-		
 		lightLeft.pointLight.setActive(false);
 		lightRight.pointLight.setActive(false);
 		
 		audio.clear();
 		audio.playSound("sounds/power_end.wav", 1);
-		core.environment.entities.mainLight.setColor(0.25f, 0.25f, 0.5f, 0.4f);
+
+		fanSound.stop();
+		lightSound.stop();
+		if(!isDoorLeftOpened) audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
+		if(!isDoorRightOpened) audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
 		
 		for(var light : staticLights) {
 			light.pointLight.setActive(false);
@@ -162,12 +169,12 @@ void checkIfNoPower() {
 		chica.entity.die(true);
 		foxy.entity.die(true);
 		
-		freddy.entity.stats.speed *= 3;
-		freddy.entity.stats.damage *= 5;
-		freddy.entity.stats.maxHealth = 999;
-		freddy.entity.stats.maxStamina = 999;
-		freddy.entity.stats.stamina = 999;
-		freddy.entity.gainDamage(-999);
+		freddy.entity.stats.speed = 99999;
+		freddy.entity.stats.damage = 99999;
+		freddy.entity.stats.maxHealth = 99999;
+		freddy.entity.stats.maxStamina = 99999;
+		freddy.entity.stats.stamina = 99999;
+		freddy.entity.gainDamage(-99999);
 		
 		game.setTimer(new Runnable() {run() {
 			if(isGameEnded) return;
@@ -215,12 +222,26 @@ entities.setListener(new EntityListener() {
 
 game.setListener(new GameListener() {
 	start() {
+		fanSound = createMusic("sounds/fan.wav");
+		fanSound.setPosition(24, -14);
+		fanSound.setDistance(12);
+		fanSound.setLooping(true);
+		fanSound.setVolume(0.25f);
+		fanSound.play();
+
+		lightSound = createMusic("music/light.wav");
+		lightSound.setPosition(24, -14);
+		lightSound.setDistance(15);
+		lightSound.setLooping(true);
+		lightSound.setVolume(0.25f);
+
 		audio.playMusic(new String[]{
 			"music/dark_ambience_1.ogg",
 			"music/dark_ambience_2.ogg",
 			"music/dark_ambience_3.ogg",
 			"music/dark_ambience_4.ogg"},
 		999);
+
 		usageWidget = ui.createText("statBarWidget.ttf", "Usage: 1").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 25);
 		powerWidget = ui.createText("statBarWidget.ttf", "100%").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 60);
 		powerUpdate();

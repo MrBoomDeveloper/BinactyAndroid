@@ -1,18 +1,19 @@
 package com.mrboomdev.platformer.script.bridge;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
+@SuppressWarnings("unused")
 public class AudioBridge {
-	private GameHolder game = GameHolder.getInstance();
-	private FileUtil source;
-	
+	private final FileUtil source;
+
 	public AudioBridge(FileUtil source) {
 		this.source = source;
 	}
@@ -27,7 +28,7 @@ public class AudioBridge {
 		AudioUtil.play3DSound(sound, volume, power, position);
 	}
 	
-	public void playMusic(String[] queue, int repeat) {
+	public void playMusic(@NonNull String[] queue, int repeat) {
 		Array<Music> musicQueue = new Array<>();
 		for(String track : queue) {
 			musicQueue.add(Gdx.audio.newMusic(source.goTo(track).getFileHandle()));
@@ -38,9 +39,7 @@ public class AudioBridge {
 	public Music playMusic(String path, float volume) {
 		var music = Gdx.audio.newMusic(source.goTo(path).getFileHandle());
 		music.setVolume(AudioUtil.musicVolume * volume);
-		music.setOnCompletionListener((completedMusic) -> {
-			AudioUtil.playingMusic.removeValue(completedMusic, false);
-		});
+		music.setOnCompletionListener((completedMusic) -> AudioUtil.playingMusic.removeValue(completedMusic, false));
 		music.play();
 		AudioUtil.playingMusic.add(music);
 		return music;

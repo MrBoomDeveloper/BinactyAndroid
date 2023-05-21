@@ -1,6 +1,5 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
-import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,9 +10,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.character.CharacterCreator;
-import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -23,10 +20,13 @@ import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.audio.AudioUtil;
+
+import box2dLight.RayHandler;
 
 public class GameplayScreen extends CoreScreen {
 	public EnvironmentManager environment;
-	private GameHolder game;
+	private final GameHolder game;
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
 	private GameplayUi ui;
@@ -34,8 +34,7 @@ public class GameplayScreen extends CoreScreen {
 	private Box2DDebugRenderer debugRenderer;
 	private ShaderProgram shaders;
 	private Viewport viewport;
-	private final float cameraSpeed = .05f;
-	
+
 	public GameplayScreen(EnvironmentManager manager) {
 		this.environment = manager;
 		this.game = GameHolder.getInstance();
@@ -63,14 +62,17 @@ public class GameplayScreen extends CoreScreen {
 			ui.render(delta);
 		} batch.end();
 		if(!game.settings.mainPlayer.isDead) {
-			Vector2 playerPosition = game.settings.mainPlayer.body.getPosition();
+			Vector2 playerPosition = game.settings.mainPlayer.getPosition();
+			final float cameraSpeed = .05f;
 			camera.position.set(CameraUtil.getCameraShake().add(
 				camera.position.x + (playerPosition.x - camera.position.x) * (cameraSpeed / camera.zoom),
 				camera.position.y + (playerPosition.y - camera.position.y) * (cameraSpeed / camera.zoom)
 			), 0);
 		}
+
 		environment.update(delta);
 		FunUtil.update();
+		AudioUtil.Companion.update();
 	}
 	
 	@Override
@@ -82,7 +84,7 @@ public class GameplayScreen extends CoreScreen {
 		shaders = new ShaderProgram(Gdx.files.internal("world/shaders/default/default.vert"), Gdx.files.internal("world/shaders/default/default.frag"));
 		ShaderProgram.pedantic = false;
 		if(shaders.isCompiled()) {
-			game.analytics.log("Shaders", "Successdully compilied shaders!");
+			game.analytics.log("Shaders", "Successfully compiled shaders!");
 			batch.setShader(shaders);
 		} else {
 			game.analytics.error("Shaders", "Failed to compile shaders!");
@@ -95,7 +97,7 @@ public class GameplayScreen extends CoreScreen {
 		rayHandler = environment.rayHandler;
 		
 		var camera = new OrthographicCamera(32, 18);
-		camera.zoom = .9f;
+		camera.zoom = .75f;
 		environment.camera = camera;
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
 		

@@ -19,6 +19,8 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import java.io.IOException;
+
 public class GameLauncher extends AndroidApplication {
 	private GameHolder game;
 	private boolean isFinished;
@@ -45,10 +47,7 @@ public class GameLauncher extends AndroidApplication {
 		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
 		game = GameHolder.getInstance();
 		try {
-			Moshi moshi = new Moshi.Builder().build();
-			JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
-			game.gamemodeFile = adapter.fromJson(getIntent().getCharSequenceExtra("gamemodeFile").toString());
-			game.mapFile = adapter.fromJson(getIntent().getCharSequenceExtra("mapFile").toString());
+			resolveGameFiles();
 		} catch(Exception e) {
 			e.printStackTrace();
 			if(!BuildConfig.DEBUG) exit(Status.CRASH);
@@ -59,6 +58,15 @@ public class GameLauncher extends AndroidApplication {
 		windowController.hide(WindowInsetsCompat.Type.systemBars());
 		windowController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
 	}
+
+	private void resolveGameFiles() throws IOException {
+		if(!getIntent().hasExtra("gamemodeFile")) return;
+		Moshi moshi = new Moshi.Builder().build();
+		JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
+		game.gamemodeFile = adapter.fromJson(getIntent().getCharSequenceExtra("gamemodeFile").toString());
+		game.mapFile = adapter.fromJson(getIntent().getCharSequenceExtra("mapFile").toString());
+	}
+
 	
 	@Override
 	public AndroidAudio createAudio(Context context, AndroidApplicationConfiguration config) {

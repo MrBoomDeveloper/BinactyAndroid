@@ -28,23 +28,14 @@ public class ScriptManager {
 		this.uiBridge = new UiBridge();
 		this.entitiesBridge = new EntitiesBridge(source);
 		this.audioBridge = new AudioBridge(source.getParent());
-		
-		this.eval("import com.mrboomdev.platformer.entity.Entity.Target;");
-		this.eval("import com.mrboomdev.platformer.script.bridge.GameBridge.GameListener;");
-		this.eval("import com.mrboomdev.platformer.script.bridge.EntitiesBridge.EntityListener;");
-		this.eval("import com.mrboomdev.platformer.script.bridge.UiBridge.UiListener;");
-		this.eval("import com.mrboomdev.platformer.entity.character.CharacterCreator;");
-		this.eval("import com.mrboomdev.platformer.environment.map.tile.TileInteraction.InteractionListener;");
-		this.eval("import com.mrboomdev.platformer.util.ui.ActorUtil.Align;");
-		this.eval("import com.mrboomdev.platformer.entity.bot.BotBrain;");
+		this.eval(FileUtil.internal("packs/core/src/scripts/DefaultScript.java").readString(true));
+		this.put("__source", source.getParent());
 		this.put("game", gameBridge);
 		this.put("ui", uiBridge);
 		this.put("map", mapBridge);
 		this.put("entities", entitiesBridge);
 		this.put("audio", audioBridge);
-
-		GameHolder game = GameHolder.getInstance();
-		this.put("core", game);
+		this.put("core", GameHolder.getInstance());
 	}
 	
 	public void eval(String code) {

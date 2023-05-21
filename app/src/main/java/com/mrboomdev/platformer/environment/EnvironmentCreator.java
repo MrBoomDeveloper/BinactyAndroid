@@ -1,10 +1,14 @@
 package com.mrboomdev.platformer.environment;
 
+import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.BUILDING_MAP;
+import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.DONE;
+import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.LOADING_GAMEMODE_RESOURCES;
+import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.PREPAIRING;
+
 import com.badlogic.gdx.Gdx;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
-import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.*;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
@@ -13,9 +17,9 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 public class EnvironmentCreator {
-	private EnvironmentManager manager;
+	private final EnvironmentManager manager;
 	private onCreateListener createListener;
-	private GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	private Status status = PREPAIRING;
 	
 	public EnvironmentCreator() {
@@ -49,7 +53,7 @@ public class EnvironmentCreator {
 			Moshi moshi = new Moshi.Builder().build();
 			JsonAdapter<GamemodeScript> adapter = moshi.adapter(GamemodeScript.class);
 			manager.gamemode = new GamemodeManager(adapter.fromJson(FileUtil.internal("packs/fnaf/gamemode.json").readString(true)), game.gamemodeFile)
-				.build(game.gamemodeFile, () -> {
+				.build(() -> {
 					createListener.created(manager);
 					status = DONE;
 				});

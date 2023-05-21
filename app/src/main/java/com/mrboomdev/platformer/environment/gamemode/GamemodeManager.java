@@ -3,10 +3,8 @@ package com.mrboomdev.platformer.environment.gamemode;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
-import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -22,12 +20,11 @@ public class GamemodeManager {
 	public GamemodeScript script;
 	private TextWidget title, timer;
 	private FadeWidget fade;
-	private GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	private boolean isTimerSetup, isTimerEnd;
 	private float time, timerSpeed;
-	private Status status = Status.PREPAIRING;
+	private Status status = Status.PREPARING;
 	private Runnable buildCompletedCallback;
-	private FileUtil source;
 	private float gameOverTimeout;
 	private boolean isBroken;
 	
@@ -38,9 +35,8 @@ public class GamemodeManager {
 		if(!game.settings.enableEditor) game.script.eval(scenario.readString(true));
 	}
 	
-	public GamemodeManager build(FileUtil source, Runnable callback) {
+	public GamemodeManager build(Runnable callback) {
 		this.buildCompletedCallback = callback;
-		this.source = source;
 		status = Status.LOADING_RESOURCES;
 		return this;
 	}
@@ -96,10 +92,8 @@ public class GamemodeManager {
 			}
 		}
 		
-		stack = stack.stream().filter(operation -> {
-			return (operation.progress < operation.function.duration ||
-				(operation.function.isLong ? !operation.isFinished : false));
-		}).collect(Collectors.toList());
+		stack = stack.stream().filter(operation -> (operation.progress < operation.function.duration ||
+			(operation.function.isLong && !operation.isFinished))).collect(Collectors.toList());
 		
 		if(gameOverTimeout > 0) {
 			gameOverTimeout += Gdx.graphics.getDeltaTime();
@@ -114,13 +108,13 @@ public class GamemodeManager {
 	public void createUi(Stage stage) {
 		if(game.settings.enableEditor) return;
 		timer = new TextWidget("timer.ttf").setOpacity(0)
-			.toPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - game.settings.screenInset)
+			.toPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - game.settings.screenInset)
 			.addTo(stage);
 		
 		fade = new FadeWidget(script.options.initialFade).addTo(stage);
 		
 		title = new TextWidget("title.ttf").setOpacity(0)
-			.toPosition(new Vector2(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2 + 50))
+			.toPosition(new Vector2(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f + 50))
 			.addTo(stage);
 	}
 	
@@ -150,7 +144,7 @@ public class GamemodeManager {
 	}
 	
 	private enum Status {
-		PREPAIRING,
+		PREPARING,
 		LOADING_RESOURCES,
 		DONE
 	}

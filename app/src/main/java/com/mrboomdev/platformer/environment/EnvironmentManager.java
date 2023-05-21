@@ -15,6 +15,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.ui.gameplay.GameplayUi;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
 import box2dLight.RayHandler;
@@ -32,6 +33,7 @@ public class EnvironmentManager {
 	private final GameHolder game = GameHolder.getInstance();
 	
 	public EnvironmentManager() {
+		FunUtil.timerTasks.clear();
 		Box2D.init();
 		game.environment = this;
 		world = new World(new Vector2(0, 0), true);

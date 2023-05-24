@@ -160,13 +160,8 @@ public class FileUtil {
 				var file = new File(ActivityManager.current.getExternalFilesDir(null), path);
 				return isUrl ? ("file://" + file.getAbsolutePath()) : file.getAbsolutePath();
 			}
-			case FULL: {
-				return getPath();
-			}
-			case INTERNAL: {
-				return isUrl ? ("asset:/" + getPath()) : getPath();
-			}
-			default: return getPath();
+			case INTERNAL: return isUrl ? ("asset:/" + getPath()) : getPath();
+			default: return isUrl ? "file:///" + getPath() : getPath();
 		}
 	}
 	

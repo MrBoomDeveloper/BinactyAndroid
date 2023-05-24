@@ -2,20 +2,17 @@ package com.mrboomdev.platformer.ui.gameplay.layout;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
+
 import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
-import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class InventoryLayout extends ActorUtil {
-	private Array<ButtonWidget> buttons = new Array<>();
-	private ShapeRenderer shape = new ShapeRenderer();
+	private final Array<ButtonWidget> buttons = new Array<>();
+	private final ShapeRenderer shape = new ShapeRenderer();
 
     @Override
     public void draw(Batch batch, float alpha) {
@@ -47,9 +44,8 @@ public class InventoryLayout extends ActorUtil {
 			var button = new ButtonWidget(ButtonWidget.Style.CARD)
 				.toSize(75, 75)
 				.toPosition((getX() + i * 80) - (3 * 80), getY())
-				.onClick(() -> {
-					connectedEntity.inventory.current = id;
-				}).addTo(stage);
+				.onClick(() -> connectedEntity.inventory.current = id)
+				.addTo(stage);
 			
 			button.setColor(0, 0, 0, .8f);
 			buttons.add((ButtonWidget)button);

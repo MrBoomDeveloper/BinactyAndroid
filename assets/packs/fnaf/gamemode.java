@@ -215,7 +215,7 @@ entities.setListener(new EntityListener() {
 			game.over(entity, false);
 		} else {
 			if(isGameEnded) return;
-			audio.playSound("sounds/scream.wav", 0.1f, 20, entity.getPosition());
+			audio.playSound("sounds/scream.wav", 0.05f, 10, entity.getPosition());
 		}
 	}
 });
@@ -258,6 +258,8 @@ game.setListener(new GameListener() {
 		me.giveItem(entities.createItem("items/flashlight"));
 		me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
 	}
+	build() {}
+	end() {}
 });
 
 void powerUpdate() {

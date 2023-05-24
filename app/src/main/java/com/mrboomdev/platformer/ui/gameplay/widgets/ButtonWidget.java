@@ -1,36 +1,36 @@
 package com.mrboomdev.platformer.ui.gameplay.widgets;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ButtonWidget extends ActorUtil {
-	private ShapeRenderer shape;
-	private FrameBuffer frameBuffer;
+	private final ShapeRenderer shape;
 	private Sprite backgroundImage, foregroundImage;
 	private BitmapFont font;
 	private GlyphLayout glyph;
-	private Style style;
-	private float padding, height;
-	private boolean isPressed;
+	private final Style style;
+	private float padding;
+	private boolean isPressed, highlight;
 	
 	public static final float inactiveBackgroundOpacity = .8f;
 	public static final float activeBackgroundOpacity = .25f;
 	public static final float inactiveForegroundOpacity = .8f;
 	public static final float activeForegroundOpacity = .5f;
-	
+	public static final float COMPACT_HEIGHT = 45;
 	public static final float BULLET_HEIGHT = 50;
 
-	public ButtonWidget(Style style) {
+	public ButtonWidget(@NonNull Style style) {
 		this.style = style;
 		this.shape = new ShapeRenderer();
 		this.addListener(new ClickListener() {
@@ -54,16 +54,22 @@ public class ButtonWidget extends ActorUtil {
 			case BULLET:
 				setHeight(BULLET_HEIGHT);
 				padding = 10;
-				height = BULLET_HEIGHT;
 				break;
+
 			case CARD:
 				setHeight(75);
 				setWidth(60);
 				padding = 5;
 				break;
+
+			case COMPACT:
+				setHeight(COMPACT_HEIGHT);
+				padding = 8;
+				break;
 		}
 	}
-	
+
+	@SuppressWarnings("unused")
 	public ButtonWidget setBackgroundImage(Sprite sprite) {
 		if(sprite == null) {
 			backgroundImage = null;
@@ -74,11 +80,10 @@ public class ButtonWidget extends ActorUtil {
 	}
 	
 	public ButtonWidget setForegroundImage(Sprite sprite) {
-		if(sprite == null) {
-			foregroundImage = null;
-			return this;
-		}
-		foregroundImage = new Sprite(sprite);
+		foregroundImage = sprite == null ? null : new Sprite(sprite);
+		if(sprite == null) return this;
+		if(style == Style.COMPACT) return this;
+
 		float proportion = (foregroundImage.getHeight() > foregroundImage.getWidth())
 			? ((getHeight() - padding * 5) / foregroundImage.getHeight())
 			: ((getWidth() - padding * 5) / foregroundImage.getWidth());
@@ -93,20 +98,33 @@ public class ButtonWidget extends ActorUtil {
 		return this;
 	}
 
+	public ButtonWidget setText(String text) {
+		var assets = GameHolder.getInstance().assets;
+		switch(style) {
+			case COMPACT: return setText(text, assets.get("compact_button_label.ttf"));
+			case CARD: return this;
+			default: return setText(text, assets.get("bulletButton.ttf"));
+		}
+	}
+
+	public void setHighlight(boolean highlight) {
+		this.highlight = highlight;
+	}
+
 	@Override
 	public void draw(Batch batch, float alpha) {
-		float[] textPosition = new float[2];
+		float[] textPosition = new float[]{getX(), getY()};
 		switch(style) {
 			case BULLET: {
 				if(foregroundImage != null) {
 					foregroundImage.setPosition(getX() + padding * 1.5f, getY() + padding);
 					setWidth(glyph.width + foregroundImage.getWidth() + padding * 6);
-					textPosition[0] = getX() + padding * 3 + foregroundImage.getWidth();
+					textPosition[0] += padding * 3 + foregroundImage.getWidth();
 				} else {
 					setWidth(getHeight() * 2 + glyph.width);
-					textPosition[0] = getX() + getWidth() / 2 - glyph.width / 2;
+					textPosition[0] += getWidth() / 2 - glyph.width / 2;
 				}
-				textPosition[1] = getY() + getHeight() / 2 + glyph.height / 2;
+				textPosition[1] += getHeight() / 2 + glyph.height / 2;
 				{
 					batch.end();
 					Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -132,6 +150,36 @@ public class ButtonWidget extends ActorUtil {
 					foregroundImage.setAlpha(getColor().a);
 				}
 			} break;
+
+			case COMPACT: {
+				textPosition[1] += padding + glyph.height / 2 + 16;
+				if(foregroundImage != null) {
+					var proportion = getHeight() / foregroundImage.getHeight();
+					foregroundImage.setSize(
+							foregroundImage.getWidth() * proportion - padding * 2,
+							foregroundImage.getHeight() * proportion - padding * 2);
+
+					foregroundImage.setPosition(getX() + padding, getY() + padding);
+					textPosition[0] += foregroundImage.getWidth() + padding * 3;
+					setWidth(foregroundImage.getWidth() + glyph.width + padding * 6);
+				} else {
+					textPosition[0] += 60 - glyph.width / 2;
+					setWidth(120);
+				}
+
+				batch.end();
+				shape.begin(ShapeRenderer.ShapeType.Filled); {
+					float color = isPressed ? .3f : .2f;
+					if(highlight) color += .15f;
+
+					shape.setColor(color + .2f, color + .2f, color + .2f, 1);
+					shape.rect(getX(), getY(), getWidth(), getHeight());
+
+					shape.setColor(color, color, color, 1);
+					shape.rect(getX() + 2, getY() + 2, getWidth() - 4, getHeight() - 4);
+				} shape.end();
+				batch.begin();
+			} break;
 		}
 		
 		if(backgroundImage != null) backgroundImage.draw(batch);
@@ -142,12 +190,7 @@ public class ButtonWidget extends ActorUtil {
 	public enum Style {
 		BULLET,
 		CARD,
-		TAB
-	}
-	
-	public static class NewButtonWidget extends ButtonWidget {
-		public NewButtonWidget(Style style) {
-			super(style);
-		}
+		TAB,
+		COMPACT
 	}
 }

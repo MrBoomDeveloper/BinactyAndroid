@@ -12,7 +12,6 @@ import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.ui.gameplay.GameplayUi;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
@@ -64,7 +63,7 @@ public class EnvironmentManager {
 		if(!game.settings.enableEditor) ui.createCombat(stage);
 		if(game.settings.enableEditor) ui.createEditor(stage);
 		ui.connectCharacter(game.settings.mainPlayer);
-		game.script.gameBridge.callListener(GameBridge.Function.START);
+		game.script.triggerStarted();
 		gamemode.createUi(stage);
 	}
 	

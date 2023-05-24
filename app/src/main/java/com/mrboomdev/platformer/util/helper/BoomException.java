@@ -1,19 +1,20 @@
 package com.mrboomdev.platformer.util.helper;
 
+import androidx.annotation.NonNull;
 public class BoomException extends RuntimeException {
 	
-	public BoomException(Object object) {
+	public BoomException(@NonNull Object object) {
 		super(object.toString());
 	}
 	
-	public BoomException(Object object, Throwable t) {
+	public BoomException(@NonNull Object object, Throwable t) {
 		super(object.toString(), t);
 	}
 	
 	public BoomException(Throwable t) {
 		super(t);
 	}
-	
+
 	public static Builder builder() {
 		return new Builder("");
 	}

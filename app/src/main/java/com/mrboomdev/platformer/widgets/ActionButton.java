@@ -1,8 +1,6 @@
 package com.mrboomdev.platformer.widgets;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -10,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
@@ -20,7 +19,8 @@ public class ActionButton extends ActorUtil {
 	public static final float iconDefaultOpacity = .8f;
 	public static final float iconActiveOpacity = .5f;
 	public boolean isActive = true;
-	private Sprite sprite, icon;
+	private final Sprite sprite;
+	private final Sprite icon;
 	
 	public ActionButton(Sprite spriteInput) {
 		AssetManager asset = GameHolder.getInstance().assets;
@@ -61,7 +61,7 @@ public class ActionButton extends ActorUtil {
 	@Override
 	public void act(float delta) {
 		sprite.setPosition(getX(), getY());
-		icon.setCenter(getX() + (size / 2), getY() + (size / 2));
+		icon.setCenter(getX() + (size / 2f), getY() + (size / 2f));
 	}
 
 	@Override

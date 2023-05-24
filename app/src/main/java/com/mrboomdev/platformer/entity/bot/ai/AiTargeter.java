@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.entity.bot.ai;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -11,8 +12,8 @@ public class AiTargeter {
 	public BotTarget ignoredTarget;
 	private float visionDistance = 8;
 	private long ignoredStartedTime;
-	private BotBrain brain;
-	private GameHolder game = GameHolder.getInstance();
+	private final BotBrain brain;
+	private final GameHolder game = GameHolder.getInstance();
 
 	public AiTargeter(BotBrain brain) {
 		this.brain = brain;

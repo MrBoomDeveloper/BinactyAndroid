@@ -1,7 +1,6 @@
 package com.mrboomdev.platformer.widgets;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -10,59 +9,57 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 @SuppressWarnings("unchecked")
 public class JoystickWidget extends ActorUtil {
     public boolean isActive;
-    private Sprite holder, point;
+    private final Sprite holder;
+    private final Sprite point;
     private int usedPointer = 999;
-    private float pointOpacity = .5f;
+    private float pointOpacity = .3f;
     private Vector2 offset;
     private UpdateListener listener, useListener;
-    private GameHolder game = GameHolder.getInstance();
 
     public JoystickWidget() {
         setTouchable(Touchable.enabled);
-        addListener(
-                new InputListener() {
-                    @Override
-                    public boolean touchDown(
-                            InputEvent event, float x, float y, int pointer, int button) {
-                        if (usedPointer == 999) {
-                            usedPointer = pointer;
-                            updatePointer(new Vector2(x, y));
-                            isActive = true;
-                        }
-                        return true;
+        addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(usedPointer == 999) {
+                    usedPointer = pointer;
+                    updatePointer(new Vector2(x, y));
+                    isActive = true;
+                }
+                return true;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                if(pointer != usedPointer) return;
+                updatePointer(new Vector2(x, y));
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if(pointer == usedPointer) {
+                    if(useListener != null) {
+                        useListener.update(getPower());
                     }
 
-                    @Override
-                    public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                        if (pointer != usedPointer) return;
-                        updatePointer(new Vector2(x, y));
-                    }
+                    usedPointer = 999;
+                    updatePointer(null);
+                    isActive = false;
+                }
+            }
+        });
 
-                    @Override
-                    public void touchUp(
-                            InputEvent event, float x, float y, int pointer, int button) {
-                        if (pointer == usedPointer) {
-							if(useListener != null) {
-								useListener.update(getPower());
-							}
-                            usedPointer = 999;
-                            updatePointer(null);
-                            isActive = false;
-                        }
-                    }
-                });
-
+        GameHolder game = GameHolder.getInstance();
         Texture bigCircles = game.assets.get("ui/overlay/big_elements.png");
         holder = new Sprite(bigCircles, 0, 0, 200, 200);
         point = new Sprite(bigCircles, 200, 0, 200, 200);
-        holder.setAlpha(.4f);
-        point.setAlpha(.5f);
     }
 
     public <T extends JoystickWidget> T onUpdate(UpdateListener listener) {
@@ -74,16 +71,6 @@ public class JoystickWidget extends ActorUtil {
         this.useListener = listener;
         return (T) this;
     }
-
-    @Override
-    public void act(float delta) {
-        if (isActive && pointOpacity < 1) {
-            pointOpacity += delta * 1.2f;
-        } else if (pointOpacity > .5f) {
-            pointOpacity -= delta * 1.2f;
-        }
-        point.setAlpha(Math.min(1, pointOpacity));
-    }
 	
 	public Vector2 getPower() {
 		return !isActive ? Vector2.Zero
@@ -92,15 +79,22 @@ public class JoystickWidget extends ActorUtil {
 
     @Override
     public void draw(Batch batch, float alpha) {
-        if (listener != null) {
-            listener.update(getPower());
+        var delta = Gdx.graphics.getDeltaTime();
+        if(isActive && pointOpacity < 1) {
+            pointOpacity += delta * 1.2f;
+        } else if(pointOpacity > .3f) {
+            pointOpacity -= delta * 1.2f;
         }
+        point.setAlpha(Math.min(1, pointOpacity));
+        holder.setAlpha(Math.min(.5f, pointOpacity));
+
+        if(listener != null) listener.update(getPower());
         holder.draw(batch);
         point.draw(batch);
     }
 
     private void updatePointer(Vector2 position) {
-        if (position == null) {
+        if(position == null) {
             point.setCenter(getX() + getWidth() / 2, getY() + getHeight() / 2);
             return;
         }
@@ -114,11 +108,12 @@ public class JoystickWidget extends ActorUtil {
     @Override
     public <T extends ActorUtil> T addTo(Stage stage) {
         holder.setBounds(getX(), getY(), getWidth(), getHeight());
-		point.setSize(getWidth() / 3, getHeight() / 3);
-        offset =
-                new Vector2(
-                        -getX() - getWidth() / 2 + point.getWidth() / 2,
-                        -getY() - getHeight() / 2 + point.getHeight() / 2);
+        point.setSize(getWidth() / 3, getHeight() / 3);
+
+        offset = new Vector2(
+                -getX() - getWidth() / 2 + point.getWidth() / 2,
+                -getY() - getHeight() / 2 + point.getHeight() / 2);
+
         updatePointer(null);
         return super.addTo(stage);
     }

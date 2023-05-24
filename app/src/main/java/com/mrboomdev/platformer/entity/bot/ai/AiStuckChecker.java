@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.math.Vector2;
 
+@SuppressWarnings("unused")
 public class AiStuckChecker {
 	private Vector2 lastCheckPosition;
 	private long lastCheckTime;

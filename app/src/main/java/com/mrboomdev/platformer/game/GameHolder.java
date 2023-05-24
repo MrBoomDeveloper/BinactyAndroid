@@ -18,6 +18,7 @@ import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
@@ -32,6 +33,10 @@ public class GameHolder extends Game {
 	public GameStatistics stats;
 	public FileUtil gamemodeFile, mapFile;
 	private static GameHolder instance;
+
+	static {
+		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> LogUtil.crash(throwable));
+	}
 	
 	@Override
 	public void create() {

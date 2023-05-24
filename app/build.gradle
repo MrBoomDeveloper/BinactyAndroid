@@ -180,13 +180,13 @@ tasks.whenTaskAdded { packageTask ->
 task run(type: Exec) {
 	def path
 	def localProperties = project.file("../local.properties")
-	if (localProperties.exists()) {
+	if(localProperties.exists()) {
 		Properties properties = new Properties()
 		localProperties.withInputStream { instr ->
 			properties.load(instr)
 		}
 		def sdkDir = properties.getProperty("sdk.dir")
-		if (sdkDir) {
+		if(sdkDir) {
 			path = sdkDir
 		} else {
 			path = "$System.env.ANDROID_HOME"

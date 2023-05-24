@@ -2,24 +2,25 @@ package com.mrboomdev.platformer.util.io;
 
 import androidx.annotation.NonNull;
 
-import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.helper.BoomException;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.zip.GZIPOutputStream;
-import java.io.ByteArrayInputStream;
-import java.util.zip.GZIPInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ZipUtil {
 	private static final int BUFFER_SIZE = 4096;
 
-	public static byte[] getCompressedString(String input) throws IOException {
+	@NonNull
+	public static byte[] getCompressedString(@NonNull String input) throws IOException {
 		byte[] data = input.getBytes("UTF-8");
 		ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
 		GZIPOutputStream gos = new GZIPOutputStream(os);
@@ -29,7 +30,8 @@ public class ZipUtil {
 		return os.toByteArray();
     }
 
-    public static String getUncompressedString(byte[] input) throws IOException {
+    @NonNull
+	public static String getUncompressedString(@NonNull byte[] input) throws IOException {
 		final int BUFFER_SIZE = input.length;
 		ByteArrayInputStream is = new ByteArrayInputStream(input);
 		GZIPInputStream gis = new GZIPInputStream(is, BUFFER_SIZE);
@@ -58,7 +60,7 @@ public class ZipUtil {
 		}
 	}
 
-    public static void unzipFile(InputStream stream, FileUtil destDirectory, Runnable callback) throws IOException {
+    public static void unzipFile(InputStream stream, @NonNull FileUtil destDirectory, Runnable callback) throws IOException {
         File destDir = destDirectory.getFile();
         if(!destDir.exists()) destDir.mkdir();
         ZipInputStream zipIn = new ZipInputStream(stream);
@@ -67,7 +69,8 @@ public class ZipUtil {
             String filePath = destDirectory.getFullPath(false) + File.separator + entry.getName();
             if(!entry.isDirectory()) {
                 File file = new File(filePath);
-                file.getParentFile().mkdirs();
+                var parent = file.getParentFile();
+				if(parent != null) parent.mkdirs();
                 FileOutputStream fos = new FileOutputStream(file);
                 byte[] bytes = new byte[BUFFER_SIZE];
                 int length;

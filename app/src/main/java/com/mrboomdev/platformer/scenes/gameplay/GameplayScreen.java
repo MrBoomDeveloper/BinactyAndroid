@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -17,7 +16,6 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.projectile.ProjectileColission;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
-import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
@@ -53,22 +51,17 @@ public class GameplayScreen extends CoreScreen {
 		batch.begin(); {
 			environment.render(batch);
 		} batch.end();
+
 		if(!game.settings.debugRaysDisable) {
 			rayHandler.setCombinedMatrix(camera);
 			rayHandler.updateAndRender();
 		}
+
 		batch.begin(); {
 			if(game.settings.debugRenderer) debugRenderer.render(environment.world, camera.combined);
+			environment.ui.draw(batch);
 			ui.render(delta);
 		} batch.end();
-		if(!game.settings.mainPlayer.isDead) {
-			Vector2 playerPosition = game.settings.mainPlayer.getPosition();
-			final float cameraSpeed = .05f;
-			camera.position.set(CameraUtil.getCameraShake().add(
-				camera.position.x + (playerPosition.x - camera.position.x) * (cameraSpeed / camera.zoom),
-				camera.position.y + (playerPosition.y - camera.position.y) * (cameraSpeed / camera.zoom)
-			), 0);
-		}
 
 		environment.update(delta);
 		FunUtil.update();
@@ -107,7 +100,7 @@ public class GameplayScreen extends CoreScreen {
 		
 		game.settings.mainPlayer = player;
 		game.environment.entities.setMain(player);
-		camera.position.set(player.body.getPosition(), 0);
+		camera.position.set(player.getPosition(), 0);
 		
 		ui = new GameplayUi(this, player);
 		Gdx.input.setInputProcessor(ui.stage);

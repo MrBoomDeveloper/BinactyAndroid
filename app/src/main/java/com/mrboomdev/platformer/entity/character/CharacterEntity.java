@@ -37,6 +37,7 @@ import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class CharacterEntity extends EntityAbstract {
 	public Entity.Stats stats;
 	public CharacterSkin skin;
@@ -80,7 +81,12 @@ public class CharacterEntity extends EntityAbstract {
 		stats.maxHealth = stats.health;
 		stats.maxStamina = stats.stamina;
 	}
-	
+
+	/**
+	 * Creates character in the world.
+	 * Please note, that the position should to be set manually,
+	 * so i'll recommend to do it right after of the character creation.
+	 */
 	public CharacterEntity create(@NonNull World world) {
 		worldBody.build();
 		BodyDef bodyDef = new BodyDef();
@@ -160,7 +166,11 @@ public class CharacterEntity extends EntityAbstract {
 		
 		//drawDebug(batch);
 	}
-	
+
+	/**
+	 * If character has a BotBrain, then will draw all the paths where it can walk.
+	 * Try to use this method as less possible, because it uses a lot of resources to draw everything.
+	 */
 	public void drawDebug(SpriteBatch batch) {
 		shape.setProjectionMatrix(game.environment.camera.combined);
 		if(brain != null && brain instanceof BotBrain) {
@@ -237,10 +247,8 @@ public class CharacterEntity extends EntityAbstract {
 		healthPhantom = stats.health;
 		damagedPower = power;
 		
-		if(stats.health <= 0) die(false);
-		if(game.settings.mainPlayer == this) {
-			CameraUtil.setCameraShake(.1f, .5f);
-		}
+		if(stats.health == 0) die(false);
+		CameraUtil.addCameraShake(.1f, .25f);
 	}
 	
 	public void gainDamage(int damage) {

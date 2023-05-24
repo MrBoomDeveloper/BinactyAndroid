@@ -5,10 +5,11 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -17,7 +18,7 @@ import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.R;
 
 public class AndroidDialog {
-	private Activity context;
+	private final Activity context;
 	private AlertDialog.Builder builder;
 	private AlertDialog dialog;
 	private View holder;
@@ -41,7 +42,7 @@ public class AndroidDialog {
 		return this;
 	}
 	
-	public AndroidDialog addField(Field field) {
+	public AndroidDialog addField(@NonNull Field field) {
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		fields.addView(field.getView(context), params);
 		return this;
@@ -60,7 +61,7 @@ public class AndroidDialog {
 			space.setMinimumWidth(15);
 			actions.addView(space);
 		}
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
 		params.weight = 1;
 		actions.addView(action.getView(context), params);
 		return this;
@@ -140,9 +141,11 @@ public class AndroidDialog {
 					activity.runOnUiThread(() -> editText.setHint(hint));
 					this.view = editText;
 					return inputLayout;
+
 				case TEXT:
 					TextView textView = new TextView(activity);
 					textView.setText(text);
+					textView.setTextIsSelectable(true);
 					if(size != 0) textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
 					if(color != null) textView.setTextColor(Color.parseColor(color));
 					this.view = textView;
@@ -186,7 +189,7 @@ public class AndroidDialog {
 		}
 		
 		public interface ClickListener {
-			public void clicked(Action action);
+			void clicked(Action action);
 		}
 	}
 	
@@ -222,6 +225,7 @@ public class AndroidDialog {
 		NUMBER
 	}
 	
+	@NonNull
 	public static AndroidDialog createMessageDialog(String title, String message) {
 		var dialog = new AndroidDialog().setTitle(title);
 		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText(message));

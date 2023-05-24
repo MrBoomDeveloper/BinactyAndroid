@@ -3,14 +3,15 @@ package com.mrboomdev.platformer.widgets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 import com.mrboomdev.platformer.util.ActorUtil;
-import com.mrboomdev.platformer.util.Direction;
 import com.mrboomdev.platformer.util.ui.WidgetAnimatable;
+
 import javax.microedition.khronos.opengles.GL10;
 
 public class FadeWidget extends ActorUtil implements WidgetAnimatable {
-    public float opacity = 0, speed = 1, to;
-    private ShapeRenderer shapeRenderer;
+    public float opacity, speed = 1, to;
+    private final ShapeRenderer shapeRenderer;
     private int direction;
 
     public FadeWidget(float initial) {

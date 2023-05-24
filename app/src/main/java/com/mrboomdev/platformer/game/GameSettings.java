@@ -1,6 +1,9 @@
 package com.mrboomdev.platformer.game;
 
 import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
+
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.util.AudioUtil;
 
@@ -11,7 +14,8 @@ public class GameSettings {
 	public boolean enableEditor, pause, ignoreScriptErrors, isBeta;
 	public boolean debugRenderer, debugValues, debugRaysDisable, debugStage;
 	
-	public static GameSettings getFromSharedPreferences(SharedPreferences prefs) {
+	@NonNull
+	public static GameSettings getFromSharedPreferences(@NonNull SharedPreferences prefs) {
 		var settings = new GameSettings();
 		settings.playerName = prefs.getString("nick", "Player");
 		settings.screenInset = prefs.getInt("inset", 60);
@@ -22,7 +26,7 @@ public class GameSettings {
 		settings.isBeta = prefs.getBoolean("beta", false);
 		
 		if(prefs.getBoolean("forceEditor", false)) settings.enableEditor = true;
-		AudioUtil.setVolume(prefs.getInt("musicVolume", 100) / 100, prefs.getInt("soundsVolume", 100) / 100);
+		AudioUtil.setVolume(prefs.getInt("musicVolume", 100) / 100f, prefs.getInt("soundsVolume", 100) / 100f);
 		return settings;
 	}
 }

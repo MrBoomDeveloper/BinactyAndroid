@@ -3,9 +3,10 @@ package com.mrboomdev.platformer.game;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 public class GameAnalytics {
-	private FirebaseAnalytics firebaseAnalytics;
+	private final FirebaseAnalytics firebaseAnalytics;
 	
 	public GameAnalytics(FirebaseAnalytics firebaseAnalytics) {
 		this.firebaseAnalytics = firebaseAnalytics;
@@ -17,6 +18,13 @@ public class GameAnalytics {
 	
 	public void error(String title, String message) {
 		this.logMessage(LogLevel.ERROR, title, message);
+	}
+
+	public void crash(String title, String message, Throwable throwable) {
+		this.logMessage(LogLevel.ERROR, title, message);
+		var crashlytics = FirebaseCrashlytics.getInstance();
+		crashlytics.recordException(throwable);
+		crashlytics.sendUnsentReports();
 	}
 	
 	private void logMessage(LogLevel level, String title, String message) {

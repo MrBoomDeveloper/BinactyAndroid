@@ -1,21 +1,20 @@
 package com.mrboomdev.platformer.widgets;
 
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
-import com.badlogic.gdx.math.Vector2;
-import com.mrboomdev.platformer.game.GameHolder;
-import java.util.TreeMap;
-import com.mrboomdev.platformer.util.ActorUtil;
-import java.util.Map.Entry;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.util.ActorUtil;
+
+import java.util.TreeMap;
 
 public class DebugValuesWidget extends ActorUtil {
-    private BitmapFont font;
-	private GlyphLayout glyph;
-    private TreeMap<String, String> values = new TreeMap<>();
-	private GLProfiler profiler;
+    private final BitmapFont font;
+	private final GlyphLayout glyph;
+    private final TreeMap<String, String> values = new TreeMap<>();
+	private final GLProfiler profiler;
     
     public DebugValuesWidget() {
 		font = GameHolder.getInstance().assets.get("debug.ttf", BitmapFont.class);
@@ -31,10 +30,9 @@ public class DebugValuesWidget extends ActorUtil {
 	@Override
 	public void act(float delta) {
 		setValue("Screen Fps", String.valueOf(Gdx.graphics.getFramesPerSecond()));
-		setValue("Screen Delta", String.valueOf(delta));
 		setValue("Player Position", "[ " + (connectedEntity.getPosition().x) + " : " + (connectedEntity.getPosition().y) + " ]");
 		setValue("Gl Total draws", String.valueOf(profiler.getDrawCalls()));
-		setValue("Gl Texture bimdings", String.valueOf(profiler.getTextureBindings()));
+		setValue("Gl Texture bindings", String.valueOf(profiler.getTextureBindings()));
 		setValue("Gl Calls", String.valueOf(profiler.getCalls()));
 		setValue("Gl Shader switches", String.valueOf(profiler.getShaderSwitches()));
 		profiler.reset();
@@ -43,9 +41,11 @@ public class DebugValuesWidget extends ActorUtil {
 	@Override
 	public void draw(Batch batch, float alpha) {
 		StringBuilder builder = new StringBuilder();
-		for(Entry entry : values.entrySet()) {
-			builder.append(entry.getKey() + ": ");
-			builder.append(entry.getValue() + "\n");
+		for(var entry : values.entrySet()) {
+			builder.append(entry.getKey());
+			builder.append(": ");
+			builder.append(entry.getValue());
+			builder.append("\n");
 		}
 		glyph.setText(font, builder.toString());
 		font.draw(batch, glyph, getX(), getY() - glyph.height);

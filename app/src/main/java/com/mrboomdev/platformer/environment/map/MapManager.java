@@ -11,6 +11,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.util.ColorUtil;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Json;
@@ -25,11 +26,11 @@ import java.util.Map;
 
 import box2dLight.RayHandler;
 
+@SuppressWarnings("UnusedDeclaration")
 public class MapManager {
 	public Atmosphere atmosphere;
-	public Rules rules;
 	private List<MapTile> tiles;
-	private long lastSortedTime;
+	@Json(ignore = true) private long lastSortedTime;
 	@Json(ignore = true) public RayHandler rayHandler;
 	@Json(ignore = true) public Map<String, MapTile> tilesPresets = new HashMap<>();
 	@Json(ignore = true) public ObjectMap<String, MapTile> tilesMap = new ObjectMap<>();
@@ -59,7 +60,7 @@ public class MapManager {
 	
 	public MapManager build(World world, FileUtil source, Runnable callback) {
 		try {
-			Moshi moshi = new Moshi.Builder().build();
+			Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
 			JsonAdapter<PackData.Tiles> adapter = moshi.adapter(PackData.Tiles.class);
 			this.world = world;
 			this.source = source;
@@ -87,7 +88,7 @@ public class MapManager {
 			}
 			status = Status.LOADING_RESOURCES;
 		} catch(Exception e) {
-			LogUtil.crash("Failed to build a map.", "Stacktrace:\n" + LogUtil.throwableToString(e));
+			LogUtil.crash("Failed to build a map.", "Something went wrong while building a map of the environment.", e);
 			e.printStackTrace();
 		}
 		return this;
@@ -106,11 +107,12 @@ public class MapManager {
 
 	
 	//Prevents from duplicate tiles
+	@NonNull
 	private String getTextPosition(@NonNull float[] position, int layer) {
 		return Math.round(position[0]) + ":" + Math.round(position[1]) + ":" + layer;
 	}
 	
-	public void addTile(String name, float[] position, int layer) {
+	public void addTile(@NonNull String name, float[] position, int layer) {
 		if(name.equals("ERASER")) {
 			removeTile(position, layer);
 			return;
@@ -125,6 +127,9 @@ public class MapManager {
 		if(tilesMap.containsKey(pos)) return;
 		
 		MapTile tile = new MapTile();
+		if(preset == null) {
+			throw BoomException.builder("Tile preset was not found: ").addQuoted(name).build();
+		}
 		tile.copyData(preset);
 		position[0] = Math.round(position[0]);
 		position[1] = Math.round(position[1]);
@@ -182,11 +187,6 @@ public class MapManager {
 	public static class Atmosphere {
 		public ColorUtil environmentLightColor, playerLightColor;
 		public String[] tiles;
-	}
-	
-	public static class Rules {
-		@Json(name = "world_border") public float[] worldBorder = {-1000, -1000, 1000, 1000};
-		@Json(name = "camera_border") public float[] cameraBorder = {-1000, -1000, 1000, 1000};
 	}
 	
 	private enum Status {

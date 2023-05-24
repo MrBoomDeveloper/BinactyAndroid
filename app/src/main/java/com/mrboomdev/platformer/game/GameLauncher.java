@@ -94,7 +94,7 @@ public class GameLauncher extends AndroidApplication {
 		game.settings.pause = true;
 		AudioUtil.pause();
 		var dialog = new AndroidDialog().setTitle("Game Paused").setCancelable(false);
-		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Hi! So you just stopped the entire universe, huh?"));
+		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("So you've just stopped the entire universe, huh?"));
 		dialog.addAction(new AndroidDialog.Action().setText("Exit").setClickListener(button -> {
 			game.settings.pause = false;
 			game.launcher.exit(GameLauncher.Status.LOBBY);

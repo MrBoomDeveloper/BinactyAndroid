@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.projectile;
 
+import android.annotation.SuppressLint;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -8,17 +10,14 @@ import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileAttack.AttackStats;
-import com.mrboomdev.platformer.projectile.ProjectileBullet.ProjectileStats;
 import com.mrboomdev.platformer.util.AudioUtil;
 
 public class ProjectileManager {
-    private World world;
-	private int activeBullets;
-	private GameHolder game = GameHolder.getInstance();
-	private ProjectileStats stats;
+    private final World world;
+	private final GameHolder game = GameHolder.getInstance();
 	private AttackStats attackStats;
-	private Array<ProjectileBullet> bullets = new Array<>();
-	private Array<ProjectileAttack> attacks = new Array<>();
+	private final Array<ProjectileBullet> bullets = new Array<>();
+	private final Array<ProjectileAttack> attacks = new Array<>();
 	public float reloadProgress, delayProgress, attackDelayProgress;
 	public EntityAbstract owner;
 	
@@ -32,11 +31,12 @@ public class ProjectileManager {
 		return this;
 	}
     
-    public void shoot(Vector2 power) {
+    @SuppressLint("SuspiciousIndentation")
+	public void shoot(Vector2 power) {
 		if(delayProgress < .1f) return;
-        bullets.add(new ProjectileBullet(world, owner, stats, power));
+        bullets.add(new ProjectileBullet(world, owner, power));
 		delayProgress = 0;
-		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .3f, 15, owner.getPosition());
+		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .1f, 25, owner.getPosition());
     }
 	
 	public void attack(Vector2 power) {

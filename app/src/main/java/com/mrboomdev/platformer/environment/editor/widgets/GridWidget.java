@@ -3,22 +3,23 @@ package com.mrboomdev.platformer.environment.editor.widgets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+
 import com.mrboomdev.platformer.util.ActorUtil;
+
 import java.util.LinkedList;
+
 import javax.microedition.khronos.opengles.GL10;
 
 public class GridWidget extends ActorUtil implements ActorUtil.Scrollable {
     public LinkedList<ActorUtil> widgets = new LinkedList<>();
     private boolean isScrollable = false;
-    private float gap;
+    private final float gap;
 	private float scrollX, scrollY, maxScroll;
 	private float lastX, lastY;
 	private float r, g, b, a = 0;
-	private int rows, columns;
-	private boolean isHorizontal = true;
-	private ShapeRenderer shape;
+	private int columns;
+	private final boolean isHorizontal;
+	private final ShapeRenderer shape;
 
     public GridWidget(float gap, boolean isHorizontal) {
         this.gap = gap;
@@ -34,7 +35,6 @@ public class GridWidget extends ActorUtil implements ActorUtil.Scrollable {
 	
 	public GridWidget setCount(int columns, int rows) {
 		this.columns = columns;
-		this.rows = rows;
 		return this;
 	}
 	

@@ -3,13 +3,14 @@ package com.mrboomdev.platformer.environment;
 import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.BUILDING_MAP;
 import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.DONE;
 import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.LOADING_GAMEMODE_RESOURCES;
-import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.PREPAIRING;
+import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.PREPARING;
 
 import com.badlogic.gdx.Gdx;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
 import com.mrboomdev.platformer.environment.map.MapManager;
+import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -20,7 +21,7 @@ public class EnvironmentCreator {
 	private final EnvironmentManager manager;
 	private onCreateListener createListener;
 	private final GameHolder game = GameHolder.getInstance();
-	private Status status = PREPAIRING;
+	private Status status = PREPARING;
 	
 	public EnvironmentCreator() {
 		this.manager = new EnvironmentManager();
@@ -34,7 +35,7 @@ public class EnvironmentCreator {
 	public EnvironmentCreator create() {
 		new Thread(() -> {
 			try {
-				Moshi moshi = new Moshi.Builder().build();
+				Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
 				JsonAdapter<MapManager> adapter = moshi.adapter(MapManager.class);
 				manager.map = adapter.fromJson(game.mapFile.readString(true)).build(manager.world, game.mapFile, () -> loadGamemode());
 				status = BUILDING_MAP;
@@ -82,7 +83,7 @@ public class EnvironmentCreator {
 	}
 	
 	public enum Status {
-		PREPAIRING,
+		PREPARING,
 		BUILDING_MAP,
 		LOADING_GAMEMODE_RESOURCES,
 		DONE

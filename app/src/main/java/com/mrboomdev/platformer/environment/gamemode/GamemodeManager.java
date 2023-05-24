@@ -31,11 +31,12 @@ public class GamemodeManager {
 	public GamemodeManager(GamemodeScript scriptOld, FileUtil scenario) {
 		game.environment.gamemode = this;
 		this.script = scriptOld;
-		game.script = new ScriptManager(scenario);
+		game.script = new ScriptManager(scenario, "pack.Main", false);
 		if(!game.settings.enableEditor) game.script.eval(scenario.readString(true));
 	}
 	
 	public GamemodeManager build(Runnable callback) {
+		game.script.triggerLoaded();
 		this.buildCompletedCallback = callback;
 		status = Status.LOADING_RESOURCES;
 		return this;
@@ -98,6 +99,7 @@ public class GamemodeManager {
 		if(gameOverTimeout > 0) {
 			gameOverTimeout += Gdx.graphics.getDeltaTime();
 			if(gameOverTimeout > 3.5f) {
+				game.script.triggerEnded();
 				game.launcher.exit(GameLauncher.Status.GAME_OVER);
 			}
 		}

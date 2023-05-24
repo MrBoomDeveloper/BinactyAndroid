@@ -3,19 +3,21 @@ package com.mrboomdev.platformer.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ui.ActorUtil;
 
+@SuppressWarnings("unused")
 public class TextWidget extends ActorUtil {
+    private final GlyphLayout glyph;
+    private final BitmapFont font;
 	public float opacity = 1;
-	private GameHolder game = GameHolder.getInstance();
 	private Align hAlign, vAlign;
-    private GlyphLayout glyph;
-    private BitmapFont font;
     private String text = "";
-    
+
     public TextWidget(String fontName) {
-        this.font = game.assets.get(fontName);
+		GameHolder game = GameHolder.getInstance();
+		this.font = game.assets.get(fontName);
 		this.glyph = new GlyphLayout(font, text);
 		this.hAlign = Align.CENTER;
 		this.vAlign = Align.CENTER;

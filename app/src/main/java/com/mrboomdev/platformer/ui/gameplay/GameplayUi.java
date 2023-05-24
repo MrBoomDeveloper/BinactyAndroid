@@ -1,8 +1,11 @@
 package com.mrboomdev.platformer.ui.gameplay;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
@@ -10,6 +13,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.gameplay.layout.InventoryLayout;
 import com.mrboomdev.platformer.ui.gameplay.screens.EditorScreen;
 import com.mrboomdev.platformer.util.ActorUtil;
+import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.widgets.ActionButton;
 import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
@@ -17,11 +21,12 @@ import com.mrboomdev.platformer.widgets.JoystickWidget;
 public class GameplayUi {
 	public EditorScreen editor;
 	public ObjectMap<String, ActorUtil> widgets = new ObjectMap<>();
-	private GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	private CharacterEntity connectedEntity;
 	
 	public void createFreeRoam(Stage stage) {
 		widgets.put("debug", new DebugValuesWidget().toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - game.settings.screenInset - 75));
+		if(game.settings.enableEditor) widgets.get("debug").setPosition(120, 45);
 		if(game.settings.debugValues) stage.addActor(widgets.get("debug"));
 		
 		widgets.put("joystick", new JoystickWidget()
@@ -54,19 +59,15 @@ public class GameplayUi {
 			.toPosition(
 				Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset,
 				Gdx.graphics.getHeight() - ActionButton.size - game.settings.screenInset)
-			.onClick(() -> {
-				game.launcher.pause();
-			})
+			.onClick(() -> game.launcher.pause())
 			.addTo(stage);
 		
 		widgets.put("inventory", new InventoryLayout()
-			.toPosition(Gdx.graphics.getWidth() / 2, game.settings.screenInset)
+			.toPosition(Gdx.graphics.getWidth() / 2f, game.settings.screenInset)
 			.addTo(stage));
 		
 		new JoystickWidget()
-			.onUpdate(power -> {
-				//TODO: Develop aiming for punches and shooting
-			})
+			.onUpdate(power -> CameraUtil.setCameraOffset(power.x / 25, power.y / 25))
 			.onUse(power -> connectedEntity.attack(power))
 			.toPosition(Gdx.graphics.getWidth() - 225 - game.settings.screenInset, game.settings.screenInset)
 			.toSize(225, 225)
@@ -77,12 +78,12 @@ public class GameplayUi {
 		editor = new EditorScreen();
 		editor.create(stage);
 	}
-	
-	public void createOverlay(Stage stage) {
-		
+
+	public void draw(SpriteBatch batch) {
+		if(editor != null) editor.draw(batch);
 	}
 	
-	public <T extends ActorUtil> T getWidget(String name, Class<T> type) {
+	public <T extends ActorUtil> T getWidget(String name, @NonNull Class<T> type) {
 		return type.cast(widgets.get(name));
 	}
 	

@@ -1,39 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 android:layout_height="wrap_content"
-	 android:layout_width="300dp"
-	 android:background="@drawable/dialog_background"
-	 android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="300dp"
+	android:layout_height="match_parent"
+	android:background="@drawable/dialog_background"
+	android:orientation="vertical">
 
 	<TextView
-		 android:layout_height="wrap_content"
-		 android:layout_width="wrap_content"
-		 android:paddingBottom="15dp"
-		 android:textSize="25sp"
-		 android:textColor="#ffffff"
-		 android:paddingHorizontal="30dp"
-		 android:paddingTop="25dp"
-		 android:id="@+id/title" />
+		android:id="@+id/title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingHorizontal="30dp"
+		android:paddingTop="25dp"
+		android:paddingBottom="15dp"
+		android:textColor="#ffffff"
+		android:textSize="25sp"
+		tools:text="New Dialog" />
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight="1"
+		tools:ignore="SpeakableTextPresentCheck">
+
+		<LinearLayout
+			android:id="@+id/fields"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:paddingHorizontal="30dp">
+
+		</LinearLayout>
+	</ScrollView>
 
 	<LinearLayout
-		 android:layout_height="wrap_content"
-		 android:layout_width="match_parent"
-		 android:orientation="vertical"
-		 android:paddingHorizontal="30dp"
-		 android:id="@+id/fields">
-
-	</LinearLayout>
-
-	<LinearLayout
-		 android:layout_height="wrap_content"
-		 android:orientation="horizontal"
-		 android:layout_width="match_parent"
-		 android:background="#55000000"
-		 android:paddingVertical="10dp"
-		 android:paddingHorizontal="30dp"
-		 android:id="@+id/actions">
-
-	</LinearLayout>
+		android:id="@+id/actions"
+		android:layout_width="match_parent"
+		android:layout_height="70dp"
+		android:background="#55000000"
+		android:gravity="center"
+		android:orientation="horizontal"
+		android:paddingHorizontal="30dp"
+		android:paddingVertical="10dp"/>
 
 </LinearLayout>

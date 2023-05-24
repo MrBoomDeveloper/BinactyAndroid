@@ -31,11 +31,11 @@ public class MapTile extends MapObject {
 	public boolean flipX, flipY;
 	public String texture, devTexture;
 	public Entity.Light light;
-	public float[] size, collision, position, offset = {0, 0}, scale;
-	@Json(name = "shadow_collision") public float[] shadowCollision;
-	public int[] region, connectedTile;
+	public float[] size, collision, position, offset = {0, 0}, scale = {1, 1};
+	public int[] region;
 	public TileInteraction interaction;
 	public TileStyle style;
+	@Json(name = "shadow_collision") public float[] shadowCollision;
 	@Json(ignore = true) public boolean isSelected;
 	@Json(ignore = true) public Sprite sprite, devSprite;
 	@Json(ignore = true) public PointLight pointLight;
@@ -81,16 +81,16 @@ public class MapTile extends MapObject {
 		float cameraX = camera.position.x - viewportWidth / 2;
 		float cameraY = camera.position.y - viewportHeight / 2;
 
-		return (getPosition(false).x - size[0] * .5f + size[0] > cameraX &&
-				getPosition(false).x - size[0] * .5f < cameraX + viewportWidth &&
-				getPosition(false).y - size[1] * .5f + size[1] > cameraY &&
-				getPosition(false).y - size[1] * .5f < cameraY + viewportHeight);
+		return (getPosition(false).x - size[0] * scale[0] * .5f + size[0] * scale[0] > cameraX &&
+				getPosition(false).x - size[0] * scale[0] * .5f < cameraX + viewportWidth &&
+				getPosition(false).y - size[1] * scale[1] * .5f + size[1] * scale[1] > cameraY &&
+				getPosition(false).y - size[1] * scale[1] * .5f < cameraY + viewportHeight);
 	}
 	
 	public void update() {
 		if(sprite != null) {
 			sprite.setFlip(flipX, flipY);
-			if(scale != null) sprite.setSize(size[0] * scale[0], size[1] * scale[1]);
+			if(scale != null && size != null) sprite.setSize(size[0] * scale[0], size[1] * scale[1]);
 		}
 		
 		if(pointLight != null) {
@@ -213,10 +213,10 @@ public class MapTile extends MapObject {
 	public void setupRayHandler(RayHandler rayHandler) {
 		if(light != null) {
 			pointLight = new PointLight(rayHandler, light.rays, light.color.getColor(), light.distance, 0, 0);
-            pointLight.attachToBody(body,
+			pointLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
+			pointLight.attachToBody(body,
 				flipX ? -light.offset[0] : light.offset[0],
 				flipY ? -light.offset[1] : light.offset[1]);
-			pointLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
         }
 	}
 	
@@ -243,21 +243,28 @@ public class MapTile extends MapObject {
 
 	@SuppressWarnings("unused")
 	public static class Adapter {
-		@ToJson MapTile toJson(@NonNull MapTile tile) {
-			var serialized = new MapTile();
+		@ToJson SerializedTile toJson(@NonNull MapTile tile) {
+			var serialized = new SerializedTile();
 			serialized.name = tile.name;
 			serialized.position = tile.position;
-			serialized.offset = tile.offset;
-			serialized.connectedTile = tile.connectedTile;
 			if(tile.style != null) serialized.style = tile.style.getSerialized();
 			if(tile.interaction != null) serialized.interaction = tile.interaction.getSerialized();
-			serialized.offset = (tile.offset[0] == 0 && tile.offset[1] == 0) ? null : tile.offset;
-			serialized.scale = tile.scale;
+			serialized.offset = (tile.offset == null || tile.offset[0] == 0 && tile.offset[1] == 0) ? null : tile.offset;
+			serialized.scale = (tile.scale == null || tile.scale[0] == 1 && tile.scale[1] == 1) ? null : tile.scale;
 			serialized.layer = tile.layer;
-			serialized.flipX = tile.flipX;
-			serialized.flipY = tile.flipY;
-			serialized.id = tile.id;
+			serialized.flipX = tile.flipX ? true : null;
+			serialized.flipY = tile.flipY ? true : null;
+			serialized.id = (tile.id == null || tile.id.isBlank()) ? null : tile.id;
 			return serialized;
+		}
+
+		private static class SerializedTile {
+			public String name, id;
+			public int layer;
+			public Boolean flipX, flipY;
+			public float[] position, offset, scale;
+			public TileInteraction interaction;
+			public TileStyle style;
 		}
 	}
 }

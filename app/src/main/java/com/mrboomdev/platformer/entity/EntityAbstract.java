@@ -11,6 +11,8 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.Direction;
 import com.squareup.moshi.Json;
 
+import org.jetbrains.annotations.Contract;
+
 public abstract class EntityAbstract implements BotTarget {
 	@Json(ignore = true) public World world;
 	@Json(ignore = true) public Vector2 wasPower = new Vector2();
@@ -50,6 +52,8 @@ public abstract class EntityAbstract implements BotTarget {
 		if(!power.isZero()) wasPower = power.cpy();
 	}
 	
+	@NonNull
+	@Contract("_ -> new")
 	private Vector2 getRandomVector2(float range) {
 		return new Vector2(
 			(float)(Math.random() * range) - (range / 2),

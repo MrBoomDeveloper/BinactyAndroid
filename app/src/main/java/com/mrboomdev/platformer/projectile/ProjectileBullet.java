@@ -21,10 +21,10 @@ public class ProjectileBullet {
     public EntityAbstract owner;
 	public Vector2 power;
     public boolean isDied;
-	private Sprite sprite;
+	private final Sprite sprite;
 	private final World world;
 
-    public ProjectileBullet(@NonNull World world, @NonNull EntityAbstract owner, ProjectileStats stats, @NonNull Vector2 power) {
+    public ProjectileBullet(@NonNull World world, @NonNull EntityAbstract owner, @NonNull Vector2 power) {
         this.world = world;
         this.owner = owner;
         this.power = power;
@@ -51,7 +51,7 @@ public class ProjectileBullet {
     }
 
     public void draw(SpriteBatch batch) {
-        if (isDied) return;
+        if(isDied) return;
         sprite.setCenter(body.getPosition().x, body.getPosition().y);
         sprite.draw(batch);
     }

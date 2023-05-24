@@ -1,8 +1,6 @@
 package com.mrboomdev.platformer.environment.editor;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,12 +10,11 @@ import com.mrboomdev.platformer.environment.editor.widgets.GridWidget;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
-import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget.NewButtonWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
+
 import java.util.HashMap;
 
 public class EditorManager implements CoreUi.UiDrawer {
-    private UiState editorVisibility = UiState.COLLAPSED;
 	public static String current = "SELECT";
 	public static int layer = 1;
 
@@ -37,11 +34,11 @@ public class EditorManager implements CoreUi.UiDrawer {
 		tileSetter.setZIndex(0);
 		
 		var tilesGrid = (GridWidget)new GridWidget(15, true)
-			.setBackground(0, 0, 0, .5f)
+			.setBackground(0, 0, 0, .2f)
 			.setScrollable(true)
 			.setCount(2, 999)
-			.toSize(200, Gdx.graphics.getHeight() - (game.settings.screenInset * 2))
-			.toPosition(Gdx.graphics.getWidth() - 200 - game.settings.screenInset, game.settings.screenInset)
+			.toSize(200, Gdx.graphics.getHeight() - 8)
+			.toPosition(Gdx.graphics.getWidth() - 208, 8)
 			.addTo(stage);
 		
 		for(HashMap.Entry<String, MapTile> tile : game.environment.map.tilesPresets.entrySet()) {
@@ -61,9 +58,4 @@ public class EditorManager implements CoreUi.UiDrawer {
 
     @Override
     public void drawUi() {}
-	
-	public enum UiState {
-        SHOWN,
-        COLLAPSED
-    }
 }

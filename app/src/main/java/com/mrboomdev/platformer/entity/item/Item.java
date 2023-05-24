@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.character.CharacterSkin;
 import com.mrboomdev.platformer.projectile.ProjectileManager;
+import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 
@@ -25,6 +26,7 @@ public class Item {
     public void attack(Vector2 power, ProjectileManager projectiles) {
         switch(attack.type) {
             case THROW_CHILD:
+                CameraUtil.addCameraShake(.1f, .1f);
                 projectiles.shoot(power);
                 break;
 

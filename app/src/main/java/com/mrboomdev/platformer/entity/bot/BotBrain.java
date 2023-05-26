@@ -4,6 +4,7 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.EntityManager;
+import com.mrboomdev.platformer.entity.bot.ai.AiState;
 import com.mrboomdev.platformer.entity.bot.ai.AiStuckChecker;
 import com.mrboomdev.platformer.entity.bot.ai.AiTargeter;
 import com.mrboomdev.platformer.entity.character.CharacterBrain;
@@ -18,23 +19,22 @@ public class BotBrain extends CharacterBrain {
 	public GraphPath<PathPoint> path;
 	public PathGraph graph;
 	public BotTarget target;
+	public AiState state;
 	public AiStuckChecker stuckChecker;
 	protected Responder responder;
 	protected int refreshRate;
 	private AiTargeter targeter;
-	private EntityManager entityManager;
-	private float attackReloadProgress, attackReloadDuration;
-	private float dashReloadProgress, dashReloadDuration;
-	private GameHolder game = GameHolder.getInstance();
+	private float attackReloadProgress;
+	private float dashReloadProgress;
+	private final GameHolder game = GameHolder.getInstance();
 	private Sound playerDetectedSound;
 	private long playerLastDetected, mapLastScanned;
 	
 	public BotBrain start(EntityManager entityManager) {
-		this.entityManager = entityManager;
 		this.stuckChecker = new AiStuckChecker();
 		this.targeter = new AiTargeter(this);
-		attackReloadDuration = (float)(Math.random() * 1);
-		dashReloadDuration = (float)(Math.random() * 1);
+		float attackReloadDuration = (float) (Math.random() * 1);
+		float dashReloadDuration = (float) (Math.random() * 1);
 		playerDetectedSound = game.assets.get("audio/sounds/player_detected.wav");
 		scanMap();
 		return this;
@@ -48,7 +48,10 @@ public class BotBrain extends CharacterBrain {
 		for(var tile : game.environment.map.tilesMap.values()) {
 			boolean tileIsOk = false;
 			for(var waypoint : responder.getWaypoints()) {
-				if(waypoint.equals(tile.name)) tileIsOk = true;
+				if(waypoint.equals(tile.name)) {
+					tileIsOk = true;
+					break;
+				}
 			}
 			if(!tileIsOk) continue;
 			var point = new PathPoint(tile.getPosition(false));
@@ -68,7 +71,7 @@ public class BotBrain extends CharacterBrain {
 	
 	@Override
 	public void update() {
-		if((refreshRate != 0) && (System.currentTimeMillis() > mapLastScanned + refreshRate * 1000)) {
+		if((refreshRate != 0) && (System.currentTimeMillis() > mapLastScanned + refreshRate * 1000f)) {
 			mapLastScanned = System.currentTimeMillis();
 			scanMap();
 		}
@@ -106,6 +109,5 @@ public class BotBrain extends CharacterBrain {
 	
 	public interface Responder {
 		String[] getWaypoints();
-		BotTarget getTarget();
 	}
 }

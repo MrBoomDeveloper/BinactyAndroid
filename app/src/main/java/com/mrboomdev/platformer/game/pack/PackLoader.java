@@ -56,7 +56,7 @@ public class PackLoader {
 			for(var pack : packs) {
 				if(!pack.config.active || pack.resources == null || pack.resources.gamemodes == null) continue;
 				List<PackData.GamemodesRow> rows = adapter.fromJson(pack.source.goTo(pack.resources.gamemodes).readString(false));
-				if(rows == null) return;
+				if(rows == null) continue;
 				for(var row : rows) {
 					for(var gamemode : row.data) {
 						gamemode.source = pack.source.goTo(pack.resources.gamemodes).getParent();

@@ -1,19 +1,18 @@
 package com.mrboomdev.platformer.entity;
 
-import box2dLight.PointLight;
-import box2dLight.RayHandler;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.item.Item;
-import com.mrboomdev.platformer.environment.map.MapEntity;
 import com.mrboomdev.platformer.environment.path.PathGraph;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Moshi;
+
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 public class EntityManager {
 	public ObjectMap<String, CharacterEntity> presets = new ObjectMap<>();
@@ -21,13 +20,8 @@ public class EntityManager {
 	public ObjectMap<CharacterEntity, PathGraph> graphs = new ObjectMap<>();
 	public Array<CharacterEntity> characters = new Array<>();
 	public PointLight mainLight;
-	private World world;
 	private RayHandler rayHandler;
-	private GameHolder game = GameHolder.getInstance();
-	
-	public EntityManager(World world) {
-		this.world = world;
-	}
+	private final GameHolder game = GameHolder.getInstance();
 	
 	public void setupRayHandler(RayHandler rayHandler) {
 		this.rayHandler = rayHandler;
@@ -39,7 +33,7 @@ public class EntityManager {
 			var adapter = moshi.adapter(CharacterEntity.class);
 			presets.put(id, adapter.fromJson(file.goTo("manifest.json").readString(true)));
 		} catch(Exception e) {
-			throw new BoomException(e);
+			LogUtil.crash("Failed to load a character", "Invalid config file.", e);
 		}
 	}
 	
@@ -51,7 +45,7 @@ public class EntityManager {
 			item.source = file;
 			itemPresets.put(id, item);
 		} catch(Exception e) {
-			throw new BoomException(e);
+			LogUtil.crash("Failed to load a item", "Invalid config file.", e);
 		}
 	}
 	

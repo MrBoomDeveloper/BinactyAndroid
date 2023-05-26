@@ -1,0 +1,78 @@
+{
+	"initial": "sleep",
+	"states": {
+		"sleep": {
+			"transitions": [
+				{
+					"name": "explore",
+					"conditions": [{
+						"type": "time_out",
+						"duration": 35,
+						"random": [0, 35]
+					}]
+				}, {
+					"name": "attack",
+					"conditions": [{
+						"type": "damaged"
+					}]
+				}
+			]
+		},
+
+		"explore": {
+			"target": ["random_tile"],
+			"range": 60,
+			"speed": 0.8,
+			"transitions": [
+				{
+					"name": "explore",
+					"resolveIf": "all_true_queue",
+					"conditions": [
+						{
+							"type": "target_reached"
+						}, {
+							"type": "time_out",
+							"duration": 10,
+							"random": [-4, 5]
+						}
+					]
+				}, {
+					"name": "attack",
+					"conditions": [
+						{
+							"type": "near_target",
+							"range": 10,
+							"target": ["near_enemy"]
+						}
+					]
+				}
+			]
+		},
+
+		"attack": {
+			"target": ["near_enemy"],
+			"range": 12,
+			"speed": 1.5,
+			"transitions": [
+				{
+					"name": "explore",
+					"resolveIf": "all_true_queue",
+					"conditions": [
+						{
+							"type": "far_target"
+						}, {
+							"type": "time_out",
+							"duration": 5
+						}
+					]
+				}
+			]
+		},
+
+		"crazy": {
+			"target": ["near_enemy"],
+			"speed": 2,
+			"range": 9999
+		}
+	}
+}

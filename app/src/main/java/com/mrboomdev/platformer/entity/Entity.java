@@ -35,9 +35,9 @@ public class Entity {
 	}
 	
 	public enum Target {
-		EVERYONE,
-		MAIN_PLAYER,
-		CONNECTED
+		@Json(name = "everyone") EVERYONE,
+		@Json(name = "main_player") MAIN_PLAYER,
+		@Json(name = "near_enemy") NEAR_ENEMY
 	}
 	
 	public static class Frame {

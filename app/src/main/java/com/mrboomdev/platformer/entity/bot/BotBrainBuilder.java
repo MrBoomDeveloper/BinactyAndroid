@@ -1,9 +1,10 @@
 package com.mrboomdev.platformer.entity.bot;
 
-import com.mrboomdev.platformer.entity.bot.BotBrain;
+import com.mrboomdev.platformer.entity.bot.ai.AiState;
 
+@SuppressWarnings("unused")
 public class BotBrainBuilder {
-	private BotBrain brain;
+	private final BotBrain brain;
 	
 	public BotBrainBuilder() {
 		brain = new BotBrain();
@@ -11,6 +12,11 @@ public class BotBrainBuilder {
 	
 	public BotBrainBuilder setResponder(BotBrain.Responder responder) {
 		brain.responder = responder;
+		return this;
+	}
+
+	public BotBrainBuilder setStates(AiState state) {
+		brain.state = state;
 		return this;
 	}
 	

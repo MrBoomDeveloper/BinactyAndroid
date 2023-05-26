@@ -33,37 +33,29 @@ var bonnie = entities.createCharacter("characters/bonnie").setSpawnTiles(new Str
 var chica = entities.createCharacter("characters/chica").setSpawnTiles(new String[]{"#id:chicaSpawn"});
 var foxy = entities.createCharacter("characters/foxy").setSpawnTiles(new String[]{"#id:foxySpawn"});
 
-var freddyBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
-	getWaypoints() { return waypoints; }
-	
-	getTarget() {
-		return null;
-	}
-}).build();
+var freddyBrain = entities.createBrain()
+		.setStates(null)
+		.setResponder(new BotBrain.Responder() {
+			getWaypoints() { return waypoints; }
+		}).build();
 
-var bonnieBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
-	getWaypoints() { return waypoints; }
-	
-	getTarget() {
-		return null;
-	}
-}).build();
+var bonnieBrain = entities.createBrain()
+		.setStates(null)
+		.setResponder(new BotBrain.Responder() {
+			getWaypoints() { return waypoints; }
+		}).build();
 
-var chicaBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
-	getWaypoints() { return waypoints; }
-	
-	getTarget() {
-		return null;
-	}
-}).build();
+var chicaBrain = entities.createBrain()
+		.setStates(null)
+		.setResponder(new BotBrain.Responder() {
+			getWaypoints() { return waypoints; }
+		}).build();
 
-var foxyBrain = entities.createBrain().setResponder(new BotBrain.Responder() {
-	getWaypoints() { return waypoints; }
-	
-	getTarget() {
-		return null;
-	}
-}).build();
+var foxyBrain = entities.createBrain()
+		.setStates(null)
+		.setResponder(new BotBrain.Responder() {
+			getWaypoints() { return waypoints; }
+		}).build();
 
 freddy.create();
 bonnie.create();
@@ -226,7 +218,7 @@ game.setListener(new GameListener() {
 		fanSound.setPosition(24, -14);
 		fanSound.setDistance(12);
 		fanSound.setLooping(true);
-		fanSound.setVolume(0.25f);
+		fanSound.setVolume(0.1f);
 		fanSound.play();
 
 		lightSound = createMusic("music/light.wav");

@@ -1,7 +1,6 @@
 package com.mrboomdev.platformer.script.bridge;
 
 import androidx.annotation.NonNull;
-
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
@@ -29,10 +28,20 @@ public class GameBridge {
 	
 	public void callListener(Function function) {
 		if(listener == null) return;
-		switch(function) {
-			case START: listener.start(); break;
-			case BUILD: listener.build(); break;
-			case END: listener.end(); break;
+		try {
+			switch(function) {
+				case START:
+					listener.start();
+					break;
+				case BUILD:
+					listener.build();
+					break;
+				case END:
+					listener.end();
+					break;
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

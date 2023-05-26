@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.PopupMenu;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
@@ -25,7 +27,7 @@ import java.io.InputStream;
 public class PackWidget {
 	
 	public static class DialogPackWidget extends AndroidDialog.Field {
-		private PackData.Manifest data;
+		private final PackData.Manifest data;
 		private LinearLayout view;
 		private TextView isActive;
 		
@@ -39,7 +41,7 @@ public class PackWidget {
 				view = new LinearLayout(activity);
 				view.setClickable(true);
 				view.setFocusable(true);
-				view.setBackground(ActivityManager.current.getDrawable(R.drawable.light_ripple_background));
+				view.setBackground(AppCompatResources.getDrawable(activity, R.drawable.light_ripple_background));
 				var icon = new ImageView(activity);
 				var iconParams = new LayoutParams(70, 70);
 				iconParams.setMargins(0, 0, 20, 0);
@@ -55,7 +57,7 @@ public class PackWidget {
 						e.printStackTrace();
 					}
 				} else {
-					icon.setImageDrawable(ActivityManager.current.getDrawable(R.drawable.pack_icon_missing));
+					icon.setImageDrawable(AppCompatResources.getDrawable(activity, R.drawable.pack_icon_missing));
 				}
 				view.addView(icon);
 				var info = new LinearLayout(activity);
@@ -79,7 +81,7 @@ public class PackWidget {
 				}
 				if(data.author != null) {
 					var author = new TextView(activity);
-					author.setText("Made by:  " + data.author.name);
+					author.setText(activity.getResources().getText(R.string.made_by, data.author.name));
 					header.addView(author);
 				}
 				var params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);

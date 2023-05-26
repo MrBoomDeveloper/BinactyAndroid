@@ -2,7 +2,7 @@
 	"tiles": {
 		"wall": {
 			"texture": "tiles/atlas_1.png", "size": [2, 4], "region": [42, 97, 16, 26],
-			"collision": [2, 3, 0, -1], "shadow_collision": [2, 0.8, 0, 3.2]
+			"collision": [2, 2.9, 0, -0.9], "shadow_collision": [2, 0.8, 0, 3.2]
 		},
 	
 		"wallSide": {
@@ -11,12 +11,12 @@
 		},
 	
 		"floor": {
-			"texture": "tiles/atlas_1.png", "size": [2, 2], "region": [196, 110, 18, 18]
+			"texture": "tiles/atlas_1.png", "size": [2, 2], "region": [186, 110, 18, 18]
 		},
 	
 		"guardTable": {
-			"texture": "tiles/atlas_1.png", "size": [4, 2], "region": [189, 1, 66, 32],
-			"collision": [4, 1.2, 0, -0.3]
+			"texture": "tiles/atlas_1.png", "size": [5.06, 3.25], "region": [99, 29, 81, 52],
+			"collision": [5.06, 2.5, 0, -0.2]
 		},
 	
 		"pirateBay": {
@@ -25,12 +25,12 @@
 		},
 	
 		"guardChair": {
-			"texture": "tiles/atlas_1.png", "size": [1, 1.5], "region": [176, 29, 12, 18],
-			"collision": [1, 0.75, 0, -0.75]
+			"texture": "tiles/atlas_1.png", "size": [1, 1.5], "region": [146, 82, 12, 18],
+			"collision": [1, 0.5, 0, -0.5]
 		},
 	
 		"chair": {
-			"texture": "tiles/atlas_1.png", "size": [1, 1.5], "region": [247, 111, 8, 16],
+			"texture": "tiles/atlas_1.png", "size": [1, 1.5], "region": [237, 111, 8, 16],
 			"collision": [1, 0.7, 0, -0.8]
 		},
 	
@@ -50,7 +50,7 @@
 		},
 	
 		"gift": {
-			"texture": "tiles/atlas_1.png", "size": [0.7, 0.8], "region": [89, 111, 7, 9],
+			"texture": "tiles/atlas_1.png", "size": [0.7, 0.8], "region": [89, 119, 7, 9],
 			"collision": [0.7, 0.4, 0, -0.2]
 		},
 	
@@ -78,16 +78,33 @@
 		},
 	
 		"gameMachine": {
-			"texture": "tiles/atlas_1.png", "size": [1.8, 3], "region": [165, 29, 10, 20],
+			"texture": "tiles/atlas_1.png", "size": [1.8, 3], "region": [159, 82, 10, 20],
 			"collision": [1.8, 2, 0, -1],
 			"light": {
 				"distance": 2, "offset": [0, 0],
 				"color": { "values": [1, 1, 1, 0.9] }
 			}
 		},
+		
+		"gameMachineSide": {
+			"texture": "tiles/atlas_1.png", "size": [1.6, 3], "region": [159, 82, 21, 41],
+			"collision": [1.6, 1.6, 0, -1.1],
+			"light": {
+				"distance": 2, "offset": [0.5, 0],
+				"color": { "values": [1, 1, 1, 0.6] }
+			},
+			
+			"style": {
+				"types": {
+					"default": { "region": [11, 0, 10, 20] },
+					"rich": { "region": [0, 21, 10, 20] },
+					"future": { "region": [11, 21, 10, 20] }
+				}
+			}
+		},
 	
 		"table": {
-			"texture": "tiles/atlas_1.png", "size": [2, 4.5], "region": [150, 29, 14, 32],
+			"texture": "tiles/atlas_1.png", "size": [2, 4.5], "region": [189, 1, 14, 32],
 			"collision": [2, 4, 0, -0.5]
 		},
 	
@@ -106,10 +123,11 @@
 		},
 	
 		"poster": {
-			"texture": "tiles/atlas_1.png", "region": [191, 34, 64, 76],
+			"texture": "tiles/atlas_1.png", "region": [181, 34, 64, 76],
 			"interaction": {
 				"timeout": 0.2, "selectable": true, "range": [1, 1]
 			},
+			
 			"style": {
 				"types": {
 					"default": { "region": [0, 0, 22, 33], "size": [1.1, 1.4] },
@@ -129,7 +147,7 @@
 		},
 		
 		"hat": {
-			"texture": "tiles/atlas_1.png", "size": [0.4, 0.5], "region": [215, 110, 31, 18],
+			"texture": "tiles/atlas_1.png", "size": [0.4, 0.5], "region": [205, 110, 31, 18],
 			"style": {
 				"types": {
 					"default": { "region": [8, 0, 7, 8] },
@@ -155,7 +173,7 @@
 		},
 	
 		"star": {
-			"texture": "tiles/atlas_1.png", "size": [0.4, 1], "region": [95, 34, 15, 32]
+			"texture": "tiles/atlas_1.png", "size": [0.4, 1], "region": [93, 82, 15, 32]
 		},
 		
 		"coke": {
@@ -221,8 +239,8 @@
 		},
 		
 		"toilet": {
-			"texture": "tiles/atlas_1.png", "size": [2.8, 3.2], "region": [63, 34, 23, 36],
-			"collision": [2.8, 3.2, 0, 0]
+			"texture": "tiles/atlas_1.png", "size": [2.6, 3.2], "region": [63, 34, 23, 36],
+			"collision": [2.6, 3.2, 0, 0]
 		}
 	}
 }

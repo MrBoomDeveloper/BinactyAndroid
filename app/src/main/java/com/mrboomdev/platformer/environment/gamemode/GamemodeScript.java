@@ -1,6 +1,5 @@
 package com.mrboomdev.platformer.environment.gamemode;
 
-import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction.*;
 import java.util.ArrayList;
 import java.util.List;
 

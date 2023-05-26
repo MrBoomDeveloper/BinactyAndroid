@@ -113,7 +113,7 @@ public class GamemodeManager {
 			.toPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - game.settings.screenInset)
 			.addTo(stage);
 		
-		fade = new FadeWidget(script.options.initialFade).addTo(stage);
+		fade = new FadeWidget(0).addTo(stage);
 		
 		title = new TextWidget("title.ttf").setOpacity(0)
 			.toPosition(new Vector2(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f + 50))

@@ -193,7 +193,17 @@ public class EditorScreen {
 					}
 
 					var dialog = new AndroidDialog().setTitle("Saved successfully!");
+
+					var message = new StringBuilder("Everything is ok! ");
+					message.append("You can continue working! ");
+					if(game.mapFile.source == FileUtil.Source.INTERNAL) {
+						message.append("Warning! This pack is placed in the internal files of the game, ");
+						message.append("so you won't see any changes after reopen. ");
+						message.append("Instead we saved your map in '");
+						message.append(FileUtil.external("exportedMap.json").getFullPath(false)).append("'");
+					}
 					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Everything is ok, you can continue."));
+
 					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> dialog.close())).addSpace(30);
 					dialog.show();
 				} catch(Exception e) {

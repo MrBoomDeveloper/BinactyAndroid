@@ -50,6 +50,7 @@ public class GameHolder extends Game {
 			files.loadToManager(assets, "LOADING");
 			files.loadToManager(assets, "LOBBY");
 		} catch(IOException e) {
+			LogUtil.crash("Failed to load resources", "It looks, that the internal loader list was broken.", e);
 			e.printStackTrace();
 		}
 		

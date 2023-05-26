@@ -1,5 +1,9 @@
 package com.mrboomdev.platformer.scenes.loading;
 
+import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.MAP;
+import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.PREPARING;
+import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.RESOURCES;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,10 +15,10 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
-import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.*;
-
 import com.mrboomdev.platformer.util.helper.BoomException;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Moshi;
+
 import java.io.IOException;
 
 public class LoadingScreen extends CoreScreen {
@@ -62,7 +66,7 @@ public class LoadingScreen extends CoreScreen {
 					}).create();
 					loadStep = MAP;
 				} catch(Exception e) {
-					game.launcher.exit(GameLauncher.Status.CRASH);
+					LogUtil.crash("Failed to create the environment", "", e);
 					e.printStackTrace();
 				}
                 break;
@@ -75,12 +79,10 @@ public class LoadingScreen extends CoreScreen {
 
     @Override
     public void render(float delta) {
-        batch.begin();
-		{
+		batch.begin(); {
 			banner.draw(batch);
 			font.draw(batch, getStatus(), 50, 75);
-		}
-        batch.end();
+		} batch.end();
 		
 		if(game.assets.update(17) && game.externalAssets.update(17) && loadStep == RESOURCES) {
 			if(loadScene != LoadScene.GAMEPLAY) return;

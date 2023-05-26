@@ -22,6 +22,7 @@ class ParticleEffect {
             val particle = iterator.next()
             val sprite = Sprite(preset.animation.getKeyFrame(particle.progress, false))
             sprite.setFlip(particle.flip, false)
+            sprite.setAlpha(.75f)
             sprite.setCenter(particle.position.x, particle.position.y)
             sprite.draw(batch)
             particle.progress += Gdx.graphics.deltaTime

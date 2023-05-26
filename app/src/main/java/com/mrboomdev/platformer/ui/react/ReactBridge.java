@@ -1,5 +1,9 @@
 package com.mrboomdev.platformer.ui.react;
 
+import android.content.Intent;
+
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -14,23 +18,24 @@ import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
-import android.content.Intent;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+@SuppressWarnings("unused")
 public class ReactBridge extends ReactContextBaseJavaModule {
     public ReactBridge(ReactApplicationContext context) {
         super(context);
     }
 
-    @Override
+    @NonNull
+	@Override
     public String getName() {
         return "GameNative";
     }
 	
 	@ReactMethod
-	public void setKey(String type, String key, String value) {
+	public void setKey(@NonNull String type, String key, String value) {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		switch(type) {
 			case "string":
@@ -49,7 +54,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void getKey(String type, String key, Promise promise) {
+	public void getKey(@NonNull String type, String key, Promise promise) {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		switch(type) {
 			case "string":
@@ -68,7 +73,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void getKeys(ReadableArray keys, Promise promise) {
+	public void getKeys(@NonNull ReadableArray keys, Promise promise) {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		WritableArray result = Arguments.createArray();
 		for(int i = 0; i < keys.size(); i++) {
@@ -100,7 +105,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
     @ReactMethod
-    public void getPlayerData(String nick, Promise promise) {
+    public void getPlayerData(String nick, @NonNull Promise promise) {
         WritableMap data = Arguments.createMap();
 		data.putString("nick", "Unknown");
         data.putString("avatar", "error");
@@ -158,7 +163,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void getMissions(Promise promise) {
+	public void getMissions(@NonNull Promise promise) {
 		WritableArray missions = Arguments.createArray();
 		WritableMap mission = Arguments.createMap();
 		mission.putString("name", "Find The Capybara");

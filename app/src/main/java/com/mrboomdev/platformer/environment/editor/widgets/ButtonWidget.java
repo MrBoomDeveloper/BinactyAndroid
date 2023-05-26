@@ -11,17 +11,17 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ButtonWidget extends ActorUtil {
-	private GameHolder game = GameHolder.getInstance();
-	private Sprite sprite;
-	private ShapeRenderer shape;
-	private BitmapFont font;
-	private GlyphLayout glyph;
+	private final Sprite sprite;
+	private final ShapeRenderer shape;
+	private final BitmapFont font;
+	private final GlyphLayout glyph;
 	
 	public ButtonWidget(Sprite sprite, String title) {
 		this.sprite = new Sprite(sprite);
 		this.shape = new ShapeRenderer();
 		this.setSize(100, 100);
 		this.sprite.setSize(getWidth(), getHeight());
+		GameHolder game = GameHolder.getInstance();
 		this.font = game.assets.get("buttonWhite.ttf");
 		this.glyph = new GlyphLayout();
 		this.glyph.setText(font, title, Color.WHITE, 90, Align.left, true);

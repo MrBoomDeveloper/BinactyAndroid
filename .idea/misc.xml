@@ -1,9 +1,19 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectResources">
+    <resource url="http://schemas.android.com/apk/res/android" location="" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="jsonEditor">
+    <option name="stateMap">
+      <map>
+        <entry key="PlatformerReact" value="{&#10;&#9;&quot;initial&quot;: &quot;sleep&quot;,&#10;&#9;&quot;states&quot;: {&#10;&#9;&#9;&quot;sleep&quot;: {&#10;&#9;&#9;&#9;&quot;transitions&quot;: [&#10;&#10;&#9;&#9;&#9;]&#10;&#9;&#9;}&#10;&#9;}&#10;}" />
+      </map>
+    </option>
   </component>
 </project>

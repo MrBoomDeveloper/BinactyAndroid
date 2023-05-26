@@ -5,15 +5,15 @@ import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.DON
 import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.LOADING_GAMEMODE_RESOURCES;
 import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.PREPARING;
 
-import com.badlogic.gdx.Gdx;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -37,19 +37,19 @@ public class EnvironmentCreator {
 			try {
 				Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
 				JsonAdapter<MapManager> adapter = moshi.adapter(MapManager.class);
-				manager.map = adapter.fromJson(game.mapFile.readString(true)).build(manager.world, game.mapFile, () -> loadGamemode());
+				manager.map = adapter.fromJson(game.mapFile.readString(true));
+				if(manager.map == null) throw new BoomException("Null map file");
+				manager.map.build(manager.world, game.mapFile, this::loadGamemode);
 				status = BUILDING_MAP;
 			} catch(Exception e) {
-				e.printStackTrace();
-				Gdx.files.external("crash.txt").writeString("Crashed while starting building the map.\n" + e.getMessage(), false);
-				game.launcher.exit(GameLauncher.Status.CRASH);
+				LogUtil.crash("Failed to build a map", "It looks, that some files were corrupted.", e);
 			}
 		}).start();
 		return this;
 	}
 	
 	private void loadGamemode() {
-		manager.entities = new EntityManager(manager.world);
+		manager.entities = new EntityManager();
 		try {
 			Moshi moshi = new Moshi.Builder().build();
 			JsonAdapter<GamemodeScript> adapter = moshi.adapter(GamemodeScript.class);
@@ -60,9 +60,7 @@ public class EnvironmentCreator {
 				});
 			this.status = LOADING_GAMEMODE_RESOURCES;
 		} catch(Exception e) {
-			e.printStackTrace();
-			Gdx.files.external("crash.txt").writeString("Crashed while starting the gamemode.\n" + e.getMessage(), false);
-			game.launcher.exit(GameLauncher.Status.CRASH);
+			LogUtil.crash("Failed to start the gamemode", "It looks, that some files were corrupted.", e);
 		}
 	}
 	

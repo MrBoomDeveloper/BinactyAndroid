@@ -31,8 +31,6 @@ public class Item {
                 break;
 
             case USE:
-                break;
-
             case PUNCH:
                 projectiles.attack(power);
                 break;
@@ -75,6 +73,12 @@ public class Item {
 
     public static class Attack {
         public AttackType type;
+    }
+
+    public enum UseAnimation {
+        @Json(name = "shake") SHAKE,
+        @Json(name = "none") NONE,
+        @Json(name = "throw") THROW
     }
 
     public enum AttackType {

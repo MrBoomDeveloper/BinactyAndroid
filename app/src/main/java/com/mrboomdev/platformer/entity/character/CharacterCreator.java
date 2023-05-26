@@ -6,6 +6,7 @@ import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.environment.map.MapEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 
+@SuppressWarnings("unused")
 public class CharacterCreator {
 	public CharacterEntity entity;
 	private final GameHolder game = GameHolder.getInstance();

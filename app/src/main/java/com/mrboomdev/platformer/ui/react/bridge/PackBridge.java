@@ -1,32 +1,28 @@
 package com.mrboomdev.platformer.ui.react.bridge;
 
 import android.content.Intent;
-import android.widget.Toast;
-import com.facebook.react.bridge.Promise;
+
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.game.pack.PackWidget;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
-import com.mrboomdev.platformer.util.io.FileUtil;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
-import com.squareup.moshi.Types;
-import java.io.IOException;
-import java.util.List;
 
+@SuppressWarnings("unused")
 public class PackBridge extends ReactContextBaseJavaModule {
 	
 	public PackBridge(ReactApplicationContext context) {
         super(context);
     }
 
-    @Override
+    @NonNull
+	@Override
     public String getName() {
 		return "PackBridge";
 	}

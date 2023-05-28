@@ -20,7 +20,6 @@ class AudioUtil {
                     val resultVolume = JavaAudioUtil.getVolume(
                             audio.position, audio.distance) * audio.volume * JavaAudioUtil.musicVolume
 
-                    if(resultVolume <= 0) continue
                     audio.music?.volume = resultVolume
                 }
             }

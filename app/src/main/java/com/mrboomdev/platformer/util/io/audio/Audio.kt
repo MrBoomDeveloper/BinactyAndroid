@@ -37,8 +37,11 @@ class Audio {
     }
 
     fun play(): Audio {
-        AudioUtil.update()
+        if(position != null) {
+            setPosition(position!!.x, position!!.y)
+        }
         isStopped = false
+        AudioUtil.update()
         music?.play()
         music?.volume = volume
         music?.isLooping = isLooping

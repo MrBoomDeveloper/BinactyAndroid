@@ -34,9 +34,9 @@ public class LoadingScreen extends CoreScreen {
     public LoadingScreen(LoadScene scene) {
         this.loadScene = scene;
         this.batch = new SpriteBatch();
-        this.banner = new Sprite(game.assets.get("packs/fnaf/src/banner.png", Texture.class));
-        this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        this.banner.setCenter((float)Gdx.graphics.getWidth() / 2, (float)Gdx.graphics.getHeight() / 2);
+        this.banner = new Sprite(game.assets.get("packs/official/src/images/banner.jpg", Texture.class));
+		this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		this.banner.setCenter((float)Gdx.graphics.getWidth() / 2, (float)Gdx.graphics.getHeight() / 2);
 		this.font = game.assets.get("loading.ttf", BitmapFont.class);
     }
 
@@ -92,12 +92,9 @@ public class LoadingScreen extends CoreScreen {
 	
 	private String getStatus() {
 		switch(loadStep) {
-			case MAP:
-				return environmentCreator.getStatus();
-			case RESOURCES:
-				return "Loading resources...";
-			default:
-				return "Preparing...";
+			case MAP: return environmentCreator.getStatus();
+			case RESOURCES: return "Loading resources...";
+			default: return "Preparing...";
 		}
 	}
     

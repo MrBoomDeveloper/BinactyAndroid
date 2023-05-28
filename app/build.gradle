@@ -114,6 +114,7 @@ dependencies {
 	
 	/* React Native */
 	implementation "com.facebook.react:react-android"
+	implementation "com.facebook.react:hermes-android"
 	//noinspection GradleDynamicVersion
 	implementation "org.webkit:android-jsc:+"
 	
@@ -200,3 +201,5 @@ task run(type: Exec) {
 }
 
 eclipse.project.name = "Platformer" + "-android"
+//apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
+//applyNativeModulesAppBuildGradle(project)

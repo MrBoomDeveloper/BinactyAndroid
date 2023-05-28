@@ -6,10 +6,21 @@
 			{
 				"id": "723e7736-d6bd-11ed-afa1-0242ac120002",
 				"name": "Five Nights at Freddy's",
+				"banner": "src/banner.png",
 				"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food!",
+
+				"match": {
+					"max_players": 1,
+					"duration": "6:00"
+				},
+
+				"entry": {
+					"file": { "path": "gamemode.java" },
+					"engine": "beanshell", "version": 1
+				},
+
 				"maxPlayers": 1,
 				"time": "6:00",
-				"banner": "src/banner.png",
 				"type": "match",
 				"file": { "path": "gamemode.java" },
 				"maps": [{

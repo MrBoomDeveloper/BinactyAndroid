@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.widget.Toast;
@@ -9,6 +10,7 @@ import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.ui.react.ReactActivity;
 
 public class ActivityManager {
+	@SuppressLint("StaticFieldLeak")
 	public static Activity current;
 	public static MediaPlayer media;
 	public static ReactActivity reactActivity;
@@ -16,7 +18,7 @@ public class ActivityManager {
 	public static void startMusic() {
 		stopMusic();
 		media = MediaPlayer.create(current, R.raw.lobby_theme);
-		setVolume(current.getSharedPreferences("Save", 0).getInt("musicVolume", 100) / 100);
+		setVolume(current.getSharedPreferences("Save", 0).getInt("musicVolume", 100) / 100f);
 		media.setLooping(true);
 		media.start();
 	}

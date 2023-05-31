@@ -15,7 +15,7 @@ public class ItemInventory {
 	}
 	
 	public boolean add(Item newItem) {
-		var existingItem = items.select(foundItem -> foundItem.name.equals(newItem));
+		var existingItem = items.select(foundItem -> foundItem.name.equals(newItem.name));
 		if((existingItem == null) || (items.size < capacity)) {
 			items.add(newItem);
 			return true;

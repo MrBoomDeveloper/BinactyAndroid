@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.mrboomdev.platformer.entity.EntityAbstract;
+import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileAttack.AttackStats;
 import com.mrboomdev.platformer.util.AudioUtil;
@@ -19,9 +19,9 @@ public class ProjectileManager {
 	private final Array<ProjectileBullet> bullets = new Array<>();
 	private final Array<ProjectileAttack> attacks = new Array<>();
 	public float reloadProgress, delayProgress, attackDelayProgress;
-	public EntityAbstract owner;
+	public CharacterEntity owner;
 	
-	public ProjectileManager(World world, EntityAbstract owner) {
+	public ProjectileManager(World world, CharacterEntity owner) {
 		this.world = world;
 		this.owner = owner;
     }

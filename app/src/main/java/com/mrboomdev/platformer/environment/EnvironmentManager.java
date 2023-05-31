@@ -40,6 +40,7 @@ public class EnvironmentManager {
 		var particlesDir = FileUtil.internal("packs/official/src/particles");
 		particles = new ParticleManager(world);
 		particles.loadParticle(particlesDir.goTo("dust"), "__dust");
+		particles.loadParticle(particlesDir.goTo("tiny_boom"), "__tiny_boom");
 	}
 	
 	public void render(SpriteBatch batch) {

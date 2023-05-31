@@ -1,11 +1,13 @@
 package com.mrboomdev.platformer.entity.item;
 
 import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.character.CharacterSkin;
+import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileManager;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -22,11 +24,20 @@ public class Item {
     public FileUtil source;
     @Json(ignore = true)
     private Sprite sprite;
+    @Json(ignore = true)
+    private final GameHolder game = GameHolder.getInstance();
 
     public void attack(Vector2 power, ProjectileManager projectiles) {
         switch(attack.type) {
             case THROW_CHILD:
                 CameraUtil.addCameraShake(.1f, .1f);
+
+                var owner = projectiles.owner;
+                boolean isFlip = owner.getDirection().isBackward();
+                game.environment.particles.createParticle("__tiny_boom",
+                        getOffset(owner.skin).scl(isFlip ? -1 : 1, 1).add(owner.getPosition()),
+                        isFlip);
+
                 projectiles.shoot(power);
                 break;
 

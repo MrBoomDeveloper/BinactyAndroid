@@ -27,6 +27,7 @@ import com.squareup.moshi.Json;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CharacterSkin {
 	@Json(name = "animations") Map<Entity.AnimationType, Entity.Animation> animationsJson;
@@ -60,7 +61,7 @@ public class CharacterSkin {
 		var activeAnimation = animations.get(currentAnimation);
 		animationProgress += Gdx.graphics.getDeltaTime();
 		
-		sprite = new Sprite(activeAnimation.getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL).sprite);
+		sprite = new Sprite(Objects.requireNonNull(activeAnimation).getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL).sprite);
 		sprite.setSize(
 			direction.isForward() ? sprite.getWidth() : -sprite.getWidth(),
 			sprite.getHeight());
@@ -84,7 +85,7 @@ public class CharacterSkin {
 	
 	public Entity.Frame getCurrentFrame() {
 		var activeAnimation = animations.get(currentAnimation);
-		return activeAnimation.getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL);
+		return Objects.requireNonNull(activeAnimation).getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL);
 	}
 	
 	public CharacterSkin build(@NonNull FileUtil source) {

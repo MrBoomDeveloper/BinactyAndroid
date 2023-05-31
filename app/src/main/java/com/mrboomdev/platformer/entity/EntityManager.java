@@ -5,11 +5,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.item.Item;
-import com.mrboomdev.platformer.environment.path.PathGraph;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Moshi;
+
+import java.util.Objects;
 
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
@@ -17,7 +18,6 @@ import box2dLight.RayHandler;
 public class EntityManager {
 	public ObjectMap<String, CharacterEntity> presets = new ObjectMap<>();
 	public ObjectMap<String, Item> itemPresets = new ObjectMap<>();
-	public ObjectMap<CharacterEntity, PathGraph> graphs = new ObjectMap<>();
 	public Array<CharacterEntity> characters = new Array<>();
 	public PointLight mainLight;
 	private RayHandler rayHandler;
@@ -42,7 +42,7 @@ public class EntityManager {
 			Moshi moshi = new Moshi.Builder().build();
 			var adapter = moshi.adapter(Item.class);
 			var item = adapter.fromJson(file.goTo("manifest.json").readString(true));
-			item.source = file;
+			Objects.requireNonNull(item).source = file;
 			itemPresets.put(id, item);
 		} catch(Exception e) {
 			LogUtil.crash("Failed to load a item", "Invalid config file.", e);
@@ -61,6 +61,7 @@ public class EntityManager {
 	public void render(SpriteBatch batch) {
 		for(CharacterEntity entity : characters) {
 			entity.drawProjectiles(batch);
+			entity.aimSprite.draw(batch);
 		}
 	}
 }

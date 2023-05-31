@@ -66,8 +66,21 @@ public class GameplayUi {
 			.toPosition(Gdx.graphics.getWidth() / 2f, game.settings.screenInset)
 			.addTo(stage));
 		
-		new JoystickWidget()
-			.onUpdate(power -> CameraUtil.setCameraOffset(power.x / 25, power.y / 25))
+		var aimJoystick = new JoystickWidget();
+		aimJoystick.onUpdate(power -> {
+				CameraUtil.setCameraOffset(power.x / 25, power.y / 25);
+				var player = game.settings.mainPlayer;
+				if(player == null) return;
+
+				var aimSprite = player.aimSprite;
+				if(aimJoystick.isActive) {
+					aimSprite.setAlpha(.5f);
+					var position = player.getPosition().add(power.scl(.2f));
+					aimSprite.setCenter(position.x, position.y);
+				} else {
+					aimSprite.setAlpha(0);
+				}
+			})
 			.onUse(power -> connectedEntity.attack(power))
 			.toPosition(Gdx.graphics.getWidth() - 225 - game.settings.screenInset, game.settings.screenInset)
 			.toSize(225, 225)

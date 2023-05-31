@@ -21,11 +21,9 @@
 				}
 			]
 		},
-		
+
 		"LOBBY": {
-			"load": [
-				{ "path": "audio/music/lobby_theme.mp3", "type": "music" }
-			]
+			"load": []
 		},
 		
 		"GAMEPLAY": {

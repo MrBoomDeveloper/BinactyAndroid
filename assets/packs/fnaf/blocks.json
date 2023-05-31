@@ -241,6 +241,20 @@
 		"toilet": {
 			"texture": "tiles/atlas_1.png", "size": [2.6, 3.2], "region": [63, 34, 23, 36],
 			"collision": [2.6, 3.2, 0, 0]
+		},
+		
+		"stageCarpet": {
+			"texture": "tiles/atlas_1.png", "size": [2, 4], "region": [204, 1, 19, 32]
+		},
+		
+		"pechka": {
+			"texture": "tiles/atlas_1.png", "size": [1.4, 2], "region": [132, 82, 13, 18],
+			"collision": [1.4, 2, 0, 0]
+		},
+		
+		"fridge": {
+			"texture": "tiles/atlas_1.png", "size": [1.5, 3], "region": [146, 101, 12, 22],
+			"collision": [1.5, 3, 0, 0]
 		}
 	}
 }

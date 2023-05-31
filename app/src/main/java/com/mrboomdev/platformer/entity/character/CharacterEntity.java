@@ -43,6 +43,7 @@ public class CharacterEntity extends EntityAbstract {
 	public CharacterSkin skin;
 	@Json(name = "body") public CharacterBody worldBody;
 	@Json(ignore = true) public String name;
+	@Json(ignore = true) public Sprite aimSprite;
 	@Json(ignore = true) public ItemInventory inventory;
 	@Json(ignore = true) public Fixture bottomFixture;
 	@Json(ignore = true) public CharacterBrain brain;
@@ -76,6 +77,10 @@ public class CharacterEntity extends EntityAbstract {
 		
 		shadow = new Sprite(game.assets.get("world/effects/shadow.png", Texture.class));
 		shadow.setAlpha(.75f);
+
+		aimSprite = new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 17, 33, 14, 14);
+		aimSprite.setSize(.5f, .5f);
+		aimSprite.setAlpha(0);
 		
 		healthPhantom = stats.health;
 		stats.maxHealth = stats.health;
@@ -163,7 +168,7 @@ public class CharacterEntity extends EntityAbstract {
 		shadow.draw(batch);
 		skin.draw(batch, getPosition(), getDirection(), this);
 		inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
-		
+
 		//drawDebug(batch);
 	}
 
@@ -210,10 +215,11 @@ public class CharacterEntity extends EntityAbstract {
 	public void attack(Vector2 power) {
 		if(isDead) return;
 		if(inventory.items.size > inventory.current) {
-			inventory.getCurrentItem().attack(power, projectileManager);
+			inventory.getCurrentItem().attack(power.scl(.2f), projectileManager);
 			return;
 		}
-		projectileManager.attack(power);
+
+		projectileManager.attack(power.scl(.2f));
 	}
 	
 	public void interact() {

@@ -22,6 +22,8 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
 public class ReactBridge extends ReactContextBaseJavaModule {
     public ReactBridge(ReactApplicationContext context) {
@@ -88,13 +90,15 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 			if(was.hasKey("max")) newMap.putInt("max", was.getInt("max"));
 			if(was.hasKey("description")) newMap.putString("description", was.getString("description"));
 			
-			switch(was.getString("type")) {
+			switch(Objects.requireNonNullElse(was.getString("type"), "string")) {
 				case "string":
 					newMap.putString("initial", prefs.getString(key, was.getString("initial")));
 					break;
+
 				case "number":
 					newMap.putInt("initial", prefs.getInt(key, was.getInt("initial")));
 					break;
+
 				case "boolean":
 					newMap.putBoolean("initial", prefs.getBoolean(key, was.getBoolean("initial")));
 					break;
@@ -215,7 +219,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     
     @ReactMethod
     public void play(ReadableMap data) {
-		var activity = (ReactActivity)ActivityManager.current;
+		var activity = ActivityManager.reactActivity;
 		if(activity.isGameStarted) return;
 		activity.isGameStarted = true;
 		Intent intent = new Intent(activity, GameLauncher.class);

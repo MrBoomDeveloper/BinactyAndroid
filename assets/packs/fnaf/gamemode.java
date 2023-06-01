@@ -265,7 +265,7 @@ void powerUpdate() {
 		checkIfNoPower();
 		powerUpdate();
 		uiUpdate();
-	}}, 6 / usage);
+	}}, 4f / usage);
 }
 
 void uiUpdate() {

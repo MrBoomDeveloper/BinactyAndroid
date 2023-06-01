@@ -52,7 +52,12 @@ public class AppBridge extends ReactContextBaseJavaModule {
 				break;
 			}
 			case "guest": {
-				ActivityManager.reactActivity.prefs.edit().putBoolean("isSignedIn", true).putString("signedInMethod", "guest").apply();
+				ActivityManager.reactActivity.prefs.edit()
+						.putBoolean("isSignedIn", true)
+						.putString("signedInMethod", "guest")
+						.apply();
+
+				ActivityManager.forceExit();
 				break;
 			}
 		}
@@ -68,9 +73,9 @@ public class AppBridge extends ReactContextBaseJavaModule {
 		var prefs = ActivityManager.reactActivity.prefs;
 		WritableMap data = Arguments.createMap();
 		data.putString("nick", prefs.getString("nick", "Player"));
-    	data.putString("avatar", prefs.getString("avatar", "klarrie"));
-   	 data.putInt("level", 1);
-   	 data.putInt("progress", 0);
+		data.putString("avatar", prefs.getString("avatar", "klarrie"));
+		data.putInt("level", 1);
+		data.putInt("progress", 0);
         promise.resolve(data);
 	}
 	

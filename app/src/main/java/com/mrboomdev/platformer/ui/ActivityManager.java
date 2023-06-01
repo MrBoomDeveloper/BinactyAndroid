@@ -9,6 +9,9 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.ui.react.ReactActivity;
 
+import java.util.Objects;
+
+@SuppressLint("VisibleForTests")
 public class ActivityManager {
 	@SuppressLint("StaticFieldLeak")
 	public static Activity current;
@@ -16,6 +19,7 @@ public class ActivityManager {
 	public static ReactActivity reactActivity;
 	
 	public static void startMusic() {
+		if(reactActivity.isGameStarted) return;
 		stopMusic();
 		media = MediaPlayer.create(current, R.raw.lobby_theme);
 		setVolume(current.getSharedPreferences("Save", 0).getInt("musicVolume", 100) / 100f);
@@ -28,7 +32,7 @@ public class ActivityManager {
 	}
 	
 	public static void resumeMusic() {
-		if(media == null) return;
+		if(media == null || reactActivity.isGameStarted) return;
 		try {
 			media.start();
 		} catch(Exception e) {
@@ -61,19 +65,17 @@ public class ActivityManager {
 		reactActivity.isGameStarted = false;
 		var instance = reactActivity.reactInstance;
 		ReactContext context = instance.getCurrentReactContext();
-		context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("GameOver", null);
+		Objects.requireNonNull(context).getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("GameOver", null);
 	}
 	
 	public static void forceExit() {
 		reactActivity.isGameStarted = false;
 		var instance = reactActivity.reactInstance;
 		ReactContext context = instance.getCurrentReactContext();
-		context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ForceExit", null);
+		Objects.requireNonNull(context).getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ForceExit", null);
 	}
 	
 	public static void toast(String text, boolean isLong) {
-		current.runOnUiThread(() -> {
-			Toast.makeText(current.getApplication(), text, (isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show();
-		});
+		current.runOnUiThread(() -> Toast.makeText(current.getApplication(), text, (isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show());
 	}
 }

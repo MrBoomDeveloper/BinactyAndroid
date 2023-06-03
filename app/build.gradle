@@ -200,6 +200,6 @@ task run(type: Exec) {
 	commandLine "$adb", "shell", "am", "start", "-n", "com.mrboomdev.platformer/com.mrboomdev.platformer.GameDebugLauncher"
 }
 
-eclipse.project.name = "Platformer" + "-android"
+eclipse.project.name = "Binacty" + "-android"
 //apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
 //applyNativeModulesAppBuildGradle(project)

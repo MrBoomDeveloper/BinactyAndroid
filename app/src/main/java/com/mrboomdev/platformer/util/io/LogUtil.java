@@ -46,6 +46,7 @@ public class LogUtil {
 	
 	public enum Tag {
 		BOT("BotBrain"),
+		SCRIPT_API("BinactyApi"),
 		ANALYTICS("Analytics"),
 		ANIMATION("Animation"),
 		PLATFORM("Platform");

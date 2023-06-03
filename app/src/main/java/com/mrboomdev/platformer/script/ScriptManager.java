@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.script;
 
 import androidx.annotation.NonNull;
 
+import com.mrboomdev.binacty.api.entry.ScriptEntry;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.script.bridge.AudioBridge;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
@@ -22,20 +23,26 @@ public class ScriptManager {
 	public AudioBridge audioBridge;
 	public MapBridge mapBridge;
 	private Interpreter interpreter;
-	private ScriptRunner runner;
+	private ScriptEntry runner;
 
 	public ScriptManager(FileUtil source, String main, boolean isNative) {
 		if(isNative) {
 			try {
 				ClassLoader loader = new DexClassLoader(
 						source.getFullPath(true),
-						source.getParent().getFullPath(true),
+						source.getParent().goTo("cache").getFullPath(true),
 						null,
-						ScriptRunner.class.getClassLoader());
+						getClass().getClassLoader());
 
 				Class<?> mainClass = loader.loadClass(main);
-				runner = (ScriptRunner)mainClass.newInstance();
-				runner.create();
+				runner = (ScriptEntry) mainClass.newInstance();
+				runner.init(new ScriptClient());
+			} catch(IllegalAccessException e) {
+				handleException(e, "Required constructor has private access level. Please, make it public, so we can invoke it!");
+			} catch(ClassNotFoundException e) {
+				handleException(e, "Can't find script's Main! Check if you entered the correct path to it!");
+			} catch(ClassCastException e) {
+				handleException(e, "Main Entry doesn't implements ScriptEntry interface!");
 			} catch(Exception e) {
 				handleException(e);
 			}
@@ -43,7 +50,8 @@ public class ScriptManager {
 		}
 
 		if(GameHolder.getInstance().settings.playerName.equals("__class")) {
-			new ScriptManager(FileUtil.external("pack.jar"), "cn.com.iresearch.mapptracker.IRMonitor", true);
+			new ScriptManager(FileUtil.external("pack.jar"),
+					"com.mrboomdev.platformer.pack.cutiemarry.ScriptMain", true);
 		}
 
 		this.interpreter = new Interpreter();
@@ -89,12 +97,16 @@ public class ScriptManager {
 	}
 
 	public void triggerEnded() {
-		if(runner != null) runner.end();
+		if(runner != null) runner.finish();
 		if(interpreter != null) gameBridge.callListener(GameBridge.Function.END);
 	}
 	
 	private void handleException(@NonNull Throwable t) {
+		handleException(t, "It looks that something strange has happened and we don't know why ._.");
+	}
+
+	private void handleException(@NonNull Throwable t, String message) {
 		t.printStackTrace();
-		LogUtil.crash("Script error has occurred!", "It looks that something strange has happened and we don't know why ._.", t);
+		LogUtil.crash("Script error has occurred!", message, t);
 	}
 }

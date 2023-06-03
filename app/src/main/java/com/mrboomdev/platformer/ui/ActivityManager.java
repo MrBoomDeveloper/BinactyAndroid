@@ -11,9 +11,8 @@ import com.mrboomdev.platformer.ui.react.ReactActivity;
 
 import java.util.Objects;
 
-@SuppressLint("VisibleForTests")
+@SuppressLint({"VisibleForTests", "StaticFieldLeak"})
 public class ActivityManager {
-	@SuppressLint("StaticFieldLeak")
 	public static Activity current;
 	public static MediaPlayer media;
 	public static ReactActivity reactActivity;
@@ -28,7 +27,12 @@ public class ActivityManager {
 	}
 	
 	public static void setVolume(float volume) {
-		media.setVolume(volume, volume);
+		if(media == null) return;
+		try {
+			media.setVolume(volume, volume);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void resumeMusic() {

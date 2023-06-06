@@ -1,7 +1,5 @@
 package com.mrboomdev.platformer.projectile;
 
-import android.annotation.SuppressLint;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -30,8 +28,7 @@ public class ProjectileManager {
 		this.attackStats = attackStats;
 		return this;
 	}
-    
-    @SuppressLint("SuspiciousIndentation")
+
 	public void shoot(Vector2 power) {
 		if(delayProgress < .1f) return;
         bullets.add(new ProjectileBullet(world, owner, power));

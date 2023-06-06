@@ -1,7 +1,5 @@
 package com.mrboomdev.platformer.ui.react.bridge;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
@@ -10,10 +8,11 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
-import com.google.android.gms.auth.api.identity.GetSignInIntentRequest;
-import com.google.android.gms.auth.api.identity.Identity;
+import com.mrboomdev.platformer.online.Online;
+import com.mrboomdev.platformer.online.profile.AuthParams;
+import com.mrboomdev.platformer.online.profile.ProfileAuthentication;
 import com.mrboomdev.platformer.ui.ActivityManager;
-import com.mrboomdev.platformer.ui.android.AndroidDialog;
+import com.mrboomdev.platformer.util.helper.BoomException;
 
 @SuppressWarnings("unused")
 public class AppBridge extends ReactContextBaseJavaModule {
@@ -31,7 +30,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void signIn(@NonNull String method) {
 		switch(method) {
-			case "google": {
+			/*case "google": {
 				GetSignInIntentRequest request = GetSignInIntentRequest.builder()
 					.setServerClientId("125055915021-t440mrlf6u5k1lnfabh7srjblp7dertc.apps.googleusercontent.com")
 					.build();
@@ -51,6 +50,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 					});
 				break;
 			}
+
 			case "guest": {
 				ActivityManager.reactActivity.prefs.edit()
 						.putBoolean("isSignedIn", true)
@@ -59,13 +59,26 @@ public class AppBridge extends ReactContextBaseJavaModule {
 
 				ActivityManager.forceExit();
 				break;
+			}*/
+
+			case "name": {
+				var params = new AuthParams(ActivityManager.reactActivity)
+						.setConnectionId(AuthParams.ConnectionId.PUBLIC)
+						.setGameId(Online.PLAYERIO_GAMEID)
+						.setUserId("test_player");
+
+				ProfileAuthentication.auth(params, ActivityManager::forceExit);
+				break;
 			}
+
+			default: throw new BoomException("Currently unavailable.");
 		}
 	}
 	
 	@ReactMethod
 	public void isSignedIn(@NonNull Promise promise) {
-		promise.resolve(ActivityManager.reactActivity.prefs.getBoolean("isSignedIn", false));
+		promise.resolve(ProfileAuthentication.isLoggedIn());
+		//promise.resolve(ActivityManager.reactActivity.prefs.getBoolean("isSignedIn", false));
 	}
 	
 	@ReactMethod

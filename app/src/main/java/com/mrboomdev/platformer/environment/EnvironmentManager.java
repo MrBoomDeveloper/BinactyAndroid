@@ -41,6 +41,7 @@ public class EnvironmentManager {
 		particles = new ParticleManager(world);
 		particles.loadParticle(particlesDir.goTo("dust"), "__dust");
 		particles.loadParticle(particlesDir.goTo("tiny_boom"), "__tiny_boom");
+		particles.loadParticle(particlesDir.goTo("medium_boom"), "__medium_boom");
 	}
 	
 	public void render(SpriteBatch batch) {

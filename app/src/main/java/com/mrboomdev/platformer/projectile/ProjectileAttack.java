@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.projectile;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,26 +21,24 @@ import com.mrboomdev.platformer.entity.EntityAbstract;
 import com.mrboomdev.platformer.game.GameHolder;
 
 public class ProjectileAttack {
-	private Texture texture;
-	private Sprite sprite;
-	private Body body;
-	private Animation<TextureRegion> animation;
+	private final Sprite sprite;
+	public final Body body;
+	private final Animation<TextureRegion> animation;
 	private float animationProgress;
-	private World world;
-	private boolean isForward;
+	private final World world;
 	public EntityAbstract owner;
 	public boolean isEnded, isDead;
 	public AttackStats stats;
 	public Vector2 power;
 	
-	public ProjectileAttack(World world, EntityAbstract owner, AttackStats stats, Vector2 power) {
+	public ProjectileAttack(@NonNull World world, @NonNull EntityAbstract owner, AttackStats stats, @NonNull Vector2 power) {
 		this.world = world;
 		this.owner = owner;
 		this.stats = stats;
 		this.power = power;
 		
 		AssetManager assets = GameHolder.getInstance().assets;
-		texture = assets.get("world/effects/attack.png", Texture.class);
+		Texture texture = assets.get("world/effects/attack.png", Texture.class);
 		sprite = new Sprite(texture);
 		
 		TextureRegion[] animationFrames = new TextureRegion[]{
@@ -79,7 +79,7 @@ public class ProjectileAttack {
 		
 		animationProgress += Gdx.graphics.getDeltaTime();
 		sprite.set(new Sprite(animation.getKeyFrame(animationProgress)));
-		sprite.setSize(isForward ? .8f : -.8f, .8f);
+		sprite.setSize(-.8f, .8f);
 		sprite.setCenter(body.getPosition().x, body.getPosition().y);
 		sprite.draw(batch);
 	}

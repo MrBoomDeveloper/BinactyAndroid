@@ -14,6 +14,8 @@ import com.mrboomdev.platformer.game.pack.PackWidget;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
 public class PackBridge extends ReactContextBaseJavaModule {
 	
@@ -40,7 +42,7 @@ public class PackBridge extends ReactContextBaseJavaModule {
 		dialog.addAction(new AndroidDialog.Action().setText("Save and reload").setClickListener(button -> {
 			saveAndReload();
 			ReactContext context = ActivityManager.reactActivity.reactInstance.getCurrentReactContext();
-			context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
+			Objects.requireNonNull(context).getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
 			dialog.close();
 		}));
 		dialog.addAction(new AndroidDialog.Action().setText("Import").setClickListener(button -> {

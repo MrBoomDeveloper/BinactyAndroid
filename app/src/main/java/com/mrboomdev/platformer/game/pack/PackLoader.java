@@ -59,9 +59,14 @@ public class PackLoader {
 				if(rows == null) continue;
 				for(var row : rows) {
 					for(var gamemode : row.data) {
-						gamemode.source = pack.source.goTo(pack.resources.gamemodes).getParent();
-						gamemode.file = gamemode.source.goTo(gamemode.file.getPath());
 						gamemode.author = pack.author;
+						var entry = gamemode.entry;
+						gamemode.source = pack.source.goTo(pack.resources.gamemodes).getParent();
+						if(entry == null) {
+							gamemode.file = gamemode.source.goTo(gamemode.file.getPath());
+						} else {
+							entry.file = gamemode.source.goTo(gamemode.entry.file).getPath();
+						}
 					}
 				}
 				gamemodes.addAll(rows);

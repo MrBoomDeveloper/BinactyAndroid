@@ -1,14 +1,23 @@
 package com.mrboomdev.platformer.online.profile;
 
+import static com.mrboomdev.platformer.online.OnlineManager.playerIOClient;
+
 import androidx.annotation.NonNull;
+
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.online.Online;
 import com.mrboomdev.platformer.online.ResultData;
+import com.mrboomdev.platformer.util.io.LogUtil;
+import com.playerio.Client;
+import com.playerio.PlayerIO;
+import com.playerio.PlayerIOError;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -21,6 +30,39 @@ public class ProfileAuthentication {
 	
 	public ProfileAuthentication(OkHttpClient client) {
 		this.client = client;
+	}
+
+	public static boolean isLoggedIn() {
+		return playerIOClient != null;
+	}
+
+	public static void auth(@NonNull AuthParams params, Runnable authCallback) {
+		var map = new HashMap<String, String>() {{
+			put("userId", params.userId);
+		}};
+
+		PlayerIO.authenticate(
+				params.activity,
+				params.gameId,
+				params.connectionId.title, map,
+				null,
+				new com.playerio.Callback<>() {
+					@Override
+					public void onSuccess(Client client) {
+						playerIOClient = client;
+						authCallback.run();
+					}
+
+					@Override
+					public void onError(PlayerIOError e) {
+						String message = "ErrorCode: " +
+								e.errorCode.name() +
+								":" +
+								e.errorCode.value;
+
+						LogUtil.crash("Failed to Authenticate", message, e);
+					}
+				});
 	}
 	
 	public void signIn(String token, AuthCallback callback) {
@@ -58,14 +100,6 @@ public class ProfileAuthentication {
 				callback.onResult(ResultData.builder().setIsOK(false).setException(e).build(), null);
 			}
 		});
-	}
-	
-	public void link(String token) {
-		
-	}
-	
-	public void refreshToken() {
-		
 	}
 	
 	public static class AuthResponse {

@@ -22,7 +22,7 @@ public class PackData {
 	}
 	
 	public static class Author {
-		public String name, url, icon;
+		public String name, url;
 	}
 	
 	public static class Resources {
@@ -47,8 +47,14 @@ public class PackData {
 		public String id, name, description, time, banner, type;
 		public Author author;
 		public int maxPlayers;
-		public List<MapData> maps;
-		public FileUtil source, file;
+		@Deprecated public List<MapData> maps;
+		@Deprecated public FileUtil source, file;
+		public GamemodeEntry entry;
+	}
+
+	public static class GamemodeEntry {
+		public String engine, file, main;
+		public int version;
 	}
 	
 	public static class GamemodesRow {

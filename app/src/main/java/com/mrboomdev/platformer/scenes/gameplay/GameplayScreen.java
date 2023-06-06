@@ -14,7 +14,7 @@ import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
-import com.mrboomdev.platformer.projectile.ProjectileColission;
+import com.mrboomdev.platformer.projectile.ProjectileCollision;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -85,7 +85,7 @@ public class GameplayScreen extends CoreScreen {
 			game.launcher.exit(GameLauncher.Status.CRASH);
 		}
 		
-		environment.world.setContactListener(new ProjectileColission());
+		environment.world.setContactListener(new ProjectileCollision());
 		environment.setupRayHandler();
 		rayHandler = environment.rayHandler;
 		

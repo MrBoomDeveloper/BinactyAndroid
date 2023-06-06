@@ -15,6 +15,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
+import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
@@ -22,6 +23,7 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
+import java.io.IOException;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -141,23 +143,31 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 				if(gamemode.description != null) jsGamemode.putString("description", gamemode.description);
 				if(gamemode.banner != null) jsGamemode.putString("banner", gamemode.source.goTo(gamemode.banner).getFullPath(true));
 				if(gamemode.type == null) gamemode.type = "match";
-				switch(gamemode.type) {
+				switch(Objects.requireNonNullElse(gamemode.type, "match")) {
 					case "match": {
-						var jsMaps = Arguments.createArray();
-						for(var map : gamemode.maps) {
-							var jsMap = Arguments.createMap();
-							jsMap.putString("name", map.name);
-							jsMap.putString("author", map.author.name);
-							jsMap.putString("file", adapter.toJson(gamemode.source.goTo(map.file.getPath())));
-							jsMaps.pushMap(jsMap);
+						if(gamemode.maps != null) {
+							var jsMaps = Arguments.createArray();
+							for(var map : gamemode.maps) {
+								var jsMap = Arguments.createMap();
+								jsMap.putString("name", map.name);
+								jsMap.putString("author", map.author.name);
+								jsMap.putString("file", adapter.toJson(gamemode.source.goTo(map.file.getPath())));
+								jsMaps.pushMap(jsMap);
+							}
+							jsGamemode.putArray("maps", jsMaps);
 						}
-						jsGamemode.putArray("maps", jsMaps);
 						break;
 					}
 					case "story": {
 						break;
 					}
 				}
+
+				if(gamemode.entry != null) {
+					var entryAdapter = moshi.adapter(PackData.GamemodeEntry.class);
+					jsGamemode.putString("entry", entryAdapter.toJson(gamemode.entry));
+				}
+
 				jsData.pushMap(jsGamemode);
 			}
 			jsRow.putArray("data", jsData);
@@ -222,10 +232,27 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 		var activity = ActivityManager.reactActivity;
 		if(activity.isGameStarted) return;
 		activity.isGameStarted = true;
+
 		Intent intent = new Intent(activity, GameLauncher.class);
 		intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
-		intent.putExtra("gamemodeFile", data.getString("file"));
-		intent.putExtra("mapFile", data.getString("mapFile"));
+
+		if(data.hasKey("entry")) {
+			try {
+				var moshi = new Moshi.Builder().build();
+				var adapter = moshi.adapter(PackData.GamemodeEntry.class);
+				var entry = adapter.fromJson(Objects.requireNonNull(data.getString("entry")));
+				intent.putExtra("gamemodeFile", Objects.requireNonNull(entry).file);
+				intent.putExtra("engine", entry.engine);
+				intent.putExtra("version", entry.version);
+				intent.putExtra("main", entry.main);
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			intent.putExtra("gamemodeFile", data.getString("file"));
+			intent.putExtra("mapFile", data.getString("mapFile"));
+		}
+
 		activity.startActivity(intent);
 		ActivityManager.stopMusic();
     }

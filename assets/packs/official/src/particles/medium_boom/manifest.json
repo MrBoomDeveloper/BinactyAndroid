@@ -1,0 +1,12 @@
+{
+	"skin": {
+		"texture": "../texture.png",
+		"size": [0.5, 0.5],
+		"delay": 0.04,
+		"frames": [
+			{ "region": [6, 10, 5, 5] },
+			{ "region": [16, 10, 5, 5] },
+			{ "region": [21, 10, 5, 5] }
+		]
+	}
+}

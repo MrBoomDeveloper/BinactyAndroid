@@ -9,16 +9,6 @@
 				"banner": "src/banner.png",
 				"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food!",
 
-				"match": {
-					"max_players": 1,
-					"duration": "6:00"
-				},
-
-				"entry": {
-					"file": { "path": "gamemode.java" },
-					"engine": "beanshell", "version": 1
-				},
-
 				"maxPlayers": 1,
 				"time": "6:00",
 				"type": "match",
@@ -28,6 +18,42 @@
 					"author": { "name": "MrBoomDev" },
 					"file": { "path": "maps/fnafMap1.json" }
 				}]
+			},
+
+			{
+				"id": "723e7736-d6bd-11ed-afa1-0242ac120003",
+				"name": "Five Nights at Freddy's Multiplayer",
+				"banner": "src/banner.png",
+				"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food!",
+
+				"maxPlayers": 5,
+				"time": "6:00",
+				"type": "match",
+
+				"entry": {
+					"engine": "jvm",
+					"file": "gamemodes/multiplayer.jar",
+					"main": "com.mrboomdev.binacty.fnaf.multiplayer.Main",
+					"version": 1
+				}
+			},
+
+			{
+				"id": "723e7736-d6bd-11ed-afa1-0242ac120004",
+				"name": "The Hunt",
+				"banner": "src/banner.png",
+				"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food!",
+
+				"maxPlayers": 5,
+				"time": "6:00",
+				"type": "match",
+
+				"entry": {
+					"engine": "jvm",
+					"file": "gamemodes/hunt.jar",
+					"main": "com.mrboomdev.binacty.fnaf.hunt.Main",
+					"version": 1
+				}
 			}
 		]
 	}

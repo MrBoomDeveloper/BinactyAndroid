@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="made_by">Сделано: %1$s</string>
+    <string name="save">Сохранить</string>
+    <string name="exit">Выйти</string>
+    <string name="description">Описание: %1$s</string>
+</resources>

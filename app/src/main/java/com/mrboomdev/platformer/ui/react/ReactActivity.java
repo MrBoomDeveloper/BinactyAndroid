@@ -74,7 +74,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
             .setInitialLifecycleState(LifecycleState.RESUMED)
             .build();
 
-        root.startReactApplication(reactInstance, "App", null);
+		root.startReactApplication(reactInstance, "App", null);
 		setContentView(root);
 		applyUiParams();
 
@@ -165,9 +165,9 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 							JsonAdapter<PackData.Manifest> adapter = moshi.adapter(PackData.Manifest.class);
 							var pack = adapter.fromJson(dest.goTo("manifest.json").readString(false));
 							if(pack == null || !pack.isValid()) throw new BoomException("Error while importing a pack. Manifest file isn't valid!");
-							if(!PackLoader.addPack(pack, dest)) {
-								dest.getParent().goTo(pack.id).remove();
+							if(!PackLoader.addPack(dest.getParent().goTo(pack.id))) {
 								ActivityManager.toast("This pack is already installed, trying to update...", false);
+								dest.getParent().goTo(pack.id).remove();
 							} else {
 								ActivityManager.toast("Installing a new pack...", false);
 							}

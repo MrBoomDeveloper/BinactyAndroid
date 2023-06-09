@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.mrboomdev.platformer.util.ColorUtil;
 import com.squareup.moshi.Json;
+
+import java.util.List;
 import java.util.Map;
 
 public class Entity {
@@ -23,15 +25,54 @@ public class Entity {
 	public static final float DASH_DURATION = .25f;
 
 	public enum AnimationType {
-		@Json(name = "idle")   IDLE,
-		@Json(name = "bored")  BORED,
-		@Json(name = "walk")   WALK,
-		@Json(name = "run")    RUN,
-		@Json(name = "dash")   DASH,
-		@Json(name = "attack") ATTACK,
-		@Json(name = "shoot")  SHOOT,
-		@Json(name = "damage") DAMAGE,
-		@Json(name = "death")  DEATH
+		CURRENT(false),
+		@Json(name = "idle")
+		IDLE(false),
+		@Json(name = "bored")
+		BORED(true),
+		@Json(name = "walk")
+		WALK(false),
+		@Json(name = "run")
+		RUN(false),
+		@Json(name = "dash")
+		DASH(false),
+		@Json(name = "aim_pistol")
+		AIM_PISTOL(false),
+		@Json(name = "aim_pistol_walk")
+		AIM_PISTOL_WALK(false),
+		@Json(name = "attack")
+		ATTACK(true),
+		@Json(name = "shoot")
+		SHOOT(true),
+		@Json(name = "damage")
+		DAMAGE(true),
+		@Json(name = "death")
+		DEATH(false);
+
+		private List<AnimationType> alternatives;
+		private final boolean isAction;
+
+		static {
+			IDLE.alternatives = List.of(WALK);
+			WALK.alternatives = List.of(RUN, IDLE);
+			RUN.alternatives = List.of(WALK, DASH, IDLE);
+			DAMAGE.alternatives = List.of(WALK);
+			DASH.alternatives = List.of(IDLE);
+			AIM_PISTOL.alternatives = List.of(IDLE);
+			AIM_PISTOL_WALK.alternatives = List.of(AIM_PISTOL);
+		}
+
+		AnimationType(boolean isAction) {
+			this.isAction = isAction;
+		}
+
+		public boolean isAction() {
+			return isAction;
+		}
+
+		public List<AnimationType> getAlternatives() {
+			return alternatives;
+		}
 	}
 	
 	public enum Target {

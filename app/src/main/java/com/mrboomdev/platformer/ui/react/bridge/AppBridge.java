@@ -12,7 +12,6 @@ import com.mrboomdev.platformer.online.Online;
 import com.mrboomdev.platformer.online.profile.AuthParams;
 import com.mrboomdev.platformer.online.profile.ProfileAuthentication;
 import com.mrboomdev.platformer.ui.ActivityManager;
-import com.mrboomdev.platformer.util.helper.BoomException;
 
 @SuppressWarnings("unused")
 public class AppBridge extends ReactContextBaseJavaModule {
@@ -28,7 +27,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
-	public void signIn(@NonNull String method) {
+	public void signIn(@NonNull String method, Promise promise) {
 		switch(method) {
 			/*case "google": {
 				GetSignInIntentRequest request = GetSignInIntentRequest.builder()
@@ -67,11 +66,17 @@ public class AppBridge extends ReactContextBaseJavaModule {
 						.setGameId(Online.PLAYERIO_GAMEID)
 						.setUserId("test_player");
 
-				ProfileAuthentication.auth(params, ActivityManager::forceExit);
+				ProfileAuthentication.auth(params, () -> promise.resolve(true));
 				break;
 			}
 
-			default: throw new BoomException("Currently unavailable.");
+			case "test":
+				promise.resolve(true);
+				break;
+
+			default:
+				promise.reject("Invalid login method", "Sorry, but we didn't found anything, that can help you. Try other methods.");
+				break;
 		}
 	}
 	

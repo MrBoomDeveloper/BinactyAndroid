@@ -48,7 +48,8 @@ public class PackData {
 		public Author author;
 		public int maxPlayers;
 		@Deprecated public List<MapData> maps;
-		@Deprecated public FileUtil source, file;
+		@Deprecated public FileUtil file;
+		public FileUtil source;
 		public GamemodeEntry entry;
 	}
 

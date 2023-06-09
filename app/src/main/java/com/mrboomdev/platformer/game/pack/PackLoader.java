@@ -98,12 +98,14 @@ public class PackLoader {
 			showErrorDialog(e);
 		}
 	}
-	
-	public static boolean addPack(PackData.Manifest manifest, FileUtil file) {
+
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
+	public static boolean addPack(FileUtil file) {
 		for(var config : configs) {
-			if(config.file.equals(file.getParent().goTo(manifest.id))) return false;
+			if(config.file.equals(file)) return false;
 		}
-		configs.add(new PackData.Config(FileUtil.external("packs/" + manifest.id)));
+
+		configs.add(new PackData.Config(file));
 		saveConfig();
 		return true;
 	}

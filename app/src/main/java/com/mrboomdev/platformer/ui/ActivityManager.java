@@ -18,12 +18,21 @@ public class ActivityManager {
 	public static ReactActivity reactActivity;
 	
 	public static void startMusic() {
-		if(reactActivity.isGameStarted) return;
-		stopMusic();
+		if(reactActivity.isGameStarted || isPlaying()) return;
 		media = MediaPlayer.create(current, R.raw.lobby_theme);
 		setVolume(current.getSharedPreferences("Save", 0).getInt("musicVolume", 100) / 100f);
 		media.setLooping(true);
 		media.start();
+	}
+
+	public static boolean isPlaying() {
+		if(media == null) return false;
+		try {
+			return media.isPlaying();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public static void setVolume(float volume) {

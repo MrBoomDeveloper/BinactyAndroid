@@ -42,10 +42,12 @@ public class PackWidget {
 				view.setClickable(true);
 				view.setFocusable(true);
 				view.setBackground(AppCompatResources.getDrawable(activity, R.drawable.light_ripple_background));
+
 				var icon = new ImageView(activity);
 				var iconParams = new LayoutParams(70, 70);
 				iconParams.setMargins(0, 0, 20, 0);
 				icon.setLayoutParams(iconParams);
+
 				if(data.icon != null) {
 					try {
 						InputStream is = data.source.source == FileUtil.Source.INTERNAL
@@ -59,6 +61,7 @@ public class PackWidget {
 				} else {
 					icon.setImageDrawable(AppCompatResources.getDrawable(activity, R.drawable.pack_icon_missing));
 				}
+
 				view.addView(icon);
 				var info = new LinearLayout(activity);
 				var infoParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -67,6 +70,7 @@ public class PackWidget {
 				info.setLayoutParams(infoParams);
 				info.setOrientation(LinearLayout.VERTICAL);
 				var header = new LinearLayout(activity);
+
 				{
 					var title = new TextView(activity);
 					title.setTextColor(Color.parseColor("#ffffff"));
@@ -79,39 +83,45 @@ public class PackWidget {
 					
 					header.addView(title);
 				}
+
 				if(data.author != null) {
 					var author = new TextView(activity);
-					author.setText(activity.getResources().getText(R.string.made_by, data.author.name));
+					author.setText(activity.getString(R.string.made_by, data.author.name));
 					header.addView(author);
 				}
+
 				var params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 				params.setMargins(0, 2, 0, 5);
 				header.setLayoutParams(params);
 				info.addView(header);
+
 				if(data.description != null) {
 					var description = new TextView(activity);
-					description.setText("Description: " + data.description);
+					description.setText(activity.getString(R.string.description, data.description));
 					info.addView(description);
 				}
 				view.addView(info);
 				view.setPadding(0, 0, 25, 0);
 				view.setGravity(Gravity.CENTER_VERTICAL);
+
 				{
 					isActive = new TextView(activity);
 					isActive.setGravity(Gravity.CENTER);
 					isActive.setTextSize(15);
-					var textParams = new LayoutParams(85, 35);
+					var textParams = new LayoutParams(90, 36);
 					isActive.setLayoutParams(textParams);
 					GradientDrawable back = new GradientDrawable();
 					back.setCornerRadius(10);
 					isActive.setBackground(back);
 					view.addView(isActive);
 				}
+
 				view.setOnClickListener(v -> {
 					if(data.required && data.source.source == FileUtil.Source.INTERNAL) return;
 					data.config.active = !data.config.active;
 					updateState();
 				});
+
 				view.setOnLongClickListener(v -> {
 					PopupMenu popup = new PopupMenu(activity, view);
 					if(data.source.source != FileUtil.Source.INTERNAL) popup.getMenu().add(0, 0, 0, "Remove");

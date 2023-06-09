@@ -1,6 +1,8 @@
 package com.mrboomdev.platformer.util.helper;
 
 import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.Contract;
 public class BoomException extends RuntimeException {
 	
 	public BoomException(@NonNull Object object) {
@@ -14,13 +16,17 @@ public class BoomException extends RuntimeException {
 	public BoomException(Throwable t) {
 		super(t);
 	}
-
-	public static Builder builder() {
-		return new Builder("");
-	}
 	
+	@NonNull
+	@Contract(value = "_ -> new", pure = true)
 	public static Builder builder(String text) {
 		return new Builder(text);
+	}
+
+	@NonNull
+	@Contract(value = " -> new", pure = true)
+	public static Builder builder() {
+		return builder("");
 	}
 	
 	public static class Builder {

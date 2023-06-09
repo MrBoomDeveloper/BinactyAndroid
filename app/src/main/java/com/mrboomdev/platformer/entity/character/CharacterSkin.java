@@ -1,7 +1,7 @@
 package com.mrboomdev.platformer.entity.character;
 
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.CURRENT;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.DAMAGE;
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.DASH;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.IDLE;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.RUN;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.WALK;
@@ -21,6 +21,7 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.Direction;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Json;
@@ -30,31 +31,58 @@ import java.util.Map;
 import java.util.Objects;
 
 public class CharacterSkin {
-	@Json(name = "animations") Map<Entity.AnimationType, Entity.Animation> animationsJson;
-	@Json(name = "texture") String texturePath = "skin.png";
-	@Json(ignore = true) Map<Entity.AnimationType, Animation<Entity.Frame>> animations = new HashMap<>();
-	@Json(ignore = true) Entity.AnimationType currentAnimation;
-	@Json(ignore = true) Sprite sprite;
-	@Json(ignore = true) float animationProgress;
-	@Json(ignore = true) int lastFrameIndex;
-	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
+	@SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "unused"})
+	@Json(name = "animations")
+	private Map<Entity.AnimationType, Entity.Animation> animationsJson;
+	@SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "unused"})
+	@Json(name = "custom_animations")
+	private Map<String, Entity.Animation> customAnimationsJson;
+	@Json(name = "texture")
+	private final String texturePath = "skin.png";
+	@Json(ignore = true)
+	private final Map<Entity.AnimationType, Animation<Entity.Frame>> animations = new HashMap<>();
+	@Json(ignore = true)
+	private Entity.AnimationType currentAnimation;
+	@Json(ignore = true)
+	private Sprite sprite;
+	@Json(ignore = true)
+	private float animationProgress;
+	@Json(ignore = true)
+	private int lastFrameIndex;
+	@Json(ignore = true)
+	private final GameHolder game = GameHolder.getInstance();
 	
 	public void setAnimation(Entity.AnimationType animation) {
-		if(currentAnimation == getValidAnimation(animation)) return;
 		var selectedAnimation = getValidAnimation(animation);
+
+		if(selectedAnimation == null) {
+			selectedAnimation = (Entity.AnimationType) animations.keySet().toArray()[0];
+		}
+
+		if((currentAnimation == selectedAnimation) && (!selectedAnimation.isAction())) return;
+
 		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
-		animationProgress = (float)(Math.random() * 5);
+		animationProgress = selectedAnimation.isAction() ? 0 : (float)(Math.random() * 5);
 		LogUtil.debug(LogUtil.Tag.ANIMATION, "Set character animation to: " + animation.name());
+	}
+
+	@SuppressWarnings("unused")
+	public void setCustomAnimation(String name) {
+		if(!customAnimationsJson.containsKey(name)) return;
+		throw new BoomException("This feature isn't done yet!");
 	}
 	
 	private Entity.AnimationType getValidAnimation(@NonNull Entity.AnimationType animation) {
-		switch(animation) {
-			case WALK: return animations.containsKey(WALK) ? WALK : RUN;
-			case RUN: return animations.containsKey(RUN) ? RUN : WALK;
-			case DASH: return animations.containsKey(DASH) ? DASH : IDLE;
-			case DAMAGE: return animations.containsKey(DAMAGE) ? DAMAGE : WALK;
-			default: return animation;
+		if(animations.containsKey(animation)) return animation;
+		if(animation == CURRENT) return currentAnimation;
+		if(animation.isAction() && animation.getAlternatives() == null) return currentAnimation;
+
+		for(var alternative : animation.getAlternatives()) {
+			if(alternative == CURRENT) return currentAnimation;
+			if(animations.containsKey(alternative)) return alternative;
 		}
+
+		return IDLE;
 	}
 	
 	public void draw(SpriteBatch batch, @NonNull Vector2 position, @NonNull Direction direction, CharacterEntity entity) {

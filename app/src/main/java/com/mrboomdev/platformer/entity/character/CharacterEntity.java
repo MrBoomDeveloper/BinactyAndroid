@@ -237,7 +237,7 @@ public class CharacterEntity extends EntityAbstract {
 		isDashing = true;
 		staminaReloadMultiply = .05f;
 		
-		if(wasPower.isZero()) wasPower = new Vector2(5, 0);
+		if(wasPower.isZero()) wasPower.set(5, 0);
 		body.setLinearVelocity(wasPower.scl(100).limit(18));
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, getPosition());
 		
@@ -304,7 +304,8 @@ public class CharacterEntity extends EntityAbstract {
 	public static class CharacterBody {
 		public float[] size;
 		public float[] bottom;
-		@Json(name = "light_offset") public float[] lightOffset;
+		@Json(name = "light_offset")
+		public float[] lightOffset;
 		
 		public CharacterBody build() {
 			if(bottom == null) {

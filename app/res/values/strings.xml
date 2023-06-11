@@ -2,7 +2,18 @@
 <resources>
     <string name="app_name" translatable="false">Binacty</string>
     <string name="made_by">Made by: %1$s</string>
-    <string name="save">Save</string>
-    <string name="exit">Exit</string>
+
+    <string name="action_save">Save</string>
+    <string name="action_exit">Exit</string>
+    <string name="action_restart">Restart</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_cancel">Cancel</string>
+
     <string name="description">Description: %1$s</string>
+
+    <string name="dialog_restart_title">Restart the Game</string>
+    <string name="dialog_restart_description">Do you want to reload the game? It\'ll not be long as you may think.</string>
+
+    <string name="dialog_exit_title">Exit the Game</string>
+    <string name="dialog_exit_description">Are you sure, you want to leave?</string>
 </resources>

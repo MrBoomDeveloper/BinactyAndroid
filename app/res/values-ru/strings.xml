@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="made_by">Сделано: %1$s</string>
-    <string name="save">Сохранить</string>
-    <string name="exit">Выйти</string>
+
+    <string name="action_save">Сохранить</string>
+    <string name="action_exit">Выйти</string>
+    <string name="action_restart">Перезайти</string>
+    <string name="action_continue">Продолжить</string>
+    <string name="action_cancel">Отмена</string>
+
     <string name="description">Описание: %1$s</string>
+
+    <string name="dialog_restart_title">Перезайти в Игру</string>
+    <string name="dialog_restart_description">Вы хотите перезапустить игру? Это не займет так много времени, как вы можете подумать.</string>
+
+    <string name="dialog_exit_title">Покинуть Игру</string>
+    <string name="dialog_exit_description">Вы уверены, что хотите выйти?</string>
 </resources>

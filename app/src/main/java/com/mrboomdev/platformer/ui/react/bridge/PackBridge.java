@@ -76,12 +76,13 @@ public class PackBridge extends ReactContextBaseJavaModule {
 			var jsonMap = Arguments.createMap();
 			jsonMap.putString("name", pack.name);
 			jsonMap.putString("description", pack.description);
-			jsonMap.putString("path", pack.source.getPath());
 
-			var jsonAuthorMap = Arguments.createMap();
-			jsonAuthorMap.putString("name", pack.author.name);
-			jsonAuthorMap.putString("url", pack.author.url);
-			jsonMap.putMap("author", jsonAuthorMap);
+			if(pack.author != null) {
+				var jsonAuthorMap = Arguments.createMap();
+				jsonAuthorMap.putString("name", pack.author.name);
+				jsonAuthorMap.putString("url", pack.author.url);
+				jsonMap.putMap("author", jsonAuthorMap);
+			}
 
 			jsonArray.pushMap(jsonMap);
 		}

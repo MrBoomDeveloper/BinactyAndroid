@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.game.pack.PackData;
@@ -20,6 +21,7 @@ import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.io.FileUtil;
+
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -201,18 +203,6 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 			promise.reject("Failed to collect stats", e);
 			e.printStackTrace();
 		}
-	}
-	
-	@ReactMethod
-	public void requestClose() {
-		var dialog = new AndroidDialog().setTitle("Confirm Exit");
-		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Are you sure, you want to exit the game?"));
-		dialog.addAction(new AndroidDialog.Action().setText("Cancel").setClickListener(button -> dialog.close()));
-		dialog.addAction(new AndroidDialog.Action().setText("Exit").setClickListener(button -> {
-			ActivityManager.current.finishAffinity();
-			dialog.close();
-		}));
-		dialog.addSpace(30).show();
 	}
 	
 	@ReactMethod

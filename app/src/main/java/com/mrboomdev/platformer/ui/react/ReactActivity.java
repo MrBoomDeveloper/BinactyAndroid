@@ -36,7 +36,6 @@ import com.mrboomdev.providers.AndroidFileUtilProvider;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +45,6 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
     public ReactInstanceManager reactInstance;
     public SharedPreferences prefs;
 	public boolean isGameStarted;
-	private long lastBackPressed;
 
 	@Override
     protected void onCreate(Bundle bundle) {
@@ -64,9 +62,9 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 				new ReactGame()
 		));
 
-        reactInstance = ReactInstanceManager.builder()
-            .setApplication(getApplication())
-      	  .setCurrentActivity(this)
+		reactInstance = ReactInstanceManager.builder()
+			.setApplication(getApplication())
+			.setCurrentActivity(this)
             .setBundleAssetName("index.android.bundle")
             .setJSMainModulePath("index")
             .addPackages(packages)
@@ -143,9 +141,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 
     @Override
     public void onBackPressed() {
-		if(Instant.now().getEpochSecond() < lastBackPressed + 1) return;
-		lastBackPressed = Instant.now().getEpochSecond();
-		instance.onBackPressed();
+		reactInstance.onBackPressed();
     }
 
     @Override

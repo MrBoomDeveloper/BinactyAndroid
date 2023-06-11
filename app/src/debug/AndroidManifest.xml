@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
-    <application android:label="Debug Action"
+    <application
 		android:restoreAnyVersion="true"
-		tools:replace="label">
+		tools:replace="label"
+		android:icon="@drawable/app_icon"
+		android:roundIcon="@drawable/app_icon">
 		
 		<activity android:name=".game.GameDebugLauncher"
 			android:label="Debug Game"

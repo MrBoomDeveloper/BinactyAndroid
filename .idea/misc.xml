@@ -1,4 +1,9 @@
 <project version="4">
+  <component name="EntryPointsManager">
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="com.facebook.react.bridge.ReactMethod" />
+    </list>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectResources">
     <resource url="http://schemas.android.com/apk/res/android" location="" />

@@ -93,6 +93,7 @@ public class GameLauncher extends AndroidApplication {
 	public void pause() {
 		game.settings.pause = true;
 		AudioUtil.pause();
+
 		var dialog = new AndroidDialog().setTitle("Game Paused").setCancelable(false);
 		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("So you've just stopped the entire universe, huh?"));
 		dialog.addAction(new AndroidDialog.Action().setText("Exit").setClickListener(button -> {
@@ -100,11 +101,13 @@ public class GameLauncher extends AndroidApplication {
 			game.launcher.exit(GameLauncher.Status.LOBBY);
 			dialog.close();
 		}));
+
 		dialog.addAction(new AndroidDialog.Action().setText("Resume").setClickListener(button -> {
 			game.settings.pause = false;
 			AudioUtil.resume();
 			dialog.close();
 		})).addSpace(30);
+
 		dialog.show();
 	}
 	

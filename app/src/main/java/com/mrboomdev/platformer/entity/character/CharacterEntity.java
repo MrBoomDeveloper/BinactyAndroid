@@ -140,16 +140,19 @@ public class CharacterEntity extends EntityAbstract {
 	@Override
 	public void draw(SpriteBatch batch) {
 		projectileManager.clearTrash();
-		if(isDead && !isDestroyed) destroy();
+		if(isDead && !isDestroyed && damagedProgress > 1) destroy();
 		if(isDestroyed) return;
-		
-		stats.stamina = Math.min(stats.maxStamina, isRunning
-			? stats.stamina
-			: stats.stamina + staminaReloadMultiply);
-		
-		dashProgress += Gdx.graphics.getDeltaTime();
-		dashReloadProgress += Gdx.graphics.getDeltaTime();
-		staminaReloadMultiply = Math.min(.3f, staminaReloadMultiply * 1.02f);
+
+		if(!isDead) {
+			stats.stamina = Math.min(stats.maxStamina, isRunning
+					? stats.stamina
+					: stats.stamina + staminaReloadMultiply);
+
+			dashProgress += Gdx.graphics.getDeltaTime();
+			dashReloadProgress += Gdx.graphics.getDeltaTime();
+			staminaReloadMultiply = Math.min(.3f, staminaReloadMultiply * 1.02f);
+		}
+
 		damagedProgress += Gdx.graphics.getDeltaTime();
 		
 		if(isDashing && dashProgress > Entity.DASH_DURATION) {
@@ -162,14 +165,28 @@ public class CharacterEntity extends EntityAbstract {
 			healthPhantom += Gdx.graphics.getDeltaTime() / 2;
 			stats.health = Math.min((int)healthPhantom, stats.maxHealth);
 		}
+
 		if(brain != null) brain.update();
 		
 		shadow.setCenter(getPosition().x, getPosition().y - worldBody.size[1] / 2);
 		shadow.draw(batch);
-		skin.draw(batch, getPosition(), getDirection(), this);
+
+		game.environment.useTempShader("effects", shader -> {
+			shader.setUniformf("flashProgress", isDead
+				? Math.min(damagedProgress, 1)
+				: .8f - Math.min(damagedProgress * .8f, .8f));
+
+			skin.draw(batch, getPosition(), getDirection(), this, getOpacity());
+		});
+
 		inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
 
 		//drawDebug(batch);
+	}
+
+	private float getOpacity() {
+		if(!isDead || damagedProgress < .5f) return 1;
+		return Math.max(1, 1 - ((damagedProgress - .5f) * 2));
 	}
 
 	/**
@@ -202,6 +219,7 @@ public class CharacterEntity extends EntityAbstract {
 			shape.begin(ShapeRenderer.ShapeType.Filled);
 			shape.setColor(1, 0, 0, 1);
 			float progress = worldBody.size[0] / stats.maxHealth * stats.health;
+
 			shape.rect(
 				getPosition().x - worldBody.size[0] / 2,
 				getPosition().y - worldBody.size[1] / 2 - .4f,
@@ -223,14 +241,13 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void interact() {
-		if(nearInteraction != null) {
+		if(nearInteraction != null && !isDead) {
 			nearInteraction.act();
 		}
 	}
 	
 	public void dash() {
-		if(stats.stamina < Entity.DASH_COST) return;
-		if(isDashing || dashReloadProgress < Entity.DASH_DELAY) return;
+		if(stats.stamina < Entity.DASH_COST || isDashing || dashReloadProgress < Entity.DASH_DELAY || isDead) return;
 		
 		stats.stamina -= Entity.DASH_COST;
 		dashProgress = 0;
@@ -244,7 +261,7 @@ public class CharacterEntity extends EntityAbstract {
 	}
 	
 	public void gainDamage(int damage, Vector2 power) {
-		if(damagedProgress < 1 || isDashing) return;
+		if(damagedProgress < 1 || isDashing || isDead) return;
 		
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/damage.mp3", Sound.class), .25f, 10, getPosition());
 		damagedProgress = (Math.random() > .8f) ? 0 : .8f;
@@ -267,7 +284,7 @@ public class CharacterEntity extends EntityAbstract {
 	
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
-		if(damagedProgress < .4f) return;
+		if(damagedProgress < .4f || isDead) return;
 		if(isDashing) {
 			isRunning = true;
 			skin.setAnimation(DASH);
@@ -296,6 +313,7 @@ public class CharacterEntity extends EntityAbstract {
 	
 	@Override
 	public void die(boolean silently) {
+		damagedProgress = 0;
 		super.die(silently);
 		if(silently) return;
 		game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);

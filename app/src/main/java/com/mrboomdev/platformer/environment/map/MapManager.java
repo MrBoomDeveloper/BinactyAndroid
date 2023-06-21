@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import box2dLight.RayHandler;
 
@@ -45,6 +46,7 @@ public class MapManager {
 	public void render(SpriteBatch batch) {
 		pendingRemoves.forEach(MapObject::remove);
 		pendingRemoves.clear();
+
 		if(System.currentTimeMillis() > lastSortedTime + 500) {
 			lastSortedTime = System.currentTimeMillis();
 			try {
@@ -53,6 +55,7 @@ public class MapManager {
 				e.printStackTrace();
 			}
 		}
+
 		for(MapObject object : objects) {
 			object.draw(batch);
 		}
@@ -68,7 +71,7 @@ public class MapManager {
 		
 			for(String pack : atmosphere.tiles) {
 				var tilesFile = PackLoader.resolvePath(source.getParent(), pack);
-				var tilesPreset = adapter.fromJson(tilesFile.readString(true)).tiles;
+				var tilesPreset = Objects.requireNonNull(adapter.fromJson(tilesFile.readString(true))).tiles;
 				tilesPreset.values().forEach(tile -> tile.source = tilesFile.getParent());
 
 				if(pack.startsWith("$")) {
@@ -174,7 +177,7 @@ public class MapManager {
 		}
 		
 		for(var tile : tiles) {
-			tile.copyData(tilesPresets.get(tile.name));
+			tile.copyData(Objects.requireNonNull(tilesPresets.get(tile.name)));
 			tile.build(world);
 			objects.add(tile);
 			tilesMap.put(getTextPosition(tile.position, tile.layer), tile);

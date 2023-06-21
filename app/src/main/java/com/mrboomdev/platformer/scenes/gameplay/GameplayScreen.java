@@ -13,10 +13,10 @@ import com.mrboomdev.platformer.entity.character.CharacterCreator;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.projectile.ProjectileCollision;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.FunUtil;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
@@ -73,16 +73,30 @@ public class GameplayScreen extends CoreScreen {
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		debugRenderer = new Box2DDebugRenderer();
-		
-		shaders = new ShaderProgram(Gdx.files.internal("world/shaders/default/default.vert"), Gdx.files.internal("world/shaders/default/default.frag"));
+
+		shaders = new ShaderProgram(
+				Gdx.files.internal("world/shaders/default/default.vert"),
+				Gdx.files.internal("world/shaders/default/default.frag"));
+
+		var effectsShader = new ShaderProgram(
+				Gdx.files.internal("world/shaders/effects/effects.vert"),
+				Gdx.files.internal("world/shaders/effects/effects.frag"));
+
 		ShaderProgram.pedantic = false;
-		if(shaders.isCompiled()) {
+		if(shaders.isCompiled() && effectsShader.isCompiled()) {
 			game.analytics.log("Shaders", "Successfully compiled shaders!");
 			batch.setShader(shaders);
+
+			environment.batch = batch;
+			environment.shader = shaders;
+			environment.shaders.put("default", shaders);
+			environment.shaders.put("effects", effectsShader);
 		} else {
-			game.analytics.error("Shaders", "Failed to compile shaders!");
-			game.analytics.error("Shaders", shaders.getLog());
-			game.launcher.exit(GameLauncher.Status.CRASH);
+			throw BoomException.builder("Failed to compile shaders!\nDefault shader logs: ")
+					.addQuoted(shaders.getLog())
+					.append("\nEffects shader logs: ")
+					.addQuoted(effectsShader.getLog())
+					.build();
 		}
 		
 		environment.world.setContactListener(new ProjectileCollision());
@@ -96,7 +110,10 @@ public class GameplayScreen extends CoreScreen {
 		
 		var path = FileUtil.internal("packs/official/src/characters/klarrie");
 		environment.entities.loadCharacter(path, "klarrie");
-		var player = new CharacterCreator(environment.entities.presets.get("klarrie").cpy(game.settings.playerName, path)).create();
+		var player = new CharacterCreator(environment.entities.presets
+				.get("klarrie")
+				.cpy(game.settings.playerName, path))
+				.create();
 		
 		game.settings.mainPlayer = player;
 		game.environment.entities.setMain(player);

@@ -85,7 +85,7 @@ public class CharacterSkin {
 		return IDLE;
 	}
 	
-	public void draw(SpriteBatch batch, @NonNull Vector2 position, @NonNull Direction direction, CharacterEntity entity) {
+	public void draw(SpriteBatch batch, @NonNull Vector2 position, @NonNull Direction direction, CharacterEntity entity, float opacity) {
 		var activeAnimation = animations.get(currentAnimation);
 		animationProgress += Gdx.graphics.getDeltaTime();
 		
@@ -94,7 +94,7 @@ public class CharacterSkin {
 			direction.isForward() ? sprite.getWidth() : -sprite.getWidth(),
 			sprite.getHeight());
 		
-		sprite.setAlpha(currentAnimation == DAMAGE ? 0.85f : 1);
+		sprite.setAlpha(opacity * (currentAnimation == DAMAGE ? 0.85f : 1));
 		sprite.setCenter(position.x, position.y);
 		sprite.draw(batch);
 		

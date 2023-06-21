@@ -5,9 +5,7 @@
 
     <application
 		android:restoreAnyVersion="true"
-		tools:replace="label"
-		android:icon="@drawable/app_icon"
-		android:roundIcon="@drawable/app_icon">
+		tools:ignore="MissingApplicationIcon">
 		
 		<activity android:name=".game.GameDebugLauncher"
 			android:label="Debug Game"

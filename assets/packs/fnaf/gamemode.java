@@ -1,3 +1,7 @@
+/* ----------
+	LOAD RESOURCES
+----------*/
+
 game.load("sound", "sounds/power_end.wav");
 game.load("sound", "sounds/freddy_nose.wav");
 game.load("sound", "sounds/door_close.wav");
@@ -22,11 +26,43 @@ for(int i = 1; i < 5; i++) {
 	game.load("music", "music/dark_ambience_" + i + ".ogg");
 }
 
+/* ----------
+	INIT VALUES
+----------*/
+
+var startups = new int[][]{{25, 25}, {25, 25}, {35, 35}, {60, 60}};
+
+switch(game.getEnvString("levelId", "night_0")) {
+	case "night_1": {
+		startups = new int[][]{{60, 60}, {60, 60}, {200, 200}, {150, 150}};
+	} break;
+
+	case "night_2": {
+		startups = new int[][]{{35, 35}, {35, 35}, {175, 175}, {120, 120}};
+	} break;
+
+	case "night_3": {
+		startups = new int[][]{{25, 25}, {25, 25}, {140, 140}, {90, 90}};
+	} break;
+
+	case "night_4": {
+		startups = new int[][]{{10, 10}, {10, 10}, {100, 100}, {50, 50}};
+	} break;
+
+	case "night_5": {
+		startups = new int[][]{{1, 1}, {1, 1}, {25, 25}, {10, 10}};
+	} break;
+}
+
 String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerAi", "6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerSpawn"};
 boolean isGameEnded = false;
 int power = 100, usage = 1;
 var powerWidget, usageWidget;
 var fanSound, lightSound;
+
+/* ----------
+	CREATE ENTITIES
+----------*/
 
 var freddy = entities.createCharacter("characters/freddy").setSpawnTiles(new String[]{"#id:freddySpawn"});
 var bonnie = entities.createCharacter("characters/bonnie").setSpawnTiles(new String[]{"#id:bonnieSpawn"});
@@ -62,16 +98,19 @@ bonnie.create();
 chica.create();
 foxy.create();
 
+game.setTimer(new Runnable() {run() { bonnie.setBot(bonnieBrain); }}, Math.round(Math.random() * startups[0][0] + startups[0][1]));
+game.setTimer(new Runnable() {run() { chica.setBot(chicaBrain); }}, Math.round(Math.random() * startups[1][0] + startups[1][1]));
+game.setTimer(new Runnable() {run() { freddy.setBot(freddyBrain); }}, Math.round(Math.random() * 35 + 35));
+game.setTimer(new Runnable() {run() { foxy.setBot(foxyBrain); }}, Math.round(Math.random() * 60 + 60));
+
+/* ----------
+	MAKE MAP INTERACTABLE
+----------*/
+
 var staticLights = new ArrayList();
 for(int i = 1; i <= 17; i++) {
 	staticLights.add(map.getById("staticLight" + i));
 }
-
-game.setTimer(new Runnable() {run() { bonnie.setBot(bonnieBrain); }}, Math.round(Math.random() * 25 + 25));
-game.setTimer(new Runnable() {run() { chica.setBot(chicaBrain); }}, Math.round(Math.random() * 25 + 25));
-game.setTimer(new Runnable() {run() { freddy.setBot(freddyBrain); }}, Math.round(Math.random() * 35 + 35));
-game.setTimer(new Runnable() {run() { foxy.setBot(foxyBrain); }}, Math.round(Math.random() * 60 + 60));
-
 
 var doorRight = map.getById("doorRight"), doorLeft = map.getById("doorLeft");
 boolean isDoorRightOpened = true, isDoorLeftOpened = true;
@@ -88,6 +127,7 @@ map.getById("buttonLightRight").setListener(new InteractionListener() {use() {
 		audio.playSound("sounds/error.wav", 0.5f, 15, lightRight.getPosition(false));
 		return;
 	}
+
 	isLightRightOn = !isLightRightOn;
 	lightRight.pointLight.setActive(isLightRightOn);
 	usage += (isLightRightOn ? 1 : -1);
@@ -100,6 +140,7 @@ map.getById("buttonLightLeft").setListener(new InteractionListener() {use() {
 		audio.playSound("sounds/error.wav", 0.5f, 15, lightLeft.getPosition(false));
 		return;
 	}
+
 	isLightLeftOn = !isLightLeftOn;
 	lightLeft.pointLight.setActive(isLightLeftOn);
 	usage += (isLightLeftOn ? 1 : -1);
@@ -112,6 +153,7 @@ map.getById("buttonDoorRight").setListener(new InteractionListener() {use() {
 		audio.playSound("sounds/error.wav", 0.5f, 15, doorRight.getPosition(false));
 		return;
 	}
+
 	isDoorRightOpened = !isDoorRightOpened;
 	doorRight.style.selectStyle(isDoorRightOpened ? "default" : "close");
 	audio.playSound("sounds/door_close.wav", 0.5f, 15, doorRight.getPosition(false));
@@ -124,6 +166,7 @@ map.getById("buttonDoorLeft").setListener(new InteractionListener() {use() {
 		audio.playSound("sounds/error.wav", 0.5f, 15, doorLeft.getPosition(false));
 		return;
 	}
+
 	isDoorLeftOpened = !isDoorLeftOpened;
 	doorLeft.style.selectStyle(isDoorLeftOpened ? "default" : "close");
 	audio.playSound("sounds/door_close.wav", 0.5f, 15, doorLeft.getPosition(false));
@@ -135,6 +178,10 @@ void updateLight() {
 	lightSound.stop();
 	if(isLightRightOn || isLightLeftOn) lightSound.play();
 }
+
+/* ----------
+	GAMEPLAY
+----------*/
 
 void checkIfNoPower() {
 	if(isGameEnded) return;
@@ -218,7 +265,7 @@ game.setListener(new GameListener() {
 		fanSound.setPosition(24, -14);
 		fanSound.setDistance(12);
 		fanSound.setLooping(true);
-		fanSound.setVolume(0.1f);
+		fanSound.setVolume(0.075f);
 		fanSound.play();
 
 		lightSound = createMusic("music/light.wav");

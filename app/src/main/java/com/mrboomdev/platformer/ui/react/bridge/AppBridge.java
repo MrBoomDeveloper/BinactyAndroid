@@ -6,12 +6,15 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Dynamic;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.PromiseImpl;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.R;
@@ -21,6 +24,8 @@ import com.mrboomdev.platformer.online.profile.ProfileAuthentication;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.ui.react.ReactActivity;
+
+import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class AppBridge extends ReactContextBaseJavaModule {
@@ -104,6 +109,81 @@ public class AppBridge extends ReactContextBaseJavaModule {
 		data.putInt("level", 1);
 		data.putInt("progress", 0);
         promise.resolve(data);
+	}
+
+	@ReactMethod
+	public void setKey(@NonNull String type, String key, Dynamic value) {
+		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
+		switch(type) {
+			case "string":
+				prefs.edit().putString(key, value.asString()).apply();
+				break;
+
+			case "int":
+				prefs.edit().putInt(key, value.asInt()).apply();
+				break;
+
+			case "float":
+				prefs.edit().putFloat(key, (float)value.asDouble()).apply();
+				break;
+
+			case "boolean":
+				prefs.edit().putBoolean(key, value.asBoolean()).apply();
+				break;
+		}
+	}
+
+	@ReactMethod
+	public void getKey(@NonNull String type, String key, Dynamic defaultValue, Promise promise) {
+		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
+		switch(type) {
+			case "string":
+				promise.resolve(prefs.getString(key, defaultValue.asString()));
+				break;
+
+			case "int":
+				promise.resolve(prefs.getInt(key, defaultValue.asInt()));
+				break;
+
+			case "float":
+				promise.resolve(prefs.getFloat(key, (float)defaultValue.asDouble()));
+				break;
+
+			case "boolean":
+				promise.resolve(prefs.getBoolean(key, defaultValue.asBoolean()));
+				break;
+		}
+	}
+
+	@ReactMethod
+	public void getKeys(@NonNull ReadableArray keys, Promise promise) {
+		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
+		WritableArray result = Arguments.createArray();
+		for(int i = 0; i < keys.size(); i++) {
+			ReadableMap was = keys.getMap(i);
+			WritableMap newMap = Arguments.createMap();
+
+			String key = was.getString("id");
+			newMap.putString("id", key);
+
+			switch(Objects.requireNonNullElse(was.getString("type"), "string")) {
+				case "string":
+					newMap.putString("initial", prefs.getString(key, was.getString("initial")));
+					break;
+
+				case "number":
+					newMap.putInt("initial", prefs.getInt(key, was.getInt("initial")));
+					break;
+
+				case "boolean":
+					newMap.putBoolean("initial", prefs.getBoolean(key, was.getBoolean("initial")));
+					break;
+			}
+
+			result.pushMap(newMap);
+		}
+
+		promise.resolve(result);
 	}
 	
 	@ReactMethod

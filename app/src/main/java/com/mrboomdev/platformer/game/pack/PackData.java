@@ -44,13 +44,15 @@ public class PackData {
 	}
 	
 	public static class Gamemode {
-		public String id, name, description, time, banner, type;
+		public String id, name, description, time, banner;
+		@Deprecated public String type;
 		public Author author;
 		public int maxPlayers;
 		@Deprecated public List<MapData> maps;
 		@Deprecated public FileUtil file;
 		public FileUtil source;
 		public GamemodeEntry entry;
+		public LevelsCategory[] levels;
 	}
 
 	public static class GamemodeEntry {
@@ -67,5 +69,14 @@ public class PackData {
 		public String name;
 		public FileUtil file;
 		public Author author;
+	}
+
+	public static class LevelsCategory {
+		public String title;
+		public Level[] data;
+
+		public static class Level {
+			public String id, name;
+		}
 	}
 }

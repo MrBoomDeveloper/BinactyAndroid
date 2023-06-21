@@ -45,6 +45,7 @@ public class LogUtil {
 	}
 	
 	public enum Tag {
+		SHADERS("Shaders"),
 		BOT("BotBrain"),
 		SCRIPT_API("BinactyApi"),
 		ANALYTICS("Analytics"),

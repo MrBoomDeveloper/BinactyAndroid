@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.game;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Game;
@@ -24,6 +26,7 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 
 public class GameHolder extends Game {
+	public Bundle envVars = new Bundle();
 	public GameLauncher launcher;
 	public GameSettings settings;
 	public GameAnalytics analytics;

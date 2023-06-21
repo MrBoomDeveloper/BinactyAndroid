@@ -1,11 +1,16 @@
 package com.mrboomdev.platformer.environment;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.ObjectMap;
+
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.particle.ParticleManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
@@ -20,6 +25,7 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import box2dLight.RayHandler;
 
 public class EnvironmentManager {
+	public ObjectMap<String, ShaderProgram> shaders = new ObjectMap<>();
 	public MapManager map;
 	public OrthographicCamera camera;
 	public GamemodeManager gamemode;
@@ -29,6 +35,8 @@ public class EnvironmentManager {
 	public GameplayUi ui;
 	public EntityManager entities;
 	public ParticleManager particles;
+	public SpriteBatch batch;
+	public ShaderProgram shader;
 	private final GameHolder game = GameHolder.getInstance();
 	
 	public EnvironmentManager() {
@@ -80,5 +88,16 @@ public class EnvironmentManager {
 			if(!(object instanceof MapTile)) continue;
 			((MapTile)object).setupRayHandler(rayHandler);
 		}
+	}
+
+	public void useTempShader(String name, @NonNull UseTempShaderCallback callback) {
+		var selectedShader = shaders.get(name);
+		batch.setShader(selectedShader);
+		callback.use(selectedShader);
+		batch.setShader(shader);
+	}
+
+	public interface UseTempShaderCallback {
+		void use(ShaderProgram shader);
 	}
 }

@@ -46,6 +46,7 @@ public class GameLauncher extends AndroidApplication {
 		settings.ignoreScriptErrors = true;
 		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
 		game = GameHolder.getInstance();
+
 		try {
 			resolveGameFiles();
 		} catch(Exception e) {
@@ -60,7 +61,15 @@ public class GameLauncher extends AndroidApplication {
 	}
 
 	private void resolveGameFiles() throws IOException {
-		if(!getIntent().hasExtra("gamemodeFile")) return;
+		var intent = getIntent();
+
+		if(intent.hasExtra("level")) {
+			var level = intent.getBundleExtra("level");
+			game.envVars.putString("levelId", level.getString("id"));
+			game.envVars.putString("levelName", level.getString("name"));
+		}
+
+		if(!intent.hasExtra("gamemodeFile")) return;
 		Moshi moshi = new Moshi.Builder().build();
 		JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
 		game.gamemodeFile = adapter.fromJson(getIntent().getCharSequenceExtra("gamemodeFile").toString());

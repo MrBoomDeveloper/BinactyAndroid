@@ -76,6 +76,10 @@ public class GameBridge {
 			game.environment.gamemode.runFunction(new GamemodeFunction(GamemodeFunction.Action.GAME_OVER, null));
 		}
 	}
+
+	public String getEnvString(String name, String defaultValue) {
+		return game.envVars.getString(name, defaultValue);
+	}
 	
 	public void __startOldGamemodeScript() {
 		game.environment.gamemode.script.start.forEach(function -> game.environment.gamemode.stack.add(new GamemodeManager.StackOperation(function, null)));

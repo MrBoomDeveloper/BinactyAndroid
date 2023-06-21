@@ -22,7 +22,7 @@ public class PackLoader {
 	private static List<PackData.Manifest> packs;
 	private static List<PackData.GamemodesRow> gamemodes;
 	private static List<PackData.Config> configs;
-	
+
 	public static List<PackData.Config> getConfigs() {
 		if(configs == null) reloadPacks();
 		return configs;
@@ -62,10 +62,10 @@ public class PackLoader {
 						gamemode.author = pack.author;
 						var entry = gamemode.entry;
 						gamemode.source = pack.source.goTo(pack.resources.gamemodes).getParent();
-						if(entry == null) {
-							gamemode.file = gamemode.source.goTo(gamemode.file.getPath());
-						} else {
+						if(entry != null) {
 							entry.file = gamemode.source.goTo(gamemode.entry.file).getPath();
+						} else if(gamemode.file != null) {
+							gamemode.file = gamemode.source.goTo(gamemode.file.getPath());
 						}
 					}
 				}

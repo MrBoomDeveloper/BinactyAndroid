@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.ui.react;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
@@ -13,22 +14,17 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
-
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.game.pack.PackData;
-import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.ui.ActivityManager;
-import com.mrboomdev.platformer.ui.android.AndroidDialog;
-import com.mrboomdev.platformer.util.io.FileUtil;
-
-import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
+@Deprecated
 public class ReactBridge extends ReactContextBaseJavaModule {
     public ReactBridge(ReactApplicationContext context) {
         super(context);
@@ -41,6 +37,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     }
 	
 	@ReactMethod
+	@Deprecated
 	public void setKey(@NonNull String type, String key, String value) {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		switch(type) {
@@ -60,6 +57,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
+	@Deprecated
 	public void getKey(@NonNull String type, String key, Promise promise) {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		switch(type) {
@@ -79,6 +77,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	}
 	
 	@ReactMethod
+	@Deprecated
 	public void getKeys(@NonNull ReadableArray keys, Promise promise) {
 		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
 		WritableArray result = Arguments.createArray();
@@ -110,83 +109,6 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 			result.pushMap(newMap);
 		}
 		promise.resolve(result);
-	}
-	
-    @ReactMethod
-    public void getPlayerData(String nick, @NonNull Promise promise) {
-        WritableMap data = Arguments.createMap();
-		data.putString("nick", "Unknown");
-        data.putString("avatar", "error");
-        data.putInt("level", 0);
-        data.putInt("progress", 0);
-        promise.resolve(data);
-    }
-	
-	@ReactMethod
-	public void getGamemodes(Promise promise) {
-		var jsGamemodes = Arguments.createArray();
-		for(var row : PackLoader.getGamemodes()) {
-			var jsRow = Arguments.createMap();
-			jsRow.putString("title", row.title);
-			jsRow.putString("id", row.id);
-			var jsData = Arguments.createArray();
-			for(var gamemode : row.data) {
-				var jsGamemode = Arguments.createMap();
-				jsGamemode.putString("name", gamemode.name);
-				jsGamemode.putString("id", gamemode.id);
-				
-				Moshi moshi = new Moshi.Builder().build();
-				JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
-				jsGamemode.putString("file", adapter.toJson(gamemode.file));
-				
-				jsGamemode.putInt("maxPlayers", gamemode.maxPlayers);
-				if(gamemode.author != null) jsGamemode.putString("author", gamemode.author.name);
-				if(gamemode.time != null) jsGamemode.putString("time", gamemode.time);
-				if(gamemode.description != null) jsGamemode.putString("description", gamemode.description);
-				if(gamemode.banner != null) jsGamemode.putString("banner", gamemode.source.goTo(gamemode.banner).getFullPath(true));
-				if(gamemode.type == null) gamemode.type = "match";
-				switch(Objects.requireNonNullElse(gamemode.type, "match")) {
-					case "match": {
-						if(gamemode.maps != null) {
-							var jsMaps = Arguments.createArray();
-							for(var map : gamemode.maps) {
-								var jsMap = Arguments.createMap();
-								jsMap.putString("name", map.name);
-								jsMap.putString("author", map.author.name);
-								jsMap.putString("file", adapter.toJson(gamemode.source.goTo(map.file.getPath())));
-								jsMaps.pushMap(jsMap);
-							}
-							jsGamemode.putArray("maps", jsMaps);
-						}
-						break;
-					}
-					case "story": {
-						break;
-					}
-				}
-
-				if(gamemode.entry != null) {
-					var entryAdapter = moshi.adapter(PackData.GamemodeEntry.class);
-					jsGamemode.putString("entry", entryAdapter.toJson(gamemode.entry));
-				}
-
-				jsData.pushMap(jsGamemode);
-			}
-			jsRow.putArray("data", jsData);
-			jsGamemodes.pushMap(jsRow);
-		}
-		promise.resolve(jsGamemodes);
-	}
-	
-	@ReactMethod
-	public void getMissions(@NonNull Promise promise) {
-		WritableArray missions = Arguments.createArray();
-		WritableMap mission = Arguments.createMap();
-		mission.putString("name", "Find The Capybara");
-		mission.putString("description", "The Legendary Animal is hidden somewhere. Find it!");
-		mission.putDouble("progress", 0);
-		mission.putDouble("progressMax", 1);
-		promise.resolve(missions);
 	}
 	
 	@ReactMethod
@@ -225,6 +147,14 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 
 		Intent intent = new Intent(activity, GameLauncher.class);
 		intent.putExtra("enableEditor", data.getBoolean("enableEditor"));
+
+		var jsLevel = data.getMap("level");
+		if(jsLevel != null) {
+			Bundle levelBundle = new Bundle();
+			levelBundle.putString("name", jsLevel.getString("name"));
+			levelBundle.putString("id", jsLevel.getString("id"));
+			intent.putExtra("level", levelBundle);
+		}
 
 		if(data.hasKey("entry")) {
 			try {

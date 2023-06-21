@@ -19,6 +19,7 @@ import com.mrboomdev.platformer.game.pack.PackWidget;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.util.Objects;
@@ -91,8 +92,104 @@ public class PackBridge extends ReactContextBaseJavaModule {
 	}
 
 	@ReactMethod
+	public void getGamemodes(Promise promise) {
+		var jsGamemodes = Arguments.createArray();
+		for(var row : PackLoader.getGamemodes()) {
+			var jsRow = Arguments.createMap();
+			jsRow.putString("title", row.title);
+			jsRow.putString("id", row.id);
+			var jsData = Arguments.createArray();
+
+			for(var gamemode : row.data) {
+				var jsGamemode = Arguments.createMap();
+				jsGamemode.putString("name", gamemode.name);
+				jsGamemode.putString("id", gamemode.id);
+
+				Moshi moshi = new Moshi.Builder().build();
+				JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
+
+				if(gamemode.file != null) {
+					jsGamemode.putString("file", adapter.toJson(gamemode.file));
+				}
+
+				jsGamemode.putInt("maxPlayers", gamemode.maxPlayers);
+				if(gamemode.author != null) jsGamemode.putString("author", gamemode.author.name);
+				if(gamemode.time != null) jsGamemode.putString("time", gamemode.time);
+				if(gamemode.description != null) jsGamemode.putString("description", gamemode.description);
+				if(gamemode.banner != null) jsGamemode.putString("banner", gamemode.source.goTo(gamemode.banner).getFullPath(true));
+
+				if(gamemode.levels != null) {
+					var jsLevels = Arguments.createArray();
+					for(var levelCategory : gamemode.levels) {
+						var jsLevelsCategory = Arguments.createMap();
+						jsLevelsCategory.putString("title", levelCategory.title);
+
+						var jsLevelsCategoryData = Arguments.createArray();
+						for(var level : levelCategory.data) {
+							var jsLevel = Arguments.createMap();
+							jsLevel.putString("id", level.id);
+							jsLevel.putString("name", level.name);
+							jsLevelsCategoryData.pushMap(jsLevel);
+						}
+
+						jsLevelsCategory.putArray("data", jsLevelsCategoryData);
+						jsLevels.pushMap(jsLevelsCategory);
+					}
+
+					jsGamemode.putArray("levels", jsLevels);
+				}
+
+				if(gamemode.maps != null) {
+					var jsMaps = Arguments.createArray();
+					for(var map : gamemode.maps) {
+						var jsMap = Arguments.createMap();
+						jsMap.putString("name", map.name);
+						jsMap.putString("author", map.author.name);
+						jsMap.putString("file", adapter.toJson(gamemode.source.goTo(map.file.getPath())));
+						jsMaps.pushMap(jsMap);
+					}
+					jsGamemode.putArray("maps", jsMaps);
+				}
+
+				if(gamemode.entry != null) {
+					var entryAdapter = moshi.adapter(PackData.GamemodeEntry.class);
+					jsGamemode.putString("entry", entryAdapter.toJson(gamemode.entry));
+				}
+
+				jsData.pushMap(jsGamemode);
+			}
+			jsRow.putArray("data", jsData);
+			jsGamemodes.pushMap(jsRow);
+		}
+		promise.resolve(jsGamemodes);
+	}
+
+	@ReactMethod
 	public void savePack(@NonNull ReadableMap map, @NonNull Promise promise) {
 		promise.reject("Unfinished functionality", "Sorry, but this feature wasn't finished yet.");
+	}
+
+	@ReactMethod
+	public void pickPack(ReadableMap props, Promise promise) {
+		Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType("application/zip");
+		ActivityManager.current.startActivityForResult(intent, 1);
+	}
+
+	@ReactMethod
+	public void deletePack(ReadableMap props, @NonNull Promise promise) {
+		promise.reject("Not available", "bruh");
+	}
+
+	@ReactMethod
+	public void setPackActive(ReadableMap props, @NonNull Promise promise) {
+		promise.reject("Not available", "bruh");
+	}
+
+	@ReactMethod
+	public void setPacksOrder(ReadableMap props, @NonNull Promise promise) {
+		promise.reject("Not available", "bruh");
 	}
 
 	@ReactMethod

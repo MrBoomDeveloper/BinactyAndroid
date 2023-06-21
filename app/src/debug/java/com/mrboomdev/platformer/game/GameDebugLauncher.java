@@ -7,6 +7,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import com.badlogic.gdx.Gdx;
 import com.google.android.material.color.DynamicColors;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -18,6 +19,8 @@ public class GameDebugLauncher extends GameLauncher {
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		var game = GameHolder.getInstance();
+		FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+
 		game.gamemodeFile = FileUtil.internal("packs/fnaf/gamemode.java");
 		game.mapFile = FileUtil.internal("packs/fnaf/maps/fnafMap1.json");
 		AudioUtil.setVolume(1, 1);

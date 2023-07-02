@@ -75,28 +75,19 @@ public class GameplayScreen extends CoreScreen {
 		debugRenderer = new Box2DDebugRenderer();
 
 		shaders = new ShaderProgram(
-				Gdx.files.internal("world/shaders/default/default.vert"),
-				Gdx.files.internal("world/shaders/default/default.frag"));
-
-		var effectsShader = new ShaderProgram(
 				Gdx.files.internal("world/shaders/effects/effects.vert"),
 				Gdx.files.internal("world/shaders/effects/effects.frag"));
 
 		ShaderProgram.pedantic = false;
-		if(shaders.isCompiled() && effectsShader.isCompiled()) {
+		if(shaders.isCompiled()) {
 			game.analytics.log("Shaders", "Successfully compiled shaders!");
 			batch.setShader(shaders);
 
 			environment.batch = batch;
 			environment.shader = shaders;
-			environment.shaders.put("default", shaders);
-			environment.shaders.put("effects", effectsShader);
 		} else {
 			throw BoomException.builder("Failed to compile shaders!\nDefault shader logs: ")
-					.addQuoted(shaders.getLog())
-					.append("\nEffects shader logs: ")
-					.addQuoted(effectsShader.getLog())
-					.build();
+					.addQuoted(shaders.getLog()).build();
 		}
 		
 		environment.world.setContactListener(new ProjectileCollision());

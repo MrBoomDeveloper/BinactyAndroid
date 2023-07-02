@@ -7,10 +7,11 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
+import com.mrboomdev.platformer.util.TimeFormatterKt;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
-import java.text.SimpleDateFormat;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,43 +59,47 @@ public class GamemodeManager {
 			isBroken = true;
 			return;
 		}
-		
-		for(var operation : stack) {
-			var function = operation.function;
-			operation.progress += Gdx.graphics.getDeltaTime();
-			
-			switch(function.action) {
-				case GAME_OVER:
-					game.stats.isWin = time == 0;
-					gameOverTimeout = 1;
-					fade.start(0, 1, .5f);
-					break;
-					
-				case TIMER_SETUP:
-					timer.setOpacity(1);
-					time = function.options.time;
-					timerSpeed = function.speed;
-					isTimerSetup = true;
-					break;
-					
-				case FADE:
-					fade.start(function.options.from, function.options.to, function.speed);
-					break;
-					
-				case TITLE:
-					title.setText(function.options.text);
-					title.setOpacity(operation.progress < 1
-						? title.opacity + Gdx.graphics.getDeltaTime()
-						: (operation.progress < (function.duration - 1)
-							? (Math.min(1, title.opacity + Gdx.graphics.getDeltaTime()))
-							: title.opacity - Gdx.graphics.getDeltaTime()));
-					if(title.opacity <= 0) operation.isFinished = true;
-					break;
+
+		if(!stack.isEmpty()) {
+			for(var operation : stack) {
+				var function = operation.function;
+				operation.progress += Gdx.graphics.getDeltaTime();
+
+				switch(function.action) {
+					case GAME_OVER:
+						game.stats.isWin = time == 0;
+						gameOverTimeout = 1;
+						fade.start(0, 1, .5f);
+						break;
+
+					case TIMER_SETUP:
+						timer.setOpacity(1);
+						time = function.options.time;
+						timerSpeed = function.speed;
+						isTimerSetup = true;
+						break;
+
+					case FADE:
+						fade.start(function.options.from, function.options.to, function.speed);
+						break;
+
+					case TITLE:
+						title.setText(function.options.text);
+						title.setOpacity(operation.progress < 1
+								? title.opacity + Gdx.graphics.getDeltaTime()
+								: (operation.progress < (function.duration - 1)
+								? (Math.min(1, title.opacity + Gdx.graphics.getDeltaTime()))
+								: title.opacity - Gdx.graphics.getDeltaTime()));
+						if(title.opacity <= 0) operation.isFinished = true;
+						break;
+				}
 			}
+
+			stack = stack.stream().filter(operation -> (
+					operation.progress < operation.function.duration ||
+							(operation.function.isLong && !operation.isFinished)))
+					.collect(Collectors.toList());
 		}
-		
-		stack = stack.stream().filter(operation -> (operation.progress < operation.function.duration ||
-			(operation.function.isLong && !operation.isFinished))).collect(Collectors.toList());
 		
 		if(gameOverTimeout > 0) {
 			gameOverTimeout += Gdx.graphics.getDeltaTime();
@@ -108,6 +113,7 @@ public class GamemodeManager {
 	}
 	
 	public void createUi(Stage stage) {
+
 		if(game.settings.enableEditor) return;
 		timer = new TextWidget("timer.ttf").setOpacity(0)
 			.toPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - game.settings.screenInset)
@@ -124,8 +130,7 @@ public class GamemodeManager {
 		if(!isTimerSetup || isTimerEnd) return;
 		
 		time = Math.max(0, time - (delta * timerSpeed));
-		SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
-		timer.setText(dateFormat.format(time * 1000));
+		timer.setText(TimeFormatterKt.formatTimer(time, "mm:ss"));
 		
 		if(time == 0) {
 			isTimerEnd = true;

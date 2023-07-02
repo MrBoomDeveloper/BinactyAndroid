@@ -32,8 +32,9 @@ public class AiTargeter {
 			if(exploreTimeoutProgress <= 0) {
 				brain.target = brain.graph.points.random();
 				exploreTimeoutProgress = Math.min(brain.target.getPosition().dst(brain.entity.getPosition()) * 1.2f, 10);
-				brain.stuckChecker.setDestination(brain.target.getPosition().cpy(), brain.target.getPosition().dst(brain.entity.getPosition()) * 1.2f);
+				brain.stuckChecker.reset();
 			}
+
 			exploreTimeoutProgress -= Gdx.graphics.getDeltaTime();
 			targetPoint = brain.graph.findNearest(brain.target.getPosition());
 			brain.path = brain.graph.findPath(myPoint, targetPoint);
@@ -49,6 +50,7 @@ public class AiTargeter {
 		visionDistance = 12;
 		exploreTimeoutProgress = 0;
 		brain.path = brain.graph.findPath(myPoint, targetPoint);
+		brain.stuckChecker.setDestination(targetPoint.getPosition().cpy());
 		brain.goByPath(brain.entity.stats.speed * 1.5f, true);
 		brain.target = game.settings.mainPlayer;
 	}

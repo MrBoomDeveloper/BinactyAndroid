@@ -7,7 +7,7 @@
 				"from": 1, "to": 0
 			}
 		}, {
-			"action": "TIMER_SETUP", "speed": 1.5,
+			"action": "TIMER_SETUP", "speed": 1.2,
 			"options": {
 				"time": 360,
 				"direction": 1

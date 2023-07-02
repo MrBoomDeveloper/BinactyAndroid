@@ -1,12 +1,20 @@
 package com.mrboomdev.platformer.util.io.audio
 
+import com.badlogic.gdx.Gdx
 import com.mrboomdev.platformer.util.AudioUtil as JavaAudioUtil
+
+private var updateReloadProgress = 1f
 
 class AudioUtil {
     companion object {
         val activeAudio = ArrayList<Audio>()
 
         fun update() {
+            if(updateReloadProgress < .5f) {
+                updateReloadProgress += Gdx.graphics.deltaTime
+                return
+            }
+
             val iterator = activeAudio.iterator()
             while(iterator.hasNext()) {
                 val audio = iterator.next()

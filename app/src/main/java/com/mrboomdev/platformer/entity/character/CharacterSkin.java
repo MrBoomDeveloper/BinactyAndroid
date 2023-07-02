@@ -85,7 +85,13 @@ public class CharacterSkin {
 		return IDLE;
 	}
 	
-	public void draw(SpriteBatch batch, @NonNull Vector2 position, @NonNull Direction direction, CharacterEntity entity, float opacity) {
+	public void draw(
+			SpriteBatch batch,
+			@NonNull Vector2 position,
+			@NonNull Direction direction,
+			CharacterEntity entity,
+			float opacity
+	) {
 		var activeAnimation = animations.get(currentAnimation);
 		animationProgress += Gdx.graphics.getDeltaTime();
 		
@@ -103,6 +109,7 @@ public class CharacterSkin {
 		  (currentAnimation == WALK || currentAnimation == RUN)) {
 			AudioUtil.play3DSound(game.assets.get("audio/sounds/step.mp3"), .2f, 15, position);
 		}
+
 		lastFrameIndex = frameIndex;
 
 		if(currentAnimation == RUN && frameIndex == 1) {

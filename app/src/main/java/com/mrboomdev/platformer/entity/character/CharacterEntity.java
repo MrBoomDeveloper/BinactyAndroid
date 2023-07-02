@@ -124,7 +124,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		projectileManager = new ProjectileManager(world, this)
 			.setAttackConfig(new ProjectileAttack.AttackStats()
-				.setDamage(50)
+				.setDamage(stats.damage)
 				.setDelay(.4f)
 				.setDuration(1));
 		
@@ -159,6 +159,7 @@ public class CharacterEntity extends EntityAbstract {
 			isDashing = false;
 			dashReloadProgress = 0;
 		}
+
 		if(damagedProgress < 1 && !isDashing) {
 			body.setLinearVelocity(damagedPower.scl(5).limit(3));
 		} else {
@@ -171,13 +172,14 @@ public class CharacterEntity extends EntityAbstract {
 		shadow.setCenter(getPosition().x, getPosition().y - worldBody.size[1] / 2);
 		shadow.draw(batch);
 
-		game.environment.useTempShader("effects", shader -> {
-			shader.setUniformf("flashProgress", isDead
+		var shader = game.environment.shader;
+		shader.setUniformf("flashProgress", isDead
 				? Math.min(damagedProgress, 1)
 				: .8f - Math.min(damagedProgress * .8f, .8f));
 
-			skin.draw(batch, getPosition(), getDirection(), this, getOpacity());
-		});
+		skin.draw(batch, getPosition(), getDirection(), this, getOpacity());
+		game.environment.batch.flush();
+		shader.setUniformf("flashProgress", 0);
 
 		inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
 
@@ -290,6 +292,7 @@ public class CharacterEntity extends EntityAbstract {
 			skin.setAnimation(DASH);
 			return;
 		}
+
 		if(power.isZero() || speed == 0) {
 			isRunning = false;
 			skin.setAnimation(IDLE);
@@ -299,6 +302,7 @@ public class CharacterEntity extends EntityAbstract {
 			skin.setAnimation(RUN);
 			stats.stamina = Math.max(stats.stamina - .02f, 0);
 			staminaReloadMultiply = .05f;
+
 			if(stats.stamina > 5) {
 				super.usePower(power.scl(100), speed, isBot);
 			} else {

@@ -20,7 +20,7 @@ public class CharacterScreen extends Game {
     @Override
     public void render() {
 		ScreenUtils.clear(0, 0, 0, 1);
-        batch.begin();
+		batch.begin();
 		testSprite.draw(batch);
 		batch.end();
     }

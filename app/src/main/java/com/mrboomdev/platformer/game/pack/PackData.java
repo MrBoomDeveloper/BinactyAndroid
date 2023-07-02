@@ -72,7 +72,7 @@ public class PackData {
 	}
 
 	public static class LevelsCategory {
-		public String title;
+		public String title, id;
 		public Level[] data;
 
 		public static class Level {

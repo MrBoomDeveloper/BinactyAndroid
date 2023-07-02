@@ -123,6 +123,7 @@ public class PackBridge extends ReactContextBaseJavaModule {
 					for(var levelCategory : gamemode.levels) {
 						var jsLevelsCategory = Arguments.createMap();
 						jsLevelsCategory.putString("title", levelCategory.title);
+						jsLevelsCategory.putString("id", levelCategory.id);
 
 						var jsLevelsCategoryData = Arguments.createArray();
 						for(var level : levelCategory.data) {

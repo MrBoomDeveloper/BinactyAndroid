@@ -6,10 +6,11 @@ import com.badlogic.gdx.math.Vector2;
 
 @SuppressWarnings("unused")
 public class AiStuckChecker {
-	private Vector2 lastCheckPosition;
+	private Vector2 lastCheckPosition, destinationPosition;
 	private long lastCheckTime;
 
-	public void setDestination(Vector2 destinationPosition, float expectedSpeed) {
+	public void setDestination(Vector2 destinationPosition) {
+		this.destinationPosition = destinationPosition;
 		reset();
 	}
 	
@@ -18,7 +19,9 @@ public class AiStuckChecker {
 			update(currentPosition);
 			return false;
 		}
+
 		if(System.currentTimeMillis() > lastCheckTime + 1500) {
+			if(destinationPosition != null && destinationPosition.dst(currentPosition) < 1) return false;
 			if(currentPosition.dst(lastCheckPosition) < .5f) return true;
 			update(currentPosition);
 		}

@@ -36,6 +36,7 @@ public class MapTile extends MapObject {
 	public TileInteraction interaction;
 	public TileStyle style;
 	@Json(name = "shadow_collision") public float[] shadowCollision;
+	@Json(ignore = true) private Vector2 cachedPosition;
 	@Json(ignore = true) public boolean isSelected;
 	@Json(ignore = true) public Sprite sprite, devSprite;
 	@Json(ignore = true) public PointLight pointLight;
@@ -229,11 +230,11 @@ public class MapTile extends MapObject {
 	
 	@Override
     public Vector2 getPosition(boolean isBottom) {
-		if(body == null) {
-			if(position == null) return new Vector2();
-			return new Vector2(position[0] + offset[0], position[1] + offset[1]);
+		if(position == null) return new Vector2();
+		if(cachedPosition == null) {
+			cachedPosition = new Vector2(position[0] + offset[0], position[1] + offset[1]);
 		}
-        return body.getPosition();
+		return cachedPosition;
     }
 	
 	@Override

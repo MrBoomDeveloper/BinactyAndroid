@@ -11,7 +11,7 @@
 
 				"levels": [
 					{
-						"title": "Survive 5 Nights",
+						"title": "Survive 5 Nights", "id": "faed7183-e24f-4b99-965a-2df21a3c62cb",
 						"data": [
 							{ "id": "night_1", "name": "Night 1" },
 							{ "id": "night_2", "name": "Night 2" },

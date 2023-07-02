@@ -168,6 +168,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 
 			switch(Objects.requireNonNullElse(was.getString("type"), "string")) {
 				case "string":
+					//TODO: Change initial to a value
 					newMap.putString("initial", prefs.getString(key, was.getString("initial")));
 					break;
 

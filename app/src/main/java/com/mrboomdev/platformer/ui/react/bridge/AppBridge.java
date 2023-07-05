@@ -19,6 +19,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.online.Online;
+import com.mrboomdev.platformer.online.OnlineManager;
 import com.mrboomdev.platformer.online.profile.AuthParams;
 import com.mrboomdev.platformer.online.profile.ProfileAuthentication;
 import com.mrboomdev.platformer.ui.ActivityManager;
@@ -62,16 +63,6 @@ public class AppBridge extends ReactContextBaseJavaModule {
 						AndroidDialog.createMessageDialog("Failed to Sign In", "Stacktrace:\n" + Log.getStackTraceString(e)).show();
 					});
 				break;
-			}
-
-			case "guest": {
-				ActivityManager.reactActivity.prefs.edit()
-						.putBoolean("isSignedIn", true)
-						.putString("signedInMethod", "guest")
-						.apply();
-
-				ActivityManager.forceExit();
-				break;
 			}*/
 
 			case "name": {
@@ -81,31 +72,34 @@ public class AppBridge extends ReactContextBaseJavaModule {
 						.setUserId("test_player");
 
 				ProfileAuthentication.auth(params, () -> promise.resolve(true));
-				break;
-			}
+			} break;
 
-			case "guest":
-				promise.resolve(true);
-				break;
+			case "guest": {
+				var params = new AuthParams(ActivityManager.reactActivity)
+						.setConnectionId(AuthParams.ConnectionId.GUEST);
 
-			default:
+				ProfileAuthentication.auth(params, () -> promise.resolve(true));
+			} break;
+
+			default: {
 				promise.reject("Invalid login method", "Sorry, but we didn't found anything, that can help you. Try other methods.");
-				break;
+			} break;
 		}
 	}
 	
 	@ReactMethod
 	public void isSignedIn(@NonNull Promise promise) {
 		promise.resolve(ProfileAuthentication.isLoggedIn());
-		//promise.resolve(ActivityManager.reactActivity.prefs.getBoolean("isSignedIn", false));
 	}
 	
 	@ReactMethod
 	public void getMyData(@NonNull Promise promise) {
-		var prefs = ActivityManager.reactActivity.prefs;
 		WritableMap data = Arguments.createMap();
-		data.putString("nick", prefs.getString("nick", "Player"));
-		data.putString("avatar", prefs.getString("avatar", "klarrie"));
+		boolean isGuest = OnlineManager.getInstance().isGuest;
+		var prefs = ActivityManager.reactActivity.prefs;
+
+		data.putString("nick", isGuest ? "Guest" : prefs.getString("nick", "Guest"));
+		data.putString("avatar", isGuest ? "klarrie" : prefs.getString("avatar", "klarrie"));
 		data.putInt("level", 1);
 		data.putInt("progress", 0);
         promise.resolve(data);

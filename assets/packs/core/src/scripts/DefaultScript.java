@@ -8,6 +8,7 @@ import com.mrboomdev.platformer.util.ui.ActorUtil.Align;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.util.io.audio.Audio;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.CameraUtil;
 
 FileUtil getSource() {
 	return this.__source;
@@ -19,4 +20,8 @@ Audio createMusic(String path) {
 
 Audio createSound(String path) {
 	return new Audio(getSource(), path, false);
+}
+
+void setCameraZoom(float size, float speed) {
+	CameraUtil.setCameraZoom(size, speed);
 }

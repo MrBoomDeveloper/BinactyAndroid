@@ -17,7 +17,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.Entity;
-import com.mrboomdev.platformer.entity.EntityAbstract;
+import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 
 public class ProjectileAttack {
@@ -26,12 +26,12 @@ public class ProjectileAttack {
 	private final Animation<TextureRegion> animation;
 	private float animationProgress;
 	private final World world;
-	public EntityAbstract owner;
+	public CharacterEntity owner;
 	public boolean isEnded, isDead;
 	public AttackStats stats;
 	public Vector2 power;
 	
-	public ProjectileAttack(@NonNull World world, @NonNull EntityAbstract owner, AttackStats stats, @NonNull Vector2 power) {
+	public ProjectileAttack(@NonNull World world, @NonNull CharacterEntity owner, AttackStats stats, @NonNull Vector2 power) {
 		this.world = world;
 		this.owner = owner;
 		this.stats = stats;
@@ -51,7 +51,7 @@ public class ProjectileAttack {
 			new TextureRegion(texture, 48, 0, 8, 8),
 			new TextureRegion(texture, 56, 0, 8, 8)
 		};
-		animation = new Animation<TextureRegion>(.04f, new Array<TextureRegion>(animationFrames), Animation.PlayMode.REVERSED);
+		animation = new Animation<>(.04f, new Array<>(animationFrames), Animation.PlayMode.REVERSED);
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.KinematicBody;

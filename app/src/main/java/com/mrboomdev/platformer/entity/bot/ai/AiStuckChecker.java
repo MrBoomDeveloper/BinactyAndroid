@@ -11,7 +11,6 @@ public class AiStuckChecker {
 
 	public void setDestination(Vector2 destinationPosition) {
 		this.destinationPosition = destinationPosition;
-		reset();
 	}
 	
 	public boolean isStuck(Vector2 currentPosition) {
@@ -25,6 +24,7 @@ public class AiStuckChecker {
 			if(currentPosition.dst(lastCheckPosition) < .5f) return true;
 			update(currentPosition);
 		}
+
 		return false;
 	}
 	

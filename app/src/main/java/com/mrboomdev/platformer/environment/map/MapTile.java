@@ -231,10 +231,12 @@ public class MapTile extends MapObject {
 	@Override
     public Vector2 getPosition(boolean isBottom) {
 		if(position == null) return new Vector2();
-		if(cachedPosition == null) {
-			cachedPosition = new Vector2(position[0] + offset[0], position[1] + offset[1]);
+
+		if(body == null) {
+			return new Vector2(position[0] + offset[0], position[1] + offset[1]);
 		}
-		return cachedPosition;
+
+		return body.getPosition();
     }
 	
 	@Override

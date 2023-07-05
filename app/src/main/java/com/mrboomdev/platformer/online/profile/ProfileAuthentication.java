@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.online.Online;
+import com.mrboomdev.platformer.online.OnlineManager;
 import com.mrboomdev.platformer.online.ResultData;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.playerio.Client;
@@ -17,6 +18,7 @@ import com.squareup.moshi.Types;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -26,6 +28,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ProfileAuthentication {
+	private static final OnlineManager manager = OnlineManager.getInstance();
 	private final OkHttpClient client;
 	
 	public ProfileAuthentication(OkHttpClient client) {
@@ -33,10 +36,17 @@ public class ProfileAuthentication {
 	}
 
 	public static boolean isLoggedIn() {
+		if(manager.isGuest) return true;
 		return playerIOClient != null;
 	}
 
 	public static void auth(@NonNull AuthParams params, Runnable authCallback) {
+		if(Objects.equals(params.connectionId.title, "guest")) {
+			manager.isGuest = true;
+			authCallback.run();
+			return;
+		}
+
 		var map = new HashMap<String, String>() {{
 			put("userId", params.userId);
 		}};

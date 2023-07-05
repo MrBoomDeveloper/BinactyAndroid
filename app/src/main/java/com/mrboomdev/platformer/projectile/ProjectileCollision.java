@@ -30,7 +30,7 @@ public class ProjectileCollision implements ContactListener {
             if(me instanceof ProjectileBullet) {
                 ProjectileBullet bullet = (ProjectileBullet) me;
                 CharacterEntity player2 = (CharacterEntity) enemy;
-                if (bullet.owner == player2) return;
+                if(bullet.owner == player2) return;
                 player2.gainDamage(bullet.stats.damage, bullet.power);
 				if(enemy != game.settings.mainPlayer) {
 					game.environment.particles.createParticle(
@@ -40,10 +40,10 @@ public class ProjectileCollision implements ContactListener {
 				}
             }
 
-            if(me instanceof ProjectileAttack) {
+			if(me instanceof ProjectileAttack) {
                 ProjectileAttack attack = (ProjectileAttack) me;
-                if (attack.owner == enemy) return;
-                ((CharacterEntity) enemy).gainDamage(attack.stats.damage, attack.power);
+                if(attack.owner == enemy) return;
+                ((CharacterEntity) enemy).gainDamage(attack.owner.stats.damage, attack.power);
 				attack.isDead = true;
             }
 			

@@ -31,6 +31,7 @@ public class ProjectileManager {
 
 	public void shoot(Vector2 power) {
 		if(delayProgress < .1f) return;
+
         bullets.add(new ProjectileBullet(world, owner, power));
 		delayProgress = 0;
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .1f, 25, owner.getPosition());

@@ -8,7 +8,7 @@
 		"texture": "skin.png",
 		"animations": {
 			"idle": {
-				"delay": 0.09,
+				"delay": 0.125,
 				"size": [ 1, 2 ],
 				"hand_position": [0.4, -0.2],
 				"frames": [
@@ -31,6 +31,18 @@
 					{ "region": [ 241, 44, 19, 42 ] },
 					{ "region": [ 241, 44, 19, 42 ] },
 					{ "region": [ 241, 44, 19, 42 ] }
+				]
+			},
+			
+			"damage": {
+				"delay": 0.1,
+				"mode": "NORMAL",
+				"size": [ 1, 2 ],
+				"hand_position": [0.4, -0.2],
+				"frames": [
+					{ "region": [ 181, 1, 21, 42 ] },
+					{ "region": [ 203, 1, 21, 42 ] },
+					{ "region": [ 225, 1, 21, 42 ] }
 				]
 			},
 			

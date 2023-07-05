@@ -26,7 +26,8 @@ public class AuthParams {
 	}
 
 	public enum ConnectionId {
-		PUBLIC("public");
+		PUBLIC("public"),
+		GUEST("guest");
 
 		public final String title;
 

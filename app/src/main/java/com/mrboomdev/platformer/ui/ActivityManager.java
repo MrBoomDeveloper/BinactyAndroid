@@ -16,17 +16,37 @@ public class ActivityManager {
 	public static Activity current;
 	public static MediaPlayer media;
 	public static ReactActivity reactActivity;
+	private static boolean isMusicPlaying, isActivityResumed;
+
+	public static void onPause() {
+		if(isMusicPlaying) {
+			pauseMusic();
+			isMusicPlaying = true;
+		}
+
+		isActivityResumed = false;
+	}
+
+	public static void onResume() {
+		isActivityResumed = true;
+		if(isMusicPlaying) resumeMusic();
+	}
 	
 	public static void startMusic() {
+		isMusicPlaying = true;
 		if(reactActivity.isGameStarted || isPlaying()) return;
 		media = MediaPlayer.create(current, R.raw.lobby_theme);
+
 		setVolume(current.getSharedPreferences("Save", 0).getInt("musicVolume", 100) / 100f);
 		media.setLooping(true);
+
+		if(!isActivityResumed) return;
 		media.start();
 	}
 
 	public static boolean isPlaying() {
 		if(media == null) return false;
+
 		try {
 			return media.isPlaying();
 		} catch(Exception e) {
@@ -37,6 +57,7 @@ public class ActivityManager {
 	
 	public static void setVolume(float volume) {
 		if(media == null) return;
+
 		try {
 			media.setVolume(volume, volume);
 		} catch(Exception e) {
@@ -45,20 +66,23 @@ public class ActivityManager {
 	}
 	
 	public static void resumeMusic() {
-		if(media == null || reactActivity.isGameStarted) return;
+		if(media == null || reactActivity.isGameStarted || !isActivityResumed) return;
+
 		try {
 			media.start();
+			isMusicPlaying = true;
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	public static void pauseMusic() {
 		if(media == null) return;
+
 		try {
 			if(!media.isPlaying()) return;
 			media.pause();
+			isMusicPlaying = false;
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -69,6 +93,7 @@ public class ActivityManager {
 			media.stop();
 			media.release();
 			media = null;
+			isMusicPlaying = false;
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

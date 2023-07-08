@@ -68,10 +68,11 @@ public class GameDebugLauncher extends GameLauncher {
 			finishAffinity();
 			return;
 		}
+
 		AudioUtil.clear();
 		Gdx.app.postRunnable(() -> {
 			var game = GameHolder.getInstance();
-			game.setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
+			game.setScreen(new LoadingScreen());
 		});
 	}
 }

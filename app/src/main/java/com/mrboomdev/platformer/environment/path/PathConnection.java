@@ -1,12 +1,14 @@
 package com.mrboomdev.platformer.environment.path;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.ai.pfa.Connection;
 
 public class PathConnection implements Connection<PathPoint> {
-	private PathPoint start, end;
-	private float cost;
+	private final PathPoint start, end;
+	private final float cost;
 	
-	public PathConnection(PathPoint start, PathPoint end) {
+	public PathConnection(@NonNull PathPoint start, @NonNull PathPoint end) {
 		this.start = start;
 		this.end = end;
 		this.cost = start.position.dst(end.position);

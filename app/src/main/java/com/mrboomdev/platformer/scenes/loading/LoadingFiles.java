@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.scenes.loading;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -18,7 +20,7 @@ public class LoadingFiles {
 		LoadingFiles.loadToManager(Objects.requireNonNull(scenes.get(scene)).load, "", manager);
 	}
 	
-	public static void loadToManager(List<File> files, String source, AssetManager manager) {
+	public static void loadToManager(@NonNull List<File> files, String source, AssetManager manager) {
 		for(File file : files) {
 			String path = source + file.path;
 			

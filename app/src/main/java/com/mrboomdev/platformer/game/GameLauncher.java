@@ -20,6 +20,7 @@ import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class GameLauncher extends AndroidApplication {
 	private GameHolder game;
@@ -36,16 +37,10 @@ public class GameLauncher extends AndroidApplication {
 			crashlytics.setCrashlyticsCollectionEnabled(false);
 		}
 		
-		var config = new AndroidApplicationConfiguration();
-		config.useImmersiveMode = true;
-		config.useAccelerometer = false;
-		config.useCompass = false;
-		
 		var settings = GameSettings.getFromSharedPreferences(prefs);
 		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
-		settings.ignoreScriptErrors = true;
-		initialize(GameHolder.setInstance(this, settings, new GameAnalytics(analytics)));
-		game = GameHolder.getInstance();
+		settings.ignoreScriptErrors = BuildConfig.DEBUG;
+		game = GameHolder.setInstance(this, settings, new GameAnalytics(analytics));
 
 		try {
 			resolveGameFiles();
@@ -53,6 +48,12 @@ public class GameLauncher extends AndroidApplication {
 			e.printStackTrace();
 			if(!BuildConfig.DEBUG) exit(Status.CRASH);
 		}
+
+		var config = new AndroidApplicationConfiguration();
+		config.useImmersiveMode = true;
+		config.useAccelerometer = false;
+		config.useCompass = false;
+		initialize(game, config);
 		
 		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
 		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
@@ -68,6 +69,9 @@ public class GameLauncher extends AndroidApplication {
 			game.envVars.putString("levelId", level.getString("id"));
 			game.envVars.putString("levelName", level.getString("name"));
 		}
+
+		var engine = Objects.requireNonNullElse(intent.getStringExtra("engine"), "BeanShell");
+		game.settings.engine = GameSettings.Engine.valueOf(engine.toUpperCase());
 
 		if(!intent.hasExtra("gamemodeFile")) return;
 		Moshi moshi = new Moshi.Builder().build();
@@ -129,6 +133,13 @@ public class GameLauncher extends AndroidApplication {
 	public void onResume() {
 		super.onResume();
 		ActivityManager.current = this;
+		ActivityManager.onResume();
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		ActivityManager.onPause();
 	}
 	
 	public enum Status {

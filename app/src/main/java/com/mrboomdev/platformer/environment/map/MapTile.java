@@ -36,7 +36,7 @@ public class MapTile extends MapObject {
 	public TileInteraction interaction;
 	public TileStyle style;
 	@Json(name = "shadow_collision") public float[] shadowCollision;
-	@Json(ignore = true) private Vector2 cachedPosition;
+
 	@Json(ignore = true) public boolean isSelected;
 	@Json(ignore = true) public Sprite sprite, devSprite;
 	@Json(ignore = true) public PointLight pointLight;
@@ -44,6 +44,8 @@ public class MapTile extends MapObject {
     @Json(ignore = true) public Body body;
 	@Json(ignore = true) public Fixture fixture, shadowFixture;
 	@Json(ignore = true) boolean isDestroyed;
+	@Json(ignore = true) Vector2 cachedPosition = new Vector2();
+	@Json(ignore = true) long positionCachedLastTime;
 	@Json(ignore = true) World world;
 	@Json(ignore = true) ShapeRenderer shape;
 	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
@@ -235,6 +237,14 @@ public class MapTile extends MapObject {
 		if(body == null) {
 			return new Vector2(position[0] + offset[0], position[1] + offset[1]);
 		}
+
+		/*long currentTime = System.currentTimeMillis();
+		if(currentTime > positionCachedLastTime) {
+			cachedPosition.set(body.getPosition());
+			positionCachedLastTime = currentTime + 5000;
+		}
+
+		return cachedPosition;*/
 
 		return body.getPosition();
     }

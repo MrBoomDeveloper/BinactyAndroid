@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.util.helper.BoomException;
@@ -23,7 +22,6 @@ import java.io.IOException;
 
 public class LoadingScreen extends CoreScreen {
     private final GameHolder game = GameHolder.getInstance();
-    private final LoadScene loadScene;
     private final Sprite banner;
     private final SpriteBatch batch;
 	private final BitmapFont font;
@@ -31,10 +29,9 @@ public class LoadingScreen extends CoreScreen {
 	private EnvironmentManager environment;
 	private LoadStep loadStep = PREPARING;
 
-    public LoadingScreen(LoadScene scene) {
-        this.loadScene = scene;
+    public LoadingScreen() {
         this.batch = new SpriteBatch();
-        this.banner = new Sprite(game.assets.get("packs/official/src/images/banner.jpg", Texture.class));
+		this.banner = new Sprite(game.assets.get("packs/official/src/images/banner.jpg", Texture.class));
 		this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		this.banner.setCenter((float)Gdx.graphics.getWidth() / 2, (float)Gdx.graphics.getHeight() / 2);
 		this.font = game.assets.get("loading.ttf", BitmapFont.class);
@@ -47,30 +44,22 @@ public class LoadingScreen extends CoreScreen {
 			var adapter = moshi.adapter(LoadingFiles.class);
 			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
 			if(files == null) throw new BoomException("LoadingFiles cannot be null.");
-			files.loadToManager(game.assets, loadScene.name());
+			files.loadToManager(game.assets, "GAMEPLAY");
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
-		
-        switch(loadScene) {
-            case LOBBY:
+
+		try {
+			environmentCreator = new EnvironmentCreator().onCreate(manager -> {
+				this.environment = manager;
 				loadOtherResources();
-                game.launcher.exit(GameLauncher.Status.LOBBY);
-                break;
-			
-            case GAMEPLAY:
-				try {
-					environmentCreator = new EnvironmentCreator().onCreate(manager -> {
-						this.environment = manager;
-						loadOtherResources();
-					}).create();
-					loadStep = MAP;
-				} catch(Exception e) {
-					LogUtil.crash("Failed to create the environment", "", e);
-					e.printStackTrace();
-				}
-                break;
-        }
+			}).create();
+
+			loadStep = MAP;
+		} catch(Exception e) {
+			LogUtil.crash("Failed to create the environment", "", e);
+			e.printStackTrace();
+		}
     }
 	
 	private void loadOtherResources() {
@@ -85,7 +74,6 @@ public class LoadingScreen extends CoreScreen {
 		} batch.end();
 		
 		if(game.assets.update(17) && game.externalAssets.update(17) && loadStep == RESOURCES) {
-			if(loadScene != LoadScene.GAMEPLAY) return;
 			game.setScreen(new GameplayScreen(environment));
         }
     }
@@ -102,11 +90,7 @@ public class LoadingScreen extends CoreScreen {
     public void dispose() {
         batch.dispose();
     }
-	
-	public enum LoadScene {
-        LOBBY,
-        GAMEPLAY
-    }
+
 	
 	public enum LoadStep {
 		PREPARING,

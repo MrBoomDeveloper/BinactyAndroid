@@ -24,6 +24,7 @@ import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class GameHolder extends Game {
 	public Bundle envVars = new Bundle();
@@ -48,20 +49,23 @@ public class GameHolder extends Game {
 		try {
 			var moshi = new Moshi.Builder().build();
 			var adapter = moshi.adapter(LoadingFiles.class);
-			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
 
-			files.loadToManager(assets, "LOADING");
-			files.loadToManager(assets, "LOBBY");
+			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
+			Objects.requireNonNull(files).loadToManager(assets, "LOADING");
 		} catch(IOException e) {
 			LogUtil.crash("Failed to load resources", "It looks, that the internal loader list was broken.", e);
 			e.printStackTrace();
 		}
 		
 		assets.finishLoading();
-		setScreen(new LoadingScreen(LoadingScreen.LoadScene.GAMEPLAY));
+		setScreen(new LoadingScreen());
 	}
 	
-	public static GameHolder setInstance(GameLauncher launcher, GameSettings settings, @NonNull GameAnalytics analytics) {
+	public static GameHolder setInstance(
+			GameLauncher launcher,
+			@NonNull GameSettings settings,
+			@NonNull GameAnalytics analytics
+	) {
 		analytics.log("GameHolder", "setInstance");
 		instance = new GameHolder(launcher, settings, analytics);
 		return instance;
@@ -115,6 +119,4 @@ public class GameHolder extends Game {
 			super.load(file, fileClass);
 		}
 	}
-	
-	public GameHolder() {}
 }

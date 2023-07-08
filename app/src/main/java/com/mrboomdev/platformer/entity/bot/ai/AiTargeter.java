@@ -26,8 +26,13 @@ public class AiTargeter {
 		if(ignoredTarget != null && System.currentTimeMillis() > ignoredStartedTime + 5000) {
 			ignoredTarget = null;
 		}
-		
-		if(myPoint.position.dst(targetPoint.position) > visionDistance || game.settings.enableEditor || game.settings.mainPlayer == ignoredTarget || game.settings.mainPlayer.isDead) {
+
+		boolean isMainPlayerIgnored = game.settings.enableEditor
+				|| game.settings.mainPlayer == ignoredTarget
+				|| game.settings.mainPlayer.isDead
+				|| myPoint.position.dst(targetPoint.position) > visionDistance;
+
+		if(isMainPlayerIgnored) {
 			visionDistance = 8;
 			if(exploreTimeoutProgress <= 0) {
 				brain.target = brain.graph.points.random();

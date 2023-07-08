@@ -36,7 +36,7 @@ public class BotBrain extends CharacterBrain {
 		float attackReloadDuration = (float) (Math.random() * 1);
 		float dashReloadDuration = (float) (Math.random() * 1);
 		playerDetectedSound = game.assets.get("audio/sounds/player_detected.wav");
-		scanMap();
+		this.scanMap();
 		return this;
 	}
 	
@@ -46,14 +46,8 @@ public class BotBrain extends CharacterBrain {
 		this.graph = new PathGraph();
 		var points = new Array<PathPoint>();
 		for(var tile : game.environment.map.tilesMap.values()) {
-			boolean tileIsOk = false;
-			for(var waypoint : responder.getWaypoints()) {
-				if(waypoint.equals(tile.name)) {
-					tileIsOk = true;
-					break;
-				}
-			}
-			if(!tileIsOk) continue;
+			if(!new Array<>(responder.getWaypoints()).contains(tile.name, false)) continue;
+
 			var point = new PathPoint(tile.getPosition(false));
 			this.graph.addPoint(point);
 			points.add(point);
@@ -71,8 +65,9 @@ public class BotBrain extends CharacterBrain {
 	
 	@Override
 	public void update() {
-		if((refreshRate != 0) && (System.currentTimeMillis() > mapLastScanned + refreshRate * 1000f)) {
-			mapLastScanned = System.currentTimeMillis();
+		long currentTime = System.currentTimeMillis();
+		if((refreshRate != 0) && (currentTime > mapLastScanned + refreshRate * 1000f)) {
+			mapLastScanned = currentTime;
 			scanMap();
 		}
 		

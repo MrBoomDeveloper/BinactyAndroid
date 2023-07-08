@@ -118,14 +118,14 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
     @Override
     public void onPause() {
         super.onPause();
-        ActivityManager.pauseMusic();
+		ActivityManager.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         ActivityManager.current = this;
-        ActivityManager.resumeMusic();
+		ActivityManager.onResume();
     }
 
     @Override

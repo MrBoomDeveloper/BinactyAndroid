@@ -21,10 +21,6 @@
 				}
 			]
 		},
-
-		"LOBBY": {
-			"load": []
-		},
 		
 		"GAMEPLAY": {
 			"load": [

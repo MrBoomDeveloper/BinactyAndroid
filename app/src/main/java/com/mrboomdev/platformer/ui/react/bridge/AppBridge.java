@@ -162,16 +162,19 @@ public class AppBridge extends ReactContextBaseJavaModule {
 
 			switch(Objects.requireNonNullElse(was.getString("type"), "string")) {
 				case "string":
-					//TODO: Change initial to a value
-					newMap.putString("initial", prefs.getString(key, was.getString("initial")));
+					newMap.putString("value", prefs.getString(key, was.getString("value")));
 					break;
 
-				case "number":
-					newMap.putInt("initial", prefs.getInt(key, was.getInt("initial")));
+				case "int":
+					newMap.putInt("value", prefs.getInt(key, was.getInt("value")));
+					break;
+
+				case "float":
+					newMap.putDouble("value", prefs.getFloat(key, (float) was.getDouble("value")));
 					break;
 
 				case "boolean":
-					newMap.putBoolean("initial", prefs.getBoolean(key, was.getBoolean("initial")));
+					newMap.putBoolean("value", prefs.getBoolean(key, was.getBoolean("value")));
 					break;
 			}
 

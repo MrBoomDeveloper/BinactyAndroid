@@ -10,9 +10,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
@@ -35,81 +33,6 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     public String getName() {
         return "GameNative";
     }
-	
-	@ReactMethod
-	@Deprecated
-	public void setKey(@NonNull String type, String key, String value) {
-		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
-		switch(type) {
-			case "string":
-				prefs.edit().putString(key, value).apply();
-				break;
-			case "int":
-				prefs.edit().putInt(key, Integer.parseInt(value)).apply();
-				break;
-			case "float":
-				prefs.edit().putFloat(key, Float.parseFloat(value)).apply();
-				break;
-			case "boolean":
-				prefs.edit().putBoolean(key, Boolean.parseBoolean(value)).apply();
-				break;
-		}
-	}
-	
-	@ReactMethod
-	@Deprecated
-	public void getKey(@NonNull String type, String key, Promise promise) {
-		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
-		switch(type) {
-			case "string":
-				promise.resolve(prefs.getString(key, ""));
-				break;
-			case "int":
-				promise.resolve(prefs.getInt(key, 0));
-				break;
-			case "float":
-				promise.resolve(prefs.getFloat(key, 0));
-				break;
-			case "boolean":
-				promise.resolve(prefs.getBoolean(key, false));
-				break;
-		}
-	}
-	
-	@ReactMethod
-	@Deprecated
-	public void getKeys(@NonNull ReadableArray keys, Promise promise) {
-		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
-		WritableArray result = Arguments.createArray();
-		for(int i = 0; i < keys.size(); i++) {
-			ReadableMap was = keys.getMap(i);
-			WritableMap newMap = Arguments.createMap();
-			String key = was.getString("id");
-			
-			newMap.putString("key", key);
-			newMap.putString("id", key);
-			newMap.putString("title", was.getString("title"));
-			newMap.putString("type", was.getString("type"));
-			if(was.hasKey("max")) newMap.putInt("max", was.getInt("max"));
-			if(was.hasKey("description")) newMap.putString("description", was.getString("description"));
-			
-			switch(Objects.requireNonNullElse(was.getString("type"), "string")) {
-				case "string":
-					newMap.putString("initial", prefs.getString(key, was.getString("initial")));
-					break;
-
-				case "number":
-					newMap.putInt("initial", prefs.getInt(key, was.getInt("initial")));
-					break;
-
-				case "boolean":
-					newMap.putBoolean("initial", prefs.getBoolean(key, was.getBoolean("initial")));
-					break;
-			}
-			result.pushMap(newMap);
-		}
-		promise.resolve(result);
-	}
 	
 	@ReactMethod
 	public void getStats(Promise promise) {

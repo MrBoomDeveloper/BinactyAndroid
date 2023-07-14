@@ -48,7 +48,7 @@ public class BotBrain extends CharacterBrain {
 		for(var tile : game.environment.map.tilesMap.values()) {
 			if(!new Array<>(responder.getWaypoints()).contains(tile.name, false)) continue;
 
-			var point = new PathPoint(tile.getPosition(false));
+			var point = new PathPoint(tile.getCachedPosition());
 			this.graph.addPoint(point);
 			points.add(point);
 		}

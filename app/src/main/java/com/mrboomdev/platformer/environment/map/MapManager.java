@@ -47,7 +47,7 @@ public class MapManager {
 		pendingRemoves.forEach(MapObject::remove);
 		pendingRemoves.clear();
 
-		if(System.currentTimeMillis() > lastSortedTime + 500) {
+		if(System.currentTimeMillis() > lastSortedTime + (long)(GameHolder.getInstance().settings.objectResortDelay * 1000)) {
 			lastSortedTime = System.currentTimeMillis();
 			try {
 				Collections.sort(objects);

@@ -12,6 +12,7 @@ public class GameSettings {
 	public String playerName = "Player";
 	public CharacterEntity mainPlayer;
 	public int screenInset = 60;
+	public float objectResortDelay = .5f, objectPositionRecacheDelay = 1;
 	public boolean enableEditor, pause, ignoreScriptErrors, isBeta;
 	public boolean debugRenderer, debugValues, debugRaysDisable, debugStage;
 	public Engine engine;
@@ -28,6 +29,9 @@ public class GameSettings {
 		settings.debugRenderer = prefs.getBoolean("debugRenderer", false);
 		settings.debugRaysDisable = prefs.getBoolean("debugRaysDisable", false);
 		settings.isBeta = prefs.getBoolean("beta", false);
+
+		settings.objectPositionRecacheDelay = prefs.getFloat("objectPositionRecacheDelay", 1);
+		settings.objectResortDelay = prefs.getFloat("objectResortDelay", .5f);
 		
 		if(prefs.getBoolean("forceEditor", false)) settings.enableEditor = true;
 		AudioUtil.setVolume(prefs.getInt("musicVolume", 100) / 100f, prefs.getInt("soundsVolume", 100) / 100f);

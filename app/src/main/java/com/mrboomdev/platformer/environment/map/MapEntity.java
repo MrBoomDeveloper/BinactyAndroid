@@ -2,11 +2,12 @@ package com.mrboomdev.platformer.environment.map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 
 public class MapEntity extends MapObject {
-    private CharacterEntity entity;
-	private int layer;
+    private final CharacterEntity entity;
+	private final int layer;
 	
 	public MapEntity(CharacterEntity entity) {
 		this.entity = entity;
@@ -25,7 +26,7 @@ public class MapEntity extends MapObject {
 
     @Override
     public Vector2 getPosition(boolean isBottom) {
-		if(!isBottom) return entity.body.getPosition();
+		if(!isBottom) return getBody().getPosition();
 		return entity.getPosition().add(0, entity.worldBody.bottom[3]);
     }
 	
@@ -37,5 +38,10 @@ public class MapEntity extends MapObject {
     @Override
     public void remove() {
 		entity.gainDamage(99999);
+	}
+
+	@Override
+	public Body getBody() {
+		return entity.body;
 	}
 }

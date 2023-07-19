@@ -107,24 +107,28 @@ public class AppBridge extends ReactContextBaseJavaModule {
 
 	@ReactMethod
 	public void setKey(@NonNull String type, String key, Dynamic value) {
-		var prefs = ActivityManager.current.getSharedPreferences("Save", 0);
+		var prefs = ActivityManager.current
+				.getSharedPreferences("Save", 0).edit();
+
 		switch(type) {
 			case "string":
-				prefs.edit().putString(key, value.asString()).apply();
+				prefs.putString(key, value.asString());
 				break;
 
 			case "int":
-				prefs.edit().putInt(key, value.asInt()).apply();
+				prefs.putInt(key, value.asInt());
 				break;
 
 			case "float":
-				prefs.edit().putFloat(key, (float)value.asDouble()).apply();
+				prefs.putFloat(key, (float)value.asDouble());
 				break;
 
 			case "boolean":
-				prefs.edit().putBoolean(key, value.asBoolean()).apply();
+				prefs.putBoolean(key, value.asBoolean());
 				break;
 		}
+
+		prefs.apply();
 	}
 
 	@ReactMethod

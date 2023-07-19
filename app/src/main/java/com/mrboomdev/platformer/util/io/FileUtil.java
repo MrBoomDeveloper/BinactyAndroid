@@ -1,11 +1,18 @@
 package com.mrboomdev.platformer.util.io;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.squareup.moshi.Json;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+
+import org.jetbrains.annotations.Contract;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +23,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 public class FileUtil {
-	public String path;
-	public Source source;
+	public final String path;
+	public final Source source;
+	@Json(ignore = true) static JsonAdapter<FileUtil> jsonAdapter;
 	@Json(ignore = true) static final String errorMessageBase = "Error while operating with FileUtil! ";
 	@Json(ignore = true) static final String errorMessageUnknownSource = errorMessageBase + "Unknown source or it is undefined. ";
 	@Json(ignore = true) static final String errorMessageIO = errorMessageBase + "We don't know the reason of the error. Only the type. It is IOException!";
@@ -29,11 +37,25 @@ public class FileUtil {
 		this.path = path;
 		this.source = source;
 	}
-	
+
+	public static FileUtil fromJson(String json) {
+		generateJsonAdapter();
+
+		try {
+			return jsonAdapter.fromJson(json);
+		} catch(IOException e) {
+			throw new BoomException("Failed to parse a json", e);
+		}
+	}
+
+	@NonNull
+	@Contract(value = "_ -> new", pure = true)
 	public static FileUtil external(String path) {
 		return new FileUtil(path, Source.EXTERNAL);
 	}
 	
+	@NonNull
+	@Contract(value = "_ -> new", pure = true)
 	public static FileUtil internal(String path) {
 		return new FileUtil(path, Source.INTERNAL);
 	}
@@ -212,7 +234,21 @@ public class FileUtil {
 		if(!file.getPath().equals(getPath())) return false;
 		return file.source == source;
 	}
-	
+
+	@NonNull
+	@Override
+	public String toString() {
+		generateJsonAdapter();
+		return jsonAdapter.toJson(this);
+	}
+
+	private static void generateJsonAdapter() {
+		if(jsonAdapter == null) {
+			var moshi = new Moshi.Builder().build();
+			jsonAdapter = moshi.adapter(FileUtil.class);
+		}
+	}
+
 	public enum Source {
 		INTERNAL,
 		EXTERNAL,

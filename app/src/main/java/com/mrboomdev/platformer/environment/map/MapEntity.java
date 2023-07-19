@@ -24,7 +24,12 @@ public class MapEntity extends MapObject {
 		entity.body.setTransform(position, 0);
 	}
 
-    @Override
+	@Override
+	public boolean getIsPositionUpdated() {
+		return true;
+	}
+
+	@Override
     public Vector2 getPosition(boolean isBottom) {
 		if(!isBottom) return getBody().getPosition();
 		return entity.getPosition().add(0, entity.worldBody.bottom[3]);

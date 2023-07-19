@@ -35,6 +35,11 @@ var startups = new int[][]{{25, 25}, {25, 25}, {35, 35}, {60, 60}};
 int nightId = 1;
 
 switch(game.getEnvString("levelId", "night_0")) {
+	case "night_1": {
+		startups = new int[][]{{60, 60}, {60, 60}, {200, 200}, {150, 150}};
+		nightId = 1;
+	} break;
+
 	case "night_2": {
 		startups = new int[][]{{35, 35}, {35, 35}, {175, 175}, {120, 120}};
 		nightId = 2;
@@ -50,14 +55,9 @@ switch(game.getEnvString("levelId", "night_0")) {
 		nightId = 4;
 	} break;
 
-	case "night_5": {
+	default: {
 		startups = new int[][]{{1, 1}, {1, 1}, {25, 25}, {10, 10}};
 		nightId = 5;
-	} break;
-	
-	default: {
-		startups = new int[][]{{60, 60}, {60, 60}, {200, 200}, {150, 150}};
-		nightId = 1;
 	} break;
 }
 

@@ -10,12 +10,15 @@ import com.squareup.moshi.Json;
 
 public abstract class MapObject implements Comparable<MapObject> {
 	@Json(ignore = true)
-	private Vector2 cachedPosition;
+	public Vector2 cachedPosition;
+	@Json(ignore = true)
+	private final GameHolder game = GameHolder.getInstance();
 	@Json(ignore = true)
 	private long positionCachedLastTime;
 	
 	public abstract void draw(SpriteBatch batch);
 	public abstract void setPosition(Vector2 position);
+	public abstract boolean getIsPositionUpdated();
 	public abstract Vector2 getPosition(boolean isBottom);
 	public abstract int getLayer();
 	public abstract void remove();
@@ -26,11 +29,12 @@ public abstract class MapObject implements Comparable<MapObject> {
 	}
 
 	public Vector2 getCachedPosition() {
-		if(getBody() == null) return getPosition();
+		if(cachedPosition == null) cachedPosition = getPosition();
+		if(!getIsPositionUpdated() && cachedPosition != null) return cachedPosition;
 
 		long currentTime = System.currentTimeMillis();
-		if(cachedPosition == null || currentTime > positionCachedLastTime - (long)(GameHolder.getInstance().settings.objectPositionRecacheDelay * 1000)) {
-			cachedPosition = getBody().getPosition();
+		if(currentTime > positionCachedLastTime - /*(long)(game.settings.objectPositionRecacheDelay * 1000)*/ 15000) {
+			cachedPosition = getPosition();
 			positionCachedLastTime = currentTime;
 		}
 

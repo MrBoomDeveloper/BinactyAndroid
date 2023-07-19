@@ -1,11 +1,9 @@
 package com.mrboomdev.platformer.game.pack;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,10 +13,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.PopupMenu;
-import com.mrboomdev.platformer.ui.ActivityManager;
+
+import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.io.FileUtil;
-import com.mrboomdev.platformer.R;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -86,7 +85,7 @@ public class PackWidget {
 
 				if(data.author != null) {
 					var author = new TextView(activity);
-					author.setText(activity.getString(R.string.made_by, data.author.name));
+					author.setText(activity.getString(R.string.made_by, data.author));
 					header.addView(author);
 				}
 
@@ -125,7 +124,6 @@ public class PackWidget {
 				view.setOnLongClickListener(v -> {
 					PopupMenu popup = new PopupMenu(activity, view);
 					if(data.source.source != FileUtil.Source.INTERNAL) popup.getMenu().add(0, 0, 0, "Remove");
-					if(data.author != null && data.author.url != null) popup.getMenu().add(0, 1, 0, "Visit Author");
 					popup.setOnMenuItemClickListener(item -> {
 						switch(item.getItemId()) {
 							case 0: {
@@ -137,12 +135,6 @@ public class PackWidget {
 								view.setAlpha(.2f);
 								view.setOnClickListener(null);
 								view.setOnLongClickListener(null);
-								return true;
-							}
-							case 1: {
-								Intent intent = new Intent(Intent.ACTION_VIEW);
-								intent.setData(Uri.parse(data.author.url));
-								ActivityManager.current.startActivity(intent);
 								return true;
 							}
 							default: return false;

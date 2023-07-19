@@ -31,7 +31,11 @@ public class MapTile extends MapObject {
 	public boolean flipX, flipY;
 	public String texture, devTexture;
 	public Entity.Light light;
-	public float[] size, collision, position, offset = {0, 0}, scale = {1, 1};
+	public float[] size;
+	public float[] collision;
+	public float[] position;
+	public final float[] offset = {0, 0};
+	public float[] scale = {1, 1};
 	public int[] region;
 	public TileInteraction interaction;
 	public TileStyle style;
@@ -46,7 +50,8 @@ public class MapTile extends MapObject {
 	@Json(ignore = true) boolean isDestroyed;
 	@Json(ignore = true) World world;
 	@Json(ignore = true) ShapeRenderer shape;
-	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true)
+	final GameHolder game = GameHolder.getInstance();
 	
 	@Override
 	public void draw(SpriteBatch batch) {
@@ -56,10 +61,13 @@ public class MapTile extends MapObject {
 		if(style != null && style.current != null && style.current.size != null) size = style.current.size;
 		if(!isVisible()) return;
 
+		var position = getCachedPosition();
+
 		if(style != null) {
-			sprite = style.getSprite(getPosition(false), this);
+			sprite = style.getSprite(position, this);
 			sprite.setFlip(flipX, flipY);
 		}
+
 		if(sprite != null) sprite.draw(batch);
 		if(devSprite != null) devSprite.draw(batch);
 		if(shape != null && isSelected) {
@@ -68,7 +76,7 @@ public class MapTile extends MapObject {
 			Gdx.gl.glLineWidth(3);
 			shape.begin(ShapeRenderer.ShapeType.Line);
 			shape.setColor(1, 1, 1, 1);
-			shape.rect(getPosition(false).x - size[0] / 2, getPosition(false).y - size[1] / 2, size[0], size[1]);
+			shape.rect(position.x - size[0] / 2, position.y - size[1] / 2, size[0], size[1]);
 			shape.end();
 			batch.begin();
 		}
@@ -76,16 +84,17 @@ public class MapTile extends MapObject {
 
 	private boolean isVisible() {
 		var camera = game.environment.camera;
+		var position = getCachedPosition();
 
 		float viewportWidth = camera.viewportWidth * camera.zoom;
 		float viewportHeight = camera.viewportHeight * camera.zoom;
 		float cameraX = camera.position.x - viewportWidth / 2;
 		float cameraY = camera.position.y - viewportHeight / 2;
 
-		return (getPosition(false).x - size[0] * scale[0] * .5f + size[0] * scale[0] > cameraX &&
-				getPosition(false).x - size[0] * scale[0] * .5f < cameraX + viewportWidth &&
-				getPosition(false).y - size[1] * scale[1] * .5f + size[1] * scale[1] > cameraY &&
-				getPosition(false).y - size[1] * scale[1] * .5f < cameraY + viewportHeight);
+		return (position.x - size[0] * scale[0] * .5f + size[0] * scale[0] > cameraX &&
+				position.x - size[0] * scale[0] * .5f < cameraX + viewportWidth &&
+				position.y - size[1] * scale[1] * .5f + size[1] * scale[1] > cameraY &&
+				position.y - size[1] * scale[1] * .5f < cameraY + viewportHeight);
 	}
 	
 	public void update() {
@@ -154,27 +163,32 @@ public class MapTile extends MapObject {
 	
 	public void setTexture(Texture texture, boolean isDev) {
 		if(!isDev) {
-			if(region != null) {
-				sprite = new Sprite(texture, region[0], region[1], region[2], region[3]);
-			} else {
-				sprite = new Sprite(texture);
-			}
+			sprite = (region != null)
+				? new Sprite(texture, region[0], region[1], region[2], region[3])
+				: new Sprite(texture);
+
 			if(size != null) sprite.setSize(size[0], size[1]);
 			if(style != null) style.build(sprite);
 		} else {
 			devSprite = new Sprite(texture);
-			devSprite.setSize(size[0], size[1]);
+			if(size != null) devSprite.setSize(size[0], size[1]);
 		}
 	}
 
     @Override
     public void setPosition(Vector2 position) {
 		body.setTransform(position, 0);
-		if(sprite != null) sprite.setCenter(getPosition(false).x, getPosition(false).y);
-		if(devSprite != null) devSprite.setCenter(getPosition(false).x, getPosition(false).y);
+
+		if(sprite != null) sprite.setCenter(position.x, position.y);
+		if(devSprite != null) devSprite.setCenter(position.x, position.y);
     }
 
-    @Override
+	@Override
+	public boolean getIsPositionUpdated() {
+		return true;
+	}
+
+	@Override
     public void remove() {
 		body.getWorld().destroyBody(body);
 		if(pointLight != null) pointLight.remove();
@@ -227,18 +241,20 @@ public class MapTile extends MapObject {
 	}
 	
 	public void setListener(TileInteraction.InteractionListener listener) {
-		if(interaction == null) {
-			interaction = new TileInteraction(null);
-		}
+		if(interaction == null) interaction = new TileInteraction(null);
 		interaction.listener = listener;
 	}
 	
 	@Override
     public Vector2 getPosition(boolean isBottom) {
-		if(position == null) return new Vector2();
+		if(position == null && getBody() == null) return new Vector2();
 
 		if(body == null) {
-			return new Vector2(position[0] + offset[0], position[1] + offset[1]);
+			if(cachedPosition == null) {
+				cachedPosition = new Vector2(position[0] + offset[0], position[1] + offset[1]);
+			}
+
+			return cachedPosition;
 		}
 
 		return body.getPosition();

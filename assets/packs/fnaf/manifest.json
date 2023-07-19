@@ -4,11 +4,7 @@
 	"icon": "icon.jpg",
 	"description": "This is a first pack for this game and i hope you'll like it!",
 	"required": false,
-	"author": {
-		"name": "MrBoomDev",
-		"url": "https://mrboomdev.ru",
-		"icon": "author.jpg"
-	},
+	"author": "MrBoomDev",
 	"resources": {
 		"gamemodes": "gamemodes.json",
 		"characters": "characters.json"

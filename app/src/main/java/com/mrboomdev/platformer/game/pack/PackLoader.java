@@ -14,6 +14,7 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class PackLoader {
 	public static void reloadGamemodes() {
 		if(packs == null) reloadPacks();
 		gamemodes.clear();
+
 		try {
 			Moshi moshi = new Moshi.Builder().build();
 			JsonAdapter<List<PackData.GamemodesRow>> adapter = moshi.adapter(Types.newParameterizedType(List.class, PackData.GamemodesRow.class));
@@ -99,7 +101,6 @@ public class PackLoader {
 		}
 	}
 
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean addPack(FileUtil file) {
 		for(var config : configs) {
 			if(config.file.equals(file)) return false;

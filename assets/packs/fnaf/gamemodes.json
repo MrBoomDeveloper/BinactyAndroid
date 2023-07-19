@@ -7,7 +7,10 @@
 				"id": "723e7736-d6bd-11ed-afa1-0242ac120002",
 				"name": "Five Nights at Freddy's",
 				"banner": "src/banner.jpg",
+
 				"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food!",
+				"maxPlayers": 1,
+				"time": "6:00",
 
 				"levels": [
 					{
@@ -22,13 +25,11 @@
 					}
 				],
 
-				"maxPlayers": 1,
-				"time": "6:00",
 				"type": "match",
 				"file": { "path": "gamemode.java" },
 				"maps": [{
 					"name": "FNaF 1",
-					"author": { "name": "MrBoomDev" },
+					"author": "MrBoomDev",
 					"file": { "path": "maps/fnafMap1.json" }
 				}]
 			},
@@ -37,10 +38,11 @@
 				"id": "723e7736-d6bd-11ed-afa1-0242ac120004",
 				"name": "The Hunt",
 				"banner": "src/banners/hunt.jpg",
-				"description": "Not available yet.",
 
+				"description": "Not available yet.",
 				"maxPlayers": 5,
 				"time": "6:00",
+
 				"type": "match"
 			}
 		]

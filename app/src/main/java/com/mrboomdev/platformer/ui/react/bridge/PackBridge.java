@@ -19,7 +19,6 @@ import com.mrboomdev.platformer.game.pack.PackWidget;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.io.FileUtil;
-import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.util.Objects;
@@ -77,13 +76,13 @@ public class PackBridge extends ReactContextBaseJavaModule {
 			var jsonMap = Arguments.createMap();
 			jsonMap.putString("name", pack.name);
 			jsonMap.putString("description", pack.description);
+			jsonMap.putBoolean("isRequired", pack.required);
+			jsonMap.putString("id", pack.id);
+			jsonMap.putString("source", pack.source.toString());
+			jsonMap.putString("config", pack.config.toString());
 
-			if(pack.author != null) {
-				var jsonAuthorMap = Arguments.createMap();
-				jsonAuthorMap.putString("name", pack.author.name);
-				jsonAuthorMap.putString("url", pack.author.url);
-				jsonMap.putMap("author", jsonAuthorMap);
-			}
+			if(pack.icon != null) jsonMap.putString("icon", pack.source.goTo(pack.icon).getFullPath(true));
+			if(pack.author != null) jsonMap.putString("author", pack.author);
 
 			jsonArray.pushMap(jsonMap);
 		}
@@ -104,16 +103,10 @@ public class PackBridge extends ReactContextBaseJavaModule {
 				var jsGamemode = Arguments.createMap();
 				jsGamemode.putString("name", gamemode.name);
 				jsGamemode.putString("id", gamemode.id);
-
-				Moshi moshi = new Moshi.Builder().build();
-				JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
-
-				if(gamemode.file != null) {
-					jsGamemode.putString("file", adapter.toJson(gamemode.file));
-				}
-
 				jsGamemode.putInt("maxPlayers", gamemode.maxPlayers);
-				if(gamemode.author != null) jsGamemode.putString("author", gamemode.author.name);
+
+				if(gamemode.file != null) jsGamemode.putString("file", gamemode.file.toString());
+				if(gamemode.author != null) jsGamemode.putString("author", gamemode.author);
 				if(gamemode.time != null) jsGamemode.putString("time", gamemode.time);
 				if(gamemode.description != null) jsGamemode.putString("description", gamemode.description);
 				if(gamemode.banner != null) jsGamemode.putString("banner", gamemode.source.goTo(gamemode.banner).getFullPath(true));
@@ -145,14 +138,15 @@ public class PackBridge extends ReactContextBaseJavaModule {
 					for(var map : gamemode.maps) {
 						var jsMap = Arguments.createMap();
 						jsMap.putString("name", map.name);
-						jsMap.putString("author", map.author.name);
-						jsMap.putString("file", adapter.toJson(gamemode.source.goTo(map.file.getPath())));
+						jsMap.putString("author", map.author);
+						jsMap.putString("file", gamemode.source.goTo(map.file.getPath()).toString());
 						jsMaps.pushMap(jsMap);
 					}
 					jsGamemode.putArray("maps", jsMaps);
 				}
 
 				if(gamemode.entry != null) {
+					var moshi = new Moshi.Builder().build();
 					var entryAdapter = moshi.adapter(PackData.GamemodeEntry.class);
 					jsGamemode.putString("entry", entryAdapter.toJson(gamemode.entry));
 				}

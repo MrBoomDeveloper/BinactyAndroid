@@ -59,7 +59,9 @@ public class CharacterSkin {
 			selectedAnimation = (Entity.AnimationType) animations.keySet().toArray()[0];
 		}
 
-		if((currentAnimation == selectedAnimation) && (!selectedAnimation.isAction())) return;
+		if(((currentAnimation == selectedAnimation) && (!selectedAnimation.isAction()))
+			|| (currentAnimation != null && currentAnimation.isAction() &&
+				!Objects.requireNonNull(animations.get(currentAnimation)).isAnimationFinished(animationProgress))) return;
 
 		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
 		animationProgress = selectedAnimation.isAction() ? 0 : (float)(Math.random() * 5);

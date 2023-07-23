@@ -1,5 +1,8 @@
 package com.mrboomdev.platformer.projectile;
 
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.ATTACK;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.SHOOT;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -33,13 +36,19 @@ public class ProjectileManager {
 		if(delayProgress < .1f) return;
 
         bullets.add(new ProjectileBullet(world, owner, power));
+
+		owner.usePower(power, .1f, false);
 		delayProgress = 0;
+		owner.skin.setAnimation(SHOOT);
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .1f, 25, owner.getPosition());
     }
 	
 	public void attack(Vector2 power) {
 		if(attackDelayProgress < 0.5f) return;
 		attacks.add(new ProjectileAttack(world, owner, attackStats, power));
+
+		owner.usePower(power, .25f, false);
+		owner.skin.setAnimation(ATTACK);
 		attackDelayProgress = 0;
 	}
 	

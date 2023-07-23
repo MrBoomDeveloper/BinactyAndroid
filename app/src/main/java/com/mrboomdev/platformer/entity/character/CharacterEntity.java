@@ -1,7 +1,9 @@
 package com.mrboomdev.platformer.entity.character;
 
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.ACT;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.DAMAGE;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.DASH;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.DEATH;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.IDLE;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.RUN;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.WALK;
@@ -244,6 +246,7 @@ public class CharacterEntity extends EntityAbstract {
 	
 	public void interact() {
 		if(nearInteraction != null && !isDead) {
+			skin.setAnimation(ACT);
 			nearInteraction.act();
 		}
 	}
@@ -258,6 +261,7 @@ public class CharacterEntity extends EntityAbstract {
 		
 		if(wasPower.isZero()) wasPower.set(5, 0);
 		body.setLinearVelocity(wasPower.scl(100).limit(18));
+		skin.setAnimation(DASH);
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, getPosition());
 		
 	}
@@ -318,7 +322,9 @@ public class CharacterEntity extends EntityAbstract {
 	@Override
 	public void die(boolean silently) {
 		damagedProgress = 0;
+		skin.setAnimation(DEATH);
 		super.die(silently);
+
 		if(silently) return;
 		game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);
 	}

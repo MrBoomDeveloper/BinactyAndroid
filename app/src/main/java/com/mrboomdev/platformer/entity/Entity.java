@@ -24,33 +24,42 @@ public class Entity {
 	public static final float DASH_DELAY = 1f;
 	public static final float DASH_DURATION = .25f;
 
+	public enum AnimationPriority {
+		STATE,
+		ACTION,
+		STATE_IMPORTANT,
+		ACTION_IMPORTANT,
+	}
+
 	public enum AnimationType {
-		CURRENT(false),
+		CURRENT(AnimationPriority.STATE),
 		@Json(name = "idle")
-		IDLE(false),
+		IDLE(AnimationPriority.STATE),
 		@Json(name = "bored")
-		BORED(true),
+		BORED(AnimationPriority.STATE),
 		@Json(name = "walk")
-		WALK(false),
+		WALK(AnimationPriority.STATE),
 		@Json(name = "run")
-		RUN(false),
+		RUN(AnimationPriority.STATE),
 		@Json(name = "dash")
-		DASH(false),
+		DASH(AnimationPriority.ACTION),
+		@Json(name = "act")
+		ACT(AnimationPriority.ACTION),
 		@Json(name = "aim_pistol")
-		AIM_PISTOL(false),
+		AIM_PISTOL(AnimationPriority.STATE_IMPORTANT),
 		@Json(name = "aim_pistol_walk")
-		AIM_PISTOL_WALK(false),
+		AIM_PISTOL_WALK(AnimationPriority.STATE_IMPORTANT),
 		@Json(name = "attack")
-		ATTACK(true),
+		ATTACK(AnimationPriority.ACTION),
 		@Json(name = "shoot")
-		SHOOT(true),
+		SHOOT(AnimationPriority.ACTION),
 		@Json(name = "damage")
-		DAMAGE(true),
+		DAMAGE(AnimationPriority.ACTION),
 		@Json(name = "death")
-		DEATH(false);
+		DEATH(AnimationPriority.STATE_IMPORTANT);
 
 		private List<AnimationType> alternatives;
-		private final boolean isAction;
+		private final AnimationPriority priority;
 
 		static {
 			IDLE.alternatives = List.of(WALK);
@@ -60,14 +69,22 @@ public class Entity {
 			DASH.alternatives = List.of(IDLE);
 			AIM_PISTOL.alternatives = List.of(IDLE);
 			AIM_PISTOL_WALK.alternatives = List.of(AIM_PISTOL);
+			DEATH.alternatives = List.of(IDLE);
+			SHOOT.alternatives = List.of(ATTACK, IDLE);
+			ATTACK.alternatives = List.of(SHOOT, IDLE);
+			ACT.alternatives = List.of(ATTACK, SHOOT, IDLE);
 		}
 
-		AnimationType(boolean isAction) {
-			this.isAction = isAction;
+		AnimationType(AnimationPriority priority) {
+			this.priority = priority;
+		}
+
+		public AnimationPriority getPriority() {
+			return this.priority;
 		}
 
 		public boolean isAction() {
-			return isAction;
+			return getPriority() == AnimationPriority.ACTION || getPriority() == AnimationPriority.ACTION_IMPORTANT;
 		}
 
 		public List<AnimationType> getAlternatives() {

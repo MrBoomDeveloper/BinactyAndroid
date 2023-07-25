@@ -77,9 +77,11 @@ public class BotBrain extends CharacterBrain {
 	public void goByPath(float speed, boolean toEnemy) {
 		if(entity == null || target == null) return;
 		boolean shouldGoAway = false;
+		var myPosition = entity.getPosition();
+		var targetPosition = target.getPosition();
 		
 		if(toEnemy) {
-			if(entity.getPosition().dst(target.getPosition()) < 2) entity.attack(target.getPosition().sub(entity.getPosition()));
+			if(myPosition.dst(targetPosition) < 2) entity.attack(targetPosition.cpy().sub(myPosition));
 			if(entity.stats.health < entity.stats.maxHealth / 3) shouldGoAway = true;
 			//if(entity.stats.stamina > entity.stats.maxStamina / 3) entity.dash();
 		}
@@ -90,12 +92,12 @@ public class BotBrain extends CharacterBrain {
 		}
 		
 		if(path.getCount() > 1) {
-			entity.usePower(path.get(1).position.sub(entity.getPosition()).scl(25).scl(shouldGoAway ? -1.7f : 1), speed, true);
+			entity.usePower(path.get(1).position.cpy().sub(myPosition).scl(25).scl(shouldGoAway ? -1.7f : 1), speed, true);
 		} else if(target instanceof CharacterEntity) {
-			entity.usePower(target.getPosition().sub(entity.getPosition()).scl(shouldGoAway ? -1.7f : 1), speed, true);
+			entity.usePower(myPosition.cpy().sub(myPosition).scl(shouldGoAway ? -1.7f : 1), speed, true);
 		}
 		
-		if(stuckChecker.isStuck(entity.getPosition())) {
+		if(stuckChecker.isStuck(myPosition) && myPosition.dst(targetPosition) > 1.25f) {
 			stuckChecker.reset();
 			targeter.setIgnored(target);
 			targeter.exploreTimeoutProgress = 0;

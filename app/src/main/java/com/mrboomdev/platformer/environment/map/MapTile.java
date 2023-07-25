@@ -122,6 +122,7 @@ public class MapTile extends MapObject {
 			world.destroyBody(body);
 			body = null;
 		}
+
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(getPosition(false));
 		bodyDef.type = BodyDef.BodyType.StaticBody;

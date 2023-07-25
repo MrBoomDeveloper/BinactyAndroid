@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.mrboomdev.platformer.ConstantsKt;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
@@ -21,7 +22,6 @@ import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
-import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -47,8 +47,7 @@ public class GameHolder extends Game {
 		analytics.log("GameHolder", "create");
 		
 		try {
-			var moshi = new Moshi.Builder().build();
-			var adapter = moshi.adapter(LoadingFiles.class);
+			var adapter = ConstantsKt.getMoshi().adapter(LoadingFiles.class);
 
 			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
 			Objects.requireNonNull(files).loadToManager(assets, "LOADING");

@@ -2,9 +2,11 @@ package com.mrboomdev.platformer.game;
 
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
@@ -79,7 +81,6 @@ public class GameLauncher extends AndroidApplication {
 		game.gamemodeFile = adapter.fromJson(getIntent().getCharSequenceExtra("gamemodeFile").toString());
 		game.mapFile = adapter.fromJson(getIntent().getCharSequenceExtra("mapFile").toString());
 	}
-
 	
 	@Override
 	public AndroidAudio createAudio(Context context, AndroidApplicationConfiguration config) {

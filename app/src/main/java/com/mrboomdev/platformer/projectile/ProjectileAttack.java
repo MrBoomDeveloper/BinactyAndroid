@@ -30,6 +30,7 @@ public class ProjectileAttack {
 	public boolean isEnded, isDead;
 	public AttackStats stats;
 	public Vector2 power;
+	public Vector2 position;
 	
 	public ProjectileAttack(@NonNull World world, @NonNull CharacterEntity owner, AttackStats stats, @NonNull Vector2 power) {
 		this.world = world;
@@ -40,26 +41,26 @@ public class ProjectileAttack {
 		AssetManager assets = GameHolder.getInstance().assets;
 		Texture texture = assets.get("world/effects/attack.png", Texture.class);
 		sprite = new Sprite(texture);
-		
-		TextureRegion[] animationFrames = new TextureRegion[]{
-			new TextureRegion(texture, 0, 0, 8, 8),
-			new TextureRegion(texture, 8, 0, 8, 8),
-			new TextureRegion(texture, 16, 0, 8, 8),
-			new TextureRegion(texture, 24, 0, 8, 8),
-			new TextureRegion(texture, 32, 0, 8, 8),
-			new TextureRegion(texture, 40, 0, 8, 8),
-			new TextureRegion(texture, 48, 0, 8, 8),
-			new TextureRegion(texture, 56, 0, 8, 8)
-		};
-		animation = new Animation<>(.04f, new Array<>(animationFrames), Animation.PlayMode.REVERSED);
+		position = owner.body.getPosition().add(power.limit(1.2f));
+
+		animation = new Animation<>(.04f, new Array<>(new TextureRegion[] {
+				new TextureRegion(texture, 0, 0, 8, 8),
+				new TextureRegion(texture, 8, 0, 8, 8),
+				new TextureRegion(texture, 16, 0, 8, 8),
+				new TextureRegion(texture, 24, 0, 8, 8),
+				new TextureRegion(texture, 32, 0, 8, 8),
+				new TextureRegion(texture, 40, 0, 8, 8),
+				new TextureRegion(texture, 48, 0, 8, 8),
+				new TextureRegion(texture, 56, 0, 8, 8)
+		}), Animation.PlayMode.REVERSED);
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.KinematicBody;
-		bodyDef.position.set(owner.body.getPosition().add(power.limit(1.2f)));
+		bodyDef.position.set(position);
 		body = world.createBody(bodyDef);
 		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(1, .5f);
+		shape.setAsBox(.8f, .4f);
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.filter.categoryBits = Entity.ATTACK;
@@ -79,8 +80,9 @@ public class ProjectileAttack {
 		
 		animationProgress += Gdx.graphics.getDeltaTime();
 		sprite.set(new Sprite(animation.getKeyFrame(animationProgress)));
-		sprite.setSize(-.8f, .8f);
-		sprite.setCenter(body.getPosition().x, body.getPosition().y);
+		sprite.setSize(-.6f, .6f);
+		sprite.setFlip(power.x > 0, false);
+		sprite.setCenter(position.x, position.y);
 		sprite.draw(batch);
 	}
 	

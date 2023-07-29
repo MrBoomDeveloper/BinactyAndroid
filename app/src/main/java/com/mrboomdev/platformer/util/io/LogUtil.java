@@ -1,7 +1,10 @@
 package com.mrboomdev.platformer.util.io;
 
 import android.util.Log;
+
 import androidx.annotation.NonNull;
+
+import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
@@ -41,6 +44,7 @@ public class LogUtil {
 	}
 
 	public static void debug(@NonNull Tag tag, String message) {
+		if(!BuildConfig.DEBUG) return;
 		Log.d(tag.title, message);
 	}
 	

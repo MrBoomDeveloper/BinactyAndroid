@@ -14,11 +14,16 @@ import com.squareup.moshi.Json;
 import org.jetbrains.annotations.Contract;
 
 public abstract class EntityAbstract implements BotTarget {
-	@Json(ignore = true) public World world;
-	@Json(ignore = true) public Vector2 wasPower = new Vector2();
-	@Json(ignore = true) public Body body;
-	@Json(ignore = true) public boolean isDestroyed, isDead;
-	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true)
+	public World world;
+	@Json(ignore = true)
+	public Vector2 wasPower = new Vector2();
+	@Json(ignore = true)
+	public Body body;
+	@Json(ignore = true)
+	public boolean isDestroyed, isDead;
+	@Json(ignore = true)
+	GameHolder game = GameHolder.getInstance();
 	
 	public abstract void draw(SpriteBatch batch);
 	

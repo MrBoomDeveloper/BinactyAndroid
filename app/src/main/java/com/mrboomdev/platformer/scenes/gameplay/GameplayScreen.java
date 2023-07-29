@@ -17,7 +17,6 @@ import com.mrboomdev.platformer.projectile.ProjectileCollision;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
-import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 import box2dLight.RayHandler;
@@ -98,9 +97,9 @@ public class GameplayScreen extends CoreScreen {
 		camera.zoom = .75f;
 		environment.camera = camera;
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
-		
-		var path = FileUtil.internal("packs/official/src/characters/klarrie");
-		environment.entities.loadCharacter(path, "klarrie");
+
+		var path = game.settings.playerCharacter;
+		environment.entities.loadCharacter(game.settings.playerCharacter, "klarrie");
 		var player = new CharacterCreator(environment.entities.presets
 				.get("klarrie")
 				.cpy(game.settings.playerName, path))

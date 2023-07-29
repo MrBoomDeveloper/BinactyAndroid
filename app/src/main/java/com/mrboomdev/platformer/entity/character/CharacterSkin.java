@@ -26,6 +26,8 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Json;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -51,9 +53,12 @@ public class CharacterSkin {
 	private int lastFrameIndex;
 	@Json(ignore = true)
 	private final GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true)
+	private boolean isAnimationForce;
 	
 	public void setAnimation(Entity.AnimationType animation) {
 		var selectedAnimation = getValidAnimation(animation);
+		if(isAnimationForce && selectedAnimation != currentAnimation) return;
 
 		if(selectedAnimation == null) {
 			selectedAnimation = (Entity.AnimationType) animations.keySet().toArray()[0];
@@ -68,6 +73,15 @@ public class CharacterSkin {
 		LogUtil.debug(LogUtil.Tag.ANIMATION, "Set character animation to: " + animation.name());
 	}
 
+	public void setAnimationForce(@Nullable Entity.AnimationType animation) {
+		if(animation == null) {
+			this.isAnimationForce = false;
+			return;
+		}
+
+		this.setAnimation(animation);
+	}
+
 	@SuppressWarnings("unused")
 	public void setCustomAnimation(String name) {
 		if(!customAnimationsJson.containsKey(name)) return;
@@ -79,7 +93,10 @@ public class CharacterSkin {
 		if(animation == CURRENT) return currentAnimation;
 		if(animation.isAction() && animation.getAlternatives() == null) return currentAnimation;
 
-		for(var alternative : animation.getAlternatives()) {
+		var alternatives = animation.getAlternatives();
+		if(alternatives == null) return IDLE;
+
+		for(var alternative : alternatives) {
 			if(alternative == CURRENT) return currentAnimation;
 			if(animations.containsKey(alternative)) return alternative;
 		}
@@ -129,15 +146,18 @@ public class CharacterSkin {
 		Texture texture = new Texture(source.goTo(texturePath).getFileHandle());
 		for(HashMap.Entry<Entity.AnimationType, Entity.Animation> entry : animationsJson.entrySet()) {
 			Array<Entity.Frame> frames = Array.with(entry.getValue().frames);
+
 			for(var frame : frames) {
 				frame.fillEmpty(entry.getValue());
 				frame.sprite = new Sprite(new TextureRegion(texture, frame.region[0], frame.region[1], frame.region[2], frame.region[3]));
 				frame.sprite.setSize(entry.getValue().size[0], entry.getValue().size[1]);
 			}
+
 			var mode = entry.getValue().mode != null ? entry.getValue().mode : PlayMode.LOOP;
 			Animation<Entity.Frame> animation = new Animation<>(entry.getValue().delay, frames, mode);
 			animations.put(entry.getKey(), animation);
 		}
+
 		setAnimation(IDLE);
 		return this;
 	}

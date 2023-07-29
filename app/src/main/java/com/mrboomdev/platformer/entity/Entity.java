@@ -63,16 +63,13 @@ public class Entity {
 
 		static {
 			IDLE.alternatives = List.of(WALK);
-			WALK.alternatives = List.of(RUN, IDLE);
-			RUN.alternatives = List.of(WALK, DASH, IDLE);
+			WALK.alternatives = List.of(RUN);
+			RUN.alternatives = List.of(WALK, DASH);
 			DAMAGE.alternatives = List.of(WALK);
-			DASH.alternatives = List.of(IDLE);
-			AIM_PISTOL.alternatives = List.of(IDLE);
 			AIM_PISTOL_WALK.alternatives = List.of(AIM_PISTOL);
-			DEATH.alternatives = List.of(IDLE);
-			SHOOT.alternatives = List.of(ATTACK, IDLE);
-			ATTACK.alternatives = List.of(SHOOT, IDLE);
-			ACT.alternatives = List.of(ATTACK, SHOOT, IDLE);
+			SHOOT.alternatives = List.of(ATTACK);
+			ATTACK.alternatives = List.of(SHOOT);
+			ACT.alternatives = List.of(ATTACK, SHOOT);
 		}
 
 		AnimationType(AnimationPriority priority) {

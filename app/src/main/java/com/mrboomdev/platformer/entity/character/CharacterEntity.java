@@ -322,7 +322,7 @@ public class CharacterEntity extends EntityAbstract {
 	@Override
 	public void die(boolean silently) {
 		damagedProgress = 0;
-		skin.setAnimation(DEATH);
+		skin.setAnimationForce(DEATH);
 		super.die(silently);
 
 		if(silently) return;

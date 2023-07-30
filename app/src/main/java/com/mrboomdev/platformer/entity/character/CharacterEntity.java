@@ -218,6 +218,7 @@ public class CharacterEntity extends EntityAbstract {
 		projectileManager.render(batch);
 		if(isDead) return;
 		batch.end();
+
 		if(damagedProgress < 3 && this != game.settings.mainPlayer) {
 			shape.setProjectionMatrix(game.environment.camera.combined);
 			shape.begin(ShapeRenderer.ShapeType.Filled);
@@ -230,6 +231,7 @@ public class CharacterEntity extends EntityAbstract {
 				progress, .2f);
 			shape.end();
 		}
+
 		batch.begin();
 		font.draw(batch, name, getPosition().x - 1, getPosition().y + (worldBody.size[1] / 2) + .4f, 2, Align.center, false);
 	}
@@ -260,7 +262,7 @@ public class CharacterEntity extends EntityAbstract {
 		staminaReloadMultiply = .05f;
 		
 		if(wasPower.isZero()) wasPower.set(5, 0);
-		body.setLinearVelocity(wasPower.scl(100).limit(18));
+		body.setLinearVelocity(wasPower.scl(100).limit(22));
 		skin.setAnimation(DASH);
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, getPosition());
 		
@@ -291,9 +293,9 @@ public class CharacterEntity extends EntityAbstract {
 	@Override
 	public void usePower(Vector2 power, float speed, boolean isBot) {
 		if(damagedProgress < .4f || isDead) return;
+
 		if(isDashing) {
 			isRunning = true;
-			skin.setAnimation(DASH);
 			return;
 		}
 
@@ -307,11 +309,11 @@ public class CharacterEntity extends EntityAbstract {
 			stats.stamina = Math.max(stats.stamina - .02f, 0);
 			staminaReloadMultiply = .05f;
 
-			if(stats.stamina > 5) {
-				super.usePower(power.scl(100), speed, isBot);
-			} else {
-				super.usePower(power, speed / 2, isBot);
-			}
+			var isLowPower = stats.stamina > 5;
+			super.usePower(
+					power.scl(isLowPower ? 100 : 1),
+					speed / (isLowPower ? 1 : 2),
+					isBot);
 		} else {
 			isRunning = false;
 			skin.setAnimation(WALK);

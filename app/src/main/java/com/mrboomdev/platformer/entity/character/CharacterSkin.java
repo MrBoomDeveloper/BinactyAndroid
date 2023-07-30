@@ -56,30 +56,60 @@ public class CharacterSkin {
 	@Json(ignore = true)
 	private boolean isAnimationForce;
 	
-	public void setAnimation(Entity.AnimationType animation) {
-		var selectedAnimation = getValidAnimation(animation);
-		if(isAnimationForce && selectedAnimation != currentAnimation) return;
-
-		if(selectedAnimation == null) {
-			selectedAnimation = (Entity.AnimationType) animations.keySet().toArray()[0];
-		}
-
-		if(((currentAnimation == selectedAnimation) && (!selectedAnimation.isAction()))
-			|| (currentAnimation != null && currentAnimation.isAction() &&
-				!Objects.requireNonNull(animations.get(currentAnimation)).isAnimationFinished(animationProgress))) return;
+	public void setAnimation(Entity.AnimationType animationType) {
+		var selectedAnimation = getValidAnimation(animationType);
+		if(selectedAnimation == null || isShouldSkipAnimation(selectedAnimation)) return;
 
 		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
 		animationProgress = selectedAnimation.isAction() ? 0 : (float)(Math.random() * 5);
-		LogUtil.debug(LogUtil.Tag.ANIMATION, "Set character animation to: " + animation.name());
+		LogUtil.debug(LogUtil.Tag.ANIMATION, hashCode() + " : Set character animation to: " + animationType.name());
 	}
 
-	public void setAnimationForce(@Nullable Entity.AnimationType animation) {
-		if(animation == null) {
+	private boolean isShouldSkipAnimation(Entity.AnimationType animationType) {
+		if(currentAnimation != null) {
+			var selectedAnimationInfo = Objects.requireNonNull(animationsJson.get(animationType));
+			var activeAnimationInfo = Objects.requireNonNull(animationsJson.get(currentAnimation));
+			var activeAnimation = Objects.requireNonNull(animations.get(currentAnimation));
+
+			if(activeAnimationInfo.overridable == Entity.Overridable.NEVER && !selectedAnimationInfo.force)
+				return true;
+
+			if(activeAnimationInfo.overridable == Entity.Overridable.ANYTIME_OTHER) 
+				return animationType == currentAnimation;
+
+			if(activeAnimationInfo.overridable == Entity.Overridable.ANYTIME)
+				return false;
+
+			if(activeAnimationInfo.overridable == Entity.Overridable.UNTIL_END && !selectedAnimationInfo.force) {
+				return !activeAnimation.isAnimationFinished(animationProgress);
+			}
+
+			if(selectedAnimationInfo.force) return false;
+		}
+
+		if(isAnimationForce && animationType != currentAnimation) return true;
+		if(currentAnimation == animationType && !animationType.isAction()) return true;
+
+		if(currentAnimation != null) {
+			if(animationType.isImportant()) return false;
+
+			if(currentAnimation.isAction()) {
+				var activeAnimation = Objects.requireNonNull(animations.get(currentAnimation));
+				return !activeAnimation.isAnimationFinished(animationProgress);
+			}
+		}
+
+		return false;
+	}
+
+	public void setAnimationForce(@Nullable Entity.AnimationType animationType) {
+		if(animationType == null) {
 			this.isAnimationForce = false;
 			return;
 		}
 
-		this.setAnimation(animation);
+		this.setAnimation(animationType);
+		this.isAnimationForce = true;
 	}
 
 	@SuppressWarnings("unused")
@@ -88,12 +118,12 @@ public class CharacterSkin {
 		throw new BoomException("This feature isn't done yet!");
 	}
 	
-	private Entity.AnimationType getValidAnimation(@NonNull Entity.AnimationType animation) {
-		if(animations.containsKey(animation)) return animation;
-		if(animation == CURRENT) return currentAnimation;
-		if(animation.isAction() && animation.getAlternatives() == null) return currentAnimation;
+	private Entity.AnimationType getValidAnimation(@NonNull Entity.AnimationType animationType) {
+		if(animations.containsKey(animationType)) return animationType;
+		if(animationType == CURRENT) return currentAnimation;
+		if(animationType.isAction() && animationType.getAlternatives() == null) return currentAnimation;
 
-		var alternatives = animation.getAlternatives();
+		var alternatives = animationType.getAlternatives();
 		if(alternatives == null) return IDLE;
 
 		for(var alternative : alternatives) {
@@ -111,10 +141,12 @@ public class CharacterSkin {
 			CharacterEntity entity,
 			float opacity
 	) {
-		var activeAnimation = animations.get(currentAnimation);
+		var activeAnimation = Objects.requireNonNull(animations.get(currentAnimation));
 		animationProgress += Gdx.graphics.getDeltaTime();
-		
-		sprite = new Sprite(Objects.requireNonNull(activeAnimation).getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL).sprite);
+
+		boolean isLooping = activeAnimation.getPlayMode() != PlayMode.NORMAL;
+		sprite = new Sprite(activeAnimation.getKeyFrame(animationProgress, isLooping).sprite);
+
 		sprite.setSize(
 			direction.isForward() ? sprite.getWidth() : -sprite.getWidth(),
 			sprite.getHeight());
@@ -138,8 +170,8 @@ public class CharacterSkin {
 	}
 	
 	public Entity.Frame getCurrentFrame() {
-		var activeAnimation = animations.get(currentAnimation);
-		return Objects.requireNonNull(activeAnimation).getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL);
+		var activeAnimation = Objects.requireNonNull(animations.get(currentAnimation));
+		return activeAnimation.getKeyFrame(animationProgress, activeAnimation.getPlayMode() != PlayMode.NORMAL);
 	}
 	
 	public CharacterSkin build(@NonNull FileUtil source) {
@@ -149,7 +181,8 @@ public class CharacterSkin {
 
 			for(var frame : frames) {
 				frame.fillEmpty(entry.getValue());
-				frame.sprite = new Sprite(new TextureRegion(texture, frame.region[0], frame.region[1], frame.region[2], frame.region[3]));
+				var region = new TextureRegion(texture, frame.region[0], frame.region[1], frame.region[2], frame.region[3]);
+				frame.sprite = new Sprite(region);
 				frame.sprite.setSize(entry.getValue().size[0], entry.getValue().size[1]);
 			}
 

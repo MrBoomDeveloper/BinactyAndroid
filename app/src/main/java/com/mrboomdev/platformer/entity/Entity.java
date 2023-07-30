@@ -57,7 +57,6 @@ public class Entity {
 		DAMAGE(AnimationPriority.ACTION),
 		@Json(name = "death")
 		DEATH(AnimationPriority.STATE_IMPORTANT);
-
 		private List<AnimationType> alternatives;
 		private final AnimationPriority priority;
 
@@ -84,15 +83,33 @@ public class Entity {
 			return getPriority() == AnimationPriority.ACTION || getPriority() == AnimationPriority.ACTION_IMPORTANT;
 		}
 
+		public boolean isImportant() {
+			return getPriority() == AnimationPriority.STATE_IMPORTANT || getPriority() == AnimationPriority.ACTION_IMPORTANT;
+		}
+
 		public List<AnimationType> getAlternatives() {
 			return alternatives;
 		}
 	}
 	
 	public enum Target {
-		@Json(name = "everyone") EVERYONE,
-		@Json(name = "main_player") MAIN_PLAYER,
-		@Json(name = "near_enemy") NEAR_ENEMY
+		@Json(name = "everyone")
+		EVERYONE,
+		@Json(name = "main_player")
+		MAIN_PLAYER,
+		@Json(name = "near_enemy")
+		NEAR_ENEMY
+	}
+
+	public enum Overridable {
+		@Json(name = "until_end")
+		UNTIL_END,
+		@Json(name = "anytime")
+		ANYTIME,
+		@Json(name = "anytime_other")
+		ANYTIME_OTHER,
+		@Json(name = "never")
+		NEVER
 	}
 	
 	public static class Frame {
@@ -115,6 +132,8 @@ public class Entity {
 	
 	public static class Animation extends Frame {
 		public float delay;
+		public Overridable overridable;
+		public boolean force;
 		public Frame[] frames;
 		public PlayMode mode;
 	}

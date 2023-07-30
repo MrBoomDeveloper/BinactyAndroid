@@ -9,6 +9,7 @@
 		"animations": {
 			"idle": {
 				"delay": 0.125,
+				"overridable": "anytime_other",
 				"size": [ 1, 2 ],
 				"hand_position": [0.4, -0.2],
 				"frames": [
@@ -28,6 +29,7 @@
 			"walk": {
 				"delay": 0.075,
 				"size": [1,2, 2],
+				"overridable": "anytime_other",
 				"hand_position": [0.4, -0.2],
 				"frames": [
 					{ "region": [   1, 45, 22, 43 ] },
@@ -45,6 +47,7 @@
 			"damage": {
 				"delay": 0.1,
 				"mode": "NORMAL",
+				"overridable": "until_end",
 				"size": [ 1, 2 ],
 				"hand_position": [0.4, -0.2],
 				"frames": [

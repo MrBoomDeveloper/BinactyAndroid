@@ -10,6 +10,7 @@
 			"idle": {
 				"delay": 0.3,
 				"mode": "LOOP_PINGPONG",
+				"overridable": "anytime_other",
 				"size": [ 1.05, 1.8 ],
 				"hand_position": [0.4, -0.2],
 				"frames": [
@@ -24,6 +25,7 @@
 			"damage": {
 				"delay": 0.1,
 				"mode": "NORMAL",
+				"overridable": "until_end",
 				"size": [ 1.1, 1.8 ],
 				"hand_position": [0.4, -0.2],
 				"frames": [
@@ -36,6 +38,7 @@
 			"run": {
 				"delay": 0.05,
 				"mode": "LOOP",
+				"overridable": "anytime_other",
 				"size": [1.4, 1.8],
 				"hand_position": [0.4, -0.2],
 				"frames": [

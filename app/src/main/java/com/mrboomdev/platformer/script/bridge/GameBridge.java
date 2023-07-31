@@ -1,11 +1,11 @@
 package com.mrboomdev.platformer.script.bridge;
 
 import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
-import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.util.FunUtil;
@@ -33,9 +33,11 @@ public class GameBridge {
 				case START:
 					listener.start();
 					break;
+
 				case BUILD:
 					listener.build();
 					break;
+
 				case END:
 					listener.end();
 					break;
@@ -43,6 +45,10 @@ public class GameBridge {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void setPlayerPosition(float x, float y) {
+		game.settings.mainPlayer.body.setTransform(x, y, 0);
 	}
 	
 	public void setTimer(Runnable runnable, float delay) {
@@ -79,10 +85,6 @@ public class GameBridge {
 
 	public String getEnvString(String name, String defaultValue) {
 		return game.envVars.getString(name, defaultValue);
-	}
-	
-	public void __startOldGamemodeScript() {
-		game.environment.gamemode.script.start.forEach(function -> game.environment.gamemode.stack.add(new GamemodeManager.StackOperation(function, null)));
 	}
 	
 	public interface GameListener {

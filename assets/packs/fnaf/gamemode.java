@@ -284,11 +284,6 @@ void checkIfNoPower() {
 		}}, (float)(Math.random() * 10 + 3));
 	}}, (float)(Math.random() * 10 + 3));
 }
-	
-/*ui.setFade(1, 0, 0.5f);
-ui.setTitle("SURVIVE THE NIGHT", 4);
-ui.setTimer(360, 1.5, true);*/
-game.__startOldGamemodeScript();
 
 ui.setListener(new UiListener() {
 	timerEnd() {
@@ -325,6 +320,10 @@ entities.setListener(new EntityListener() {
 
 game.setListener(new GameListener() {
 	start() {
+		ui.createFade(1).start(1, 0, 0.5f);
+		ui.createTimer(360, 1.2f);
+		ui.createTitle("Survive the Night", 4);
+
 		fanSound = createMusic("sounds/fan.wav");
 		fanSound.setPosition(24, -14);
 		fanSound.setDistance(12);

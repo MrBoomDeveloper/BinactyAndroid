@@ -18,9 +18,8 @@ import java.util.stream.Collectors;
 
 public class GamemodeManager {
 	public List<StackOperation> stack = new LinkedList<>();
-	public GamemodeScript script;
-	private TextWidget title, timer;
-	private FadeWidget fade;
+	public TextWidget title, timer;
+	public FadeWidget fade;
 	private final GameHolder game = GameHolder.getInstance();
 	private boolean isTimerSetup, isTimerEnd;
 	private float time, timerSpeed;
@@ -29,9 +28,9 @@ public class GamemodeManager {
 	private float gameOverTimeout;
 	private boolean isBroken;
 	
-	public GamemodeManager(GamemodeScript scriptOld, FileUtil scenario) {
+	public GamemodeManager(FileUtil scenario) {
 		game.environment.gamemode = this;
-		this.script = scriptOld;
+
 		game.script = new ScriptManager(scenario, "pack.Main", false);
 		if(!game.settings.enableEditor) game.script.eval(scenario.readString(true));
 	}
@@ -79,10 +78,6 @@ public class GamemodeManager {
 						isTimerSetup = true;
 						break;
 
-					case FADE:
-						fade.start(function.options.from, function.options.to, function.speed);
-						break;
-
 					case TITLE:
 						title.setText(function.options.text);
 						title.setOpacity(operation.progress < 1
@@ -95,14 +90,15 @@ public class GamemodeManager {
 				}
 			}
 
-			stack = stack.stream().filter(operation -> (
-					operation.progress < operation.function.duration ||
-							(operation.function.isLong && !operation.isFinished)))
-					.collect(Collectors.toList());
+			stack = stack.stream().filter(operation -> {
+				if(operation.progress < operation.function.duration) return true;
+				return operation.function.isLong && !operation.isFinished;
+			}).collect(Collectors.toList());
 		}
 		
 		if(gameOverTimeout > 0) {
 			gameOverTimeout += Gdx.graphics.getDeltaTime();
+
 			if(gameOverTimeout > 3.5f) {
 				game.script.triggerEnded();
 				game.launcher.exit(GameLauncher.Status.GAME_OVER);
@@ -113,12 +109,12 @@ public class GamemodeManager {
 	}
 	
 	public void createUi(Stage stage) {
-
 		if(game.settings.enableEditor) return;
+
 		timer = new TextWidget("timer.ttf").setOpacity(0)
 			.toPosition(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - game.settings.screenInset)
 			.addTo(stage);
-		
+
 		fade = new FadeWidget(0).addTo(stage);
 		
 		title = new TextWidget("title.ttf").setOpacity(0)

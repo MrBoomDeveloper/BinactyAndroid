@@ -7,12 +7,10 @@ import static com.mrboomdev.platformer.environment.EnvironmentCreator.Status.PRE
 
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
-import com.mrboomdev.platformer.environment.gamemode.GamemodeScript;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.helper.BoomException;
-import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
@@ -50,18 +48,14 @@ public class EnvironmentCreator {
 	
 	private void loadGamemode() {
 		manager.entities = new EntityManager();
-		try {
-			Moshi moshi = new Moshi.Builder().build();
-			JsonAdapter<GamemodeScript> adapter = moshi.adapter(GamemodeScript.class);
-			manager.gamemode = new GamemodeManager(adapter.fromJson(FileUtil.internal("packs/fnaf/gamemode.json").readString(true)), game.gamemodeFile)
+
+		manager.gamemode = new GamemodeManager(game.gamemodeFile)
 				.build(() -> {
 					createListener.created(manager);
 					status = DONE;
 				});
-			this.status = LOADING_GAMEMODE_RESOURCES;
-		} catch(Exception e) {
-			LogUtil.crash("Failed to start the gamemode", "It looks, that some files were corrupted.", e);
-		}
+
+		this.status = LOADING_GAMEMODE_RESOURCES;
 	}
 	
 	public String getStatus() {

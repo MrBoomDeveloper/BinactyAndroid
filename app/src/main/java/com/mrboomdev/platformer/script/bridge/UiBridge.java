@@ -1,11 +1,14 @@
 package com.mrboomdev.platformer.script.bridge;
 
 import com.badlogic.gdx.Gdx;
+import com.mrboomdev.platformer.environment.gamemode.GamemodeFunction;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
 
+@SuppressWarnings("unused")
 public class UiBridge {
-	private GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	private UiListener listener;
 	
 	public void setListener(UiListener listener) {
@@ -14,16 +17,38 @@ public class UiBridge {
 	
 	public void callListener(Function function) {
 		if(listener == null) return;
-		switch(function) {
-			case TIMER_END: {
-				listener.timerEnd();
-				return;
-			}
-		}
+		listener.timerEnd();
 	}
 	
 	public TextWidget createText(String font, String text) {
 		return new TextWidget(font).setOpacity(1).setText(text).addTo(game.environment.stage);
+	}
+
+	public FadeWidget createFade(float initialOpacity) {
+		return new FadeWidget(initialOpacity).addTo(game.environment.stage);
+	}
+
+	public void createTimer(int initial, float speed) {
+		var options = new GamemodeFunction.Options() {{
+			this.time = initial;
+		}};
+
+		var fun = new GamemodeFunction(GamemodeFunction.Action.TIMER_SETUP, options);
+		fun.speed = speed;
+
+		game.environment.gamemode.runFunction(fun);
+	}
+
+	public void createTitle(String message, float duration) {
+		var options = new GamemodeFunction.Options() {{
+			this.text = message;
+		}};
+
+		var fun = new GamemodeFunction(GamemodeFunction.Action.TITLE, options);
+		fun.duration = duration;
+		fun.isLong = true;
+
+		game.environment.gamemode.runFunction(fun);
 	}
 	
 	public float getWidth() {
@@ -38,17 +63,8 @@ public class UiBridge {
 		
 	}
 	
-	public void setTimer(float initial, float speed, boolean isCountdown) {
-		
-	}
-	
-	public void setFade(float from, float to) {
-		
-	}
-	
 	public interface UiListener {
 		void timerEnd();
-		void timerNextSecond();
 	}
 	
 	public enum Function {

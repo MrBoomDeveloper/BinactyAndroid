@@ -309,10 +309,10 @@ public class CharacterEntity extends EntityAbstract {
 			stats.stamina = Math.max(stats.stamina - .02f, 0);
 			staminaReloadMultiply = .05f;
 
-			var isLowPower = stats.stamina > 5;
+			var isEnoughPower = stats.stamina > 5;
 			super.usePower(
-					power.scl(isLowPower ? 100 : 1),
-					speed / (isLowPower ? 1 : 2),
+					power.scl(isEnoughPower ? 100 : 1),
+					speed / (isEnoughPower ? 1 : 2),
 					isBot);
 		} else {
 			isRunning = false;

@@ -70,13 +70,20 @@ public class MapTile extends MapObject {
 
 		if(sprite != null) sprite.draw(batch);
 		if(devSprite != null) devSprite.draw(batch);
+
 		if(shape != null && isSelected) {
 			batch.end();
 			shape.setProjectionMatrix(game.environment.camera.combined);
 			Gdx.gl.glLineWidth(3);
 			shape.begin(ShapeRenderer.ShapeType.Line);
 			shape.setColor(1, 1, 1, 1);
-			shape.rect(position.x - size[0] / 2, position.y - size[1] / 2, size[0], size[1]);
+
+			shape.rect(
+					position.x - size[0] / 2 * scale[0],
+					position.y - size[1] / 2 * scale[1],
+					size[0] * scale[0],
+					size[1] * scale[1]);
+
 			shape.end();
 			batch.begin();
 		}
@@ -108,6 +115,7 @@ public class MapTile extends MapObject {
 				flipX ? -light.offset[0] : light.offset[0],
 				flipY ? -light.offset[1] : light.offset[1]);
 		}
+
 		setPosition(getPosition(false));
 	}
 	
@@ -130,26 +138,45 @@ public class MapTile extends MapObject {
 		body.setUserData(this);
 		
 		if(collision != null) {
-			bodyDef.position.add(collision[2], collision[3]);
-			FixtureDef fixtureDef = new FixtureDef();
+			bodyDef.position.add(collision[2] * scale[0], collision[3] * scale[1]);
+
 			PolygonShape shape = new PolygonShape();
-			shape.setAsBox(collision[0] / 2, collision[1] / 2,
-				new Vector2(collision[2] / 2, collision[3] / 2), 0);
+
+			var center = new Vector2(
+					collision[2] / 2 * scale[0],
+					collision[3] / 2 * scale[1]);
+
+			shape.setAsBox(
+					collision[0] / 2 * scale[0],
+					collision[1] / 2 * scale[1],
+					center, 0);
+
+			FixtureDef fixtureDef = new FixtureDef();
 			fixtureDef.filter.categoryBits = Entity.TILE_BOTTOM;
 			fixtureDef.filter.maskBits = Entity.CHARACTER_BOTTOM | Entity.BULLET;
 			fixtureDef.shape = shape;
+
 			fixture = body.createFixture(fixtureDef);
 			shape.dispose();
 		}
 		
 		if(shadowCollision != null) {
-			FixtureDef shadowFixtureDef = new FixtureDef();
             PolygonShape shadowShape = new PolygonShape();
-			shadowShape.setAsBox(shadowCollision[0] / 2, shadowCollision[1] / 2,
-				new Vector2(shadowCollision[2] / 2 * (flipX ? -1 : 1), shadowCollision[3] / 2 * (flipY ? -1 : 1)), 0);
+
+			var center = new Vector2(
+					shadowCollision[2] / 2 * (flipX ? -1 : 1) * scale[0],
+					shadowCollision[3] / 2 * (flipY ? -1 : 1) * scale[1]);
+
+			shadowShape.setAsBox(
+					shadowCollision[0] / 2 * scale[0],
+					shadowCollision[1] / 2 * scale[1],
+					center, 0);
+
+			FixtureDef shadowFixtureDef = new FixtureDef();
 			shadowFixtureDef.shape = shadowShape;
 			shadowFixtureDef.filter.categoryBits = Entity.BLOCK;
 			shadowFixtureDef.filter.maskBits = Entity.LIGHT;
+
 			shadowFixture = body.createFixture(shadowFixtureDef);
 			shadowShape.dispose();
 		}
@@ -158,7 +185,8 @@ public class MapTile extends MapObject {
 			interaction.build(world, getPosition(false));
 			interaction.owner = this;
 		}
-		
+
+		updateCachedPosition();
 		update();
 	}
 	

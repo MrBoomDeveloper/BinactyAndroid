@@ -32,27 +32,35 @@ public class CameraUtil {
 		cameraZoomSize = size;
 		cameraZoomSpeed = speed;
 	}
+
+	public void setCameraPosition(float x, float y) {
+		var camera = GameHolder.getInstance().environment.camera;
+		camera.position.set(x, y, 0);
+	}
 	
 	public static void update(float delta) {
+		var game = GameHolder.getInstance();
+		var camera = game.environment.camera;
+		var player = game.settings.mainPlayer;
+
 		shakeProgress += delta;
 		if(shakeProgress < shakeDuration) {
 			shakeCurrent.set(
-					(float)(Math.random() * shakePower - (shakePower / 2)), 
+					(float)(Math.random() * shakePower - (shakePower / 2)),
 					(float)Math.random() * shakePower - (shakePower / 2));
 		} else {
 			shakeCurrent.setZero();
 		}
 
-		var player = GameHolder.getInstance().settings.mainPlayer;
 		if(!player.isDead) {
 			var playerPosition = player.getPosition();
-			var camera = GameHolder.getInstance().environment.camera;
 
 			camera.position.set(shakeCurrent.add(
 					camera.position.x + ((playerPosition.x + offset.x) - camera.position.x) * (CAMERA_SPEED / camera.zoom),
 					camera.position.y + ((playerPosition.y + offset.y) - camera.position.y) * (CAMERA_SPEED / camera.zoom)
 			), 0);
 
+			if(game.settings.enableEditor) return;
 			camera.zoom = camera.zoom + (cameraZoomSize - camera.zoom) * cameraZoomSpeed;
 		}
 	}

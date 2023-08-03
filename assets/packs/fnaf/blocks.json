@@ -50,8 +50,10 @@
 		},
 	
 		"gift": {
-			"texture": "tiles/atlas_1.png", "size": [0.7, 0.8], "region": [89, 119, 7, 9],
-			"collision": [0.7, 0.4, 0, -0.2]
+			"texture": "tiles/atlas_1.png", 
+			"size": [0.7, 0.8], 
+			"region": [89, 119, 7, 9],
+			"collision": [0.7, 0.42, 0, -0.24]
 		},
 	
 		"tip": {
@@ -63,10 +65,15 @@
 				}
 			}
 		},
+		
+		"carousel": {
+			"texture": "tiles/carousel.png",
+			"size": [5, 6],
+			"collision": [5, 2, 0, -3.8]
+		},
 	
 		"stage": {
-			"texture": "tiles/atlas_1.png", "size": [8, 2.5], "region": [99, 1, 89, 27],
-			"collision": [8, 2.5, 0, 0]
+			"texture": "tiles/atlas_1.png", "size": [8, 2.5], "region": [99, 1, 89, 27]
 		},
 	
 		"pizza": {

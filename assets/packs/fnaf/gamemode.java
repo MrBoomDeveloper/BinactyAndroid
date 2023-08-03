@@ -31,33 +31,39 @@ for(int i = 1; i < 5; i++) {
 	INIT VALUES
 ----------*/
 
-var startups = new int[][]{{25, 25}, {25, 25}, {35, 35}, {60, 60}};
+var startups = new int[][]{{25, 25}, {30, 30}, {35, 35}, {60, 60}};
 int nightId = 1;
 
 switch(game.getEnvString("levelId", "night_0")) {
 	case "night_1": {
-		startups = new int[][]{{60, 60}, {60, 60}, {200, 200}, {150, 150}};
+		startups = new int[][]{
+			{ 60,  60  }, /* Bonnie */
+			{ 85,  85  }, /* Chica  */
+			{ 200, 200 }, /* Freddy */
+			{ 150, 150 }  /* Foxy   */
+		};
+		
 		nightId = 1;
 	} break;
 
 	case "night_2": {
-		startups = new int[][]{{35, 35}, {35, 35}, {175, 175}, {120, 120}};
+		startups = new int[][]{{35, 35}, {60, 60}, {175, 175}, {120, 120}};
 		nightId = 2;
 	} break;
 
 	case "night_3": {
-		startups = new int[][]{{25, 25}, {25, 25}, {140, 140}, {90, 90}};
+		startups = new int[][]{{25, 25}, {35, 35}, {140, 140}, {90, 90}};
 		nightId = 3;
 	} break;
 
 	case "night_4": {
-		startups = new int[][]{{10, 10}, {10, 10}, {100, 100}, {50, 50}};
+		startups = new int[][]{{10, 10}, {20, 20}, {100, 100}, {50, 50}};
 		nightId = 4;
 	} break;
 
 	default: {
-		startups = new int[][]{{1, 1}, {1, 1}, {25, 25}, {10, 10}};
-		nightId = 5;
+		startups = new int[][]{{1, 1}, {5, 5}, {25, 25}, {10, 10}};
+		nightId = 1;
 	} break;
 }
 
@@ -298,7 +304,7 @@ ui.setListener(new UiListener() {
 		chica.entity.die(true);
 		foxy.entity.die(true);
 		
-		game.setTimer(new Runnable() {run() {
+		game.setTimer(new Runnable() { run() {
 			game.over(entities.getCharacter(Target.MAIN_PLAYER), true);
 		}}, 8);
 	}
@@ -320,9 +326,13 @@ entities.setListener(new EntityListener() {
 
 game.setListener(new GameListener() {
 	start() {
-		ui.createFade(1).start(1, 0, 0.5f);
-		ui.createTimer(360, 1.2f);
-		ui.createTitle("Survive the Night", 4);
+		setCameraZoom(1, 1);
+		ui.createFade(1).start(1, 0, 0.1f);
+		ui.createTimer(nightId == 1 ? 400 : 360, 1.2f);
+		
+		game.setTimer(new Runnable() { run() {
+			setCameraZoom(0.5f, .01f);
+		}}, .1f);
 
 		fanSound = createMusic("sounds/fan.wav");
 		fanSound.setPosition(24, -14);
@@ -335,7 +345,6 @@ game.setListener(new GameListener() {
 		phoneSound.setPosition(24, -14);
 		phoneSound.setDistance(12);
 		phoneSound.setVolume(0.5f);
-		phoneSound.play();
 
 		lightSound = createMusic("music/light.wav");
 		lightSound.setPosition(24, -14);
@@ -357,7 +366,7 @@ game.setListener(new GameListener() {
 		lightLeft.pointLight.setActive(false);
 		lightRight.pointLight.setActive(false);
 		
-		game.setTimer(new Runnable() {run() {
+		game.setTimer(new Runnable() { run() {
 			if(isGameEnded || foxy.entity.isDead) return;
 			audio.playSound("sounds/foxy_song.wav", 0.1f);
 		}}, (float)(Math.random() * 600 + 30));
@@ -365,7 +374,26 @@ game.setListener(new GameListener() {
 		var me = core.settings.mainPlayer;
 		me.giveItem(entities.createItem("items/flashlight"));
 		me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
+		
+		if(nightId == 1) {
+			//setCameraPosition(36, 36);
+			game.setPlayerPosition(36, 36);
+			
+			game.setTimer(new Runnable() { run() {
+				phoneSound.play();
+				ui.createTitle("Survive the Night", 4);
+				setCameraZoom(0.75f, .01f);
+			}}, 35);
+		} else {
+			ui.createTitle("Survive the Night", 4);
+			phoneSound.play();
+			
+			game.setTimer(new Runnable() { run() {
+				setCameraZoom(.7f, .075f);
+			}}, .25f);
+		}
 	}
+	
 	build() {}
 	end() {}
 });

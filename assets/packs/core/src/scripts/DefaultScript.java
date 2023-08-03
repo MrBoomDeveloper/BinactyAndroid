@@ -25,3 +25,7 @@ Audio createSound(String path) {
 void setCameraZoom(float size, float speed) {
 	CameraUtil.setCameraZoom(size, speed);
 }
+
+void setCameraPosition(float x, float y) {
+	CameraUtil.setCameraPosition(x, y);
+}

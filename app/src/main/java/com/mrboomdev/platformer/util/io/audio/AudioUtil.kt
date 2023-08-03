@@ -9,6 +9,14 @@ class AudioUtil {
     companion object {
         val activeAudio = ArrayList<Audio>()
 
+        fun updateSingle(audio: Audio) {
+            if(audio.isMusic && audio.is3dSetup) {
+                val calculatedVolume = JavaAudioUtil.getVolume(audio.position, audio.distance)
+                val resultVolume = calculatedVolume * audio.volume * JavaAudioUtil.musicVolume
+                audio.music?.volume = resultVolume
+            }
+        }
+
         fun update() {
             if(updateReloadProgress < .5f) {
                 updateReloadProgress += Gdx.graphics.deltaTime
@@ -16,6 +24,7 @@ class AudioUtil {
             }
 
             val iterator = activeAudio.iterator()
+
             while(iterator.hasNext()) {
                 val audio = iterator.next()
                 if(audio.isStopped) {
@@ -24,12 +33,7 @@ class AudioUtil {
                     continue
                 }
 
-                if(audio.isMusic) {
-                    val resultVolume = JavaAudioUtil.getVolume(
-                            audio.position, audio.distance) * audio.volume * JavaAudioUtil.musicVolume
-
-                    audio.music?.volume = resultVolume
-                }
+                updateSingle(audio)
             }
         }
     }

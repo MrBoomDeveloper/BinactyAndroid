@@ -29,16 +29,20 @@ public abstract class MapObject implements Comparable<MapObject> {
 	}
 
 	public Vector2 getCachedPosition() {
-		if(cachedPosition == null) cachedPosition = getPosition();
+		if(cachedPosition == null) updateCachedPosition();
 		if(!getIsPositionUpdated() && cachedPosition != null) return cachedPosition;
 
 		long currentTime = System.currentTimeMillis();
-		if(currentTime > positionCachedLastTime - /*(long)(game.settings.objectPositionRecacheDelay * 1000)*/ 15000) {
-			cachedPosition = getPosition();
+		if(currentTime > positionCachedLastTime - game.settings.objectPositionRecacheDelay * 1000) {
+			updateCachedPosition();
 			positionCachedLastTime = currentTime;
 		}
 
 		return cachedPosition;
+	}
+
+	public void updateCachedPosition() {
+		cachedPosition = getPosition();
 	}
 	
 	@Override

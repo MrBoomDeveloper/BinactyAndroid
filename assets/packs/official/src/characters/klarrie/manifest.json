@@ -96,7 +96,7 @@
 			
 			"death": {
 				"mode": "NORMAL",
-				"delay": 0.5,
+				"delay": 0.3,
 				"overridable": "never",
 				"force": true,
 				"size": [ 1.1, 1.8 ],
@@ -104,9 +104,12 @@
 				"frames": [
 					{ "region": [ 1,  124, 23, 40 ] },
 					{ "region": [ 25, 124, 23, 40 ] },
+					{ "region": [ 25, 124, 23, 40 ] },
+					{ "region": [ 49, 124, 23, 40 ] },
 					{ "region": [ 49, 124, 23, 40 ] },
 					{ "region": [ 73, 124, 23, 40 ] },
-					{ "region": [ 97, 124, 23, 40 ] }
+					{ "region": [ 97, 124, 23, 40 ] },
+					{ "region": [  0,   0,  0,  0 ] }
 				]
 			},
 			

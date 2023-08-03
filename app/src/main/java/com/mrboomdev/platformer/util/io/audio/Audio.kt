@@ -40,8 +40,9 @@ class Audio {
         if(position != null) {
             setPosition(position!!.x, position!!.y)
         }
+
         isStopped = false
-        AudioUtil.update()
+        AudioUtil.updateSingle(this)
         music?.play()
         music?.volume = volume
         music?.isLooping = isLooping
@@ -77,6 +78,7 @@ class Audio {
             position = Vector2()
             is3dSetup = true
         }
+
         position?.set(x, y)
         return this
     }

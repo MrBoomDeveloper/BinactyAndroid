@@ -170,7 +170,10 @@ public class CharacterEntity extends EntityAbstract {
 		}
 
 		if(brain != null) brain.update();
-		
+
+		var opacity = getOpacity();
+
+		shadow.setAlpha(opacity);
 		shadow.setCenter(getPosition().x, getPosition().y - worldBody.size[1] / 2);
 		shadow.draw(batch);
 
@@ -179,7 +182,7 @@ public class CharacterEntity extends EntityAbstract {
 				? Math.min(damagedProgress, 1)
 				: .8f - Math.min(damagedProgress * .8f, .8f));
 
-		skin.draw(batch, getPosition(), getDirection(), this, getOpacity());
+		skin.draw(batch, getPosition(), getDirection(), this, opacity);
 		game.environment.batch.flush();
 		shader.setUniformf("flashProgress", 0);
 
@@ -217,23 +220,27 @@ public class CharacterEntity extends EntityAbstract {
 	public void drawProjectiles(SpriteBatch batch) {
 		projectileManager.render(batch);
 		if(isDead) return;
-		batch.end();
+
+		var position = getPosition();
 
 		if(damagedProgress < 3 && this != game.settings.mainPlayer) {
+			batch.end();
 			shape.setProjectionMatrix(game.environment.camera.combined);
-			shape.begin(ShapeRenderer.ShapeType.Filled);
-			shape.setColor(1, 0, 0, 1);
-			float progress = worldBody.size[0] / stats.maxHealth * stats.health;
 
-			shape.rect(
-				getPosition().x - worldBody.size[0] / 2,
-				getPosition().y - worldBody.size[1] / 2 - .4f,
-				progress, .2f);
-			shape.end();
+			shape.begin(ShapeRenderer.ShapeType.Filled); {
+				shape.setColor(1, 0, 0, 1);
+				float progress = worldBody.size[0] / stats.maxHealth * stats.health;
+
+				shape.rect(
+						position.x - worldBody.size[0] / 2,
+						position.y - worldBody.size[1] / 2 - .4f,
+						progress, .2f);
+			} shape.end();
+
+			batch.begin();
 		}
 
-		batch.begin();
-		font.draw(batch, name, getPosition().x - 1, getPosition().y + (worldBody.size[1] / 2) + .4f, 2, Align.center, false);
+		font.draw(batch, name, position.x - 1, position.y + (worldBody.size[1] / 2) + .4f, 2, Align.center, false);
 	}
 
 	public void attack(Vector2 power) {

@@ -52,7 +52,8 @@ public class ProjectileBullet {
 
     public void draw(SpriteBatch batch) {
         if(isDied) return;
-        sprite.setCenter(body.getPosition().x, body.getPosition().y);
+        var position = body.getPosition();
+        sprite.setCenter(position.x, position.y);
         sprite.draw(batch);
     }
 

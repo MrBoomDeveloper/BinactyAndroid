@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.particle.ParticleManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
+import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.environment.map.MapManager;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -59,6 +60,7 @@ public class EnvironmentManager {
 		world.step(1 / 60f, 6, 2);
 		gamemode.update();
 		CameraUtil.update(delta);
+		Trigger.update();
 	}
 	
 	public void start(Stage stage) {

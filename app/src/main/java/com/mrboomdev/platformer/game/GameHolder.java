@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.mrboomdev.platformer.ConstantsKt;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
+import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.script.ScriptManager;
@@ -24,6 +25,7 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class GameHolder extends Game {
@@ -66,6 +68,7 @@ public class GameHolder extends Game {
 			@NonNull GameAnalytics analytics
 	) {
 		analytics.log("GameHolder", "setInstance");
+		Trigger.triggers = new ArrayList<>();
 		instance = new GameHolder(launcher, settings, analytics);
 		return instance;
 	}

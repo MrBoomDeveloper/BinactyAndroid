@@ -8,6 +8,8 @@ import com.mrboomdev.platformer.util.ui.ActorUtil.Align;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.util.io.audio.Audio;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.environment.logic.Trigger;
+import com.mrboomdev.platformer.environment.logic.Trigger.TriggerCallback;
 import com.mrboomdev.platformer.util.CameraUtil;
 
 FileUtil getSource() {

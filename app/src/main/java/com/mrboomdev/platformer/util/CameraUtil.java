@@ -33,7 +33,7 @@ public class CameraUtil {
 		cameraZoomSpeed = speed;
 	}
 
-	public void setCameraPosition(float x, float y) {
+	public static void setCameraPosition(float x, float y) {
 		var camera = GameHolder.getInstance().environment.camera;
 		camera.position.set(x, y, 0);
 	}

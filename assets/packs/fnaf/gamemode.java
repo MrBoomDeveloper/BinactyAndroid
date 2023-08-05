@@ -1,6 +1,7 @@
 /* ----------
 	LOAD RESOURCES
 ----------*/
+
 game.load("sound", "sounds/power_end.wav");
 game.load("sound", "sounds/freddy_nose.wav");
 game.load("sound", "sounds/door_close.wav");
@@ -70,25 +71,10 @@ switch(game.getEnvString("levelId", "night_0")) {
 game.load("music", "music/phone_" + nightId + ".wav");
 
 String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerAi", "6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerSpawn"};
-boolean isGameEnded = false, isFreddyActive = false, isPartySongStarted = false;
+boolean isGameEnded, isFreddyActive, isPartySongStarted, didPlayerEnteredOffice;
 int power = 100, usage = 1;
 var powerWidget, usageWidget;
 var fanSound, lightSound, phoneSound, partySong;
-
-boolean isPartySongEnabled = Math.random() > .75f;
-if(isPartySongEnabled) {
-	game.load("music", "music/party_song.ogg");
-	game.setTimer(new Runnable() { run() {
-		if(power <= 0) return;
-		
-		isPartySongStarted = true;
-		partySong = createMusic("music/party_song.ogg");
-		partySong.setPosition(22, 21);
-		partySong.setDistance(35);
-		partySong.setVolume(0.5f);
-		partySong.play();
-	}}, (float)(Math.random() * 360 + 50));
-}
 
 /* ----------
 	CREATE ENTITIES
@@ -127,25 +113,6 @@ freddy.create();
 bonnie.create();
 chica.create();
 foxy.create();
-
-game.setTimer(new Runnable() { run() { 
-	bonnie.setBot(bonnieBrain); 
-}}, Math.round(Math.random() * startups[0][0] + startups[0][1]));
-
-game.setTimer(new Runnable() { run() { 
-	chica.setBot(chicaBrain); 
-}}, Math.round(Math.random() * startups[1][0] + startups[1][1]));
-
-game.setTimer(new Runnable() { run() {
-	if(isFreddyActive) return;
-	
-	freddy.setBot(freddyBrain);
-	isFreddyActive = true;
-}}, Math.round(Math.random() * startups[2][0] + startups[2][1]));
-
-game.setTimer(new Runnable() { run() { 
-	foxy.setBot(foxyBrain); 
-}}, Math.round(Math.random() * startups[3][0] + startups[3][1]));
 
 /* ----------
 	MAKE MAP INTERACTABLE
@@ -226,6 +193,14 @@ void updateLight() {
 /* ----------
 	GAMEPLAY
 ----------*/
+
+var trigger = new Trigger(24, -15, 5, new TriggerCallback() { triggered(var character) {
+	if(character == core.settings.mainPlayer && !didPlayerEnteredOffice) {
+		didPlayerEnteredOffice = true;
+		startNight();
+		trigger.remove();
+	}
+}});
 
 void checkIfNoPower() {
 	if(isGameEnded || power > 0) return;
@@ -327,8 +302,7 @@ entities.setListener(new EntityListener() {
 game.setListener(new GameListener() {
 	start() {
 		setCameraZoom(1, 1);
-		ui.createFade(1).start(1, 0, 0.1f);
-		ui.createTimer(nightId == 1 ? 400 : 360, 1.2f);
+		ui.createFade(1).start(1, 0, .1f);
 		
 		game.setTimer(new Runnable() { run() {
 			setCameraZoom(0.5f, .01f);
@@ -358,39 +332,17 @@ game.setListener(new GameListener() {
 			"music/dark_ambience_3.ogg",
 			"music/dark_ambience_4.ogg"},
 		999);
-
-		usageWidget = ui.createText("statBarWidget.ttf", "Usage: 1").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 25);
-		powerWidget = ui.createText("statBarWidget.ttf", "100%").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 60);
-		powerUpdate();
 		
 		lightLeft.pointLight.setActive(false);
 		lightRight.pointLight.setActive(false);
-		
-		game.setTimer(new Runnable() { run() {
-			if(isGameEnded || foxy.entity.isDead) return;
-			audio.playSound("sounds/foxy_song.wav", 0.1f);
-		}}, (float)(Math.random() * 600 + 30));
 
 		var me = core.settings.mainPlayer;
 		me.giveItem(entities.createItem("items/flashlight"));
 		me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
 		
 		if(nightId == 1) {
-			//setCameraPosition(36, 36);
-			game.setPlayerPosition(36, 36);
-			
-			game.setTimer(new Runnable() { run() {
-				phoneSound.play();
-				ui.createTitle("Survive the Night", 4);
-				setCameraZoom(0.75f, .01f);
-			}}, 35);
-		} else {
-			ui.createTitle("Survive the Night", 4);
-			phoneSound.play();
-			
-			game.setTimer(new Runnable() { run() {
-				setCameraZoom(.7f, .075f);
-			}}, .25f);
+			setCameraPosition(36, 42);
+			game.setPlayerPosition(36, 42);
 		}
 	}
 	
@@ -421,4 +373,58 @@ void uiUpdate() {
 	
 	powerWidget.setOpacity(0);
 	usageWidget.setOpacity(0);
+}
+
+void startNight() {
+	game.setTimer(new Runnable() { run() {
+		bonnie.setBot(bonnieBrain);
+	}}, Math.round(Math.random() * startups[0][0] + startups[0][1]));
+
+	game.setTimer(new Runnable() { run() {
+		chica.setBot(chicaBrain);
+	}}, Math.round(Math.random() * startups[1][0] + startups[1][1]));
+
+	game.setTimer(new Runnable() { run() {
+		if(isFreddyActive) return;
+
+		freddy.setBot(freddyBrain);
+		isFreddyActive = true;
+	}}, Math.round(Math.random() * startups[2][0] + startups[2][1]));
+
+	game.setTimer(new Runnable() { run() {
+		foxy.setBot(foxyBrain);
+	}}, Math.round(Math.random() * startups[3][0] + startups[3][1]));
+
+	boolean isPartySongEnabled = Math.random() > .75f;
+	if(isPartySongEnabled) {
+		game.load("music", "music/party_song.ogg");
+		game.setTimer(new Runnable() { run() {
+			if(power <= 0) return;
+
+			isPartySongStarted = true;
+			partySong = createMusic("music/party_song.ogg");
+			partySong.setPosition(22, 21);
+			partySong.setDistance(35);
+			partySong.setVolume(0.5f);
+			partySong.play();
+		}}, (float)(Math.random() * 300 + 60));
+	}
+
+	ui.createTimer(360, 1.2f);
+	ui.createTitle("Survive the Night", 4);
+
+	phoneSound.play();
+
+	usageWidget = ui.createText("statBarWidget.ttf", "Usage: 1").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 25);
+	powerWidget = ui.createText("statBarWidget.ttf", "100%").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 60);
+	powerUpdate();
+
+	game.setTimer(new Runnable() { run() {
+		if(isGameEnded || foxy.entity.isDead) return;
+		audio.playSound("sounds/foxy_song.wav", 0.1f);
+	}}, (float)(Math.random() * 600 + 30));
+
+	game.setTimer(new Runnable() { run() {
+		setCameraZoom(.7f, .025f);
+	}}, .25f);
 }

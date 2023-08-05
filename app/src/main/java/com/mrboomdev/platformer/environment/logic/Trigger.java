@@ -27,8 +27,6 @@ public class Trigger {
 		var game = GameHolder.getInstance();
 
 		for(var trigger : triggers) {
-			var dividedRadius = trigger.radius / 2;
-
 			game.environment.world.QueryAABB((fixture) -> {
 				var unknown = fixture.getBody().getUserData();
 
@@ -38,10 +36,10 @@ public class Trigger {
 
 				return true;
 			},
-			trigger.x - dividedRadius,
-			trigger.y - dividedRadius,
-			trigger.x + dividedRadius,
-			trigger.y + dividedRadius);
+			trigger.x - trigger.radius,
+			trigger.y - trigger.radius,
+			trigger.x + trigger.radius,
+			trigger.y + trigger.radius);
 		}
 	}
 

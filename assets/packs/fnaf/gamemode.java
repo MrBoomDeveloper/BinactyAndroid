@@ -21,6 +21,7 @@ game.load("item", "items/flashlight");
 game.load("item", "$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol");
 
 game.load("music", "music/music_box.wav");
+game.load("music", "music/party_song.ogg");
 game.load("music", "music/6am.wav");
 game.load("music", "music/light.wav");
 
@@ -71,7 +72,7 @@ switch(game.getEnvString("levelId", "night_0")) {
 game.load("music", "music/phone_" + nightId + ".wav");
 
 String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerAi", "6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerSpawn"};
-boolean isGameEnded, isFreddyActive, isPartySongStarted, didPlayerEnteredOffice;
+boolean isGameEnded = false, isFreddyActive = false, isPartySongStarted = false, didPlayerEnteredOffice = false;
 int power = 100, usage = 1;
 var powerWidget, usageWidget;
 var fanSound, lightSound, phoneSound, partySong;
@@ -127,13 +128,13 @@ var doorRight = map.getById("doorRight"), doorLeft = map.getById("doorLeft");
 boolean isDoorRightOpened = true, isDoorLeftOpened = true;
 
 var lightRight = map.getById("lightRight"), lightLeft = map.getById("lightLeft");
-boolean isLightRightOn, isLightLeftOn;
+boolean isLightRightOn = false, isLightLeftOn = false;
 
-map.getById("freddyNose").setListener(new InteractionListener() {use() {
+map.getById("freddyNose").setListener(new InteractionListener() { use() {
 	audio.playSound("sounds/freddy_nose.wav", 0.5f, 10, map.getById("freddyNose").getPosition(false));
 }});
 
-map.getById("buttonLightRight").setListener(new InteractionListener() {use() {
+map.getById("buttonLightRight").setListener(new InteractionListener() { use() {
 	if(power <= 0) {
 		audio.playSound("sounds/error.wav", 0.5f, 15, lightRight.getPosition(false));
 		return;
@@ -146,7 +147,7 @@ map.getById("buttonLightRight").setListener(new InteractionListener() {use() {
 	updateLight();
 }});
 
-map.getById("buttonLightLeft").setListener(new InteractionListener() {use() {
+map.getById("buttonLightLeft").setListener(new InteractionListener() { use() {
 	if(power <= 0) {
 		audio.playSound("sounds/error.wav", 0.5f, 15, lightLeft.getPosition(false));
 		return;
@@ -159,7 +160,7 @@ map.getById("buttonLightLeft").setListener(new InteractionListener() {use() {
 	updateLight();
 }});
 
-map.getById("buttonDoorRight").setListener(new InteractionListener() {use() {
+map.getById("buttonDoorRight").setListener(new InteractionListener() { use() {
 	if(power <= 0) {
 		audio.playSound("sounds/error.wav", 0.5f, 15, doorRight.getPosition(false));
 		return;
@@ -172,7 +173,7 @@ map.getById("buttonDoorRight").setListener(new InteractionListener() {use() {
 	uiUpdate();
 }});
 
-map.getById("buttonDoorLeft").setListener(new InteractionListener() {use() {
+map.getById("buttonDoorLeft").setListener(new InteractionListener() { use() {
 	if(power == 0) {
 		audio.playSound("sounds/error.wav", 0.5f, 15, doorLeft.getPosition(false));
 		return;
@@ -365,6 +366,8 @@ void powerUpdate() {
 }
 
 void uiUpdate() {
+	if(!didPlayerEnteredOffice) return;
+
 	if(power > 0) {
 		powerWidget.setText(power + "%").setOpacity(1);
 		usageWidget.setText("Usage: " + usage);
@@ -397,7 +400,6 @@ void startNight() {
 
 	boolean isPartySongEnabled = Math.random() > .75f;
 	if(isPartySongEnabled) {
-		game.load("music", "music/party_song.ogg");
 		game.setTimer(new Runnable() { run() {
 			if(power <= 0) return;
 

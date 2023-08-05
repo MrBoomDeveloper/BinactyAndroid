@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
+import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.mrboomdev.platformer.widgets.StatBarWidget;
 import com.mrboomdev.platformer.widgets.StatBarWidget.Track;
@@ -37,6 +38,7 @@ public class GameplayUi extends CoreUi {
 					float willZoomTo = cameraZoom + ((from - to) / 1000);
 					if(willZoomTo < 0.4f || willZoomTo > (game.settings.enableEditor ? 10 : 1.2f)) return;
 					game.environment.camera.zoom = willZoomTo;
+					CameraUtil.isZoomedForce = true;
 				} catch(NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -44,7 +46,6 @@ public class GameplayUi extends CoreUi {
 				
 			@Override
 			public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				super.touchDown(event, x, y, pointer, button);
 				try {
 					if(((JoystickWidget)game.environment.ui.widgets.get("joystick")).isActive) return;
 					cameraZoom = game.environment.camera.zoom;

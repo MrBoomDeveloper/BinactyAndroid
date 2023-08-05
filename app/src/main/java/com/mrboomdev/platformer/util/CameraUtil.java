@@ -5,6 +5,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 
 @SuppressWarnings("unused")
 public class CameraUtil {
+	public static boolean isZoomedForce;
 	private static final float CAMERA_SPEED = .05f;
 	private static float shakePower, shakeDuration, shakeProgress;
 	private static float cameraZoomSize, cameraZoomSpeed;
@@ -31,6 +32,7 @@ public class CameraUtil {
 	public static void setCameraZoom(float size, float speed) {
 		cameraZoomSize = size;
 		cameraZoomSpeed = speed;
+		isZoomedForce = false;
 	}
 
 	public static void setCameraPosition(float x, float y) {
@@ -59,8 +61,9 @@ public class CameraUtil {
 					camera.position.x + ((playerPosition.x + offset.x) - camera.position.x) * (CAMERA_SPEED / camera.zoom),
 					camera.position.y + ((playerPosition.y + offset.y) - camera.position.y) * (CAMERA_SPEED / camera.zoom)
 			), 0);
+		}
 
-			if(game.settings.enableEditor) return;
+		if(!game.settings.enableEditor && !isZoomedForce) {
 			camera.zoom = camera.zoom + (cameraZoomSize - camera.zoom) * cameraZoomSpeed;
 		}
 	}

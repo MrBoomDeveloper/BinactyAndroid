@@ -1,12 +1,13 @@
 package com.mrboomdev.platformer.ui.gameplay.layout;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-
 import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
 
@@ -14,8 +15,13 @@ public class InventoryLayout extends ActorUtil {
 	private final Array<ButtonWidget> buttons = new Array<>();
 	private final ShapeRenderer shape = new ShapeRenderer();
 
+	public InventoryLayout() {
+		super();
+	}
+
     @Override
-    public void draw(Batch batch, float alpha) {
+    public void draw(@NonNull Batch batch, float alpha) {
+		super.update();
 		batch.end();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		shape.begin(ShapeRenderer.ShapeType.Filled); {
@@ -37,7 +43,7 @@ public class InventoryLayout extends ActorUtil {
 	}
 
     @Override
-    public <T extends ActorUtil> T addTo(Stage stage) {
+    public <T extends ActorUtil> T addTo(@NonNull Stage stage) {
 		shape.setAutoShapeType(true);
 		for(int i = 0; i < 6; i++) {
 			final int id = i;

@@ -8,54 +8,47 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class ActionButton extends ActorUtil {
 	public static final int size = 115;
-	public static final float defaultOpacity = .1f;
-	public static final float activeOpacity = .07f;
-	public static final float iconDefaultOpacity = .8f;
-	public static final float iconActiveOpacity = .5f;
+	public static final float defaultOpacity = .1f, activeOpacity = .07f;
+	public static final float iconDefaultOpacity = .8f, iconActiveOpacity = .5f;
 	public boolean isActive = true;
-	private final Sprite sprite;
-	private final Sprite icon;
+	private boolean isPressed;
+	private final Sprite sprite, icon;
 	
 	public ActionButton(Sprite spriteInput) {
+		super();
 		AssetManager asset = GameHolder.getInstance().assets;
 		Texture bigCircles = asset.get("ui/overlay/big_elements.png", Texture.class);
 		sprite = new Sprite(new TextureRegion(bigCircles, 400, 0, 200, 200));
+
 		this.setSize(size, size);
 		sprite.setSize(size, size);
 		icon = new Sprite(spriteInput);
 		icon.setSize(size / 1.8f, size / 1.8f);
-		
-		this.update(false);
+
 		this.addListener(new ClickListener() {
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				update(true);
+				isPressed = true;
 				return true;
 			}
 			
 			@Override
 			public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-				update(false);
+				isPressed = false;
 			}
 		});
 	}
 	
 	public ActionButton setActive(boolean isActive) {
 		this.isActive = isActive;
+		this.isPressed = false;
 		this.setTouchable(isActive ? Touchable.enabled : Touchable.disabled);
-		this.update(false);
 		return this;
-	}
-	
-	private void update(boolean isPressed) {
-		sprite.setAlpha((isPressed ? activeOpacity : defaultOpacity) * (isActive ? 1 : .5f));
-		icon.setAlpha((isPressed ? iconActiveOpacity : iconDefaultOpacity) * (isActive ? 1 : .5f));
 	}
 	
 	@Override
@@ -66,6 +59,12 @@ public class ActionButton extends ActorUtil {
 
 	@Override
 	public void draw(Batch batch, float alpha) {
+		super.update();
+		float opacity = getOpacity() * (isActive ? 1 : .5f);
+
+		sprite.setAlpha((isPressed ? activeOpacity : defaultOpacity) * opacity);
+		icon.setAlpha((isPressed ? iconActiveOpacity : iconDefaultOpacity) * opacity);
+
 		sprite.draw(batch);
 		icon.draw(batch);
 	}

@@ -76,6 +76,10 @@ public class GameBridge {
 			default: throw BoomException.builder("Failed to load a resource. Unknown type! Type: ").addQuoted(type).append(", Path: ").addQuoted(path).build();
 		}
 	}
+
+	public void setControlsEnabled(boolean isEnabled) {
+		game.settings.isControlsEnabled = isEnabled;
+	}
 	
 	public void over(CharacterEntity character, boolean isWin) {
 		if(character == game.settings.mainPlayer) {

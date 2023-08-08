@@ -3,7 +3,6 @@ package com.mrboomdev.platformer.widgets;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ui.ActorUtil;
 
@@ -16,6 +15,7 @@ public class TextWidget extends ActorUtil {
     private String text = "";
 
     public TextWidget(String fontName) {
+		super();
 		GameHolder game = GameHolder.getInstance();
 		this.font = game.assets.get(fontName);
 		this.glyph = new GlyphLayout(font, text);
@@ -45,6 +45,11 @@ public class TextWidget extends ActorUtil {
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
+		super.update();
+
+		font.setColor(1, 1, 1, opacity * getOpacity());
+		glyph.setText(font, text);
+
 		font.draw(batch, glyph, getX() + getOffset(hAlign, true), getY() + getOffset(vAlign, false));
 	}
 	

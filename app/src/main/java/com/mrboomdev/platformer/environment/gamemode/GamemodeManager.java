@@ -66,6 +66,8 @@ public class GamemodeManager {
 
 				switch(function.action) {
 					case GAME_OVER:
+						game.settings.isControlsEnabled = false;
+						game.settings.isUiVisible = false;
 						game.stats.isWin = time == 0;
 						gameOverTimeout = 1;
 						fade.start(0, 1, .5f);

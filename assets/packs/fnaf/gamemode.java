@@ -195,11 +195,12 @@ void updateLight() {
 	GAMEPLAY
 ----------*/
 
-var trigger = new Trigger(24, -15, 5, new TriggerCallback() { triggered(var character) {
+var officeTrigger = new Trigger(24, -15, 5, new TriggerCallback() { triggered(var character) {
 	if(character == core.settings.mainPlayer && !didPlayerEnteredOffice) {
 		didPlayerEnteredOffice = true;
 		startNight();
-		trigger.remove();
+		officeTrigger.remove();
+		officeTrigger = null;
 	}
 }});
 
@@ -345,6 +346,9 @@ game.setListener(new GameListener() {
 			setCameraPosition(36, 42);
 			game.setPlayerPosition(36, 42);
 		}
+
+		game.setControlsEnabled(true);
+		ui.setVisibility(true);
 	}
 	
 	build() {}

@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.mrboomdev.platformer.ConstantsKt;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.game.pack.PackWidget;
@@ -92,6 +93,8 @@ public class PackBridge extends ReactContextBaseJavaModule {
 
 	@ReactMethod
 	public void getGamemodes(Promise promise) {
+		//var a = ReactParser.serializeMap(PackLoader.getGamemodes());
+
 		var jsGamemodes = Arguments.createArray();
 		for(var row : PackLoader.getGamemodes()) {
 			var jsRow = Arguments.createMap();
@@ -123,6 +126,8 @@ public class PackBridge extends ReactContextBaseJavaModule {
 							var jsLevel = Arguments.createMap();
 							jsLevel.putString("id", level.id);
 							jsLevel.putString("name", level.name);
+							if(level.banner != null) jsLevel.putString("banner", level.banner);
+							if(level.description != null) jsLevel.putString("description", level.description);
 							jsLevelsCategoryData.pushMap(jsLevel);
 						}
 
@@ -146,8 +151,7 @@ public class PackBridge extends ReactContextBaseJavaModule {
 				}
 
 				if(gamemode.entry != null) {
-					var moshi = new Moshi.Builder().build();
-					var entryAdapter = moshi.adapter(PackData.GamemodeEntry.class);
+					var entryAdapter = ConstantsKt.getMoshi().adapter(PackData.GamemodeEntry.class);
 					jsGamemode.putString("entry", entryAdapter.toJson(gamemode.entry));
 				}
 

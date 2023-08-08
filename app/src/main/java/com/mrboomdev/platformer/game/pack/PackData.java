@@ -103,7 +103,7 @@ public class PackData {
 		public Level[] data;
 
 		public static class Level {
-			public String id, name;
+			public String id, name, banner, description;
 		}
 	}
 }

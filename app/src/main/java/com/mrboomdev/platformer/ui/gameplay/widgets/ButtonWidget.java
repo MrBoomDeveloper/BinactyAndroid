@@ -31,6 +31,7 @@ public class ButtonWidget extends ActorUtil {
 	public static final float BULLET_HEIGHT = 50;
 
 	public ButtonWidget(@NonNull Style style) {
+		super();
 		this.style = style;
 		this.shape = new ShapeRenderer();
 		this.addListener(new ClickListener() {
@@ -113,7 +114,10 @@ public class ButtonWidget extends ActorUtil {
 
 	@Override
 	public void draw(Batch batch, float alpha) {
-		float[] textPosition = new float[]{getX(), getY()};
+		super.update();
+		float opacity = getOpacity();
+		float[] textPosition = new float[]{ getX(), getY() };
+
 		switch(style) {
 			case BULLET: {
 				if(foregroundImage != null) {
@@ -124,30 +128,30 @@ public class ButtonWidget extends ActorUtil {
 					setWidth(getHeight() * 2 + glyph.width);
 					textPosition[0] += getWidth() / 2 - glyph.width / 2;
 				}
+
 				textPosition[1] += getHeight() / 2 + glyph.height / 2;
-				{
-					batch.end();
+
+				batch.end(); {
 					Gdx.gl.glEnable(GL20.GL_BLEND);
 					shape.begin(ShapeRenderer.ShapeType.Filled);
-					shape.setColor(1, 1, 1, (isPressed ? .9f : 1));
+					shape.setColor(1, 1, 1, (isPressed ? .9f : 1) * opacity);
 					shape.circle(getX() + getHeight() / 2, getY() + getHeight() / 2, getHeight() / 2);
 					shape.circle(getX() + getWidth() - getHeight() / 2, getY() + getHeight() / 2, getHeight() / 2);
 					shape.rect(getX() + getHeight() / 2, getY(), getWidth() - getHeight(), getHeight());
 					shape.end();
 					Gdx.gl.glDisable(GL20.GL_BLEND);
-					batch.begin();
-				}
+				} batch.begin();
 			} break;
 				
 			case CARD: {
 				if(backgroundImage != null) {
 					backgroundImage.setPosition(getX(), getY());
 					backgroundImage.setSize(getWidth(), getHeight());
-					backgroundImage.setAlpha(getColor().a);
+					backgroundImage.setAlpha(getColor().a * opacity);
 				}
 				if(foregroundImage != null) {
 					foregroundImage.setCenter(getX() + getWidth() / 2, getY() + getHeight() / 2);
-					foregroundImage.setAlpha(getColor().a);
+					foregroundImage.setAlpha(getColor().a * opacity);
 				}
 			} break;
 
@@ -172,10 +176,10 @@ public class ButtonWidget extends ActorUtil {
 					float color = isPressed ? .3f : .2f;
 					if(highlight) color += .15f;
 
-					shape.setColor(color + .2f, color + .2f, color + .2f, 1);
+					shape.setColor(color + .2f, color + .2f, color + .2f, opacity);
 					shape.rect(getX(), getY(), getWidth(), getHeight());
 
-					shape.setColor(color, color, color, 1);
+					shape.setColor(color, color, color, opacity);
 					shape.rect(getX() + 2, getY() + 2, getWidth() - 4, getHeight() - 4);
 				} shape.end();
 				batch.begin();

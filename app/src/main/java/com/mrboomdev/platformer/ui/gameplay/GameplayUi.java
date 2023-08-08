@@ -25,12 +25,17 @@ public class GameplayUi {
 	private CharacterEntity connectedEntity;
 	
 	public void createFreeRoam(Stage stage) {
-		widgets.put("debug", new DebugValuesWidget().toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - game.settings.screenInset - 75));
+		widgets.put("debug", new DebugValuesWidget().toPosition(
+				game.settings.screenInset,
+				Gdx.graphics.getHeight() - game.settings.screenInset - 75
+		));
+
 		if(game.settings.enableEditor) widgets.get("debug").setPosition(120, 45);
 		if(game.settings.debugValues) stage.addActor(widgets.get("debug"));
 		
 		widgets.put("joystick", new JoystickWidget()
 			.onUpdate(power -> {
+				if(!game.settings.isControlsEnabled) return;
 				connectedEntity.usePower(power, connectedEntity.stats.speed *
 						(game.settings.enableEditor ? (game.environment.camera.zoom * 5) : 1), false);
 
@@ -46,12 +51,18 @@ public class GameplayUi {
 			.toPosition(
 				Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset - 25,
 				ActionButton.size + 150 + game.settings.screenInset)
-			.onClick(() -> connectedEntity.dash())
+			.onClick(() -> {
+				if(!game.settings.isControlsEnabled) return;
+				connectedEntity.dash();
+			})
 			.addTo(stage);
 		
 		widgets.put("use", new ActionButton(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 49, 14, 14))
 			.setActive(false)
-			.onClick(() -> connectedEntity.interact())
+			.onClick(() -> {
+				if(!game.settings.isControlsEnabled) return;
+				connectedEntity.interact();
+			})
 			.toPosition(
 				Gdx.graphics.getWidth() - ActionButton.size * 2 - game.settings.screenInset - 155,
 				game.settings.screenInset)
@@ -70,20 +81,23 @@ public class GameplayUi {
 		
 		var aimJoystick = new JoystickWidget();
 		aimJoystick.onUpdate(power -> {
-				CameraUtil.setCameraOffset(power.x / 25, power.y / 25);
-				var player = game.settings.mainPlayer;
-				if(player == null) return;
+				if(!game.settings.isControlsEnabled || connectedEntity == null) return;
 
-				var aimSprite = player.aimSprite;
+				CameraUtil.setCameraOffset(power.x / 25, power.y / 25);
+
+				var aimSprite = connectedEntity.aimSprite;
 				if(aimJoystick.isActive) {
 					aimSprite.setAlpha(.5f);
-					var position = player.getPosition().add(power.scl(.2f));
+					var position = connectedEntity.getPosition().add(power.scl(.2f));
 					aimSprite.setCenter(position.x, position.y);
 				} else {
 					aimSprite.setAlpha(0);
 				}
 			})
-			.onUse(power -> connectedEntity.attack(power))
+			.onUse(power -> {
+				if(!game.settings.isControlsEnabled) return;
+				connectedEntity.attack(power);
+			})
 			.toPosition(Gdx.graphics.getWidth() - 225 - game.settings.screenInset, game.settings.screenInset)
 			.toSize(225, 225)
 			.addTo(stage);

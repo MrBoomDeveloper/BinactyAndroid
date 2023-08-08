@@ -19,6 +19,10 @@ public class UiBridge {
 		if(listener == null) return;
 		listener.timerEnd();
 	}
+
+	public void setVisibility(boolean isVisible) {
+		game.settings.isUiVisible = isVisible;
+	}
 	
 	public TextWidget createText(String font, String text) {
 		return new TextWidget(font).setOpacity(1).setText(text).addTo(game.environment.stage);

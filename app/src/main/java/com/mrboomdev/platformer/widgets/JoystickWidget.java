@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.widgets;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -9,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
@@ -24,6 +25,7 @@ public class JoystickWidget extends ActorUtil {
     private UpdateListener listener, useListener;
 
     public JoystickWidget() {
+        super();
         setTouchable(Touchable.enabled);
         addListener(new InputListener() {
             @Override
@@ -79,14 +81,18 @@ public class JoystickWidget extends ActorUtil {
 
     @Override
     public void draw(Batch batch, float alpha) {
+        super.update();
         var delta = Gdx.graphics.getDeltaTime();
+        var opacity = getOpacity();
+
         if(isActive && pointOpacity < 1) {
             pointOpacity += delta * 1.2f;
         } else if(pointOpacity > .3f) {
             pointOpacity -= delta * 1.2f;
         }
-        point.setAlpha(Math.min(1, pointOpacity));
-        holder.setAlpha(Math.min(.5f, pointOpacity));
+
+        point.setAlpha(Math.min(1, pointOpacity) * opacity);
+        holder.setAlpha(Math.min(.5f, pointOpacity) * opacity);
 
         if(listener != null) listener.update(getPower());
         holder.draw(batch);
@@ -106,7 +112,7 @@ public class JoystickWidget extends ActorUtil {
     }
 
     @Override
-    public <T extends ActorUtil> T addTo(Stage stage) {
+    public <T extends ActorUtil> T addTo(@NonNull Stage stage) {
         holder.setBounds(getX(), getY(), getWidth(), getHeight());
         point.setSize(getWidth() / 3, getHeight() / 3);
 

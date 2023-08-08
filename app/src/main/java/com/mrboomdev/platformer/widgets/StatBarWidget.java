@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Align;
-
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
 
@@ -17,11 +16,11 @@ public class StatBarWidget extends ActorUtil {
 	public static final int SIZE = 40;
 	private final Track track;
 	private final BitmapFont font;
-	private Sprite iconSprite;
-	private Sprite progressSprite;
+	private Sprite iconSprite, progressSprite;
 	private float currentProgress;
 	
 	public StatBarWidget(@NonNull Track track) {
+		super();
 		this.track = track;
 		GameHolder game = GameHolder.getInstance();
 		Texture texture = game.assets.get("ui/overlay/generalIcons.png", Texture.class);
@@ -42,14 +41,20 @@ public class StatBarWidget extends ActorUtil {
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
+		super.update();
+		float opacity = getOpacity();
+
+		iconSprite.setAlpha(opacity);
 		iconSprite.setPosition(getX() + (track == Track.HEALTH ? 0 : 6.5f), getY());
 		iconSprite.draw(batch);
 
 		currentProgress = getProgress();
+		progressSprite.setAlpha(opacity);
 		progressSprite.setPosition(getX() + SIZE + 25, getY() + 4);
 		progressSprite.setSize(currentProgress * 1.8f, SIZE - 8);
 		progressSprite.draw(batch);
 
+		font.setColor(1, 1, 1,opacity);
 		font.draw(batch, getData(), getX() + SIZE + 15, getY() + 26, 200, Align.center, false);
 	}
 

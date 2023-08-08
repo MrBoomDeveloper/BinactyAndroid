@@ -14,6 +14,7 @@ public class FadeWidget extends ActorUtil implements WidgetAnimatable {
     private int direction;
 
     public FadeWidget(float initial) {
+        super();
         shapeRenderer = new ShapeRenderer();
         opacity = initial;
     }
@@ -28,6 +29,7 @@ public class FadeWidget extends ActorUtil implements WidgetAnimatable {
 
     @Override
     public void draw(Batch batch, float alpha) {
+        super.update();
         float delta = Gdx.graphics.getDeltaTime() * speed;
         if (direction > 0) opacity = Math.min(to, opacity + delta);
         if (direction < 0) opacity = Math.max(to, opacity - delta);

@@ -20,6 +20,7 @@ public class GameSettings {
 	public int screenInset = 60;
 	public float objectResortDelay = .5f, objectPositionRecacheDelay = 1;
 	public boolean enableEditor, pause, ignoreScriptErrors, isBeta;
+	public boolean isControlsEnabled, isUiVisible;
 	public boolean debugRenderer, debugValues, debugRaysDisable, debugStage;
 	public Engine engine;
 	

@@ -17,6 +17,7 @@ public class DebugValuesWidget extends ActorUtil {
 	private final GLProfiler profiler;
     
     public DebugValuesWidget() {
+		super();
 		font = GameHolder.getInstance().assets.get("debug.ttf", BitmapFont.class);
 		glyph = new GlyphLayout(font, "DEBUG WIDGET WAITING FOR UPDATES");
 		profiler = new GLProfiler(Gdx.graphics);
@@ -40,6 +41,7 @@ public class DebugValuesWidget extends ActorUtil {
 	
 	@Override
 	public void draw(Batch batch, float alpha) {
+		super.update();
 		StringBuilder builder = new StringBuilder();
 		for(var entry : values.entrySet()) {
 			builder.append(entry.getKey());

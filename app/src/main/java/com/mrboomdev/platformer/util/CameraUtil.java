@@ -6,9 +6,9 @@ import com.mrboomdev.platformer.game.GameHolder;
 @SuppressWarnings("unused")
 public class CameraUtil {
 	public static boolean isZoomedForce;
-	private static final float CAMERA_SPEED = .05f;
+	private static final float DEFAULT_CAMERA_SPEED = .05f;
 	private static float shakePower, shakeDuration, shakeProgress;
-	private static float cameraZoomSize, cameraZoomSpeed;
+	private static float cameraZoomSize, cameraZoomSpeed, cameraSpeed;
 	private static final Vector2 shakeCurrent = new Vector2();
 	private static final Vector2 offset = new Vector2();
 	
@@ -29,6 +29,10 @@ public class CameraUtil {
 		offset.set(x, y);
 	}
 
+	public static void setCameraMoveSpeed(float speed) {
+		cameraSpeed = speed;
+	}
+
 	public static void setCameraZoom(float size, float speed) {
 		cameraZoomSize = size;
 		cameraZoomSpeed = speed;
@@ -38,6 +42,18 @@ public class CameraUtil {
 	public static void setCameraPosition(float x, float y) {
 		var camera = GameHolder.getInstance().environment.camera;
 		camera.position.set(x, y, 0);
+	}
+
+	public static void reset() {
+		isZoomedForce = false;
+		shakePower = 0;
+		shakeDuration = 0;
+		shakeProgress = 0;
+		cameraSpeed = DEFAULT_CAMERA_SPEED;
+
+		setCameraZoom(.5f, .1f);
+		offset.setZero();
+		shakeCurrent.setZero();
 	}
 	
 	public static void update(float delta) {
@@ -58,8 +74,8 @@ public class CameraUtil {
 			var playerPosition = player.getPosition();
 
 			camera.position.set(shakeCurrent.add(
-					camera.position.x + ((playerPosition.x + offset.x) - camera.position.x) * (CAMERA_SPEED / camera.zoom),
-					camera.position.y + ((playerPosition.y + offset.y) - camera.position.y) * (CAMERA_SPEED / camera.zoom)
+					camera.position.x + ((playerPosition.x + offset.x) - camera.position.x) * (cameraSpeed / camera.zoom),
+					camera.position.y + ((playerPosition.y + offset.y) - camera.position.y) * (cameraSpeed / camera.zoom)
 			), 0);
 		}
 

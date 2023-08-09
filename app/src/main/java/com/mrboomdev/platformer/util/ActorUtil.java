@@ -15,7 +15,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 @SuppressWarnings("unchecked")
 public abstract class ActorUtil extends Actor {
 	public CharacterEntity connectedEntity;
-	private float opacity = 1, masterOpacity = 1;
+	private float opacity = 1, masterOpacity;
 
 	public void update() {
 		var game = GameHolder.getInstance();

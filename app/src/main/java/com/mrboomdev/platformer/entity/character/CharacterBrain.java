@@ -7,6 +7,6 @@ public abstract class CharacterBrain {
 		this.entity = entity;
 		return this;
 	}
-	
-	public abstract void update();
+
+	public void update() {}
 }

@@ -196,13 +196,56 @@ void updateLight() {
 ----------*/
 
 var officeTrigger = new Trigger(24, -15, 5, new TriggerCallback() { triggered(var character) {
-	if(character == core.settings.mainPlayer && !didPlayerEnteredOffice) {
-		didPlayerEnteredOffice = true;
-		startNight();
-		officeTrigger.remove();
-		officeTrigger = null;
-	}
+	if(character != core.settings.mainPlayer || didPlayerEnteredOffice) return;
+
+	didPlayerEnteredOffice = true;
+	startNight();
+	officeTrigger.remove();
 }});
+
+if(nightId == 1) {
+	foxy.entity.body.setTransform(38.5f, 31, 0);
+
+	var foxyTrigger = new Trigger(35, 32, 4, new TriggerCallback() { triggered(var character) {
+		if(character != core.settings.mainPlayer) return;
+
+		foxyCutscene();
+		foxyTrigger.remove();
+	}});
+}
+
+void foxyCutscene() {
+	ui.setVisibility(false);
+	game.setControlsEnabled(false);
+
+	game.setTimer(new Runnable() { run() {
+		CameraUtil.setCameraMoveSpeed(.01f);
+		CameraUtil.setCameraOffset(1, -5);
+		CameraUtil.setCameraZoom(0.45f, .04f);
+
+		game.setTimer(new Runnable() { run() {
+			var brain = new BotFollower();
+			brain.setWaypoints(waypoints);
+			brain.goTo(12, 8);
+
+			brain.onCompleted(new Runnable() { run() {
+				CameraUtil.reset();
+				ui.setVisibility(true);
+				game.setControlsEnabled(true);
+			}});
+
+			foxy.entity.setBrain(brain);
+
+//			foxy.entity.body.setTransform(12, 8, 0);
+
+//			game.setTimer(new Runnable() { run() {
+//				CameraUtil.reset();
+//				ui.setVisibility(true);
+//				game.setControlsEnabled(true);
+//			}}, 3);
+		}}, 6);
+	}}, .5f);
+}
 
 void checkIfNoPower() {
 	if(isGameEnded || power > 0) return;

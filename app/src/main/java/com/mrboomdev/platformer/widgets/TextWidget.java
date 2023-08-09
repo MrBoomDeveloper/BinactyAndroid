@@ -38,8 +38,6 @@ public class TextWidget extends ActorUtil {
 	
 	public TextWidget setOpacity(float opacity) {
 		this.opacity = opacity;
-		font.setColor(1, 1, 1, opacity);
-		glyph.setText(font, text);
 		return this;
 	}
 	

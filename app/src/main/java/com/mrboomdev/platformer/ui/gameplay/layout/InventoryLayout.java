@@ -22,18 +22,20 @@ public class InventoryLayout extends ActorUtil {
     @Override
     public void draw(@NonNull Batch batch, float alpha) {
 		super.update();
+		var opacity = getOpacity();
+
 		batch.end();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		shape.begin(ShapeRenderer.ShapeType.Filled); {
 			for(int i = 0; i <= 5; i++) {
 				shape.set(ShapeRenderer.ShapeType.Filled);
-				shape.setColor(.5f, .5f, .5f, .1f);
+				shape.setColor(.5f, .5f, .5f, .1f * opacity);
 				shape.rect((getX() + i * 80) - (3 * 80), getY(), 75, 75);
 				
 				buttons.get(i).setForegroundImage((connectedEntity.inventory.items.size > i) ? connectedEntity.inventory.items.get(i).getSprite() : null);
 				
 				Gdx.gl.glLineWidth(3);
-				shape.setColor(1, 1, 1, connectedEntity.inventory.current == i ? .8f : .1f);
+				shape.setColor(1, 1, 1, (connectedEntity.inventory.current == i ? .8f : .1f) * opacity);
 				shape.set(ShapeRenderer.ShapeType.Line);
 				shape.rect((getX() + i * 80) - (3 * 80), getY(), 75, 75);
 			}

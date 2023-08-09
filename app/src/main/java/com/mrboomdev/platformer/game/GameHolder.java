@@ -20,6 +20,7 @@ import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.script.ScriptManager;
+import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
@@ -68,8 +69,8 @@ public class GameHolder extends Game {
 			@NonNull GameAnalytics analytics
 	) {
 		analytics.log("GameHolder", "setInstance");
-		Trigger.triggers = new ArrayList<>();
 		instance = new GameHolder(launcher, settings, analytics);
+		instance.reset();
 		return instance;
 	}
 	
@@ -78,6 +79,16 @@ public class GameHolder extends Game {
 			throw new BoomException("You need to set the instance first!");
 		}
 		return instance;
+	}
+
+	public void reset() {
+		CameraUtil.reset();
+		Trigger.triggers = new ArrayList<>();
+
+		if(settings.enableEditor) {
+			settings.isUiVisible = true;
+			settings.isControlsEnabled = true;
+		}
 	}
 	
 	private GameHolder(GameLauncher launcher, GameSettings settings, @NonNull GameAnalytics analytics) {

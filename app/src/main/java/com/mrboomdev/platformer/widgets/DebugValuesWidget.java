@@ -30,8 +30,18 @@ public class DebugValuesWidget extends ActorUtil {
 	
 	@Override
 	public void act(float delta) {
+		var game = GameHolder.getInstance();
+		var camera = game.environment.camera;
+		var entityPosition = connectedEntity.getPosition();
+
+		setValue("Assets loaded", "[ Internal: " + game.assets.getLoadedAssets() + ", External: " + game.externalAssets.getLoadedAssets() + " ]");
+
 		setValue("Screen Fps", String.valueOf(Gdx.graphics.getFramesPerSecond()));
-		setValue("Player Position", "[ " + (connectedEntity.getPosition().x) + " : " + (connectedEntity.getPosition().y) + " ]");
+
+		setValue("Player Position", "[ " + entityPosition.x + " : " + entityPosition.y + " ]");
+
+		setValue("Camera position", "[ " + camera.position.x + " : " + camera.position.y + " : " + camera.zoom + " ]");
+
 		setValue("Gl Total draws", String.valueOf(profiler.getDrawCalls()));
 		setValue("Gl Texture bindings", String.valueOf(profiler.getTextureBindings()));
 		setValue("Gl Calls", String.valueOf(profiler.getCalls()));

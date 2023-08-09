@@ -26,7 +26,7 @@ public class AudioUtil {
 		if(repeatTimes < 0) return;
 		currentTheme = musicQueue.random();
 		currentTheme.setOnCompletionListener(completedMusic -> startMusic(repeatTimes - 1));
-		currentTheme.setVolume(0.2f * musicVolume);
+		currentTheme.setVolume(.1f * musicVolume);
 		currentTheme.setPosition(0);
 		currentTheme.play();
 	}

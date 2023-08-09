@@ -19,24 +19,26 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
-import com.badlogic.gdx.math.Vector2;
+
+import androidx.annotation.NonNull;
+
 import com.mrboomdev.platformer.R;
 
 public class GameDebugMenu {
 	private static boolean isMenuCreated = false;
 	private static boolean isMenuOpened = false;
 	private WindowManager wm;
-	private SharedPreferences prefs;
+	private final SharedPreferences prefs;
 	public View myView;
-	private Context context;
+	private final Context context;
 	
 	public GameDebugMenu(Context context) {
 		this.context = context;
-		this.prefs = ((Activity)context).getSharedPreferences("Save", 0);
+		this.prefs = context.getSharedPreferences("Save", 0);
 	}
 	
 	@TargetApi(26)
-	@SuppressLint("UseSwitchCompatOrMaterialCode")
+	@SuppressLint({"InflateParams", "ClickableViewAccessibility"})
 	public void onResume() {
 		if(isMenuCreated || (Build.VERSION.SDK_INT < 26)) return;
 		
@@ -64,22 +66,24 @@ public class GameDebugMenu {
 			private int x, y;
 				
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
+			public boolean onTouch(View v, @NonNull MotionEvent event) {
 				 switch (event.getAction()) {
-					case MotionEvent.ACTION_DOWN:
+					case MotionEvent.ACTION_DOWN: {
 						x = (int) event.getRawX();
 						y = (int) event.getRawY();
-						break;
+					} break;
 						
-					case MotionEvent.ACTION_MOVE: int nowX = (int) event.getRawX();
+					case MotionEvent.ACTION_MOVE: {
+						int nowX = (int) event.getRawX();
 						int nowY = (int) event.getRawY();
 						int movedX = nowX - x;
 						int movedY = nowY - y;
-						x = nowX; y = nowY;
+						x = nowX;
+						y = nowY;
 						params.x = params.x + movedX;
 						params.y = params.y + movedY;
 						wm.updateViewLayout(myView, params);
-						break;
+					} break;
 				}
 				return false;
 			}
@@ -93,7 +97,7 @@ public class GameDebugMenu {
 		params.y = 0;
 		
 		menuTrigger.setOnClickListener(button -> {
-			isMenuOpened = isMenuOpened ? false : true;
+			isMenuOpened = !isMenuOpened;
 			menu.setVisibility(isMenuOpened ? View.VISIBLE : View.GONE);
 			((Button)button).setText(isMenuOpened ? "Hide DevMenu" : "Show DevMenu");
 		});
@@ -106,44 +110,40 @@ public class GameDebugMenu {
 	}
 	
 	public void destroy() {
-		((Activity)context).finishAffinity();
+		var launcher = GameHolder.getInstance().launcher;
+		launcher.exit(GameLauncher.Status.LOBBY);
+		launcher.finishAffinity();
+
 		wm.removeView(myView);
 		isMenuCreated = false;
 	}
 	
-	private void setupButtonTriggers(View view, GameSettings settings) {
+	private void setupButtonTriggers(@NonNull View view, GameSettings settings) {
 		Button closeGameButton = view.findViewById(R.id.closeGameButton);
 		closeGameButton.setOnClickListener(button -> this.destroy());
 		
 		Button gainHealthButton = view.findViewById(R.id.gainHealthButton);
 		gainHealthButton.setOnClickListener(button -> {
-			settings.mainPlayer.stats.maxHealth = 5000;
-			settings.mainPlayer.gainDamage(-5000, Vector2.Zero);
+			settings.mainPlayer.stats.maxHealth = 666666;
+			settings.mainPlayer.gainDamage(-666666);
 		});
 		
 		Button gameOverButton = view.findViewById(R.id.gameOverButton);
-		gameOverButton.setOnClickListener(button -> settings.mainPlayer.die(false));
+		gameOverButton.setOnClickListener(button -> settings.mainPlayer.gainDamage(Integer.MAX_VALUE));
 	}
-	
-	private void setupSwitchTriggers(View view, GameSettings settings) {
+
+	@SuppressLint("UseSwitchCompatOrMaterialCode")
+	private void setupSwitchTriggers(@NonNull View view, @NonNull GameSettings settings) {
 		Switch debugRendererSwitch = view.findViewById(R.id.debugRendererSwitch);
 		debugRendererSwitch.setChecked(settings.debugRenderer);
-		debugRendererSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
-			settings.debugRenderer = isActive;
-			prefs.edit().putBoolean("debugRenderer", isActive).apply();
-		});
-		
+		debugRendererSwitch.setOnCheckedChangeListener((toggle, isActive) -> settings.debugRenderer = isActive);
+
 		Switch lightsSwitch = view.findViewById(R.id.lightsSwitch);
 		lightsSwitch.setChecked(settings.debugRaysDisable);
-		lightsSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
-			settings.debugRaysDisable = isActive;
-			prefs.edit().putBoolean("debugRaysDisable", isActive).apply();
-		});
-		
+		lightsSwitch.setOnCheckedChangeListener((toggle, isActive) -> settings.debugRaysDisable = isActive);
+
 		Switch stageSwitch = view.findViewById(R.id.debugStage);
-		stageSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
-			settings.debugStage = isActive;
-		});
+		stageSwitch.setOnCheckedChangeListener((toggle, isActive) -> settings.debugStage = isActive);
 		
 		Switch editorSwitch = view.findViewById(R.id.editorSwitch);
 		editorSwitch.setChecked(settings.enableEditor);

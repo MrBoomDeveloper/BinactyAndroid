@@ -42,11 +42,11 @@ class Audio {
         }
 
         isStopped = false
-        AudioUtil.updateSingle(this)
-        music?.play()
         music?.volume = volume
         music?.isLooping = isLooping
         com.mrboomdev.platformer.util.AudioUtil.playingMusic.add(music)
+        AudioUtil.updateSingle(this)
+        music?.play()
         return this
     }
 

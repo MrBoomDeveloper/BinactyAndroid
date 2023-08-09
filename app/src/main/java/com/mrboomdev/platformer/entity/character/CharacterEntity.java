@@ -39,6 +39,8 @@ import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 
+import org.jetbrains.annotations.Nullable;
+
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class CharacterEntity extends EntityAbstract {
 	public Entity.Stats stats;
@@ -133,8 +135,8 @@ public class CharacterEntity extends EntityAbstract {
 		return this;
 	}
 
-	public CharacterEntity setBrain(@NonNull CharacterBrain brain) {
-		brain.setEntity(this);
+	public CharacterEntity setBrain(@Nullable CharacterBrain brain) {
+		if(brain != null) brain.setEntity(this);
 		this.brain = brain;
 		return this;
 	}
@@ -163,10 +165,14 @@ public class CharacterEntity extends EntityAbstract {
 		}
 
 		if(damagedProgress < 1 && !isDashing) {
-			body.setLinearVelocity(damagedPower.scl(5).limit(3));
+			body.setLinearVelocity(damagedPower != null ? damagedPower.scl(5).limit(3) : Vector2.Zero);
 		} else {
 			healthPhantom += Gdx.graphics.getDeltaTime() / 2;
 			stats.health = Math.min((int)healthPhantom, stats.maxHealth);
+
+			if(this != game.settings.mainPlayer && brain == null) {
+				body.setLinearVelocity(Vector2.Zero);
+			}
 		}
 
 		if(brain != null) brain.update();

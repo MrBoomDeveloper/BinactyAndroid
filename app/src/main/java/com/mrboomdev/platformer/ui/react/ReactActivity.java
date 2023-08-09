@@ -23,7 +23,6 @@ import com.facebook.soloader.SoLoader;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.mrboomdev.platformer.BuildConfig;
-import com.mrboomdev.platformer.game.GameManager;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.online.OnlineManager;
@@ -32,13 +31,13 @@ import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.ZipUtil;
-import com.mrboomdev.providers.AndroidFileUtilProvider;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
     public static ReactActivity instance;
@@ -55,7 +54,6 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 		instance = this;
 		ActivityManager.current = this;
 		ActivityManager.reactActivity = this;
-		GameManager.fileUtilProvider = new AndroidFileUtilProvider();
 
         List<ReactPackage> packages = new ArrayList<>(Arrays.asList(
 				new MainReactPackage(null),
@@ -155,7 +153,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 				var dest = FileUtil.external("packs/temp");
 				dest.remove();
 				try {
-					ZipUtil.unzipFile(getContentResolver().openInputStream(intent.getData()), dest, () -> {
+					ZipUtil.unzipFile(getContentResolver().openInputStream(Objects.requireNonNull(intent.getData())), dest, () -> {
 						try {
 							Moshi moshi = new Moshi.Builder().build();
 							JsonAdapter<PackData.Manifest> adapter = moshi.adapter(PackData.Manifest.class);

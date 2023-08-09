@@ -11,6 +11,7 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.environment.logic.Trigger.TriggerCallback;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.entity.bot.BotFollower;
 
 FileUtil getSource() {
 	return this.__source;

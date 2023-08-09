@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
@@ -35,7 +36,11 @@ public class GameplayUi {
 		
 		widgets.put("joystick", new JoystickWidget()
 			.onUpdate(power -> {
-				if(!game.settings.isControlsEnabled) return;
+				if(!game.settings.isControlsEnabled) {
+					connectedEntity.usePower(Vector2.Zero, 0, false);
+					return;
+				}
+
 				connectedEntity.usePower(power, connectedEntity.stats.speed *
 						(game.settings.enableEditor ? (game.environment.camera.zoom * 5) : 1), false);
 

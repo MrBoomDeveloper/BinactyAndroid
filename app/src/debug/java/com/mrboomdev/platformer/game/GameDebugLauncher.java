@@ -2,9 +2,11 @@ package com.mrboomdev.platformer.game;
 
 import android.os.Bundle;
 import android.view.View;
+
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+
 import com.badlogic.gdx.Gdx;
 import com.google.android.material.color.DynamicColors;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -72,6 +74,7 @@ public class GameDebugLauncher extends GameLauncher {
 		AudioUtil.clear();
 		Gdx.app.postRunnable(() -> {
 			var game = GameHolder.getInstance();
+			game.reset();
 			game.setScreen(new LoadingScreen());
 		});
 	}

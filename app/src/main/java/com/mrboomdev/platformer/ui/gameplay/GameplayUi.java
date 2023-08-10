@@ -93,7 +93,7 @@ public class GameplayUi {
 				var aimSprite = connectedEntity.aimSprite;
 				if(aimJoystick.isActive) {
 					aimSprite.setAlpha(.5f);
-					var position = connectedEntity.getPosition().add(power.scl(.2f));
+					var position = connectedEntity.getPosition().cpy().add(power.scl(.2f));
 					aimSprite.setCenter(position.x, position.y);
 				} else {
 					aimSprite.setAlpha(0);

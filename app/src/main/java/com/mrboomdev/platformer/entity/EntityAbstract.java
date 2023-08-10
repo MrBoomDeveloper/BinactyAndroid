@@ -24,8 +24,12 @@ public abstract class EntityAbstract implements BotTarget {
 	public boolean isDestroyed, isDead;
 	@Json(ignore = true)
 	GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true)
+	private Vector2 cachedPosition;
 	
-	public abstract void draw(SpriteBatch batch);
+	public void draw(SpriteBatch batch) {
+		cachedPosition = null;
+	}
 	
 	public void die(boolean silently) {
 		isDead = true;
@@ -83,6 +87,10 @@ public abstract class EntityAbstract implements BotTarget {
 	 */
 	@Override
 	public Vector2 getPosition() {
-		return body.getPosition();
+		if(cachedPosition == null) {
+			cachedPosition = body.getPosition();
+		}
+
+		return cachedPosition;
 	}
 }

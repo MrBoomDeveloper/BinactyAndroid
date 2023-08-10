@@ -45,23 +45,40 @@ import org.jetbrains.annotations.Nullable;
 public class CharacterEntity extends EntityAbstract {
 	public Entity.Stats stats;
 	public CharacterSkin skin;
-	@Json(name = "body") public CharacterBody worldBody;
-	@Json(ignore = true) public String name;
-	@Json(ignore = true) public Sprite aimSprite;
-	@Json(ignore = true) public ItemInventory inventory;
-	@Json(ignore = true) public Fixture bottomFixture;
-	@Json(ignore = true) public CharacterBrain brain;
-	@Json(ignore = true) public TileInteraction nearInteraction;
-	@Json(ignore = true) float dashProgress, dashReloadProgress;
-	@Json(ignore = true) float damagedProgress = 1;
-	@Json(ignore = true) float staminaReloadMultiply, healthPhantom;
-	@Json(ignore = true) boolean isRunning, isDashing;
-	@Json(ignore = true) ShapeRenderer shape;
-	@Json(ignore = true) BitmapFont font;
-	@Json(ignore = true) ProjectileManager projectileManager;
-	@Json(ignore = true) Vector2 damagedPower;
-	@Json(ignore = true) Sprite shadow;
-	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
+	@Json(name = "body")
+	public CharacterBody worldBody;
+	@Json(ignore = true)
+	public String name;
+	@Json(ignore = true)
+	public Sprite aimSprite;
+	@Json(ignore = true)
+	public ItemInventory inventory;
+	@Json(ignore = true)
+	public Fixture bottomFixture;
+	@Json(ignore = true)
+	public CharacterBrain brain;
+	@Json(ignore = true)
+	public TileInteraction nearInteraction;
+	@Json(ignore = true)
+	float dashProgress, dashReloadProgress;
+	@Json(ignore = true)
+	float damagedProgress = 1;
+	@Json(ignore = true)
+	float staminaReloadMultiply, healthPhantom;
+	@Json(ignore = true)
+	boolean isRunning, isDashing;
+	@Json(ignore = true)
+	ShapeRenderer shape;
+	@Json(ignore = true)
+	BitmapFont font;
+	@Json(ignore = true)
+	ProjectileManager projectileManager;
+	@Json(ignore = true)
+	Vector2 damagedPower;
+	@Json(ignore = true)
+	Sprite shadow;
+	@Json(ignore = true)
+	GameHolder game = GameHolder.getInstance();
 	
 	public CharacterEntity cpy(String name, FileUtil source) {
 		return new CharacterEntity(name, skin.build(source), worldBody, stats);
@@ -143,7 +160,9 @@ public class CharacterEntity extends EntityAbstract {
 	
 	@Override
 	public void draw(SpriteBatch batch) {
+		super.draw(batch);
 		projectileManager.clearTrash();
+
 		if(isDead && !isDestroyed && damagedProgress > 1) destroy();
 		if(isDestroyed) return;
 
@@ -179,9 +198,10 @@ public class CharacterEntity extends EntityAbstract {
 		if(brain != null) brain.update();
 
 		var opacity = getOpacity();
+		var position = getPosition();
 
 		shadow.setAlpha(opacity);
-		shadow.setCenter(getPosition().x, getPosition().y - worldBody.size[1] / 2);
+		shadow.setCenter(position.x, position.y - worldBody.size[1] / 2);
 		shadow.draw(batch);
 
 		var shader = game.environment.shader;
@@ -189,11 +209,11 @@ public class CharacterEntity extends EntityAbstract {
 				? Math.min(damagedProgress, 1)
 				: .8f - Math.min(damagedProgress * .8f, .8f));
 
-		skin.draw(batch, getPosition(), getDirection(), this, opacity);
+		skin.draw(batch, position, getDirection(), this, opacity);
 		game.environment.batch.flush();
 		shader.setUniformf("flashProgress", 0);
 
-		inventory.draw(batch, getPosition(), skin, getDirection().isBackward());
+		inventory.draw(batch, position, skin, getDirection().isBackward());
 
 		//drawDebug(batch);
 	}

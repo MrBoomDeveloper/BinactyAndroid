@@ -32,7 +32,7 @@ public class MapEntity extends MapObject {
 	@Override
     public Vector2 getPosition(boolean isBottom) {
 		if(!isBottom) return getBody().getPosition();
-		return entity.getPosition().add(0, entity.worldBody.bottom[3]);
+		return entity.getPosition().cpy().add(0, entity.worldBody.bottom[3]);
     }
 	
 	@Override

@@ -3,7 +3,6 @@ package com.mrboomdev.platformer.entity.bot;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
-import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.bot.ai.AiState;
 import com.mrboomdev.platformer.entity.bot.ai.AiStuckChecker;
 import com.mrboomdev.platformer.entity.bot.ai.AiTargeter;
@@ -29,20 +28,20 @@ public class BotBrain extends CharacterBrain {
 	private final GameHolder game = GameHolder.getInstance();
 	private Sound playerDetectedSound;
 	private long playerLastDetected, mapLastScanned;
-	
-	public BotBrain start(EntityManager entityManager) {
+
+	@Override
+	public void start() {
 		this.stuckChecker = new AiStuckChecker();
 		this.targeter = new AiTargeter(this);
 		float attackReloadDuration = (float) (Math.random() * 1);
 		float dashReloadDuration = (float) (Math.random() * 1);
 		playerDetectedSound = game.assets.get("audio/sounds/player_detected.wav");
 		this.scanMap();
-		return this;
 	}
 	
 	public void scanMap() {
 		var startedScanningMapMs = System.currentTimeMillis();
-		
+
 		this.graph = new PathGraph();
 		var points = new Array<PathPoint>();
 		for(var tile : game.environment.map.tilesMap.values()) {
@@ -52,14 +51,15 @@ public class BotBrain extends CharacterBrain {
 			this.graph.addPoint(point);
 			points.add(point);
 		}
-		
+
 		for(int i = 0; i < points.size; i++) {
 			for(int a = 0; a < points.size; a++) {
 				if(points.get(i).position.dst(points.get(a).position) > 2.5f) continue;
 				this.graph.connectPoints(points.get(i), points.get(a));
 			}
 		}
-		
+
+		targeter.setGraph(graph);
 		LogUtil.debug(LogUtil.Tag.BOT, "Map scanned for: " + (System.currentTimeMillis() - startedScanningMapMs) + "ms");
 	}
 	
@@ -70,18 +70,25 @@ public class BotBrain extends CharacterBrain {
 			mapLastScanned = currentTime;
 			scanMap();
 		}
-		
-		targeter.update();
+
+		if(graph != null) {
+			targeter.update();
+		}
 	}
 	
 	public void goByPath(float speed, boolean toEnemy) {
+		var entity = getEntity();
+
 		if(entity == null || target == null) return;
 		boolean shouldGoAway = false;
 		var myPosition = entity.getPosition();
 		var targetPosition = target.getPosition();
 		
 		if(toEnemy) {
-			if(myPosition.dst(targetPosition) < 2) entity.attack(targetPosition.cpy().sub(myPosition));
+			if(myPosition.dst(targetPosition) < 2) {
+				entity.attack(targetPosition.cpy().sub(myPosition).scl(2));
+			}
+
 			if(entity.stats.health < entity.stats.maxHealth / 3) shouldGoAway = true;
 			//if(entity.stats.stamina > entity.stats.maxStamina / 3) entity.dash();
 		}

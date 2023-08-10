@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.bot.BotTarget;
+import com.mrboomdev.platformer.environment.path.PathGraph;
 import com.mrboomdev.platformer.game.GameHolder;
 
 public class AiTargeter {
@@ -13,29 +14,32 @@ public class AiTargeter {
 	private long ignoredStartedTime;
 	private final BotBrain brain;
 	private final GameHolder game = GameHolder.getInstance();
+	private PathGraph graph;
 
 	public AiTargeter(BotBrain brain) {
 		this.brain = brain;
 	}
+
+	public void setGraph(PathGraph graph) {
+		this.graph = graph;
+	}
 	
 	public void update() {
-		var myPosition = brain.entity.getPosition();
-		var myPoint = brain.graph.findNearest(myPosition);
-		var targetPoint = brain.graph.findNearest(game.settings.mainPlayer.getPosition());
+		if(graph == null) return;
+
+		var entity = brain.getEntity();
+		var myPosition = entity.getPosition();
+		var myPoint = graph.findNearest(myPosition);
+		var targetPoint = graph.findNearest(game.settings.mainPlayer.getPosition());
 		
 		if(ignoredTarget != null && System.currentTimeMillis() > ignoredStartedTime + 5000) {
 			ignoredTarget = null;
 		}
 
-		boolean isMainPlayerIgnored = game.settings.enableEditor
-				|| game.settings.mainPlayer == ignoredTarget
-				|| game.settings.mainPlayer.isDead
-				|| myPoint.position.dst(targetPoint.position) > visionDistance;
+		if(isMainPlayerIgnored(myPoint.position, targetPoint.position)) {
+			this.visionDistance = 8;
 
-		if(isMainPlayerIgnored) {
-			visionDistance = 8;
-
-			if(exploreTimeoutProgress <= 0) brain.target = brain.graph.points.random();
+			if(exploreTimeoutProgress <= 0) brain.target = graph.points.random();
 			var targetPosition = brain.target.getPosition();
 
 			if(exploreTimeoutProgress <= 0) {
@@ -43,24 +47,75 @@ public class AiTargeter {
 				brain.stuckChecker.reset();
 			}
 
-			exploreTimeoutProgress -= Gdx.graphics.getDeltaTime();
-			targetPoint = brain.graph.findNearest(targetPosition);
-			brain.path = brain.graph.findPath(myPoint, targetPoint);
+			this.exploreTimeoutProgress -= Gdx.graphics.getDeltaTime();
+			targetPoint = graph.findNearest(targetPosition);
+			brain.path = graph.findPath(myPoint, targetPoint);
 			
 			if(myPoint != targetPoint) {
-				brain.goByPath(brain.entity.stats.speed, false);
+				brain.goByPath(entity.stats.speed, false);
 			} else {
-				brain.entity.usePower(Vector2.Zero, 0, false);
+				entity.usePower(Vector2.Zero, 0, false);
 			}
 			return;
 		}
 		
-		visionDistance = 12;
+		this.visionDistance = 12;
 		exploreTimeoutProgress = 0;
-		brain.path = brain.graph.findPath(myPoint, targetPoint);
+		brain.path = graph.findPath(myPoint, targetPoint);
 		brain.stuckChecker.setDestination(targetPoint.getPosition().cpy());
-		brain.goByPath(brain.entity.stats.speed * 1.5f, true);
+		brain.goByPath(entity.stats.speed * 1.5f, true);
 		brain.target = game.settings.mainPlayer;
+	}
+
+	public Vector2 getTarget() {
+		if(graph == null) return Vector2.Zero;
+
+		var entity = brain.getEntity();
+		var myPosition = entity.getPosition();
+		var myPoint = graph.findNearest(myPosition);
+		var targetPoint = graph.findNearest(game.settings.mainPlayer.getPosition());
+
+		if(ignoredTarget != null && System.currentTimeMillis() > ignoredStartedTime + 5000) {
+			ignoredTarget = null;
+		}
+
+		if(isMainPlayerIgnored(myPoint.position, targetPoint.position)) {
+			this.visionDistance = 8;
+
+			if(exploreTimeoutProgress <= 0) brain.target = graph.points.random();
+			var targetPosition = brain.target.getPosition();
+
+			if(exploreTimeoutProgress <= 0) {
+				exploreTimeoutProgress = Math.min(targetPosition.dst(myPosition) * 1.2f, 10);
+				brain.stuckChecker.reset();
+			}
+
+			this.exploreTimeoutProgress -= Gdx.graphics.getDeltaTime();
+			targetPoint = graph.findNearest(targetPosition);
+			brain.path = graph.findPath(myPoint, targetPoint);
+
+			if(myPoint != targetPoint) {
+				brain.goByPath(entity.stats.speed, false);
+			} else {
+				entity.usePower(Vector2.Zero, 0, false);
+			}
+			return null;
+		}
+
+		this.visionDistance = 12;
+		exploreTimeoutProgress = 0;
+		brain.path = graph.findPath(myPoint, targetPoint);
+		brain.stuckChecker.setDestination(targetPoint.getPosition().cpy());
+		brain.goByPath(entity.stats.speed * 1.5f, true);
+		brain.target = game.settings.mainPlayer;
+		return null;
+	}
+
+	private boolean isMainPlayerIgnored(Vector2 myPosition, Vector2 targetPosition) {
+		return game.settings.enableEditor
+			|| game.settings.mainPlayer == ignoredTarget
+			|| game.settings.mainPlayer.isDead
+			|| myPosition.dst(targetPosition) > this.visionDistance;
 	}
 	
 	public void setIgnored(BotTarget target) {

@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.entity.character;
 
 import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.environment.map.MapEntity;
@@ -22,7 +23,8 @@ public class CharacterCreator {
 	}
 
 	public CharacterCreator setBot(@NonNull BotBrain brain) {
-		entity.setBrain(brain.start(game.environment.entities));
+		entity.setBrain(brain);
+		brain.start();
 		return this;
 	}
 	

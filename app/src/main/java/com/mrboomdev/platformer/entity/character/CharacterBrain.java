@@ -1,12 +1,19 @@
 package com.mrboomdev.platformer.entity.character;
 
 public abstract class CharacterBrain {
-	public CharacterEntity entity;
+	private CharacterEntity entity;
 	
-	public CharacterBrain setEntity(CharacterEntity entity) {
+	public void setEntity(CharacterEntity entity) {
 		this.entity = entity;
-		return this;
+	}
+
+	public CharacterEntity getEntity() {
+		return entity;
 	}
 
 	public void update() {}
+
+	public void start() {}
+
+	public void end() {}
 }

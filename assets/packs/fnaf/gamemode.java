@@ -209,7 +209,7 @@ if(nightId == 1) {
 	var foxyTrigger = new Trigger(35, 32, 4, new TriggerCallback() { triggered(var character) {
 		if(character != core.settings.mainPlayer) return;
 
-		foxyCutscene();
+		//foxyCutscene();
 		foxyTrigger.remove();
 	}});
 }
@@ -226,12 +226,14 @@ void foxyCutscene() {
 		game.setTimer(new Runnable() { run() {
 			var brain = new BotFollower();
 			brain.setWaypoints(waypoints);
-			brain.goTo(12, 8);
+			brain.setTarget(12, 8);
 
 			brain.onCompleted(new Runnable() { run() {
 				CameraUtil.reset();
 				ui.setVisibility(true);
 				game.setControlsEnabled(true);
+
+				foxy.entity.setBrain(null);
 			}});
 
 			foxy.entity.setBrain(brain);

@@ -172,6 +172,7 @@ public class CharacterEntity extends EntityAbstract {
 
 			if(this != game.settings.mainPlayer && brain == null) {
 				body.setLinearVelocity(Vector2.Zero);
+				skin.setAnimation(IDLE);
 			}
 		}
 
@@ -198,8 +199,13 @@ public class CharacterEntity extends EntityAbstract {
 	}
 
 	private float getOpacity() {
-		if(!isDead || damagedProgress < .5f) return 1;
-		return Math.max(1, 1 - ((damagedProgress - .5f) * 2));
+		if(!isDead && damagedProgress < 1) {
+			return Math.min(1.25f - (1 - damagedProgress), 1);
+		} else if(isDead && damagedProgress > .5f) {
+			return Math.max((1 - damagedProgress) * 2, 0);
+		}
+
+		return 1;
 	}
 
 	/**
@@ -252,11 +258,11 @@ public class CharacterEntity extends EntityAbstract {
 	public void attack(Vector2 power) {
 		if(isDead) return;
 		if(inventory.items.size > inventory.current) {
-			inventory.getCurrentItem().attack(power.scl(.2f), projectileManager);
+			inventory.getCurrentItem().attack(power, projectileManager);
 			return;
 		}
 
-		projectileManager.attack(power.scl(.2f));
+		projectileManager.attack(power);
 	}
 	
 	public void interact() {
@@ -285,7 +291,7 @@ public class CharacterEntity extends EntityAbstract {
 		if(damagedProgress < 1 || isDashing || isDead) return;
 		
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/damage.mp3", Sound.class), .25f, 10, getPosition());
-		damagedProgress = (Math.random() > .8f) ? 0 : .8f;
+		damagedProgress = (Math.random() > .75f) ? .4f : .75f;
 		skin.setAnimation(DAMAGE);
 		stats.health = Math.max(stats.health - damage, 0);
 		healthPhantom = stats.health;

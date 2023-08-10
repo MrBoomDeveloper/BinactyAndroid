@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.OrderedMap;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
@@ -34,7 +35,7 @@ public class MapManager {
 	@Json(ignore = true) private long lastSortedTime;
 	@Json(ignore = true) public RayHandler rayHandler;
 	@Json(ignore = true) public Map<String, MapTile> tilesPresets = new HashMap<>();
-	@Json(ignore = true) public ObjectMap<String, MapTile> tilesMap = new ObjectMap<>();
+	@Json(ignore = true) public ObjectMap<String, MapTile> tilesMap = new OrderedMap<>();
 	@Json(ignore = true) public Array<MapObject> pendingRemoves = new Array<>();
 	@Json(ignore = true) public ArrayList<MapObject> objects = new ArrayList<>();
 	@Json(ignore = true) FileUtil source;

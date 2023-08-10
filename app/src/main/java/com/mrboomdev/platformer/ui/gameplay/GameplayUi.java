@@ -101,7 +101,7 @@ public class GameplayUi {
 			})
 			.onUse(power -> {
 				if(!game.settings.isControlsEnabled) return;
-				connectedEntity.attack(power);
+				connectedEntity.attack(power.scl(.2f));
 			})
 			.toPosition(Gdx.graphics.getWidth() - 225 - game.settings.screenInset, game.settings.screenInset)
 			.toSize(225, 225)

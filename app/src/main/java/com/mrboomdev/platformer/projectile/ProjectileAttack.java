@@ -29,8 +29,7 @@ public class ProjectileAttack {
 	public CharacterEntity owner;
 	public boolean isEnded, isDead;
 	public AttackStats stats;
-	public Vector2 power;
-	public Vector2 position;
+	public Vector2 power, position;
 	
 	public ProjectileAttack(@NonNull World world, @NonNull CharacterEntity owner, AttackStats stats, @NonNull Vector2 power) {
 		this.world = world;
@@ -82,6 +81,8 @@ public class ProjectileAttack {
 		sprite.set(new Sprite(animation.getKeyFrame(animationProgress)));
 		sprite.setSize(-.6f, .6f);
 		sprite.setFlip(power.x > 0, false);
+
+		var position = body.getPosition();
 		sprite.setCenter(position.x, position.y);
 		sprite.draw(batch);
 	}

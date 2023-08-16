@@ -21,7 +21,7 @@ public class GameSettings {
 	public float objectResortDelay = .5f, objectPositionRecacheDelay = 1;
 	public boolean enableEditor, pause, ignoreScriptErrors, isBeta;
 	public boolean isControlsEnabled, isUiVisible;
-	public boolean debugRenderer, debugValues, debugRaysDisable, debugStage;
+	public boolean debugRenderer, debugValues, debugRaysDisable, debugStage, debugCamera;
 	public Engine engine;
 	
 	@NonNull

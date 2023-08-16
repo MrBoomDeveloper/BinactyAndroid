@@ -16,7 +16,7 @@ public class BotBrainBuilder {
 	}
 
 	public BotBrainBuilder setStates(AiState state) {
-		brain.state = state;
+		//brain.state = state;
 		return this;
 	}
 	

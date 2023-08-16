@@ -40,7 +40,7 @@ public class ProjectileAttack {
 		AssetManager assets = GameHolder.getInstance().assets;
 		Texture texture = assets.get("world/effects/attack.png", Texture.class);
 		sprite = new Sprite(texture);
-		position = owner.body.getPosition().add(power.limit(1.2f));
+		position = owner.body.getPosition().add(power.cpy().limit(1.2f));
 
 		animation = new Animation<>(.04f, new Array<>(new TextureRegion[] {
 				new TextureRegion(texture, 0, 0, 8, 8),

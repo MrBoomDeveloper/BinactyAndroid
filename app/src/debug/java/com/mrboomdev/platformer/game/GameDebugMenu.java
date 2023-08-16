@@ -6,23 +6,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 
+import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.R;
+import com.mrboomdev.platformer.util.CameraUtil;
 
 public class GameDebugMenu {
 	private static boolean isMenuCreated = false;
@@ -32,7 +32,7 @@ public class GameDebugMenu {
 	public View myView;
 	private final Context context;
 	
-	public GameDebugMenu(Context context) {
+	public GameDebugMenu(@NonNull Context context) {
 		this.context = context;
 		this.prefs = context.getSharedPreferences("Save", 0);
 	}
@@ -43,7 +43,10 @@ public class GameDebugMenu {
 		if(isMenuCreated || (Build.VERSION.SDK_INT < 26)) return;
 		
 		if(!Settings.canDrawOverlays(context)) {
-			Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
+			String action = android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION;
+			Uri uri = Uri.parse("package:" + context.getPackageName());
+
+			Intent intent = new Intent(action, uri);
 			context.startActivity(intent);
 			return;
 		}
@@ -58,49 +61,26 @@ public class GameDebugMenu {
 		wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		myView = ((Activity)context).getLayoutInflater().inflate(R.layout.dev_menu_layout, null);
 		
-		LinearLayout hold = myView.findViewById(R.id.holder);
-		ScrollView menu = myView.findViewById(R.id.menu);
+		LinearLayout holder = myView.findViewById(R.id.holder);
+		LinearLayout menu = myView.findViewById(R.id.menu);
 		Button menuTrigger = myView.findViewById(R.id.menuTrigger);
 			
-		OnTouchListener dragEvent = new OnTouchListener() {
-			private int x, y;
-				
-			@Override
-			public boolean onTouch(View v, @NonNull MotionEvent event) {
-				 switch (event.getAction()) {
-					case MotionEvent.ACTION_DOWN: {
-						x = (int) event.getRawX();
-						y = (int) event.getRawY();
-					} break;
-						
-					case MotionEvent.ACTION_MOVE: {
-						int nowX = (int) event.getRawX();
-						int nowY = (int) event.getRawY();
-						int movedX = nowX - x;
-						int movedY = nowY - y;
-						x = nowX;
-						y = nowY;
-						params.x = params.x + movedX;
-						params.y = params.y + movedY;
-						wm.updateViewLayout(myView, params);
-					} break;
-				}
-				return false;
-			}
-		};
-		
-		hold.setOnTouchListener(dragEvent);
-		menuTrigger.setOnTouchListener(dragEvent);
-			
 		params.gravity = Gravity.TOP | Gravity.START;
-		params.x = 0;
-		params.y = 0;
+		params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+		params.height = WindowManager.LayoutParams.WRAP_CONTENT;
 		
 		menuTrigger.setOnClickListener(button -> {
 			isMenuOpened = !isMenuOpened;
+
 			menu.setVisibility(isMenuOpened ? View.VISIBLE : View.GONE);
+			params.width = isMenuOpened ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
+			params.height = isMenuOpened ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
+			wm.updateViewLayout(myView, params);
+
+			holder.setBackgroundColor(isMenuOpened ? Color.parseColor("#cc11071F") : Color.TRANSPARENT);
 			((Button)button).setText(isMenuOpened ? "Hide DevMenu" : "Show DevMenu");
 		});
+
 		wm.addView(myView, params);
 		
 		GameSettings settings = GameHolder.getInstance().settings;
@@ -110,6 +90,8 @@ public class GameDebugMenu {
 	}
 	
 	public void destroy() {
+		myView.setVisibility(View.GONE);
+
 		var launcher = GameHolder.getInstance().launcher;
 		launcher.exit(GameLauncher.Status.LOBBY);
 		launcher.finishAffinity();
@@ -119,17 +101,71 @@ public class GameDebugMenu {
 	}
 	
 	private void setupButtonTriggers(@NonNull View view, GameSettings settings) {
-		Button closeGameButton = view.findViewById(R.id.closeGameButton);
-		closeGameButton.setOnClickListener(button -> this.destroy());
+		view.findViewById(R.id.closeGameButton).setOnClickListener(button -> this.destroy());
 		
-		Button gainHealthButton = view.findViewById(R.id.gainHealthButton);
-		gainHealthButton.setOnClickListener(button -> {
+		view.findViewById(R.id.gainHealthButton).setOnClickListener(button -> {
+			if(settings.mainPlayer == null) return;
 			settings.mainPlayer.stats.maxHealth = 666666;
 			settings.mainPlayer.gainDamage(-666666);
+			settings.mainPlayer.stats.maxStamina = 666666;
+			settings.mainPlayer.stats.stamina = 666666;
 		});
+
+		view.findViewById(R.id.enableControlsButton).setOnClickListener(button -> {
+			settings.isUiVisible = true;
+			settings.isControlsEnabled = true;
+
+			if(settings.mainPlayer != null) {
+				CameraUtil.setTarget(settings.mainPlayer);
+			}
+		});
+
+		registerTeleportButton(view, R.id.teleportDownButton, 0, -10);
+		registerTeleportButton(view, R.id.teleportUpButton, 0, 10);
+		registerTeleportButton(view, R.id.teleportLeftButton, -10, 0);
+		registerTeleportButton(view, R.id.teleportRightButton, 10, 0);
 		
-		Button gameOverButton = view.findViewById(R.id.gameOverButton);
-		gameOverButton.setOnClickListener(button -> settings.mainPlayer.gainDamage(Integer.MAX_VALUE));
+		view.findViewById(R.id.gameOverButton).setOnClickListener(button -> settings.mainPlayer.gainDamage(Integer.MAX_VALUE));
+
+		view.findViewById(R.id.killAllButton).setOnClickListener(button -> {
+			var game = GameHolder.getInstance();
+			var everyone = new Array<>(game.environment.entities.characters);
+			for(var character : everyone) {
+				if(character == game.settings.mainPlayer) continue;
+				character.gainDamage(Integer.MAX_VALUE);
+			}
+		});
+
+		view.findViewById(R.id.teleportAllToMeButton).setOnClickListener(button -> {
+			var game = GameHolder.getInstance();
+			var everyone = new Array<>(game.environment.entities.characters);
+			for(var character : everyone) {
+				if(character == game.settings.mainPlayer) continue;
+				character.body.setTransform(game.settings.mainPlayer.getPosition(), 0);
+			}
+		});
+
+		view.findViewById(R.id.healAllButton).setOnClickListener(button -> {
+			var game = GameHolder.getInstance();
+			var everyone = new Array<>(game.environment.entities.characters);
+			for(var character : everyone) {
+				if(character == game.settings.mainPlayer) continue;
+				character.gainDamage(-character.stats.maxHealth);
+			}
+		});
+
+		view.findViewById(R.id.resetButton).setOnClickListener(button -> {
+			this.prefs.edit().clear().apply();
+			this.destroy();
+		});
+	}
+
+	private void registerTeleportButton(@NonNull View view, int id, float x, float y) {
+		view.findViewById(id).setOnClickListener(button -> {
+			var player = GameHolder.getInstance().settings.mainPlayer;
+			var currentPosition = player.body.getPosition();
+			player.body.setTransform(currentPosition.add(x, y), 0);
+		});
 	}
 
 	@SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -144,6 +180,9 @@ public class GameDebugMenu {
 
 		Switch stageSwitch = view.findViewById(R.id.debugStage);
 		stageSwitch.setOnCheckedChangeListener((toggle, isActive) -> settings.debugStage = isActive);
+
+		Switch debugCameraToggle = view.findViewById(R.id.debugCameraToggle);
+		debugCameraToggle.setOnCheckedChangeListener((toggle, isActive) -> settings.debugCamera = isActive);
 		
 		Switch editorSwitch = view.findViewById(R.id.editorSwitch);
 		editorSwitch.setChecked(settings.enableEditor);

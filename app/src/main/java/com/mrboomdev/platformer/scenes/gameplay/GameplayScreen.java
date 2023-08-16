@@ -15,6 +15,7 @@ import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileCollision;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
+import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
@@ -108,6 +109,7 @@ public class GameplayScreen extends CoreScreen {
 		game.settings.mainPlayer = player;
 		game.environment.entities.setMain(player);
 		camera.position.set(player.getPosition(), 0);
+		CameraUtil.setTarget(player);
 		
 		ui = new GameplayUi(this, player);
 		Gdx.input.setInputProcessor(ui.stage);

@@ -7,6 +7,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
+import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.TimeFormatterKt;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
@@ -66,6 +67,8 @@ public class GamemodeManager {
 
 				switch(function.action) {
 					case GAME_OVER:
+						CameraUtil.setTarget(null);
+						CameraUtil.setCameraZoom(1, .05f);
 						game.settings.isControlsEnabled = false;
 						game.settings.isUiVisible = false;
 						game.stats.isWin = time == 0;

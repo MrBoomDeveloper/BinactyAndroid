@@ -55,9 +55,9 @@ public abstract class EntityAbstract implements BotTarget {
 	 */
 	public void usePower(Vector2 power, float speed, boolean isBot) {
 		if(isDead) return;
-		body.setLinearVelocity(isBot
-			? power.limit(5).scl(speed).add(getRandomVector2(2))
-			:  power.limit(5).scl(speed));
+
+		var addedVector = isBot ? getRandomVector2(2) : Vector2.Zero;
+		body.setLinearVelocity(power.cpy().limit(5).scl(speed).add(addedVector));
 
 		if(!power.isZero()) wasPower = power.cpy();
 	}

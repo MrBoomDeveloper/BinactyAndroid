@@ -16,6 +16,7 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 
 public class GameDebugLauncher extends GameLauncher {
 	private GameDebugMenu menu;
+	private static GameSettings previousSettings;
 	
 	@Override
 	public void onCreate(Bundle bundle) {
@@ -29,6 +30,9 @@ public class GameDebugLauncher extends GameLauncher {
 		
 		menu = new GameDebugMenu(this);
 		DynamicColors.applyToActivityIfAvailable(this);
+
+		restorePreviousSettings();
+		previousSettings = game.settings;
 		
 		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
 		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
@@ -75,7 +79,25 @@ public class GameDebugLauncher extends GameLauncher {
 		Gdx.app.postRunnable(() -> {
 			var game = GameHolder.getInstance();
 			game.reset();
+
+			restorePreviousSettings();
+			previousSettings = game.settings;
+
 			game.setScreen(new LoadingScreen());
 		});
+	}
+
+	private void restorePreviousSettings() {
+		if(previousSettings == null) return;
+		var game = GameHolder.getInstance();
+
+		game.settings.isControlsEnabled = previousSettings.isControlsEnabled;
+		game.settings.isUiVisible = previousSettings.isUiVisible;
+
+		game.settings.debugCamera = previousSettings.debugCamera;
+		game.settings.debugRaysDisable = previousSettings.debugRaysDisable;
+		game.settings.debugRenderer = previousSettings.debugRenderer;
+		game.settings.debugValues = previousSettings.debugValues;
+		game.settings.debugStage = previousSettings.debugStage;
 	}
 }

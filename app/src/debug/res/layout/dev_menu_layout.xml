@@ -1,95 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-	 xmlns:android="http://schemas.android.com/apk/res/android"
-	 xmlns:tools="http://schemas.android.com/tools"
-	 android:layout_height="wrap_content"
-	 android:layout_width="wrap_content"
-	 android:orientation="vertical"
-	 tools:ignore="HardcodedText,Autofill,UseSwitchCompatOrMaterialXml"
-	 android:id="@+id/holder">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/holder"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:background="#cc11071F"
+	android:orientation="vertical"
+	tools:ignore="HardcodedText,Autofill,UseSwitchCompatOrMaterialXml">
 
 	<Button
-		 android:layout_height="wrap_content"
-		 android:layout_width="wrap_content"
-		 android:textAllCaps="false"
-		 android:id="@+id/menuTrigger"
-		 android:text="Show DevMenu" />
+		android:id="@+id/menuTrigger"
+		style="@style/BoomDevButton"
+		android:layout_width="wrap_content"
+		android:layout_height="48dp"
+		android:layout_margin="8dp"
+		android:text="Show DevMenu" />
 
-	<ScrollView
+	<LinearLayout
 		android:id="@+id/menu"
-		android:layout_width="200dp"
-		android:layout_height="300dp"
-		android:background="@color/boom_background"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:paddingTop="8dp"
 		android:visibility="gone"
 		tools:visibility="visible">
 
-		<LinearLayout
+		<androidx.core.widget.NestedScrollView
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1"
+			android:fadeScrollbars="false"
+			android:scrollbarAlwaysDrawVerticalTrack="true"
+			android:scrollbars="vertical">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:baselineAligned="false">
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_weight="1"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginBottom="8dp"
+						android:text="Debugging"
+						android:textColor="@android:color/white"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+
+					<Switch
+						android:id="@+id/debugRendererSwitch"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingVertical="15dp"
+						android:text="Enable physics engine debug renderer"
+						android:textColor="@android:color/white" />
+
+					<Switch
+						android:id="@+id/lightsSwitch"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingVertical="15dp"
+						android:text="Disable lights and shadows" />
+
+					<Switch
+						android:id="@+id/debugStage"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingVertical="15dp"
+						android:text="Draw UI borders" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="12dp"
+						android:layout_marginBottom="8dp"
+						android:text="Gameplay"
+						android:textColor="@android:color/white"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+
+					<Switch
+						android:id="@+id/debugCameraToggle"
+						android:layout_width="match_parent"
+						android:paddingVertical="15dp"
+						android:layout_height="wrap_content"
+						android:text="Allow any camera zoom and disable some effects" />
+
+					<Button
+						android:id="@+id/enableControlsButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Enable and show controls" />
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_weight="1"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginBottom="8dp"
+						android:text="Control main player"
+						android:textColor="@android:color/white"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+
+					<Button
+						android:id="@+id/gainHealthButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Get BIG stats"
+						style="@style/BoomDevButton" />
+
+					<Button
+						android:id="@+id/gameOverButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Self-destroy" />
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:layout_marginVertical="2dp"
+						android:orientation="horizontal">
+
+						<Button
+							android:id="@+id/teleportLeftButton"
+							style="@style/BoomDevButton"
+							android:layout_width="0dp"
+							android:layout_height="48dp"
+							android:layout_weight="1"
+							android:text="◀" />
+
+						<Button
+							android:id="@+id/teleportRightButton"
+							style="@style/BoomDevButton"
+							android:layout_width="0dp"
+							android:layout_height="48dp"
+							android:layout_marginHorizontal="2dp"
+							android:layout_weight="1"
+							android:text="▶" />
+
+						<Button
+							android:id="@+id/teleportUpButton"
+							style="@style/BoomDevButton"
+							android:layout_width="0dp"
+							android:layout_height="48dp"
+							android:layout_marginHorizontal="2dp"
+							android:layout_weight="1"
+							android:text="▲" />
+
+						<Button
+							android:id="@+id/teleportDownButton"
+							style="@style/BoomDevButton"
+							android:layout_width="0dp"
+							android:layout_height="48dp"
+							android:layout_weight="1"
+							android:text="▼" />
+
+					</LinearLayout>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="12dp"
+						android:layout_marginBottom="8dp"
+						android:text="Control other characters"
+						android:textColor="@android:color/white"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+
+					<Button
+						android:id="@+id/killAllButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Kill everyone" />
+
+					<Button
+						android:id="@+id/teleportAllToMeButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Teleport to me" />
+
+					<Button
+						android:id="@+id/healAllButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Heal everyone" />
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="0dp"
+					android:layout_weight="1"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:paddingHorizontal="16dp">
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginBottom="8dp"
+						android:text="Scenes"
+						android:textColor="@android:color/white"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+
+					<Switch
+						android:id="@+id/editorSwitch"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:paddingVertical="15dp"
+						android:text="Force enable level editor" />
+
+					<Button
+						android:id="@+id/launchLobbyButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Launch Lobby" />
+
+					<Button
+						android:id="@+id/launchGameplayButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Launch Gameplay" />
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_marginTop="12dp"
+						android:layout_marginBottom="8dp"
+						android:text="App management"
+						android:textColor="@android:color/white"
+						android:textSize="18sp"
+						android:textStyle="bold" />
+
+					<Button
+						android:id="@+id/closeGameButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Close game" />
+
+					<Button
+						android:id="@+id/resetButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Reset saves" />
+
+					<Button
+						android:id="@+id/scanButton"
+						style="@style/BoomDevButton"
+						android:layout_width="match_parent"
+						android:layout_height="48dp"
+						android:layout_marginVertical="2dp"
+						android:text="Scan all packs" />
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</androidx.core.widget.NestedScrollView>
+
+		<TextView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:padding="16dp">
+			android:layout_marginTop="8dp"
+			android:alpha="0.5"
+			android:background="#66000000"
+			android:paddingHorizontal="16dp"
+			android:paddingVertical="12dp"
+			android:text="Warning! If you don't know, what are you doing, then please leave this menu."
+			android:textColor="#fff" />
 
-			<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:text="Developer Menu"
-				android:textColor="#ffffff"
-				android:textSize="20sp" />
-
-			<Switch
-				android:id="@+id/debugRendererSwitch"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Enable Box2D Debug Renderer" />
-
-			<Switch
-				android:id="@+id/lightsSwitch"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Disable Box2D Lights" />
-
-			<Switch
-				android:id="@+id/debugStage"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Debug Stage" />
-
-			<Switch
-				android:id="@+id/editorSwitch"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="16dp"
-				android:text="Force level editor" />
-
-			<Button
-				android:id="@+id/gameOverButton"
-				android:layout_width="match_parent"
-				android:layout_height="40dp"
-				android:layout_marginTop="16dp"
-				android:text="Kill main player"
-				android:textAllCaps="false" />
-
-			<Button
-				android:id="@+id/gainHealthButton"
-				android:layout_width="match_parent"
-				android:layout_height="40dp"
-				android:layout_marginTop="4dp"
-				android:text="Gain A LOT of hp"
-				android:textAllCaps="false" />
-
-			<Button
-				android:id="@+id/closeGameButton"
-				android:layout_width="match_parent"
-				android:layout_height="40dp"
-				android:layout_marginTop="4dp"
-				android:text="Close game"
-				android:textAllCaps="false" />
-
-		</LinearLayout>
-
-	</ScrollView>
+	</LinearLayout>
 
 </LinearLayout>

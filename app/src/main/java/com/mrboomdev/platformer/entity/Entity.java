@@ -98,7 +98,10 @@ public class Entity {
 		@Json(name = "main_player")
 		MAIN_PLAYER,
 		@Json(name = "near_enemy")
-		NEAR_ENEMY
+		NEAR_ENEMY,
+		PLAYERS,
+		BOTS,
+		TILES
 	}
 
 	public enum Overridable {

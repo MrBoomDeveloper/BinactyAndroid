@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.environment.logic;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public class Trigger {
@@ -26,20 +27,24 @@ public class Trigger {
 		if(triggers.isEmpty()) return;
 		var game = GameHolder.getInstance();
 
-		for(var trigger : triggers) {
-			game.environment.world.QueryAABB((fixture) -> {
-				var unknown = fixture.getBody().getUserData();
+		try {
+			for(var trigger : triggers) {
+				game.environment.world.QueryAABB((fixture) -> {
+							var unknown = fixture.getBody().getUserData();
 
-				if(unknown instanceof CharacterEntity) {
-					trigger.callback.triggered((CharacterEntity) unknown);
-				}
+							if(unknown instanceof CharacterEntity) {
+								trigger.callback.triggered((CharacterEntity) unknown);
+							}
 
-				return true;
-			},
-			trigger.x - trigger.radius,
-			trigger.y - trigger.radius,
-			trigger.x + trigger.radius,
-			trigger.y + trigger.radius);
+							return true;
+						},
+						trigger.x - trigger.radius,
+						trigger.y - trigger.radius,
+						trigger.x + trigger.radius,
+						trigger.y + trigger.radius);
+			}
+		} catch(ConcurrentModificationException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -6,11 +6,6 @@ plugins {
 	id 'org.jetbrains.kotlin.android'
 }
 
-def reactNativeArchitectures() {
-	def value = project.getProperties().get("reactNativeArchitectures")
-	return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
-}
-
 android {
 	namespace "com.mrboomdev.platformer"
 	ndkVersion rootProject.ext.ndkVersion
@@ -22,7 +17,7 @@ android {
 			aidl.srcDirs = ["src/main/java"]
 			renderscript.srcDirs = ["src/main/java"]
 			res.srcDirs = ["res"]
-			assets.srcDirs = ["../assets"]
+			assets.srcDirs = ["../assets", "src/main/assets"]
 			jniLibs.srcDirs = ["libs"]
 		}
 	}
@@ -43,7 +38,7 @@ android {
 			enable false
 			universalApk false
 			//noinspection ChromeOsAbiSupport
-			include (*reactNativeArchitectures())
+			include project.getProperties().get("reactNativeArchitectures")
 		}
 	}
 	
@@ -99,7 +94,7 @@ dependencies {
 	implementation "com.google.firebase:firebase-crashlytics"
 	implementation "com.google.firebase:firebase-messaging"
 	implementation "com.google.firebase:firebase-analytics"
-	implementation "com.google.android.gms:play-services-auth:20.5.0"
+	implementation "com.google.android.gms:play-services-auth:20.6.0"
 	
 	/* Util libraries */
 	implementation 'com.squareup.moshi:moshi:1.15.0'
@@ -140,19 +135,19 @@ dependencies {
 	natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
 }
 
-task copyDownloadableDepsToLibs(type: Copy) {
+tasks.register("copyDownloadableDepsToLibs", Copy) {
 	from configurations.implementation
 	into "libs"
 }
 
-task copyAndroidNatives() {
+tasks.register("copyAndroidNatives") {
 	doFirst {
 		file("libs/armeabi/").mkdirs()
 		file("libs/armeabi-v7a/").mkdirs()
 		file("libs/arm64-v8a/").mkdirs()
 		file("libs/x86_64/").mkdirs()
 		file("libs/x86/").mkdirs()
-		
+
 		configurations.getByName("natives").copy().files.each { jar ->
 			def outputDir = null
 			if(jar.name.endsWith("natives-arm64-v8a.jar")) outputDir = file("libs/arm64-v8a")
@@ -171,13 +166,13 @@ task copyAndroidNatives() {
 	}
 }
 
-tasks.whenTaskAdded { packageTask ->
-	if (packageTask.name.contains("package")) {
+tasks.configureEach { packageTask ->
+	if(packageTask.name.contains("package")) {
 		packageTask.dependsOn "copyAndroidNatives"
 	}
 }
 
-task run(type: Exec) {
+tasks.register("run", Exec) {
 	def path
 	def localProperties = project.file("../local.properties")
 	if(localProperties.exists()) {

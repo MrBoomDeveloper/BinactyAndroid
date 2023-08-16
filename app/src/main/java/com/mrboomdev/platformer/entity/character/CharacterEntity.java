@@ -26,7 +26,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityAbstract;
-import com.mrboomdev.platformer.entity.bot.BotBrain;
 import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.entity.item.ItemInventory;
 import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
@@ -195,8 +194,6 @@ public class CharacterEntity extends EntityAbstract {
 			}
 		}
 
-		if(brain != null) brain.update();
-
 		var opacity = getOpacity();
 		var position = getPosition();
 
@@ -215,7 +212,7 @@ public class CharacterEntity extends EntityAbstract {
 
 		inventory.draw(batch, position, skin, getDirection().isBackward());
 
-		//drawDebug(batch);
+		if(brain != null) brain.update();
 	}
 
 	private float getOpacity() {
@@ -226,27 +223,6 @@ public class CharacterEntity extends EntityAbstract {
 		}
 
 		return 1;
-	}
-
-	/**
-	 * If character has a BotBrain, then will draw all the paths where it can walk.
-	 * Try to use this method as less possible, because it uses a lot of resources to draw everything.
-	 */
-	public void drawDebug(SpriteBatch batch) {
-		shape.setProjectionMatrix(game.environment.camera.combined);
-		if(brain != null && brain instanceof BotBrain) {
-			var botBrain = (BotBrain)brain;
-			if(botBrain.graph == null) return;
-			if(botBrain.graph.connections == null) return;
-			batch.end();
-			for(var connection : botBrain.graph.connections) {
-				shape.begin(ShapeRenderer.ShapeType.Filled);
-				shape.setColor(1, 1, 1, 1);
-				shape.rectLine(connection.getFromNode().position.x, connection.getFromNode().position.y, connection.getToNode().position.x, connection.getToNode().position.y, .1f);
-				shape.end();
-			}
-			batch.begin();
-		}
 	}
 	
 	public void drawProjectiles(SpriteBatch batch) {

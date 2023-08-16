@@ -30,13 +30,17 @@ public class GameplayUi extends CoreUi {
 		}
 		
 		cameraZoom = game.environment.camera.zoom;
+
 		stage.addListener(new ActorGestureListener() {
 			@Override
 			public void zoom(InputEvent event, float from, float to) {
 				try {
 					if(((JoystickWidget)game.environment.ui.widgets.get("joystick")).isActive) return;
 					float willZoomTo = cameraZoom + ((from - to) / 1000);
-					if(willZoomTo < 0.4f || willZoomTo > (game.settings.enableEditor ? 10 : 1.2f)) return;
+
+					boolean isZoomLimitExceed = (willZoomTo < 0.4f || willZoomTo > (game.settings.enableEditor ? 10 : 1.2f));
+					if(isZoomLimitExceed && !game.settings.debugCamera) return;
+
 					game.environment.camera.zoom = willZoomTo;
 					CameraUtil.isZoomedForce = true;
 				} catch(NullPointerException e) {

@@ -4,7 +4,7 @@ import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 
 public class MapBridge {
-	private GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	
 	public MapTile getById(String id) {
 		for(var tile : game.environment.map.tilesMap.values()) {
@@ -12,6 +12,7 @@ public class MapBridge {
 				return tile;
 			}
 		}
+
 		return null;
 	}
 }

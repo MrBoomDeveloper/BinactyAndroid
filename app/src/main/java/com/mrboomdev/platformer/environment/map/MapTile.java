@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.Entity;
+import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.environment.map.tile.TileStyle;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -25,33 +26,39 @@ import com.squareup.moshi.ToJson;
 import box2dLight.PointLight;
 import box2dLight.RayHandler;
 
-public class MapTile extends MapObject {
+public class MapTile extends MapObject implements BotTarget {
 	public String name, id;
 	public int layer;
 	public boolean flipX, flipY;
 	public String texture, devTexture;
 	public Entity.Light light;
-	public float[] size;
-	public float[] collision;
-	public float[] position;
-	public final float[] offset = {0, 0};
-	public float[] scale = {1, 1};
 	public int[] region;
+	public float[] scale = {1, 1}, size, collision, position;
+	public final float[] offset = {0, 0};
 	public TileInteraction interaction;
 	public TileStyle style;
 	@Json(name = "shadow_collision") public float[] shadowCollision;
 
-	@Json(ignore = true) public boolean isSelected;
-	@Json(ignore = true) public Sprite sprite, devSprite;
-	@Json(ignore = true) public PointLight pointLight;
-	@Json(ignore = true) public FileUtil source;
-    @Json(ignore = true) public Body body;
-	@Json(ignore = true) public Fixture fixture, shadowFixture;
-	@Json(ignore = true) boolean isDestroyed;
-	@Json(ignore = true) World world;
-	@Json(ignore = true) ShapeRenderer shape;
 	@Json(ignore = true)
-	final GameHolder game = GameHolder.getInstance();
+	public boolean isSelected;
+	@Json(ignore = true)
+	public Sprite sprite, devSprite;
+	@Json(ignore = true)
+	public PointLight pointLight;
+	@Json(ignore = true)
+	public FileUtil source;
+    @Json(ignore = true)
+	public Body body;
+	@Json(ignore = true)
+	public Fixture fixture, shadowFixture;
+	@Json(ignore = true)
+	private boolean isDestroyed;
+	@Json(ignore = true)
+	private World world;
+	@Json(ignore = true)
+	private ShapeRenderer shape;
+	@Json(ignore = true)
+	private final GameHolder game = GameHolder.getInstance();
 	
 	@Override
 	public void draw(SpriteBatch batch) {

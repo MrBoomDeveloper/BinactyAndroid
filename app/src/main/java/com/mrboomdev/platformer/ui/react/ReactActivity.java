@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -72,7 +70,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 
 		root.startReactApplication(reactInstance, "App", null);
 		setContentView(root);
-		applyUiParams();
+		ActivityManager.hideSystemUi(this);
 
         prefs = getSharedPreferences("Save", 0);
         if(!prefs.getBoolean("isNickSetup", false)) {
@@ -100,18 +98,6 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
             prefs.edit().putBoolean("isPacksListDefaultCopied", true).apply();
         }
     }
-
-	private void applyUiParams() {
-		var window = getWindow();
-		var params = new WindowManager.LayoutParams();
-
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-			params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-		}
-
-		window.setAttributes(params);
-		window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-	}
 
     @Override
     public void onPause() {

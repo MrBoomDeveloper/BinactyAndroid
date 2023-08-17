@@ -3,7 +3,15 @@ package com.mrboomdev.platformer.ui;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.media.MediaPlayer;
+import android.os.Build;
+import android.view.WindowManager;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mrboomdev.platformer.R;
@@ -115,5 +123,22 @@ public class ActivityManager {
 	
 	public static void toast(String text, boolean isLong) {
 		current.runOnUiThread(() -> Toast.makeText(current.getApplication(), text, (isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT)).show());
+	}
+
+	public static void hideSystemUi(@NonNull Activity activity) {
+		var window = activity.getWindow();
+		var params = new WindowManager.LayoutParams();
+
+		WindowCompat.setDecorFitsSystemWindows(window, true);
+		var windowController = WindowCompat.getInsetsController(window, window.getDecorView());
+		windowController.hide(WindowInsetsCompat.Type.systemBars());
+		windowController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+		}
+
+		window.setAttributes(params);
+		window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 	}
 }

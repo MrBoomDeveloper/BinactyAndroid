@@ -3,10 +3,6 @@ package com.mrboomdev.platformer.game;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
-
 import com.badlogic.gdx.Gdx;
 import com.google.android.material.color.DynamicColors;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -33,11 +29,6 @@ public class GameDebugLauncher extends GameLauncher {
 
 		restorePreviousSettings();
 		previousSettings = game.settings;
-		
-		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
-		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-		windowController.hide(WindowInsetsCompat.Type.systemBars());
-		windowController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
 	}
 	
 	@Override

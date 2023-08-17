@@ -3,10 +3,6 @@ package com.mrboomdev.platformer.game;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
-
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
@@ -14,12 +10,12 @@ import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.platformer.BuildConfig;
+import com.mrboomdev.platformer.ConstantsKt;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -56,30 +52,27 @@ public class GameLauncher extends AndroidApplication {
 		config.useAccelerometer = false;
 		config.useCompass = false;
 		initialize(game, config);
-		
-		WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
-		var windowController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-		windowController.hide(WindowInsetsCompat.Type.systemBars());
-		windowController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+		ActivityManager.hideSystemUi(this);
 	}
 
 	private void resolveGameFiles() throws IOException {
-		var intent = getIntent();
+		var level = getIntent().getBundleExtra("level");
 
-		if(intent.hasExtra("level")) {
-			var level = intent.getBundleExtra("level");
+		if(level != null) {
 			game.envVars.putString("levelId", level.getString("id"));
 			game.envVars.putString("levelName", level.getString("name"));
 		}
 
-		var engine = Objects.requireNonNullElse(intent.getStringExtra("engine"), "BeanShell");
+		var engine = Objects.requireNonNullElse(getIntent().getStringExtra("engine"), "BeanShell");
 		game.settings.engine = GameSettings.Engine.valueOf(engine.toUpperCase());
 
-		if(!intent.hasExtra("gamemodeFile")) return;
-		Moshi moshi = new Moshi.Builder().build();
-		JsonAdapter<FileUtil> adapter = moshi.adapter(FileUtil.class);
-		game.gamemodeFile = adapter.fromJson(getIntent().getCharSequenceExtra("gamemodeFile").toString());
-		game.mapFile = adapter.fromJson(getIntent().getCharSequenceExtra("mapFile").toString());
+		var levelFile = getIntent().getCharSequenceExtra("gamemodeFile");
+		var mapFile = getIntent().getCharSequenceExtra("mapFile");
+		if(levelFile == null || mapFile == null) return;
+
+		JsonAdapter<FileUtil> adapter = ConstantsKt.getMoshi().adapter(FileUtil.class);
+		game.gamemodeFile = adapter.fromJson(levelFile.toString());
+		game.mapFile = adapter.fromJson(mapFile.toString());
 	}
 	
 	@Override

@@ -42,7 +42,7 @@ public class GameplayUi {
 				}
 
 				connectedEntity.usePower(power, connectedEntity.stats.speed *
-						(game.settings.enableEditor ? (game.environment.camera.zoom * 5) : 1), false);
+						(game.settings.enableEditor ? (game.environment.camera.zoom * 8) : 1), false);
 
 				getWidget("debug", DebugValuesWidget.class).setValue("Movement Joystick Power", power.toString());
 			})
@@ -89,12 +89,18 @@ public class GameplayUi {
 				if(!game.settings.isControlsEnabled || connectedEntity == null) return;
 
 				CameraUtil.setCameraOffset(power.x / 25, power.y / 25);
+				connectedEntity.setIsAiming(aimJoystick.isActive);
 
 				var aimSprite = connectedEntity.aimSprite;
 				if(aimJoystick.isActive) {
+					var position = connectedEntity.getPosition()
+							.cpy()
+							.add(power.cpy().scl(.2f));
+
 					aimSprite.setAlpha(.5f);
-					var position = connectedEntity.getPosition().cpy().add(power.scl(.2f));
 					aimSprite.setCenter(position.x, position.y);
+
+					connectedEntity.wasPower = power.cpy();
 				} else {
 					aimSprite.setAlpha(0);
 				}

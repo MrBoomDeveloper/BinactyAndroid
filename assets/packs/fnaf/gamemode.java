@@ -1,3 +1,76 @@
+import com.badlogic.gdx.math.Vector2;
+
+/* ----------
+	INIT VALUES
+----------*/
+
+var startups = new int[][]{{ 1, 1 }, { 5, 5 }, { 25, 25 }, { 10, 10 }};
+String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerAi", "6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerSpawn"};
+
+var powerWidget, usageWidget;
+var fanSound, lightSound, phoneSound, partySong;
+
+boolean didFoxyCutsceneEnded;
+boolean isGameEnded, isFreddyActive, isPartySongStarted, didPlayerEnteredOffice;
+int nightId = 1, power = 100, usage = 1;
+
+switch(game.getEnvString("levelId", "night_0")) {
+	case "night_1": {
+		startups = new int[][] {
+			{ 60, 60   }, /* Bonnie */
+			{ 85, 85   }, /* Chica  */
+			{  1, 9999 }, /* Freddy */
+			{  1, 9999 }  /* Foxy   */
+		};
+
+		nightId = 1;
+	} break;
+
+	case "night_2": {
+		startups = new int[][] {
+			{  60, 35   },
+			{  60, 35   },
+			{   1, 9999 },
+			{ 120, 120  }
+		};
+
+		nightId = 2;
+	} break;
+
+	case "night_3": {
+		startups = new int[][] {
+			{  25, 25  },
+			{  35, 35  },
+			{ 140, 140 },
+			{  90, 90  }
+		};
+
+		nightId = 3;
+	} break;
+
+	case "night_4": {
+		startups = new int[][] {
+			{  10, 10  },
+			{  20, 20  },
+			{ 100, 100 },
+			{  50, 50  }
+		};
+
+		nightId = 4;
+	} break;
+
+	default: {
+		startups = new int[][] {
+			{  1, 1  },
+			{  5, 5  },
+			{ 25, 25 },
+			{ 10, 10 }
+		};
+
+		nightId = 1;
+	} break;
+}
+
 /* ----------
 	LOAD RESOURCES
 ----------*/
@@ -9,6 +82,10 @@ game.load("sound", "sounds/error.wav");
 game.load("sound", "sounds/foxy_song.wav");
 game.load("sound", "sounds/win.wav");
 game.load("sound", "sounds/scream.wav");
+
+for(int i = 1; i <= 3; i++) {
+	game.load("sound", "freddy_giggle_" + i + ".wav");
+}
 
 game.load("music", "sounds/fan.wav");
 
@@ -29,50 +106,8 @@ for(int i = 1; i < 5; i++) {
 	game.load("music", "music/dark_ambience_" + i + ".ogg");
 }
 
-/* ----------
-	INIT VALUES
-----------*/
-
-var startups = new int[][]{{ 1, 1 }, { 5, 5 }, { 25, 25 }, { 10, 10 }};
-String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerAi", "6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerSpawn"};
-
-var powerWidget, usageWidget;
-var fanSound, lightSound, phoneSound, partySong;
-
-boolean isGameEnded, isFreddyActive, isPartySongStarted, didPlayerEnteredOffice;
-int nightId = 1, power = 100, usage = 1;
-
-switch(game.getEnvString("levelId", "night_0")) {
-	case "night_1": {
-		startups = new int[][]{
-			{ 60,  60  }, /* Bonnie */
-			{ 85,  85  }, /* Chica  */
-			{ 200, 200 }, /* Freddy */
-			{ 150, 150 }  /* Foxy   */
-		};
-		
-		nightId = 1;
-	} break;
-
-	case "night_2": {
-		startups = new int[][]{{35, 35}, {60, 60}, {175, 175}, {120, 120}};
-		nightId = 2;
-	} break;
-
-	case "night_3": {
-		startups = new int[][]{{25, 25}, {35, 35}, {140, 140}, {90, 90}};
-		nightId = 3;
-	} break;
-
-	case "night_4": {
-		startups = new int[][]{{10, 10}, {20, 20}, {100, 100}, {50, 50}};
-		nightId = 4;
-	} break;
-
-	default: {
-		startups = new int[][]{{1, 1}, {5, 5}, {25, 25}, {10, 10}};
-		nightId = 1;
-	} break;
+if(nightId == 1) {
+	//game.load("character", "characters/vanessa");
 }
 
 game.load("music", "music/phone_" + nightId + ".wav");
@@ -215,6 +250,24 @@ void foxyCutscene() {
 		CameraUtil.setCameraMoveSpeed(.01f);
 		CameraUtil.setTarget(foxy.entity);
 		CameraUtil.setCameraZoom(0.45f, .04f);
+
+		foxy.entity.attack(Vector2.Zero);
+
+		game.setTimer(new Runnable() { run() {
+			foxy.entity.attack(Vector2.Zero);
+
+			game.setTimer(new Runnable() { run() {
+				foxy.entity.attack(Vector2.Zero);
+
+				game.setTimer(new Runnable() { run() {
+					foxy.entity.attack(Vector2.Zero);
+
+					game.setTimer(new Runnable() { run() {
+						foxy.entity.attack(Vector2.Zero);
+					}}, .5f);
+				}}, .5f);
+			}}, .5f);
+		}}, .5f);
 
 		game.setTimer(new Runnable() { run() {
 			var brain = new BotFollower();
@@ -418,21 +471,27 @@ void uiUpdate() {
 
 void startNight() {
 	game.setTimer(new Runnable() { run() {
+		if(bonnie.entity.brain == bonnieBrain) return;
+
 		bonnie.setBot(bonnieBrain);
 	}}, Math.round(Math.random() * startups[0][0] + startups[0][1]));
 
 	game.setTimer(new Runnable() { run() {
+		if(chica.entity.brain == chicaBrain) return;
+
 		chica.setBot(chicaBrain);
 	}}, Math.round(Math.random() * startups[1][0] + startups[1][1]));
 
 	game.setTimer(new Runnable() { run() {
-		if(isFreddyActive) return;
+		if(isFreddyActive || freddy.entity.brain == freddyBrain) return;
 
 		freddy.setBot(freddyBrain);
 		isFreddyActive = true;
 	}}, Math.round(Math.random() * startups[2][0] + startups[2][1]));
 
 	game.setTimer(new Runnable() { run() {
+		if(foxy.entity.brain == foxyBrain) return;
+
 		foxy.setBot(foxyBrain);
 	}}, Math.round(Math.random() * startups[3][0] + startups[3][1]));
 
@@ -460,11 +519,21 @@ void startNight() {
 	powerUpdate();
 
 	game.setTimer(new Runnable() { run() {
-		if(isGameEnded || foxy.entity.isDead) return;
+		if(isGameEnded || foxy.entity.isDead || nightId < 2) return;
 		audio.playSound("sounds/foxy_song.wav", 0.1f);
 	}}, (float)(Math.random() * 600 + 30));
 
 	game.setTimer(new Runnable() { run() {
 		setCameraZoom(.7f, .025f);
 	}}, .25f);
+
+	if(nightId > 2) freddyGiggleTimer();
+}
+
+void freddyGiggleTimer() {
+	game.setTimer(new Runnable() { run() {
+		audio.playSound("freddy_giggle_" + Math.round(Math.random() * 2 + 1) + ".wav");
+		freddyGiggleTimer();
+	}}, (float)(Math.random() * 10 /*200 + 25*/));
+	//TODO: UNCOMMENT THE ACTUAL TIMER DURATION
 }

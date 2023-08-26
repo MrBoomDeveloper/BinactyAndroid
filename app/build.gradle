@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
 	id "com.android.application"
 	id "com.google.gms.google-services"
@@ -24,12 +26,18 @@ android {
 	
 	defaultConfig {
 		applicationId "com.mrboomdev.platformer"
+		versionName "0.5.0"
+		versionCode 13
+
 		minSdkVersion 24
 		targetSdkVersion 33
 		compileSdk 33
-		versionCode 13
-		versionName "0.5.0"
 		multiDexEnabled true
+
+		var formatter = new SimpleDateFormat()
+		formatter.applyPattern("dd-MM-yyyy, HH:mm")
+
+		buildConfigField("String", "BUILD_TIME", "\"" + formatter.format(new Date()) + "\"")
 	}
 	
 	splits {

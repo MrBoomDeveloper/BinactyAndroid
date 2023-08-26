@@ -1,7 +1,7 @@
 package com.mrboomdev.platformer.projectile;
 
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.ATTACK;
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.SHOOT;
+import static com.mrboomdev.platformer.entity.Entity.AnimationType.SHOOT_PISTOL;
 
 import android.annotation.SuppressLint;
 
@@ -14,6 +14,7 @@ import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileAttack.AttackStats;
 import com.mrboomdev.platformer.util.AudioUtil;
+import com.mrboomdev.platformer.util.FunUtil;
 
 public class ProjectileManager {
     private final World world;
@@ -38,12 +39,14 @@ public class ProjectileManager {
 	public void shoot(Vector2 power) {
 		if(delayProgress < .1f) return;
 
-        bullets.add(new ProjectileBullet(world, owner, power));
+		FunUtil.setTimer(() -> {
+			bullets.add(new ProjectileBullet(world, owner, power));
+			AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .1f, 25, owner.getPosition());
+		}, .1f);
 
 		owner.usePower(power, .1f, false);
 		delayProgress = 0;
-		owner.skin.setAnimation(SHOOT);
-		AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .1f, 25, owner.getPosition());
+		owner.skin.setAnimation(SHOOT_PISTOL);
     }
 	
 	public void attack(Vector2 power) {

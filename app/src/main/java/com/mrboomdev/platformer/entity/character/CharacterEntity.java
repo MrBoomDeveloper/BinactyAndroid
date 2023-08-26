@@ -11,7 +11,6 @@ import static com.mrboomdev.platformer.entity.Entity.AnimationType.WALK;
 import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -35,6 +34,7 @@ import com.mrboomdev.platformer.projectile.ProjectileManager;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 
@@ -59,25 +59,27 @@ public class CharacterEntity extends EntityAbstract {
 	@Json(ignore = true)
 	public TileInteraction nearInteraction;
 	@Json(ignore = true)
-	float dashProgress, dashReloadProgress;
+	private float dashProgress, dashReloadProgress;
 	@Json(ignore = true)
-	float damagedProgress = 1;
+	private float damagedProgress = 1;
 	@Json(ignore = true)
-	float staminaReloadMultiply, healthPhantom;
+	private float staminaReloadMultiply, healthPhantom;
 	@Json(ignore = true)
-	boolean isRunning, isDashing;
+	private boolean isRunning, isDashing;
 	@Json(ignore = true)
-	ShapeRenderer shape;
+	private ShapeRenderer shape;
 	@Json(ignore = true)
-	BitmapFont font;
+	private BitmapFont font;
 	@Json(ignore = true)
-	ProjectileManager projectileManager;
+	private ProjectileManager projectileManager;
 	@Json(ignore = true)
-	Vector2 damagedPower;
+	private Vector2 damagedPower;
 	@Json(ignore = true)
-	Sprite shadow;
+	private Sprite shadow;
 	@Json(ignore = true)
-	GameHolder game = GameHolder.getInstance();
+	private boolean isAiming;
+	@Json(ignore = true)
+	private final GameHolder game = GameHolder.getInstance();
 	
 	public CharacterEntity cpy(String name, FileUtil source) {
 		return new CharacterEntity(name, skin.build(source), worldBody, stats);
@@ -215,6 +217,12 @@ public class CharacterEntity extends EntityAbstract {
 		if(brain != null) brain.update();
 	}
 
+	public void setIsAiming(boolean isAiming) {
+		if(damagedProgress < .4f || isDead) return;
+
+		this.isAiming = isAiming;
+	}
+
 	private float getOpacity() {
 		if(!isDead && damagedProgress < 1) {
 			return Math.min(1.25f - (1 - damagedProgress), 1);
@@ -264,7 +272,7 @@ public class CharacterEntity extends EntityAbstract {
 	public void interact() {
 		if(nearInteraction != null && !isDead) {
 			skin.setAnimation(ACT);
-			nearInteraction.act();
+			FunUtil.setTimer(() -> nearInteraction.act(), skin.getCurrentAnimationDeclaration().actionDelay);
 		}
 	}
 	
@@ -286,12 +294,13 @@ public class CharacterEntity extends EntityAbstract {
 	public void gainDamage(int damage, Vector2 power) {
 		if(damagedProgress < 1 || isDashing || isDead) return;
 		
-		AudioUtil.play3DSound(game.assets.get("audio/sounds/damage.mp3", Sound.class), .25f, 10, getPosition());
+		AudioUtil.play3DSound(game.assets.get("audio/sounds/damage.mp3"), .25f, 10, getPosition());
 		damagedProgress = (Math.random() > .75f) ? .4f : .75f;
 		skin.setAnimation(DAMAGE);
 		stats.health = Math.max(stats.health - damage, 0);
 		healthPhantom = stats.health;
 		damagedPower = power;
+		isAiming = false;
 		
 		if(stats.health == 0) die(false);
 		CameraUtil.addCameraShake(.1f, .25f);
@@ -313,6 +322,8 @@ public class CharacterEntity extends EntityAbstract {
 			isRunning = true;
 			return;
 		}
+
+		if(isAiming) speed *= .5f;
 
 		if(power.isZero() || speed == 0) {
 			isRunning = false;

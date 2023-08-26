@@ -68,7 +68,7 @@ public class GamemodeManager {
 				switch(function.action) {
 					case GAME_OVER:
 						CameraUtil.setTarget(null);
-						CameraUtil.setCameraZoom(1, .05f);
+						CameraUtil.setCameraZoom(1, .01f);
 						game.settings.isControlsEnabled = false;
 						game.settings.isUiVisible = false;
 						game.stats.isWin = time == 0;

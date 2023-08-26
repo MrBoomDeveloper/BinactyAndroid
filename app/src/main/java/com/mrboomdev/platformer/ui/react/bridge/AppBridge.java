@@ -207,6 +207,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 	public void getDebug(@NonNull Promise promise) {
 		var data = Arguments.createArray();
 		data.pushMap(createEntry("buildType", BuildConfig.BUILD_TYPE));
+		data.pushMap(createEntry("buildTime", BuildConfig.BUILD_TIME));
 		data.pushMap(createEntry("buildVersionName", BuildConfig.VERSION_NAME));
 		data.pushMap(createEntry("buildVersionCode", String.valueOf(BuildConfig.VERSION_CODE)));
 		data.pushMap(createEntry("applicationId", BuildConfig.APPLICATION_ID));

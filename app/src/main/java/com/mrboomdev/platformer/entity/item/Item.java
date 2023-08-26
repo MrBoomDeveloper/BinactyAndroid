@@ -2,6 +2,7 @@ package com.mrboomdev.platformer.entity.item;
 
 import androidx.annotation.NonNull;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -10,8 +11,12 @@ import com.mrboomdev.platformer.entity.character.CharacterSkin;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileManager;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
+
+import box2dLight.Light;
+import box2dLight.PointLight;
 
 public class Item {
     public String name;
@@ -26,6 +31,8 @@ public class Item {
     private Sprite sprite;
     @Json(ignore = true)
     private final GameHolder game = GameHolder.getInstance();
+    @Json(ignore = true)
+    private Light light;
 
     public void attack(Vector2 power, ProjectileManager projectiles) {
         switch(attack.type) {
@@ -33,12 +40,27 @@ public class Item {
                 CameraUtil.addCameraShake(.1f, .1f);
 
                 var owner = projectiles.owner;
-                boolean isFlip = owner.getDirection().isBackward();
-                game.environment.particles.createParticle("__tiny_boom",
-                        getOffset(owner.skin).scl(isFlip ? -1 : 1, 1).add(owner.getPosition()),
-                        isFlip);
-
                 projectiles.shoot(power);
+
+                FunUtil.setTimer(() -> {
+                    boolean isFlip = owner.getDirection().isBackward();
+                    var position = getOffset(owner.skin).scl(isFlip ? -1 : 1, 1).add(owner.getPosition());
+
+                    game.environment.particles
+                            .createParticle("__tiny_boom", position, isFlip);
+
+                    if(light == null) {
+                        light = new PointLight(game.environment.rayHandler, 30);
+                        light.setDistance(1);
+                        light.setColor(new Color(255, 255, 0, .5f));
+                        light.setActive(false);
+                    }
+
+                    light.setPosition(position.x, position.y);
+                    light.setActive(true);
+
+                    FunUtil.setTimer(() -> light.setActive(false), .1f);
+                }, owner.skin.getCurrentAnimationDeclaration().actionDelay);
                 break;
 
             case USE:

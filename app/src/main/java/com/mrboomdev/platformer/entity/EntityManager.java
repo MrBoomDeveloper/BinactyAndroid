@@ -3,12 +3,12 @@ package com.mrboomdev.platformer.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.mrboomdev.platformer.ConstantsKt;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
-import com.mrboomdev.platformer.util.io.LogUtil;
-import com.squareup.moshi.Moshi;
 
 import java.util.Objects;
 
@@ -29,23 +29,21 @@ public class EntityManager {
 	
 	public void loadCharacter(FileUtil file, String id) {
 		try {
-			Moshi moshi = new Moshi.Builder().build();
-			var adapter = moshi.adapter(CharacterEntity.class);
+			var adapter = ConstantsKt.getMoshi().adapter(CharacterEntity.class);
 			presets.put(id, adapter.fromJson(file.goTo("manifest.json").readString(true)));
 		} catch(Exception e) {
-			LogUtil.crash("Failed to load a character", "Invalid config file.", e);
+			throw new BoomException("Invalid character config file!", e);
 		}
 	}
 	
 	public void loadItem(FileUtil file, String id) {
 		try {
-			Moshi moshi = new Moshi.Builder().build();
-			var adapter = moshi.adapter(Item.class);
+			var adapter = ConstantsKt.getMoshi().adapter(Item.class);
 			var item = adapter.fromJson(file.goTo("manifest.json").readString(true));
 			Objects.requireNonNull(item).source = file;
 			itemPresets.put(id, item);
 		} catch(Exception e) {
-			LogUtil.crash("Failed to load a item", "Invalid config file.", e);
+			throw new BoomException("Invalid item config file!", e);
 		}
 	}
 	

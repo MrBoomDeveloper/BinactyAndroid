@@ -39,6 +39,7 @@ public class LogUtil {
 		crash("Unexpected Crash", "Something pretty strange and unknown to us has happened. Please send the following text to our Discord server.", t);
 	}
 
+	@NonNull
 	public static String throwableToString(Throwable t) {
 		return Log.getStackTraceString(t);
 	}

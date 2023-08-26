@@ -100,7 +100,7 @@ public class GameplayScreen extends CoreScreen {
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
 
 		var path = game.settings.playerCharacter;
-		environment.entities.loadCharacter(game.settings.playerCharacter, "klarrie");
+		environment.entities.loadCharacter(path, "klarrie");
 		var player = new CharacterCreator(environment.entities.presets
 				.get("klarrie")
 				.cpy(game.settings.playerName, path))

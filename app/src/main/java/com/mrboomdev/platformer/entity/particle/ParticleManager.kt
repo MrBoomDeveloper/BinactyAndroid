@@ -24,6 +24,7 @@ class ParticleManager(val world: World) {
         if(particle.preset.skin.sprite == null) {
             particle.preset.build(particle.preset.source.goTo(particle.preset.skin.texture).getLoaded(Texture::class.java))
         }
+
         particle.createParticle(position, flip)
     }
 
@@ -31,6 +32,7 @@ class ParticleManager(val world: World) {
         val particle = ParticleEffect()
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         val adapter = moshi.adapter(ParticleEffect.Preset::class.java)
+
         particle.preset = adapter.fromJson(file.goTo("manifest.json").readString(true))!!
         particle.preset.source = file
         file.goTo(particle.preset.skin.texture).loadAsync(Texture::class.java)

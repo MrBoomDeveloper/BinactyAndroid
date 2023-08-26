@@ -32,12 +32,7 @@ public class ItemInventory {
 		var sprite = new Sprite(item.getSprite());
 		
 		sprite.setFlip(isFlip, false);
-		if(!isFlip) {
-			sprite.setCenter(position.x + offset.x, position.y + offset.y);
-		} else {
-			sprite.setCenter(position.x - offset.x, position.y + offset.y);
-		}
-		
+		sprite.setCenter(position.x + (offset.x * (isFlip ? -1 : 1)), position.y + offset.y);
 		sprite.draw(batch);
 	}
 }

@@ -32,6 +32,7 @@ public class Entity {
 	}
 
 	public enum AnimationType {
+		@Json(ignore = true)
 		CURRENT(AnimationPriority.STATE),
 		@Json(name = "idle")
 		IDLE(AnimationPriority.STATE),
@@ -47,12 +48,10 @@ public class Entity {
 		ACT(AnimationPriority.ACTION),
 		@Json(name = "aim_pistol")
 		AIM_PISTOL(AnimationPriority.STATE_IMPORTANT),
-		@Json(name = "aim_pistol_walk")
-		AIM_PISTOL_WALK(AnimationPriority.STATE_IMPORTANT),
 		@Json(name = "attack")
 		ATTACK(AnimationPriority.ACTION),
-		@Json(name = "shoot")
-		SHOOT(AnimationPriority.ACTION),
+		@Json(name = "shoot_pistol")
+		SHOOT_PISTOL(AnimationPriority.ACTION),
 		@Json(name = "damage")
 		DAMAGE(AnimationPriority.ACTION),
 		@Json(name = "death")
@@ -65,10 +64,9 @@ public class Entity {
 			WALK.alternatives = List.of(RUN);
 			RUN.alternatives = List.of(WALK, DASH);
 			DAMAGE.alternatives = List.of(WALK);
-			AIM_PISTOL_WALK.alternatives = List.of(AIM_PISTOL);
-			SHOOT.alternatives = List.of(ATTACK);
-			ATTACK.alternatives = List.of(SHOOT);
-			ACT.alternatives = List.of(ATTACK, SHOOT);
+			SHOOT_PISTOL.alternatives = List.of(ATTACK);
+			ATTACK.alternatives = List.of(SHOOT_PISTOL);
+			ACT.alternatives = List.of(ATTACK, SHOOT_PISTOL);
 		}
 
 		AnimationType(AnimationPriority priority) {
@@ -117,6 +115,8 @@ public class Entity {
 	
 	public static class Frame {
 		public String texture = "texture.png";
+		@Json(name = "action_delay")
+		public float actionDelay;
 		public int[] region;
 		public float[] size, position;
 		@Json(name = "hand_position")

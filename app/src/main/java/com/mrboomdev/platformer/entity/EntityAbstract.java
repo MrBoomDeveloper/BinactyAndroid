@@ -23,7 +23,7 @@ public abstract class EntityAbstract implements BotTarget {
 	@Json(ignore = true)
 	public boolean isDestroyed, isDead;
 	@Json(ignore = true)
-	GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	@Json(ignore = true)
 	private Vector2 cachedPosition;
 	

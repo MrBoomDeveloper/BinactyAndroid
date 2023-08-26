@@ -21,7 +21,6 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.Direction;
-import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Json;
@@ -37,8 +36,6 @@ public class CharacterSkin {
 	@Json(name = "animations")
 	private Map<Entity.AnimationType, Entity.Animation> animationsJson;
 	@SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "unused"})
-	@Json(name = "custom_animations")
-	private Map<String, Entity.Animation> customAnimationsJson;
 	@Json(name = "texture")
 	private final String texturePath = "skin.png";
 	@Json(ignore = true)
@@ -111,12 +108,6 @@ public class CharacterSkin {
 		this.setAnimation(animationType);
 		this.isAnimationForce = true;
 	}
-
-	@SuppressWarnings("unused")
-	public void setCustomAnimation(String name) {
-		if(!customAnimationsJson.containsKey(name)) return;
-		throw new BoomException("This feature isn't done yet!");
-	}
 	
 	private Entity.AnimationType getValidAnimation(@NonNull Entity.AnimationType animationType) {
 		if(animations.containsKey(animationType)) return animationType;
@@ -167,6 +158,10 @@ public class CharacterSkin {
 			game.environment.particles.createParticle("__dust",
 					position.cpy().add(0, entity.worldBody.bottom[3]), direction.isBackward());
 		}
+	}
+
+	public Entity.Animation getCurrentAnimationDeclaration() {
+		return animationsJson.get(currentAnimation);
 	}
 	
 	public Entity.Frame getCurrentFrame() {

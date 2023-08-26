@@ -1,63 +1,63 @@
 {
 	"tiles": {
 		"wall": {
-			"texture": "tiles/atlas_1.png", "size": [2, 4], "region": [42, 97, 16, 26],
+			"texture": "atlas_1.png", "size": [2, 4], "region": [42, 97, 16, 26],
 			"collision": [2, 2.9, 0, -0.9], "shadow_collision": [2, 0.8, 0, 3.2]
 		},
 	
 		"wallSide": {
-			"texture": "tiles/atlas_1.png", "size": [2, 4], "region": [59, 97, 16, 26],
+			"texture": "atlas_1.png", "size": [2, 4], "region": [59, 97, 16, 26],
 			"collision": [2, 3.2, 0, -0.8], "shadow_collision": [2, 1, 0, 3]
 		},
 	
 		"floor": {
-			"texture": "tiles/atlas_1.png", "size": [2, 2], "region": [186, 110, 18, 18]
+			"texture": "atlas_1.png", "size": [2, 2], "region": [186, 110, 18, 18]
 		},
 	
 		"guardTable": {
-			"texture": "tiles/atlas_1.png", "size": [5.06, 3.25], "region": [99, 29, 81, 52],
+			"texture": "atlas_1.png", "size": [5.06, 3.25], "region": [99, 29, 81, 52],
 			"collision": [5.06, 2.5, 0, -0.2]
 		},
 	
 		"pirateBay": {
-			"texture": "tiles/atlas_1.png", "size": [3, 6], "region": [1, 1, 32, 64],
+			"texture": "atlas_1.png", "size": [3, 6], "region": [1, 1, 32, 64],
 			"collision": [3, 4, 0, -2]
 		},
 	
 		"guardChair": {
-			"texture": "tiles/atlas_1.png", "size": [1, 1.5], "region": [146, 82, 12, 18],
+			"texture": "atlas_1.png", "size": [1, 1.5], "region": [146, 82, 12, 18],
 			"collision": [1, 0.5, 0, -0.5]
 		},
 	
 		"chair": {
-			"texture": "tiles/atlas_1.png", "size": [1, 1.5], "region": [237, 111, 8, 16],
+			"texture": "atlas_1.png", "size": [1, 1.5], "region": [237, 111, 8, 16],
 			"collision": [1, 0.7, 0, -0.8]
 		},
 	
 		"soundBooster": {
-			"texture": "tiles/atlas_1.png", "size": [1, 1.2], "region": [76, 111, 13, 16],
+			"texture": "atlas_1.png", "size": [1, 1.2], "region": [76, 111, 13, 16],
 			"collision": [1, 1.2, 0, 0]
 		},
 	
 		"robotDesk": {
-			"texture": "tiles/atlas_1.png", "size": [2, 3], "region": [50, 72, 16, 24],
+			"texture": "atlas_1.png", "size": [2, 3], "region": [50, 72, 16, 24],
 			"collision": [2, 2.5, 0, -0.5]
 		},
 	
 		"robotShelf": {
-			"texture": "tiles/atlas_1.png", "size": [5, 3], "region": [34, 1, 64, 32],
+			"texture": "atlas_1.png", "size": [5, 3], "region": [34, 1, 64, 32],
 			"collision": [5, 2.5, 0, -0.5]
 		},
 	
 		"gift": {
-			"texture": "tiles/atlas_1.png", 
+			"texture": "atlas_1.png", 
 			"size": [0.7, 0.8], 
 			"region": [89, 119, 7, 9],
 			"collision": [0.7, 0.42, 0, -0.24]
 		},
 	
 		"tip": {
-			"texture": "tiles/atlas_1.png", "size": [0.5, 0.5], "region": [67, 89, 15, 7],
+			"texture": "atlas_1.png", "size": [0.5, 0.5], "region": [67, 89, 15, 7],
 			"style": {
 				"types": {
 					"default": { "region": [0, 0, 7, 7] },
@@ -67,25 +67,25 @@
 		},
 		
 		"carousel": {
-			"texture": "tiles/carousel.png",
+			"texture": "carousel.png",
 			"size": [5, 6],
 			"collision": [5, 2, 0, -3.8]
 		},
 	
 		"stage": {
-			"texture": "tiles/atlas_1.png", "size": [8, 2.5], "region": [99, 1, 89, 27]
+			"texture": "atlas_1.png", "size": [8, 2.5], "region": [99, 1, 89, 27]
 		},
 	
 		"pizza": {
-			"texture": "tiles/atlas_1.png", "size": [1, 1], "region": [67, 71, 16, 16]
+			"texture": "atlas_1.png", "size": [1, 1], "region": [67, 71, 16, 16]
 		},
 	
 		"sun": {
-			"texture": "tiles/atlas_1.png", "size": [1, 1], "region": [1, 66, 32, 32]
+			"texture": "atlas_1.png", "size": [1, 1], "region": [1, 66, 32, 32]
 		},
 	
 		"gameMachine": {
-			"texture": "tiles/atlas_1.png", "size": [1.8, 3], "region": [159, 82, 10, 20],
+			"texture": "atlas_1.png", "size": [1.8, 3], "region": [159, 82, 10, 20],
 			"collision": [1.8, 2, 0, -1],
 			"light": {
 				"distance": 2, "offset": [0, 0],
@@ -94,7 +94,7 @@
 		},
 		
 		"gameMachineSide": {
-			"texture": "tiles/atlas_1.png", "size": [1.6, 3], "region": [159, 82, 21, 41],
+			"texture": "atlas_1.png", "size": [1.6, 3], "region": [159, 82, 21, 41],
 			"collision": [1.6, 1.6, 0, -1.1],
 			"light": {
 				"distance": 2, "offset": [0.5, 0],
@@ -111,28 +111,49 @@
 		},
 	
 		"table": {
-			"texture": "tiles/atlas_1.png", "size": [2, 4.5], "region": [189, 1, 14, 32],
+			"texture": "atlas_1.png", "size": [2, 4.5], "region": [189, 1, 14, 32],
 			"collision": [2, 4, 0, -0.5]
 		},
 	
 		"clean": {
-			"texture": "tiles/atlas_1.png", "size": [0.6, 1.5], "region": [87, 34, 7, 20],
+			"texture": "atlas_1.png", "size": [0.6, 1.5], "region": [87, 34, 7, 20],
 			"collision": [0.6, 0.75, 0, -0.75]
 		},
 	
 		"shelf": {
-			"texture": "tiles/atlas_1.png", "size": [1, 5], "region": [34, 72, 5, 24],
+			"texture": "atlas_1.png", "size": [1, 5], "region": [34, 72, 5, 24],
 			"collision": [1, 3, 0, -2], "shadow_collision": [0.2, 3, 1, -2]
 		},
 	
 		"cloud": {
-			"texture": "tiles/atlas_1.png", "size": [3, 2], "region": [1, 98, 40, 25]
+			"texture": "atlas_1.png", "size": [3, 2], "region": [1, 98, 40, 25]
+		},
+		
+		"gender_flair": {
+			"texture": "atlas_1.png",
+			"size": [ 1, 1 ],
+			"region": [ 112, 101, 33, 16 ],
+			
+			"style": {
+			    "types": {
+			        "default": {
+			            "region": [ 0, 0, 16, 16 ]
+			        },
+			        
+			        "female": {
+			            "region": [ 17, 0, 16, 16 ]
+			        }
+			    }
+			}
 		},
 	
 		"poster": {
-			"texture": "tiles/atlas_1.png", "region": [181, 34, 64, 76],
+			"texture": "atlas_1.png", 
+			"region": [181, 34, 64, 76],
 			"interaction": {
-				"timeout": 0.2, "selectable": true, "range": [1, 1]
+				"timeout": 0.2, 
+				"selectable": true, 
+				"range": [1, 1]
 			},
 			
 			"style": {
@@ -154,7 +175,7 @@
 		},
 		
 		"hat": {
-			"texture": "tiles/atlas_1.png", "size": [0.4, 0.5], "region": [205, 110, 31, 18],
+			"texture": "atlas_1.png", "size": [0.4, 0.5], "region": [205, 110, 31, 18],
 			"style": {
 				"types": {
 					"default": { "region": [8, 0, 7, 8] },
@@ -170,21 +191,21 @@
 		},
 		
 		"warning": {
-			"texture": "tiles/atlas_1.png", "size": [1, 1], "region": [34, 34, 28, 20],
+			"texture": "atlas_1.png", "size": [1, 1], "region": [34, 34, 28, 20],
 			"collision": [1, 0.3, 0, -0.7]
 		},
 	
 		"tvsSide": {
-			"texture": "tiles/atlas_1.png", "size": [0.8, 2], "region": [87, 55, 7, 14],
+			"texture": "atlas_1.png", "size": [0.8, 2], "region": [87, 55, 7, 14],
 			"collision": [0.8, 1.8, 0, -0.2]
 		},
 	
 		"star": {
-			"texture": "tiles/atlas_1.png", "size": [0.4, 1], "region": [93, 82, 15, 32]
+			"texture": "atlas_1.png", "size": [0.4, 1], "region": [93, 82, 15, 32]
 		},
 		
 		"coke": {
-			"texture": "tiles/atlas_1.png", "size": [1.5, 4], "region": [40, 72, 9, 24],
+			"texture": "atlas_1.png", "size": [1.5, 4], "region": [40, 72, 9, 24],
 			"collision": [1.5, 2, 0, -2], "shadow_collision": [0.2, 2, 1.2, -2],
 			"light": {
 				"distance": 5, "rays": 6, "offset": [-1, 0],
@@ -193,12 +214,12 @@
 		},
 		
 		"balls": {
-			"texture": "tiles/atlas_1.png", "size": [5.2, 3], "region": [34, 55, 28, 16],
+			"texture": "atlas_1.png", "size": [5.2, 3], "region": [34, 55, 28, 16],
 			"collision": [5.2, 2, 0, -1]
 		},
 		
 		"lamp": {
-			"devTexture": "tiles/lamp.png", "size": [2, 2],
+			"devTexture": "lamp.png", "size": [2, 2],
 			"light": {
 				"distance": 7, "offset": [0, 0], "rays": 10,
 				"color": { "values": [0.5, 0.5, 0.5, 0.8] }
@@ -206,7 +227,7 @@
 		},
 		
 		"officeLamp": {
-			"devTexture": "tiles/lamp.png", "size": [2, 2],
+			"devTexture": "lamp.png", "size": [2, 2],
 			"light": {
 				"distance": 12, "offset": [0, 0], "rays": 6,
 				"color": { "values": [0.5, 0.2, 0.0, 0.5] }
@@ -214,7 +235,7 @@
 		},
 		
 		"buttonToggle": {
-			"texture": "tiles/atlas_1.png", "size": [0.25, 0.5], "region": [76, 97, 7, 13],
+			"texture": "atlas_1.png", "size": [0.25, 0.5], "region": [76, 97, 7, 13],
 			"interaction": {
 				"timeout": 0.2, "selectable": true, "range": [1, 1]
 			},
@@ -228,7 +249,7 @@
 		},
 		
 		"door": {
-			"texture": "tiles/atlas_1.png", "size": [1, 6], "region": [84, 72, 8, 38],
+			"texture": "atlas_1.png", "size": [1, 6], "region": [84, 72, 8, 38],
 			"collision": [1, 6, 0, 0], "shadow_collision": [1, 6, 0, 0],
 			"style": {
 				"types": {
@@ -246,21 +267,21 @@
 		},
 		
 		"toilet": {
-			"texture": "tiles/atlas_1.png", "size": [2.6, 3.2], "region": [63, 34, 23, 36],
+			"texture": "atlas_1.png", "size": [2.6, 3.2], "region": [63, 34, 23, 36],
 			"collision": [2.6, 3.2, 0, 0]
 		},
 		
 		"stageCarpet": {
-			"texture": "tiles/atlas_1.png", "size": [2, 4], "region": [204, 1, 19, 32]
+			"texture": "atlas_1.png", "size": [2, 4], "region": [204, 1, 19, 32]
 		},
 		
 		"pechka": {
-			"texture": "tiles/atlas_1.png", "size": [1.4, 2], "region": [132, 82, 13, 18],
+			"texture": "atlas_1.png", "size": [1.4, 2], "region": [132, 82, 13, 18],
 			"collision": [1.4, 2, 0, 0]
 		},
 		
 		"fridge": {
-			"texture": "tiles/atlas_1.png", "size": [1.5, 3], "region": [146, 101, 12, 22],
+			"texture": "atlas_1.png", "size": [1.5, 3], "region": [146, 101, 12, 22],
 			"collision": [1.5, 3, 0, 0]
 		}
 	}

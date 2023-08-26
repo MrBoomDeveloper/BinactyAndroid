@@ -52,8 +52,6 @@ public class MapTile extends MapObject implements BotTarget {
 	@Json(ignore = true)
 	public Fixture fixture, shadowFixture;
 	@Json(ignore = true)
-	private boolean isDestroyed;
-	@Json(ignore = true)
 	private World world;
 	@Json(ignore = true)
 	private ShapeRenderer shape;
@@ -62,8 +60,6 @@ public class MapTile extends MapObject implements BotTarget {
 	
 	@Override
 	public void draw(SpriteBatch batch) {
-		if(isDestroyed) return;
-
 		//Update the size just to check if the texture in the camera bounds
 		if(style != null && style.current != null && style.current.size != null) size = style.current.size;
 		if(!isVisible()) return;
@@ -131,19 +127,19 @@ public class MapTile extends MapObject implements BotTarget {
 		this.rebuild();
 		Gdx.app.postRunnable(() -> shape = new ShapeRenderer());
 	}
-	
-	public void rebuild() {
+
+	public void rebuildAt(Vector2 position) {
 		if(body != null) {
 			world.destroyBody(body);
 			body = null;
 		}
 
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.position.set(getPosition(false));
+		bodyDef.position.set(position);
 		bodyDef.type = BodyDef.BodyType.StaticBody;
 		body = world.createBody(bodyDef);
 		body.setUserData(this);
-		
+
 		if(collision != null) {
 			bodyDef.position.add(collision[2] * scale[0], collision[3] * scale[1]);
 
@@ -166,9 +162,9 @@ public class MapTile extends MapObject implements BotTarget {
 			fixture = body.createFixture(fixtureDef);
 			shape.dispose();
 		}
-		
+
 		if(shadowCollision != null) {
-            PolygonShape shadowShape = new PolygonShape();
+			PolygonShape shadowShape = new PolygonShape();
 
 			var center = new Vector2(
 					shadowCollision[2] / 2 * (flipX ? -1 : 1) * scale[0],
@@ -187,14 +183,18 @@ public class MapTile extends MapObject implements BotTarget {
 			shadowFixture = body.createFixture(shadowFixtureDef);
 			shadowShape.dispose();
 		}
-		
+
 		if(interaction != null) {
-			interaction.build(world, getPosition(false));
+			interaction.build(world, position);
 			interaction.owner = this;
 		}
 
 		updateCachedPosition();
 		update();
+	}
+	
+	public void rebuild() {
+		rebuildAt(getPosition());
 	}
 	
 	public void setTexture(Texture texture, boolean isDev) {
@@ -280,6 +280,10 @@ public class MapTile extends MapObject implements BotTarget {
 		if(interaction == null) interaction = new TileInteraction(null);
 		interaction.listener = listener;
 	}
+
+	public Vector2 getExactPosition() {
+		return new Vector2(position[0] + offset[0], position[1] + offset[1]);
+	}
 	
 	@Override
     public Vector2 getPosition(boolean isBottom) {
@@ -287,7 +291,7 @@ public class MapTile extends MapObject implements BotTarget {
 
 		if(body == null) {
 			if(cachedPosition == null) {
-				cachedPosition = new Vector2(position[0] + offset[0], position[1] + offset[1]);
+				cachedPosition = getExactPosition();
 			}
 
 			return cachedPosition;

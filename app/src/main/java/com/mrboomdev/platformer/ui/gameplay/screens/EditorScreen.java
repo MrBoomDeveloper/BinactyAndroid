@@ -77,10 +77,10 @@ public class EditorScreen {
 				.addTo(stage));
 			
 			widgets.put("moveUp", new ButtonWidget(ButtonWidget.Style.BULLET)
-				.setText("More Up")
+				.setText("Move Up")
 				.onClick(() -> {
 					selectedTile.offset[1] += .2f;
-					selectedTile.rebuild();
+					selectedTile.rebuildAt(selectedTile.getExactPosition());
 				})
 				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 4 + 140)
 				.addTo(stage));
@@ -89,7 +89,7 @@ public class EditorScreen {
 				.setText("Move Down")
 				.onClick(() -> {
 					selectedTile.offset[1] -= .2f;
-					selectedTile.rebuild();
+					selectedTile.rebuildAt(selectedTile.getExactPosition());
 				})
 				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 3 + 120)
 				.addTo(stage));
@@ -98,7 +98,7 @@ public class EditorScreen {
 				.setText("More right")
 				.onClick(() -> {
 					selectedTile.offset[0] += .2f;
-					selectedTile.rebuild();
+					selectedTile.rebuildAt(selectedTile.getExactPosition());
 				})
 				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 2 + 100)
 				.addTo(stage));
@@ -107,7 +107,7 @@ public class EditorScreen {
 				.setText("Move Left")
 				.onClick(() -> {
 					selectedTile.offset[0] -= .2f;
-					selectedTile.rebuild();
+					selectedTile.rebuildAt(selectedTile.getExactPosition());
 				})
 				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT + 80)
 				.addTo(stage));

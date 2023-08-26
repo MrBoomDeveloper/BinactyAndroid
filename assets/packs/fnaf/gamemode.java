@@ -84,7 +84,7 @@ game.load("sound", "sounds/win.wav");
 game.load("sound", "sounds/scream.wav");
 
 for(int i = 1; i <= 3; i++) {
-	game.load("sound", "freddy_giggle_" + i + ".wav");
+	game.load("sound", "sounds/freddy_giggle_" + i + ".wav");
 }
 
 game.load("music", "sounds/fan.wav");
@@ -532,8 +532,7 @@ void startNight() {
 
 void freddyGiggleTimer() {
 	game.setTimer(new Runnable() { run() {
-		audio.playSound("freddy_giggle_" + Math.round(Math.random() * 2 + 1) + ".wav");
+		audio.playSound("sounds/freddy_giggle_" + Math.round(Math.random() * 2 + 1) + ".wav", 1);
 		freddyGiggleTimer();
-	}}, (float)(Math.random() * 10 /*200 + 25*/));
-	//TODO: UNCOMMENT THE ACTUAL TIMER DURATION
+	}}, (float)(Math.random() * 200 + 25));
 }

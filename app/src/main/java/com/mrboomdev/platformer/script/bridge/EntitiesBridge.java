@@ -1,12 +1,12 @@
 package com.mrboomdev.platformer.script.bridge;
 
 import androidx.annotation.NonNull;
+
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.bot.BotBrainBuilder;
 import com.mrboomdev.platformer.entity.character.CharacterCreator;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
-import com.mrboomdev.platformer.entity.character.CharacterGroup;
 import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.pack.PackLoader;
@@ -45,7 +45,6 @@ public class EntitiesBridge {
 	public CharacterEntity getCharacter(@NonNull Entity.Target target) {
 		switch(target) {
 			case MAIN_PLAYER: return game.settings.mainPlayer;
-			case EVERYONE: return new CharacterGroup(game.environment.entities.characters);
 			default: return null;
 		}
 	}

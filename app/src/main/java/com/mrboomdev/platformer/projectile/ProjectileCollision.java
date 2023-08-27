@@ -30,8 +30,14 @@ public class ProjectileCollision implements ContactListener {
             if(me instanceof ProjectileBullet) {
                 ProjectileBullet bullet = (ProjectileBullet) me;
                 CharacterEntity player2 = (CharacterEntity) enemy;
+
                 if(bullet.owner == player2) return;
                 player2.gainDamage(bullet.stats.damage, bullet.power);
+
+				if(player2.damagedListener != null) {
+					player2.damagedListener.damaged(bullet.owner, bullet.stats.damage);
+				}
+
 				if(enemy != game.settings.mainPlayer) {
 					game.environment.particles.createParticle(
 							"__medium_boom",
@@ -42,9 +48,15 @@ public class ProjectileCollision implements ContactListener {
 
 			if(me instanceof ProjectileAttack) {
                 ProjectileAttack attack = (ProjectileAttack) me;
+				var player2 = (CharacterEntity) enemy;
+
                 if(attack.owner == enemy) return;
-                ((CharacterEntity) enemy).gainDamage(attack.owner.stats.damage, attack.power);
+                player2.gainDamage(attack.owner.stats.damage, attack.power);
 				attack.isDead = true;
+
+				if(player2.damagedListener != null) {
+					player2.damagedListener.damaged(attack.owner, attack.owner.stats.damage);
+				}
             }
 			
 			if(me instanceof TileInteraction && !game.settings.enableEditor) {

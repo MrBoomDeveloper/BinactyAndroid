@@ -9,8 +9,8 @@ import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.script.bridge.MapBridge;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
-import com.mrboomdev.platformer.util.io.LogUtil;
 
 import bsh.EvalError;
 import bsh.Interpreter;
@@ -106,7 +106,6 @@ public class ScriptManager {
 	}
 
 	private void handleException(@NonNull Throwable t, String message) {
-		t.printStackTrace();
-		LogUtil.crash("Script error has occurred!", message, t);
+		throw new BoomException("Script error has occurred!\n" + message, t);
 	}
 }

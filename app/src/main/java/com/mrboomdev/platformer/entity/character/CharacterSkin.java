@@ -1,10 +1,6 @@
 package com.mrboomdev.platformer.entity.character;
 
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.CURRENT;
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.DAMAGE;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.IDLE;
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.RUN;
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.WALK;
 
 import androidx.annotation.NonNull;
 
@@ -34,14 +30,14 @@ import java.util.Objects;
 public class CharacterSkin {
 	@SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "unused"})
 	@Json(name = "animations")
-	private Map<Entity.AnimationType, Entity.Animation> animationsJson;
+	private Map<String, Entity.Animation> animationsJson;
 	@SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "unused"})
 	@Json(name = "texture")
 	private final String texturePath = "skin.png";
 	@Json(ignore = true)
-	private final Map<Entity.AnimationType, Animation<Entity.Frame>> animations = new HashMap<>();
+	private final Map<String, Animation<Entity.Frame>> animations = new HashMap<>();
 	@Json(ignore = true)
-	private Entity.AnimationType currentAnimation;
+	private String currentAnimation;
 	@Json(ignore = true)
 	private Sprite sprite;
 	@Json(ignore = true)
@@ -52,27 +48,37 @@ public class CharacterSkin {
 	private final GameHolder game = GameHolder.getInstance();
 	@Json(ignore = true)
 	private boolean isAnimationForce;
+
+	public void setAnimationForce(@Nullable String animationName) {
+
+	}
+
+	public void setAnimation(@NonNull Entity.AnimationType animationType) {
+		setAnimation(animationType.name().toLowerCase());
+	}
 	
-	public void setAnimation(Entity.AnimationType animationType) {
+	public void setAnimation(String animationType) {
 		var selectedAnimation = getValidAnimation(animationType);
 		if(selectedAnimation == null || isShouldSkipAnimation(selectedAnimation)) return;
 
-		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : IDLE;
-		animationProgress = selectedAnimation.isAction() ? 0 : (float)(Math.random() * 5);
-		LogUtil.debug(LogUtil.Tag.ANIMATION, hashCode() + " : Set character animation to: " + animationType.name());
+		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : "idle";
+		var animation = getAnimationDeclaration(animations.containsKey(selectedAnimation) ? selectedAnimation : "idle");
+
+		animationProgress = animation.isAction ? 0 : (float)(Math.random() * 5);
+		LogUtil.debug(LogUtil.Tag.ANIMATION, hashCode() + " : Set character animation to: " + currentAnimation);
 	}
 
-	private boolean isShouldSkipAnimation(Entity.AnimationType animationType) {
+	private boolean isShouldSkipAnimation(String animationType) {
 		if(currentAnimation != null) {
-			var selectedAnimationInfo = Objects.requireNonNull(animationsJson.get(animationType));
-			var activeAnimationInfo = Objects.requireNonNull(animationsJson.get(currentAnimation));
+			var selectedAnimationInfo = getAnimationDeclaration(animationType);
+			var activeAnimationInfo = getCurrentAnimationDeclaration();
 			var activeAnimation = Objects.requireNonNull(animations.get(currentAnimation));
 
 			if(activeAnimationInfo.overridable == Entity.Overridable.NEVER && !selectedAnimationInfo.force)
 				return true;
 
 			if(activeAnimationInfo.overridable == Entity.Overridable.ANYTIME_OTHER) 
-				return animationType == currentAnimation;
+				return Objects.equals(animationType, currentAnimation);
 
 			if(activeAnimationInfo.overridable == Entity.Overridable.ANYTIME)
 				return false;
@@ -82,18 +88,6 @@ public class CharacterSkin {
 			}
 
 			if(selectedAnimationInfo.force) return false;
-		}
-
-		if(isAnimationForce && animationType != currentAnimation) return true;
-		if(currentAnimation == animationType && !animationType.isAction()) return true;
-
-		if(currentAnimation != null) {
-			if(animationType.isImportant()) return false;
-
-			if(currentAnimation.isAction()) {
-				var activeAnimation = Objects.requireNonNull(animations.get(currentAnimation));
-				return !activeAnimation.isAnimationFinished(animationProgress);
-			}
 		}
 
 		return false;
@@ -109,20 +103,11 @@ public class CharacterSkin {
 		this.isAnimationForce = true;
 	}
 	
-	private Entity.AnimationType getValidAnimation(@NonNull Entity.AnimationType animationType) {
+	private String getValidAnimation(@NonNull String animationType) {
 		if(animations.containsKey(animationType)) return animationType;
-		if(animationType == CURRENT) return currentAnimation;
-		if(animationType.isAction() && animationType.getAlternatives() == null) return currentAnimation;
+		if(animationType.equals("current")) return currentAnimation;
 
-		var alternatives = animationType.getAlternatives();
-		if(alternatives == null) return IDLE;
-
-		for(var alternative : alternatives) {
-			if(alternative == CURRENT) return currentAnimation;
-			if(animations.containsKey(alternative)) return alternative;
-		}
-
-		return IDLE;
+		return "idle";
 	}
 	
 	public void draw(
@@ -142,19 +127,19 @@ public class CharacterSkin {
 			direction.isForward() ? sprite.getWidth() : -sprite.getWidth(),
 			sprite.getHeight());
 		
-		sprite.setAlpha(opacity * (currentAnimation == DAMAGE ? 0.85f : 1));
+		sprite.setAlpha(opacity * (Objects.equals(currentAnimation, "damage") ? 0.85f : 1));
 		sprite.setCenter(position.x, position.y);
 		sprite.draw(batch);
 		
 		int frameIndex = activeAnimation.getKeyFrameIndex(animationProgress);
 		if((frameIndex == 1 || frameIndex == 6) && frameIndex != lastFrameIndex &&
-		  (currentAnimation == WALK || currentAnimation == RUN)) {
+		  (Objects.equals(currentAnimation, "walk") || Objects.equals(currentAnimation, "run"))) {
 			AudioUtil.play3DSound(game.assets.get("audio/sounds/step.mp3"), .2f, 15, position);
 		}
 
 		lastFrameIndex = frameIndex;
 
-		if(currentAnimation == RUN && frameIndex == 1) {
+		if(Objects.equals(currentAnimation, "run") && frameIndex == 1) {
 			game.environment.particles.createParticle("__dust",
 					position.cpy().add(0, entity.worldBody.bottom[3]), direction.isBackward());
 		}
@@ -162,6 +147,10 @@ public class CharacterSkin {
 
 	public Entity.Animation getCurrentAnimationDeclaration() {
 		return animationsJson.get(currentAnimation);
+	}
+
+	public Entity.Animation getAnimationDeclaration(String name) {
+		return animationsJson.get(name);
 	}
 	
 	public Entity.Frame getCurrentFrame() {
@@ -171,7 +160,7 @@ public class CharacterSkin {
 	
 	public CharacterSkin build(@NonNull FileUtil source) {
 		Texture texture = new Texture(source.goTo(texturePath).getFileHandle());
-		for(HashMap.Entry<Entity.AnimationType, Entity.Animation> entry : animationsJson.entrySet()) {
+		for(var entry : animationsJson.entrySet()) {
 			Array<Entity.Frame> frames = Array.with(entry.getValue().frames);
 
 			for(var frame : frames) {

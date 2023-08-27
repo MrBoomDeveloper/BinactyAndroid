@@ -39,7 +39,7 @@ public class BotFollower extends CharacterBrain {
 		if(target.getPosition().dst(owner.getPosition()) < .5f) {
 			isFinished = true;
 			completionCallback.run();
-			owner.usePower(Vector2.Zero, 0, false);
+			owner.usePower(Vector2.Zero, 0);
 			return;
 		}
 
@@ -49,11 +49,13 @@ public class BotFollower extends CharacterBrain {
 				isFinished = true;
 			}
 
-			owner.usePower(Vector2.Zero, 0, false);
+			owner.usePower(Vector2.Zero, 0);
 			return;
 		}
 
-		owner.usePower(nextPosition.cpy().sub(owner.getPosition()).scl(5), owner.stats.speed, true);
+		var power = nextPosition.cpy().sub(owner.getPosition()).scl(5);
+		power.add((float)(Math.random() * 4) - 2, (float)(Math.random() * 4) - 2);
+		owner.usePower(power, owner.stats.speed);
 	}
 
 	public void setTarget(BotTarget target) {

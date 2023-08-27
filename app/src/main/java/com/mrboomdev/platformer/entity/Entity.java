@@ -115,8 +115,6 @@ public class Entity {
 	
 	public static class Frame {
 		public String texture = "texture.png";
-		@Json(name = "action_delay")
-		public float actionDelay;
 		public int[] region;
 		public float[] size, position;
 		@Json(name = "hand_position")
@@ -134,6 +132,10 @@ public class Entity {
 	}
 	
 	public static class Animation extends Frame {
+		@Json(name = "action_delay")
+		public float actionDelay;
+		@Json(name = "is_action")
+		public boolean isAction;
 		public float delay;
 		public Overridable overridable;
 		public boolean force;

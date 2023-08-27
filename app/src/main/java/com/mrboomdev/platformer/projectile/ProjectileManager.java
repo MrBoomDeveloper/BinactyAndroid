@@ -44,7 +44,7 @@ public class ProjectileManager {
 			AudioUtil.play3DSound(game.assets.get("audio/sounds/shot.wav"), .1f, 25, owner.getPosition());
 		}, .1f);
 
-		owner.usePower(power, .1f, false);
+		owner.usePower(power, .1f);
 		delayProgress = 0;
 		owner.skin.setAnimation(SHOOT_PISTOL);
     }
@@ -53,7 +53,7 @@ public class ProjectileManager {
 		if(attackDelayProgress < 0.5f) return;
 		attacks.add(new ProjectileAttack(world, owner, attackStats, power));
 
-		owner.usePower(power, .25f, false);
+		owner.usePower(power, .25f);
 		owner.skin.setAnimation(ATTACK);
 		attackDelayProgress = 0;
 	}

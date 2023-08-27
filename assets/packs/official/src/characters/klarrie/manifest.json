@@ -10,6 +10,7 @@
 			"idle": {
 				"delay": 0.15,
 				"size": [ 1.1, 1.8 ],
+				"is_action": false,
 				"overridable": "anytime_other",
 				"hand_position": [ 0.4, -0.2 ],
 				"frames": [
@@ -35,6 +36,7 @@
 			"walk": {
 				"delay": 0.07,
 				"size": [ 1.1, 1.8 ],
+				"is_action": false,
 				"overridable": "anytime_other",
 				"frames": [
 					{ "region": [   1, 42, 22, 40 ], "hand_position": [ 0.32, -0.22 ] },
@@ -52,6 +54,7 @@
 			"run": {
 				"delay": 0.04,
 				"size": [ 1.1, 1.8 ],
+				"is_action": false,
 				"overridable": "anytime_other",
 				"frames": [
 					{ "region": [   1, 42, 22, 40 ], "hand_position": [ 0.32, -0.22 ] },
@@ -70,6 +73,7 @@
 				"delay": 0.05,
 				"size": [ 1.5, 1.8 ],
 				"overridable": "until_end",
+				"is_action": true,
 				"hand_position": [ 99999, 99999 ],
 				"mode": "NORMAL",
 				"frames": [
@@ -85,6 +89,7 @@
 			"damage": {
 				"delay": 0.04,
 				"size": [ 1.1, 1.8 ],
+				"is_action": true,
 				"mode": "NORMAL",
 				"overridable": "until_end",
 				"hand_position": [-9999999, -9999999],
@@ -99,6 +104,7 @@
 				"mode": "NORMAL",
 				"delay": 0.5,
 				"overridable": "never",
+				"is_action": false,
 				"force": true,
 				"size": [ 1.1, 1.8 ],
 				"hand_position": [-9999999, -9999999],
@@ -116,6 +122,7 @@
 				"delay": 0.08,
 				"hand_position": [-9999999, -9999999],
 				"mode": "NORMAL",
+				"is_action": true,
 				"overridable": "until_end",
 				"size": [ 1.5, 1.8 ],
 				"frames": [
@@ -129,6 +136,7 @@
 				"delay": 0.035,
 				"action_delay": 0.1,
 				"hand_position": [ 0.4, -0.2 ],
+				"is_action": true,
 				"mode": "NORMAL",
 				"overridable": "until_end",
 				"size": [ 1.1, 1.8 ],
@@ -147,6 +155,7 @@
 				"delay": 0.1,
 				"action_delay": 0.1,
 				"hand_position": [ 0.32, 0.2 ],
+				"is_action": true,
 				"mode": "NORMAL",
 				"overridable": "until_end",
 				"size": [ 1.3, 1.8 ],

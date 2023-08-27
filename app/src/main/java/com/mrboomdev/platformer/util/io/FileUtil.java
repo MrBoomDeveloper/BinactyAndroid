@@ -136,6 +136,13 @@ public class FileUtil {
 			return this;
 		}
 	}
+
+	public boolean isLoadedAsync() {
+		var game = GameHolder.getInstance();
+		var assetsManager = source == Source.EXTERNAL ? game.externalAssets : game.assets;
+
+		return assetsManager.isLoaded(getPath());
+	}
 	
 	public FileUtil getParent() {
 		return new FileUtil(new File(path).getParent() + "/", source);
@@ -151,6 +158,7 @@ public class FileUtil {
 	
 	public void loadAsync(Class<?> clazz) {
 		var game = GameHolder.getInstance();
+
 		if(source == Source.EXTERNAL) {
 			game.externalAssets.load(getPath(), clazz);
 		} else {

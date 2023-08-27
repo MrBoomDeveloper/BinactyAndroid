@@ -48,6 +48,7 @@
 				"delay": 0.0375,
 				"mode": "NORMAL",
 				"overridable": "until_end",
+				"is_action": true,
 				"size": [ 1.2, 1.8 ],
 				"hand_position": [ 9999, 9999 ],
 				"frames": [

@@ -39,6 +39,7 @@ public class CharacterCreator {
 		} else {
 			entity.body.setTransform(22, -14, 0);
 		}
+
 		game.environment.map.objects.add(new MapEntity(entity));
 		game.environment.entities.characters.add(entity);
 		return entity;

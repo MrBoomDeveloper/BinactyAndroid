@@ -120,6 +120,7 @@ createAnimatronic(String name) {
 	var character = entities.createCharacter("characters/" + name);
 	character.setSpawnTiles(new String[]{ "#id:" + name + "Spawn" });
 	character.create();
+
 	return character;
 }
 
@@ -131,6 +132,20 @@ createBrain() {
 		}).build();
 }
 
+void wakeUpOnDamage(var character, var brain) {
+	int attacksCount;
+
+	character.entity.setDamagedListener(new DamagedListener() { damaged(attacker, damage) {
+		if(character.entity.brain == brain) return;
+
+		attacksCount++;
+
+		if(attacksCount >= 5) {
+			character.setBot(brain);
+		}
+	}});
+}
+
 var freddy = createAnimatronic("freddy");
 var bonnie = createAnimatronic("bonnie");
 var chica = createAnimatronic("chica");
@@ -140,6 +155,11 @@ var freddyBrain = createBrain();
 var bonnieBrain = createBrain();
 var chicaBrain = createBrain();
 var foxyBrain = createBrain();
+
+wakeUpOnDamage(freddy, freddyBrain);
+wakeUpOnDamage(bonnie, bonnieBrain);
+wakeUpOnDamage(chica, chicaBrain);
+wakeUpOnDamage(foxy, foxyBrain);
 
 /* ----------
 	MAKE MAP INTERACTABLE
@@ -232,7 +252,7 @@ var officeTrigger = new Trigger(24, -15, 5, new TriggerCallback() { triggered(va
 }});
 
 if(nightId == 1) {
-	foxy.entity.body.setTransform(38.5f, 31, 0);
+	foxy.entity.body.setTransform(38.5f, 31.2f, 0);
 
 	var foxyTrigger = new Trigger(35, 32, 4, new TriggerCallback() { triggered(var character) {
 		if(character != core.settings.mainPlayer) return;
@@ -377,7 +397,7 @@ ui.setListener(new UiListener() {
 entities.setListener(new EntityListener() {
 	died(entity) {
 		if(isGameEnded) return;
-		if(entity.isTarget(Target.MAIN_PLAYER)) {
+		if(entity == core.settings.mainPlayer) {
 			phoneSound.stop();
 			audio.playSound("sounds/scream.wav", 0.275f);
 			isGameEnded = true;

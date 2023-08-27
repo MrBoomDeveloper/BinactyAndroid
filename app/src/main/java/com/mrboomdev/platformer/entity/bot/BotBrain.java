@@ -76,7 +76,7 @@ public class BotBrain extends CharacterBrain {
 
 		var nextPosition = targeter.getPathTo(selectedTarget);
 		if(nextPosition == null) {
-			owner.usePower(Vector2.Zero, 0, false);
+			owner.usePower(Vector2.Zero, 0);
 			stuckChecker.reset();
 			return;
 		}
@@ -91,9 +91,10 @@ public class BotBrain extends CharacterBrain {
 		}
 
 		var speed = owner.stats.speed * (isEnemyCharacter ? 1.5f : 1);
+		var randomPower = new Vector2((float)(Math.random() * 4) - 2, (float)(Math.random() * 4) - 2);
 
 		if(isEnemyCharacter && (owner.stats.health < (owner.stats.maxHealth / 3))) {
-			owner.usePower(nextPosition.cpy().sub(owner.getPosition()).scl(-5), speed, true);
+			owner.usePower(nextPosition.cpy().sub(owner.getPosition()).scl(-5).add(randomPower), speed);
 			return;
 		}
 
@@ -102,7 +103,7 @@ public class BotBrain extends CharacterBrain {
 			playerDetectedSound.play(AudioUtil.soundVolume / 3);
 		}
 
-		owner.usePower(nextPosition.cpy().sub(owner.getPosition()).scl(5), speed, true);
+		owner.usePower(nextPosition.cpy().sub(owner.getPosition()).scl(5).add(randomPower), speed);
 	}
 	
 	public interface Responder {

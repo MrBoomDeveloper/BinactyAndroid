@@ -13,18 +13,18 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.Entity;
-import com.mrboomdev.platformer.entity.EntityAbstract;
+import com.mrboomdev.platformer.entity.character.CharacterEntity;
 
 public class ProjectileBullet {
     public Body body;
     public ProjectileStats stats;
-    public EntityAbstract owner;
+    public CharacterEntity owner;
 	public Vector2 power;
     public boolean isDied;
 	private final Sprite sprite;
 	private final World world;
 
-    public ProjectileBullet(@NonNull World world, @NonNull EntityAbstract owner, @NonNull Vector2 power) {
+    public ProjectileBullet(@NonNull World world, @NonNull CharacterEntity owner, @NonNull Vector2 power) {
         this.world = world;
         this.owner = owner;
         this.power = power;

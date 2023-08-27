@@ -37,12 +37,12 @@ public class GameplayUi {
 		widgets.put("joystick", new JoystickWidget()
 			.onUpdate(power -> {
 				if(!game.settings.isControlsEnabled) {
-					connectedEntity.usePower(Vector2.Zero, 0, false);
+					connectedEntity.usePower(Vector2.Zero, 0);
 					return;
 				}
 
 				connectedEntity.usePower(power, connectedEntity.stats.speed *
-						(game.settings.enableEditor ? (game.environment.camera.zoom * 8) : 1), false);
+						(game.settings.enableEditor ? (game.environment.camera.zoom * 8) : 1));
 
 				getWidget("debug", DebugValuesWidget.class).setValue("Movement Joystick Power", power.toString());
 			})

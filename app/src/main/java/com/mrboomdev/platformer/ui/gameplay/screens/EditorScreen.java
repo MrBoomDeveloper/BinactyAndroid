@@ -82,7 +82,9 @@ public class EditorScreen {
 					selectedTile.offset[1] += .2f;
 					selectedTile.rebuildAt(selectedTile.getExactPosition());
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 4 + 140)
+				.toPosition(
+						Gdx.graphics.getWidth() - game.settings.screenInset - 425,
+						game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 4 + 140)
 				.addTo(stage));
 				
 			widgets.put("moveDown", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -91,7 +93,9 @@ public class EditorScreen {
 					selectedTile.offset[1] -= .2f;
 					selectedTile.rebuildAt(selectedTile.getExactPosition());
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 3 + 120)
+				.toPosition(
+						Gdx.graphics.getWidth() - game.settings.screenInset - 425,
+						game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 3 + 120)
 				.addTo(stage));
 				
 			widgets.put("moveRight", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -100,7 +104,9 @@ public class EditorScreen {
 					selectedTile.offset[0] += .2f;
 					selectedTile.rebuildAt(selectedTile.getExactPosition());
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 2 + 100)
+				.toPosition(
+						Gdx.graphics.getWidth() - game.settings.screenInset - 425,
+						game.settings.screenInset + ButtonWidget.BULLET_HEIGHT * 2 + 100)
 				.addTo(stage));
 				
 			widgets.put("moveLeft", new ButtonWidget(ButtonWidget.Style.BULLET)
@@ -109,7 +115,9 @@ public class EditorScreen {
 					selectedTile.offset[0] -= .2f;
 					selectedTile.rebuildAt(selectedTile.getExactPosition());
 				})
-				.toPosition(Gdx.graphics.getWidth() - game.settings.screenInset - 425, game.settings.screenInset + ButtonWidget.BULLET_HEIGHT + 80)
+				.toPosition(
+						Gdx.graphics.getWidth() - game.settings.screenInset - 425,
+						game.settings.screenInset + ButtonWidget.BULLET_HEIGHT + 80)
 				.addTo(stage));
 			
 			widgets.put("setId", new ButtonWidget(ButtonWidget.Style.COMPACT)
@@ -117,7 +125,10 @@ public class EditorScreen {
 				.onClick(() -> {
 					var dialog = new AndroidDialog().setTitle("Set unique tile ID");
 					
-					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Only this single one tile should to have this id."));
+					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT)
+							.setTextColor("#dddddd")
+							.setText("Only this single one tile should to have this id."));
+
 					var idField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT).setText(selectedTile.id);
 					dialog.addSpace(15).addField(idField).addSpace(30);
 					
@@ -126,6 +137,7 @@ public class EditorScreen {
 						selectedTile.id = idField.getText();
 						dialog.close();
 					}));
+
 					dialog.show();
 				})
 				.toPosition(Gdx.graphics.getWidth() - 350, 48)
@@ -136,6 +148,7 @@ public class EditorScreen {
 				.onClick(() -> {
 					var style = selectedTile.style;
 					if(style == null) return;
+					
 					var types = selectedTile.style.types.keySet();
 					style.currentId = style.currentId > types.size() - 2
 						? 0 : style.currentId + 1;
@@ -169,17 +182,18 @@ public class EditorScreen {
 	
 	public void create(Stage stage) {
 		this.stage = stage;
+		var largeIcons = game.assets.get("ui/overlay/large_icons.png", Texture.class);
 	
 		new ButtonWidget(ButtonWidget.Style.COMPACT)
 			.setText("Exit")
-			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 33, 49, 14, 14))
+			.setForegroundImage(new Sprite(largeIcons, 33, 49, 14, 14))
 			.onClick(() -> game.launcher.pause())
 			.toPosition(120, Gdx.graphics.getHeight() - ButtonWidget.COMPACT_HEIGHT)
 			.addTo(stage);
 			
 			new ButtonWidget(ButtonWidget.Style.COMPACT)
 			.setText("Save")
-			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 1, 1, 14, 14))
+			.setForegroundImage(new Sprite(largeIcons, 1, 1, 14, 14))
 			.toPosition(224, Gdx.graphics.getHeight() - ButtonWidget.COMPACT_HEIGHT)
 			.onClick(() -> {
 				try {
@@ -202,9 +216,15 @@ public class EditorScreen {
 						message.append("Instead we saved your map in '");
 						message.append(FileUtil.external("exportedMap.json").getFullPath(false)).append("'");
 					}
-					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("Everything is ok, you can continue."));
+					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT)
+							.setTextColor("#ffffff")
+							.setText("Everything is ok, you can continue."));
 
-					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> dialog.close())).addSpace(30);
+					dialog.addAction(new AndroidDialog.Action()
+							.setText("Continue")
+							.setClickListener(button -> dialog.close()))
+							.addSpace(30);
+
 					dialog.show();
 				} catch(Exception e) {
 					e.printStackTrace();
@@ -213,7 +233,11 @@ public class EditorScreen {
 							.setTextColor("#ffffff")
 							.setText(LogUtil.throwableToString(e)));
 
-					dialog.addAction(new AndroidDialog.Action().setText("Continue").setClickListener(button -> dialog.close())).addSpace(30);
+					dialog.addAction(new AndroidDialog.Action()
+							.setText("Continue")
+							.setClickListener(button -> dialog.close()))
+							.addSpace(30);
+
 					dialog.show();
 				}
 				
@@ -236,17 +260,29 @@ public class EditorScreen {
 		
 		new ButtonWidget(ButtonWidget.Style.COMPACT)
 			.setText("Global Lightning")
-			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 17, 49, 14, 14))
+			.setForegroundImage(new Sprite(largeIcons, 17, 49, 14, 14))
 			.toPosition(120, 0)
 			.onClick(() -> {
 				var dialog = new AndroidDialog().setTitle("Set Environment lightning");
 					
-				dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Environment color. Enter this text in the rgba like format, for example: (red 255 is 1, alpha 1 is 1)"));
-				var colorField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT).setText(game.environment.map.atmosphere.environmentLightColor.toString()).setHint("Ex. 0, 0, 0, 1");
+				dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT)
+						.setTextColor("#dddddd")
+						.setText("Environment color. Enter this text in the rgba like format, ex: (red 255 is 1)"));
+				
+				var colorField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT)
+						.setText(game.environment.map.atmosphere.environmentLightColor.toString())
+						.setHint("Ex. 0, 0, 0, 1");
+
 				dialog.addSpace(15).addField(colorField).addSpace(30);
 					
-				dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Player lightning color"));
-				var playerColorField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT).setText(game.environment.map.atmosphere.playerLightColor.toString()).setHint("Ex. 0, 0, 0, 1");
+				dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT)
+						.setTextColor("#dddddd")
+						.setText("Player lightning color"));
+
+				var playerColorField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT)
+						.setText(game.environment.map.atmosphere.playerLightColor.toString())
+						.setHint("Ex. 0, 0, 0, 1");
+
 				dialog.addSpace(15).addField(playerColorField).addSpace(30);
 					
 				dialog.addAction(new AndroidDialog.Action().setText("Cancel").setClickListener(button -> dialog.close()));
@@ -267,7 +303,7 @@ public class EditorScreen {
 		
 		new ButtonWidget(ButtonWidget.Style.COMPACT)
 			.setText("Eraser")
-			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 49, 1, 14, 14))
+			.setForegroundImage(new Sprite(largeIcons, 49, 1, 14, 14))
 			.onClick(() -> {
 				EditorManager.current = "ERASER";
 				selectTile(null);
@@ -277,7 +313,7 @@ public class EditorScreen {
 			
 		new ButtonWidget(ButtonWidget.Style.COMPACT)
 			.setText("Select")
-			.setForegroundImage(new Sprite(game.assets.get("ui/overlay/large_icons.png", Texture.class), 49, 33, 14, 14))
+			.setForegroundImage(new Sprite(largeIcons, 49, 33, 14, 14))
 			.onClick(() -> {
 				EditorManager.current = "SELECT";
 				selectTile(null);

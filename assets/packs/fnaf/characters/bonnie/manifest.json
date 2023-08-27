@@ -10,6 +10,7 @@
 			"idle": {
 				"overridable": "anytime_other",
 				"delay": 0.125,
+				"is_action": false,
 				"size": [ 1, 2 ],
 				"hand_position": [0.4, -0.2],
 				"frames": [
@@ -34,6 +35,7 @@
 				"delay": 0.075,
 				"overridable": "anytime_other",
 				"size": [ 1, 2 ],
+				"is_action": false,
 				"hand_position": [0.4, -0.2],
 				"frames": [
 					{ "region": [   1, 1, 19, 48 ] },
@@ -51,6 +53,7 @@
 			"damage": {
 				"delay": 0.1,
 				"mode": "NORMAL",
+				"is_action": false,
 				"overridable": "until_end",
 				"size": [ 1, 2 ],
 				"hand_position": [0.4, -0.2],

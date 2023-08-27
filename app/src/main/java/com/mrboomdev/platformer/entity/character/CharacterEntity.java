@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -24,7 +25,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Align;
 import com.mrboomdev.platformer.entity.Entity;
-import com.mrboomdev.platformer.entity.EntityAbstract;
+import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.entity.item.ItemInventory;
 import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
@@ -34,6 +35,7 @@ import com.mrboomdev.platformer.projectile.ProjectileManager;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.util.Direction;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
@@ -41,7 +43,7 @@ import com.squareup.moshi.Json;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
-public class CharacterEntity extends EntityAbstract {
+public class CharacterEntity implements BotTarget {
 	public Entity.Stats stats;
 	public CharacterSkin skin;
 	@Json(name = "body")
@@ -80,6 +82,12 @@ public class CharacterEntity extends EntityAbstract {
 	private boolean isAiming;
 	@Json(ignore = true)
 	private final GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true)
+	public DamagedListener damagedListener;
+
+	public interface DamagedListener {
+		void damaged(CharacterEntity attacker, int damage);
+	}
 	
 	public CharacterEntity cpy(String name, FileUtil source) {
 		return new CharacterEntity(name, skin.build(source), worldBody, stats);
@@ -158,10 +166,10 @@ public class CharacterEntity extends EntityAbstract {
 		this.brain = brain;
 		return this;
 	}
-	
-	@Override
+
 	public void draw(SpriteBatch batch) {
-		super.draw(batch);
+		cachedPosition = null;
+
 		projectileManager.clearTrash();
 
 		if(isDead && !isDestroyed && damagedProgress > 1) destroy();
@@ -288,7 +296,10 @@ public class CharacterEntity extends EntityAbstract {
 		body.setLinearVelocity(wasPower.scl(100).limit(22));
 		skin.setAnimation(DASH);
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, getPosition());
-		
+	}
+
+	public void setDamagedListener(DamagedListener listener) {
+		this.damagedListener = listener;
 	}
 	
 	public void gainDamage(int damage, Vector2 power) {
@@ -313,9 +324,8 @@ public class CharacterEntity extends EntityAbstract {
 	public boolean giveItem(Item item) {
 		return inventory.add(item);
 	}
-	
-	@Override
-	public void usePower(Vector2 power, float speed, boolean isBot) {
+
+	public void usePower(Vector2 power, float speed) {
 		if(damagedProgress < .4f || isDead) return;
 
 		if(isDashing) {
@@ -328,30 +338,33 @@ public class CharacterEntity extends EntityAbstract {
 		if(power.isZero() || speed == 0) {
 			isRunning = false;
 			skin.setAnimation(IDLE);
-			super.usePower(Vector2.Zero, 0, false);
-		} else if(getSpeed(power) > speed * 5) {
+			applyMovement(Vector2.Zero, 0);
+			return;
+		}
+
+		wasPower = power.cpy();
+
+		if(getSpeed(power) > speed * 5) {
 			isRunning = true;
 			skin.setAnimation(RUN);
 			stats.stamina = Math.max(stats.stamina - .02f, 0);
 			staminaReloadMultiply = .05f;
 
 			var isEnoughPower = stats.stamina > 5;
-			super.usePower(
+			applyMovement(
 					power.scl(isEnoughPower ? 100 : 1),
-					speed / (isEnoughPower ? 1 : 2),
-					isBot);
+					speed / (isEnoughPower ? 1 : 2));
 		} else {
 			isRunning = false;
 			skin.setAnimation(WALK);
-			super.usePower(power.scl(100), speed / 2, isBot);
+			applyMovement(power.scl(100), speed / 2);
 		}
 	}
-	
-	@Override
+
 	public void die(boolean silently) {
 		damagedProgress = 0;
 		skin.setAnimationForce(DEATH);
-		super.die(silently);
+		isDead = true;
 
 		if(silently) return;
 		game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);
@@ -370,7 +383,44 @@ public class CharacterEntity extends EntityAbstract {
 			return this;
 		}
 	}
-	
-	/* Don't use this. It is only for the CharacterGroup */
-	protected CharacterEntity() {}
+
+	@Json(ignore = true)
+	public World world;
+	@Json(ignore = true)
+	public Vector2 wasPower = new Vector2();
+	@Json(ignore = true)
+	public Body body;
+	@Json(ignore = true)
+	public boolean isDestroyed, isDead;
+	@Json(ignore = true)
+	private Vector2 cachedPosition;
+
+	public void destroy() {
+		if(isDestroyed) return;
+		world.destroyBody(body);
+		isDestroyed = true;
+	}
+
+	public float getSpeed(@NonNull Vector2 power) {
+		return Math.max(
+				Math.abs(power.x),
+				Math.abs(power.y)
+		);
+	}
+
+	public void applyMovement(@NonNull Vector2 power, float speed) {
+		body.setLinearVelocity(power.cpy().limit(5).scl(speed));
+	}
+
+	public Direction getDirection() {
+		return new Direction(wasPower.x);
+	}
+
+	public Vector2 getPosition() {
+		if(cachedPosition == null) {
+			cachedPosition = body.getPosition();
+		}
+
+		return cachedPosition;
+	}
 }

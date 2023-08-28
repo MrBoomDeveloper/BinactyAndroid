@@ -1,6 +1,5 @@
 package com.mrboomdev.platformer.scenes.gameplay;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -9,8 +8,6 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
-import com.mrboomdev.platformer.widgets.StatBarWidget;
-import com.mrboomdev.platformer.widgets.StatBarWidget.Track;
 
 public class GameplayUi extends CoreUi {
 	private float cameraZoom;
@@ -18,16 +15,6 @@ public class GameplayUi extends CoreUi {
 	
 	public GameplayUi(GameplayScreen screen, CharacterEntity entity) {
 		stage = new Stage();
-		
-		for(int i = 0; i < 2; i++) {
-			if(game.settings.enableEditor) break;
-			new StatBarWidget(i == 0 ? Track.HEALTH : Track.STAMINA)
-				.toPosition(
-						game.settings.screenInset,
-						Gdx.graphics.getHeight() - game.settings.screenInset - (i == 0 ? StatBarWidget.SIZE : StatBarWidget.SIZE * 2.5f))
-				.connectToEntity(entity)
-				.addTo(stage);
-		}
 		
 		cameraZoom = game.environment.camera.zoom;
 

@@ -21,7 +21,7 @@ public class LogUtil {
 				.setText(message + "\n\nStacktrace:\n" + throwableToString(t))).addSpace(30);
 
 		dialog.addAction(new AndroidDialog.Action()
-				.setText("Close game")
+				.setText("Try to restart")
 				.setClickListener(button -> {
 					var game = GameHolder.getInstance();
 					game.launcher.exit(GameLauncher.Status.CRASH);
@@ -29,14 +29,14 @@ public class LogUtil {
 				}));
 
 		dialog.addAction(new AndroidDialog.Action()
-				.setText("Ignore and continue")
+				.setText("Dismiss and continue")
 				.setClickListener(button -> dialog.close()));
 
 		dialog.show();
 	}
 
 	public static void crash(Throwable t) {
-		crash("Unexpected Crash", "Something pretty strange and unknown to us has happened. Please send the following text to our Discord server.", t);
+		crash("Unexpected Crash", "Something pretty strange and unknown to us has happened.", t);
 	}
 
 	@NonNull

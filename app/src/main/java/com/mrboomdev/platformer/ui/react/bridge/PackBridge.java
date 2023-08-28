@@ -126,7 +126,11 @@ public class PackBridge extends ReactContextBaseJavaModule {
 							var jsLevel = Arguments.createMap();
 							jsLevel.putString("id", level.id);
 							jsLevel.putString("name", level.name);
-							if(level.banner != null) jsLevel.putString("banner", level.banner);
+
+							if(level.banner != null) {
+								jsLevel.putString("banner", gamemode.source.goTo(level.banner).getFullPath(true));
+							}
+
 							if(level.description != null) jsLevel.putString("description", level.description);
 							jsLevelsCategoryData.pushMap(jsLevel);
 						}

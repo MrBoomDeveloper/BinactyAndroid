@@ -13,6 +13,21 @@ import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.environment.logic.Trigger.TriggerCallback;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.entity.bot.BotFollower;
+import com.mrboomdev.platformer.ui.gameplay.layout.SubtitlesLayout;
+
+void setWidgetVisibility(String name, boolean isVisible) {
+	var widgets = core.environment.ui.widgets;
+	if(!widgets.containsKey(name)) return;
+
+	var widget = widgets.get(name);
+	widget.setVisible(isVisible);
+}
+
+SubtitlesLayout createSubtitles() {
+	var widget = new SubtitlesLayout();
+	core.environment.stage.addActor(widget);
+	return widget;
+}
 
 FileUtil getSource() {
 	return this.__source;

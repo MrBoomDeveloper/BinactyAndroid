@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 var startups = new int[][]{{ 1, 1 }, { 5, 5 }, { 25, 25 }, { 10, 10 }};
 String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerAi", "6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerSpawn"};
 
-var powerWidget, usageWidget;
+var powerWidget, usageWidget, subtitles;
 var fanSound, lightSound, phoneSound, partySong;
 
 boolean didFoxyCutsceneEnded;
@@ -59,12 +59,23 @@ switch(game.getEnvString("levelId", "night_0")) {
 		nightId = 4;
 	} break;
 
-	default: {
+	case "night_5": {
 		startups = new int[][] {
 			{  1, 1  },
 			{  5, 5  },
 			{ 25, 25 },
 			{ 10, 10 }
+		};
+
+		nightId = 5;
+	} break;
+
+	default: {
+		startups = new int[][] {
+			{ 1, 1 },
+			{ 1, 1 },
+			{ 1, 1 },
+			{ 1, 1 }
 		};
 
 		nightId = 1;
@@ -303,6 +314,7 @@ void foxyCutscene() {
 			}}, 3);
 
 			brain.onCompleted(new Runnable() { run() {
+				foxy.entity.wasPower = new Vector2(1, 0);
 				foxy.entity.setBrain(null);
 			}});
 
@@ -410,12 +422,70 @@ entities.setListener(new EntityListener() {
 
 game.setListener(new GameListener() {
 	start() {
-		setCameraZoom(1, 1);
-		ui.createFade(1).start(1, 0, .1f);
+		var fade = ui.createFade(1);
 		
-		game.setTimer(new Runnable() { run() {
-			setCameraZoom(0.5f, .01f);
-		}}, .1f);
+		lightLeft.pointLight.setActive(false);
+		lightRight.pointLight.setActive(false);
+
+		var me = core.settings.mainPlayer;
+		me.giveItem(entities.createItem("items/flashlight"));
+		me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
+		
+		if(nightId == 1) {
+			setCameraPosition(36, 46);
+			game.setPlayerPosition(36, 46);
+		}
+
+		game.setControlsEnabled(true);
+		ui.setVisibility(true);
+
+		if(nightId == 1) {
+			core.settings.mainPlayer.wasPower = new Vector2(-1, 0);
+			setCameraZoom(.2f, 1);
+
+			setWidgetVisibility("inventory", false);
+			setWidgetVisibility("use", false);
+			setWidgetVisibility("dash", false);
+			setWidgetVisibility("stats_health", false);
+			setWidgetVisibility("stats_stamina", false);
+			setWidgetVisibility("aim", false);
+
+			game.setTimer(new Runnable() { run() {
+				fade.start(1, 0, 10);
+
+				game.setTimer(new Runnable() { run() {
+					setCameraZoom(.5f, .15f);
+				}}, .75f);
+
+				float fadeDuration = .25f;
+				subtitles = createSubtitles();
+				subtitles.addLine("Hello!", fadeDuration);
+				subtitles.addLine("You're awake!", fadeDuration);
+				subtitles.addLine("Are you a new guard!? Aren't you???", fadeDuration);
+
+				subtitles.addLine("Come here! You'll like this place.", fadeDuration, new Runnable() { run() {
+					setCameraZoom(.4f, .1f);
+					setWidgetVisibility("dash", true);
+				}});
+
+				subtitles.addLine("Welcome to the Freddy Fazbear's Pizzeria!", .5f);
+				subtitles.addLine("A fantastic place, where party NEVER ends!", .5f, new Runnable() { run() {
+					setWidgetVisibility("inventory", true);
+					setWidgetVisibility("use", true);
+					setWidgetVisibility("stats_health", true);
+					setWidgetVisibility("stats_stamina", true);
+					setWidgetVisibility("aim", true);
+				}});
+			}}, 3);
+		} else {
+			startDarkMusic();
+			fade.start(1, 0, .1f);
+			setCameraZoom(1, 1);
+
+			game.setTimer(new Runnable() { run() {
+				setCameraZoom(0.5f, .01f);
+			}}, .1f);
+		}
 
 		fanSound = createMusic("sounds/fan.wav");
 		fanSound.setPosition(24, -14);
@@ -423,7 +493,7 @@ game.setListener(new GameListener() {
 		fanSound.setLooping(true);
 		fanSound.setVolume(0.075f);
 		fanSound.play();
-		
+
 		phoneSound = createMusic("music/phone_" + nightId + ".wav");
 		phoneSound.setPosition(24, -14);
 		phoneSound.setDistance(12);
@@ -434,33 +504,20 @@ game.setListener(new GameListener() {
 		lightSound.setDistance(15);
 		lightSound.setLooping(true);
 		lightSound.setVolume(0.25f);
-
-		audio.playMusic(new String[]{
-			"music/dark_ambience_1.ogg",
-			"music/dark_ambience_2.ogg",
-			"music/dark_ambience_3.ogg",
-			"music/dark_ambience_4.ogg"},
-		999);
-		
-		lightLeft.pointLight.setActive(false);
-		lightRight.pointLight.setActive(false);
-
-		var me = core.settings.mainPlayer;
-		me.giveItem(entities.createItem("items/flashlight"));
-		me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
-		
-		if(nightId == 1) {
-			setCameraPosition(36, 42);
-			game.setPlayerPosition(36, 42);
-		}
-
-		game.setControlsEnabled(true);
-		ui.setVisibility(true);
 	}
 	
 	build() {}
 	end() {}
 });
+
+void startDarkMusic() {
+	audio.playMusic(new String[] {
+		"music/dark_ambience_1.ogg",
+		"music/dark_ambience_2.ogg",
+		"music/dark_ambience_3.ogg",
+		"music/dark_ambience_4.ogg"},
+	999);
+}
 
 void powerUpdate() {
 	game.setTimer(new Runnable() {run() {

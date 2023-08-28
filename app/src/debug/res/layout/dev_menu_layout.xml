@@ -94,6 +94,13 @@
 						android:layout_height="wrap_content"
 						android:text="Allow any camera zoom and disable some effects" />
 
+					<Switch
+						android:id="@+id/volumeToggle"
+						android:layout_width="match_parent"
+						android:paddingVertical="15dp"
+						android:layout_height="wrap_content"
+						android:text="Disable Audio" />
+
 					<Button
 						android:id="@+id/enableControlsButton"
 						style="@style/BoomDevButton"

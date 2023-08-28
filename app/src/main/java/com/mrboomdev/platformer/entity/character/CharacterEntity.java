@@ -84,6 +84,16 @@ public class CharacterEntity implements BotTarget {
 	private final GameHolder game = GameHolder.getInstance();
 	@Json(ignore = true)
 	public DamagedListener damagedListener;
+	@Json(ignore = true)
+	public World world;
+	@Json(ignore = true)
+	public Vector2 wasPower = new Vector2();
+	@Json(ignore = true)
+	public Body body;
+	@Json(ignore = true)
+	public boolean isDestroyed, isDead;
+	@Json(ignore = true)
+	private Vector2 cachedPosition;
 
 	public interface DamagedListener {
 		void damaged(CharacterEntity attacker, int damage);
@@ -384,17 +394,6 @@ public class CharacterEntity implements BotTarget {
 		}
 	}
 
-	@Json(ignore = true)
-	public World world;
-	@Json(ignore = true)
-	public Vector2 wasPower = new Vector2();
-	@Json(ignore = true)
-	public Body body;
-	@Json(ignore = true)
-	public boolean isDestroyed, isDead;
-	@Json(ignore = true)
-	private Vector2 cachedPosition;
-
 	public void destroy() {
 		if(isDestroyed) return;
 		world.destroyBody(body);
@@ -410,6 +409,10 @@ public class CharacterEntity implements BotTarget {
 
 	public void applyMovement(@NonNull Vector2 power, float speed) {
 		body.setLinearVelocity(power.cpy().limit(5).scl(speed));
+	}
+
+	public void applyMovement(float x, float y) {
+		body.setLinearVelocity(x, y);
 	}
 
 	public Direction getDirection() {

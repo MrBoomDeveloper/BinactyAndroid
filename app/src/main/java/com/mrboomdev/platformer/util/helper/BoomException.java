@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.util.helper;
 import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.Contract;
+
 public class BoomException extends RuntimeException {
 	
 	public BoomException(@NonNull Object object) {

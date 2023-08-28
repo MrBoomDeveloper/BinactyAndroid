@@ -11,11 +11,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.R;
+import com.mrboomdev.platformer.ui.ActivityManager;
+
+import java.util.Objects;
 
 public class AndroidDialog {
 	private final Activity context;
@@ -61,6 +64,7 @@ public class AndroidDialog {
 			space.setMinimumWidth(15);
 			actions.addView(space);
 		}
+
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
 		params.weight = 1;
 		actions.addView(action.getView(context), params);
@@ -70,7 +74,7 @@ public class AndroidDialog {
 	public void show() {
 		context.runOnUiThread(() -> {
 			dialog = builder.setView(holder).create();
-			dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+			Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 			dialog.show();
 		});
 	}
@@ -180,10 +184,9 @@ public class AndroidDialog {
 				view.setText(text);
 				view.setTextColor(Color.BLACK);
 				view.setAllCaps(false);
+
 				if(clickListener == null) return view;
-				view.setOnClickListener((button) -> {
-					clickListener.clicked(this);
-				});
+				view.setOnClickListener((button) -> clickListener.clicked(this));
 			}
 			return view;
 		}

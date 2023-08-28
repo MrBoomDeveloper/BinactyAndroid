@@ -16,6 +16,7 @@ public class BotFollower extends CharacterBrain {
 	private final AiTargeter targeter = new AiTargeter(this);
 	private final MapScanner mapScanner = new MapScanner();
 	private boolean isFinished;
+	private int didAdditionalSteps;
 
 	@Override
 	public void start() {
@@ -44,6 +45,12 @@ public class BotFollower extends CharacterBrain {
 		}
 
 		if(nextPosition == null) {
+			if(didAdditionalSteps < 25) {
+				owner.usePower(owner.wasPower, 1);
+				didAdditionalSteps++;
+				return;
+			}
+
 			if(completionCallback != null) {
 				completionCallback.run();
 				isFinished = true;

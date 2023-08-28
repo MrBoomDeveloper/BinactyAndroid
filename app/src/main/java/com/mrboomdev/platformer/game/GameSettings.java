@@ -57,6 +57,7 @@ public class GameSettings {
 		}
 		
 		if(prefs.getBoolean("forceEditor", false)) settings.enableEditor = true;
+
 		AudioUtil.setVolume(prefs.getInt("musicVolume", 100) / 100f, prefs.getInt("soundsVolume", 100) / 100f);
 		return settings;
 	}

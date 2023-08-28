@@ -15,6 +15,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 @SuppressWarnings("unchecked")
 public abstract class ActorUtil extends Actor {
 	public CharacterEntity connectedEntity;
+	public boolean isVisible = true;
 	private float opacity = 1, masterOpacity;
 
 	public void update() {
@@ -25,11 +26,15 @@ public abstract class ActorUtil extends Actor {
 			return;
 		}
 
-		if(game.settings.isUiVisible && masterOpacity < 1) {
+		if((game.settings.isUiVisible || isVisible) && masterOpacity < 1) {
 			masterOpacity += (1 - masterOpacity) * .05f;
 		} else if(masterOpacity > 0) {
 			masterOpacity += (0 - masterOpacity) * .05f;
 		}
+	}
+
+	public void setVisibility(boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 
 	public float getOpacity() {

@@ -8,6 +8,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 
 public class AudioUtil {
 	public static float musicVolume = 1, soundVolume = 1;
+	public static boolean isDisabled;
 	public static Array<Music> playingMusic = new Array<>();
 	private static final Array<Music> musicQueue = new Array<>();
 	private static Music currentTheme;
@@ -26,7 +27,7 @@ public class AudioUtil {
 		if(repeatTimes < 0) return;
 		currentTheme = musicQueue.random();
 		currentTheme.setOnCompletionListener(completedMusic -> startMusic(repeatTimes - 1));
-		currentTheme.setVolume(.1f * musicVolume);
+		currentTheme.setVolume(isDisabled ? 0 : .1f * musicVolume);
 		currentTheme.setPosition(0);
 		currentTheme.play();
 	}
@@ -50,6 +51,8 @@ public class AudioUtil {
 	}
 	
 	public static float getVolume(Vector2 position, float power) {
+		if(isDisabled) return 0;
+
 		float distance = 0;
 		var game = GameHolder.getInstance();
 		if(game.settings.mainPlayer != null) {

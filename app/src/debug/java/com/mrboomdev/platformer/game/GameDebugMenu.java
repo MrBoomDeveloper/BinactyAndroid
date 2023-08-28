@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.R;
+import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
 
 public class GameDebugMenu {
@@ -177,6 +178,13 @@ public class GameDebugMenu {
 		Switch lightsSwitch = view.findViewById(R.id.lightsSwitch);
 		lightsSwitch.setChecked(settings.debugRaysDisable);
 		lightsSwitch.setOnCheckedChangeListener((toggle, isActive) -> settings.debugRaysDisable = isActive);
+
+		Switch volumeSwitch = view.findViewById(R.id.volumeToggle);
+		volumeSwitch.setOnCheckedChangeListener((toggle, isActive) -> {
+			AudioUtil.isDisabled = isActive;
+			AudioUtil.soundVolume = isActive ? 0 : 1;
+			AudioUtil.musicVolume = isActive ? 0 : 1;
+		});
 
 		Switch stageSwitch = view.findViewById(R.id.debugStage);
 		stageSwitch.setOnCheckedChangeListener((toggle, isActive) -> settings.debugStage = isActive);

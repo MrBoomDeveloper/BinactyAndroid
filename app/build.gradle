@@ -70,7 +70,9 @@ android {
 			applicationIdSuffix ".debug"
 			versionNameSuffix "-debug"
 			signingConfig signingConfigs.debug
-		}
+            jniDebuggable true
+            renderscriptDebuggable true
+        }
 		
 		release {
 			versionNameSuffix "-release"

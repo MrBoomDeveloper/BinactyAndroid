@@ -86,8 +86,17 @@
 						"borderColor": { "values": [0, 0, 0, 1] },
 						"borderSize": 2
 					}
+				}, {
+					"path": "ui/font/roboto-medium.ttf", "as": "subtitles.ttf", "type": "font",
+					"font": {
+						"size": 25,
+						"color": { "values": [1, 1, 1, 1] },
+						"borderSize": 1,
+						"borderColor": { "values": [0, 0, 0, 1] }
+					}
 				}
 			],
+
 			"unload": [
 				"packs/official/src/images/banner.jpg"
 			]

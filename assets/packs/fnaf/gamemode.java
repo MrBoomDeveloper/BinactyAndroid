@@ -9,8 +9,10 @@ String[] waypoints = new String[]{"6a7b64fc-d6d4-11ed-afa1-0242ac120002:triggerA
 
 var powerWidget, usageWidget, subtitles;
 var fanSound, lightSound, phoneSound, partySong;
+var presentationTrigger;
+var vanessa;
 
-boolean didFoxyCutsceneEnded;
+boolean didFoxyCutsceneEnded, didIntroEnded;
 boolean isGameEnded, isFreddyActive, isPartySongStarted, didPlayerEnteredOffice;
 int nightId = 1, power = 100, usage = 1;
 
@@ -118,7 +120,7 @@ for(int i = 1; i < 5; i++) {
 }
 
 if(nightId == 1) {
-	//game.load("character", "characters/vanessa");
+	game.load("character", "characters/vanessa");
 }
 
 game.load("music", "music/phone_" + nightId + ".wav");
@@ -255,21 +257,49 @@ void updateLight() {
 ----------*/
 
 var officeTrigger = new Trigger(24, -15, 5, new TriggerCallback() { triggered(var character) {
-	if(character != core.settings.mainPlayer || didPlayerEnteredOffice) return;
+	if(character != core.settings.mainPlayer
+		|| didPlayerEnteredOffice
+		|| (nightId == 2 && !didFoxyCutsceneEnded)
+		|| (nightId == 1 && !didIntroEnded)) {
+			return false;
+		}
 
 	didPlayerEnteredOffice = true;
 	startNight();
-	officeTrigger.remove();
+
+	return true;
 }});
 
 if(nightId == 1) {
+	vanessa = createCharacter("characters/vanessa");
+	vanessa.setPosition(35, 46);
+}
+
+if(nightId == 2) {
 	foxy.entity.body.setTransform(38.5f, 31.2f, 0);
 
 	var foxyTrigger = new Trigger(35, 32, 4, new TriggerCallback() { triggered(var character) {
-		if(character != core.settings.mainPlayer) return;
+		if(character != core.settings.mainPlayer) return false;
 
 		foxyCutscene();
-		foxyTrigger.remove();
+		return true;
+	}});
+}
+
+void presentationCutscene() {
+	vanessa.lookAt(core.settings.mainPlayer);
+
+	subtitles.addLine("Welcome to the Freddy Fazbear's Pizzeria!", .5f);
+	subtitles.addLine("A fantastic place, where party NEVER ends! (TO BE CONTINUED)", .5f, new Runnable() { run() {
+		setWidgetVisibility("inventory", true);
+		setWidgetVisibility("use", true);
+		setWidgetVisibility("stats_health", true);
+		setWidgetVisibility("stats_stamina", true);
+		setWidgetVisibility("aim", true);
+
+		vanessa.gainDamage(9999);
+
+		didIntroEnded = true;
 	}});
 }
 
@@ -282,6 +312,7 @@ void foxyCutscene() {
 		CameraUtil.setTarget(foxy.entity);
 		CameraUtil.setCameraZoom(0.45f, .04f);
 
+		didFoxyCutsceneEnded = true;
 		foxy.entity.attack(Vector2.Zero);
 
 		game.setTimer(new Runnable() { run() {
@@ -422,59 +453,79 @@ entities.setListener(new EntityListener() {
 
 game.setListener(new GameListener() {
 	start() {
+		var me = core.settings.mainPlayer;
 		var fade = ui.createFade(1);
+		game.setPlayerPosition(22, -14);
 		
 		lightLeft.pointLight.setActive(false);
 		lightRight.pointLight.setActive(false);
 
-		var me = core.settings.mainPlayer;
 		me.giveItem(entities.createItem("items/flashlight"));
 		me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
-		
-		if(nightId == 1) {
-			setCameraPosition(36, 46);
-			game.setPlayerPosition(36, 46);
-		}
 
 		game.setControlsEnabled(true);
 		ui.setVisibility(true);
 
 		if(nightId == 1) {
-			core.settings.mainPlayer.wasPower = new Vector2(-1, 0);
-			setCameraZoom(.2f, 1);
+			me.wasPower = new Vector2(-1, 0);
+			setCameraZoom(.1f, 1);
+			setCameraOffset(-1, .2f);
+
+			setCameraPosition(36, 46);
+			game.setPlayerPosition(36, 46);
 
 			setWidgetVisibility("inventory", false);
 			setWidgetVisibility("use", false);
+			setWidgetVisibility("joystick", false);
 			setWidgetVisibility("dash", false);
 			setWidgetVisibility("stats_health", false);
 			setWidgetVisibility("stats_stamina", false);
 			setWidgetVisibility("aim", false);
+
+			me.lookAt(vanessa);
+			vanessa.lookAt(me);
+			me.skin.setAnimationForce("damage");
+
+			var vanessaBrain = new BotFollower();
+			vanessaBrain.setWaypoints(waypoints);
+			vanessa.setBrain(vanessaBrain);
+			vanessaBrain.start();
 
 			game.setTimer(new Runnable() { run() {
 				fade.start(1, 0, 10);
 
 				game.setTimer(new Runnable() { run() {
 					setCameraZoom(.5f, .15f);
+					setCameraOffset(0, 0);
+					me.dash(1, 0, 1);
 				}}, .75f);
 
 				float fadeDuration = .25f;
 				subtitles = createSubtitles();
 				subtitles.addLine("Hello!", fadeDuration);
+
 				subtitles.addLine("You're awake!", fadeDuration);
-				subtitles.addLine("Are you a new guard!? Aren't you???", fadeDuration);
+				subtitles.addLine("Are you a new guard!? Aren't you???", fadeDuration, new Runnable() { run() {
+					vanessaBrain.setTarget(37, 46);
+					setWidgetVisibility("joystick", true);
+
+					me.skin.setAnimationForce(null);
+					me.lookAt(null);
+					me.wasPower = new Vector2(-1, 0);
+				}});
 
 				subtitles.addLine("Come here! You'll like this place.", fadeDuration, new Runnable() { run() {
 					setCameraZoom(.4f, .1f);
 					setWidgetVisibility("dash", true);
-				}});
+					vanessaBrain.setTarget(22, 22);
+					vanessa.lookAt(null);
 
-				subtitles.addLine("Welcome to the Freddy Fazbear's Pizzeria!", .5f);
-				subtitles.addLine("A fantastic place, where party NEVER ends!", .5f, new Runnable() { run() {
-					setWidgetVisibility("inventory", true);
-					setWidgetVisibility("use", true);
-					setWidgetVisibility("stats_health", true);
-					setWidgetVisibility("stats_stamina", true);
-					setWidgetVisibility("aim", true);
+					presentationTrigger = new Trigger(22, 22, 5, new TriggerCallback() { triggered(var character) {
+						if(character != core.settings.mainPlayer) return false;
+
+						presentationCutscene();
+						return true;
+					}});
 				}});
 			}}, 3);
 		} else {

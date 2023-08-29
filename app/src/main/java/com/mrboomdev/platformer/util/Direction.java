@@ -1,13 +1,20 @@
 package com.mrboomdev.platformer.util;
 
 public class Direction {
-    public static final int NONE = 0;
-    public static final int FORWARD = 1;
-    public static final int BACKWARD = -1;
-    public int current = NONE;
-        
-    public Direction(int direction) {
-        current = direction;
+    public static final Direction FORWARD = Direction.valueOf(1);
+    public static final Direction BACKWARD = Direction.valueOf(-1);
+    public int current = 0;
+
+    public static Direction valueOf(float lookAt) {
+        if(isInitialized()) {
+            return (lookAt >= 0) ? FORWARD : BACKWARD;
+        }
+
+        return new Direction(lookAt);
+    }
+
+    private static boolean isInitialized() {
+        return FORWARD != null && BACKWARD != null;
     }
 	
 	public Direction(float lookAt) {
@@ -15,18 +22,18 @@ public class Direction {
 	}
     
     public Direction reverse() {
-        return new Direction(current == FORWARD ? BACKWARD : FORWARD);
+        return Direction.valueOf(current * -1);
     }
     
     public void setFrom(float x) {
-        current = x >= 0 ? FORWARD : BACKWARD;
+        current = x >= 0 ? 1 : -1;
     }
     
     public boolean isForward() {
-        return current == FORWARD;
+        return current == 1;
     }
     
     public boolean isBackward() {
-        return current == BACKWARD;
+        return current == -1;
     }
 }

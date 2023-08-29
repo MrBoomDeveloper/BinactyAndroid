@@ -14,6 +14,7 @@ import com.mrboomdev.platformer.environment.logic.Trigger.TriggerCallback;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.entity.bot.BotFollower;
 import com.mrboomdev.platformer.ui.gameplay.layout.SubtitlesLayout;
+import com.mrboomdev.platformer.game.pack.PackLoader;
 
 void setWidgetVisibility(String name, boolean isVisible) {
 	var widgets = core.environment.ui.widgets;
@@ -21,6 +22,10 @@ void setWidgetVisibility(String name, boolean isVisible) {
 
 	var widget = widgets.get(name);
 	widget.setVisible(isVisible);
+}
+
+createCharacter(String name) {
+	return entities.createCharacter(name).create();
 }
 
 SubtitlesLayout createSubtitles() {
@@ -43,6 +48,14 @@ Audio createSound(String path) {
 
 void setCameraZoom(float size, float speed) {
 	CameraUtil.setCameraZoom(size, speed);
+}
+
+void setCameraOffset(float x, float y) {
+	CameraUtil.setCameraOffsetForce(x, y);
+}
+
+void setCameraMoveSpeed(float speed) {
+	CameraUtil.setCameraMoveSpeed(speed);
 }
 
 void setCameraPosition(float x, float y) {

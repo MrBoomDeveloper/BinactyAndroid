@@ -26,7 +26,9 @@ public abstract class ActorUtil extends Actor {
 			return;
 		}
 
-		if((game.settings.isUiVisible || isVisible) && masterOpacity < 1) {
+		boolean isActive = game.settings.isUiVisible && isVisible;
+
+		if(isActive && masterOpacity < 1) {
 			masterOpacity += (1 - masterOpacity) * .05f;
 		} else if(masterOpacity > 0) {
 			masterOpacity += (0 - masterOpacity) * .05f;

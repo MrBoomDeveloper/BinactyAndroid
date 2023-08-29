@@ -6,7 +6,7 @@ import com.mrboomdev.platformer.game.GameHolder;
 
 @SuppressWarnings("unused")
 public class CameraUtil {
-	public static boolean isZoomedForce;
+	public static boolean isZoomedForce, isOffsetForce;
 	private static BotTarget target;
 	private static final float DEFAULT_CAMERA_SPEED = .05f;
 	private static float shakePower, shakeDuration, shakeProgress;
@@ -31,6 +31,13 @@ public class CameraUtil {
 	}
 
 	public static void setCameraOffset(float x, float y) {
+		if(isOffsetForce) return;
+
+		offset.set(x, y);
+	}
+
+	public static void setCameraOffsetForce(float x, float y) {
+		isOffsetForce = !(x == 0 && y == 0);
 		offset.set(x, y);
 	}
 

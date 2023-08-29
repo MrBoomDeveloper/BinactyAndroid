@@ -95,7 +95,13 @@ public class SubtitlesLayout extends ActorUtil {
 		}
 
 		if(line.duration == -1) {
-			line.duration = line.text.length() / 3f;
+			var temp = line.text;
+
+			for(var item : List.of("!", "?", " ", ".", "-", ",", "'", "\"", "/", "\\")) {
+				temp.replace(item, "");
+			}
+
+			line.duration = temp.length() / 4f;
 		}
 
 		if(line.fadeDuration == -1) {

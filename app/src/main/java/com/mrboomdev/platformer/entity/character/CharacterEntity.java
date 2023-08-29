@@ -61,13 +61,9 @@ public class CharacterEntity implements BotTarget {
 	@Json(ignore = true)
 	public TileInteraction nearInteraction;
 	@Json(ignore = true)
-	private float dashProgress, dashReloadProgress;
+	private float dashProgress, dashDuration, dashReloadProgress, staminaReloadMultiply, healthPhantom, damagedProgress = 1;
 	@Json(ignore = true)
-	private float damagedProgress = 1;
-	@Json(ignore = true)
-	private float staminaReloadMultiply, healthPhantom;
-	@Json(ignore = true)
-	private boolean isRunning, isDashing;
+	private boolean isRunning, isDashing, isAiming;
 	@Json(ignore = true)
 	private ShapeRenderer shape;
 	@Json(ignore = true)
@@ -78,8 +74,6 @@ public class CharacterEntity implements BotTarget {
 	private Vector2 damagedPower;
 	@Json(ignore = true)
 	private Sprite shadow;
-	@Json(ignore = true)
-	private boolean isAiming;
 	@Json(ignore = true)
 	private final GameHolder game = GameHolder.getInstance();
 	@Json(ignore = true)
@@ -94,6 +88,8 @@ public class CharacterEntity implements BotTarget {
 	public boolean isDestroyed, isDead;
 	@Json(ignore = true)
 	private Vector2 cachedPosition;
+	@Json(ignore = true)
+	private BotTarget lookingAtTarget;
 
 	public interface DamagedListener {
 		void damaged(CharacterEntity attacker, int damage);
@@ -171,6 +167,10 @@ public class CharacterEntity implements BotTarget {
 		return this;
 	}
 
+	public void lookAt(BotTarget target) {
+		this.lookingAtTarget = target;
+	}
+
 	public CharacterEntity setBrain(@Nullable CharacterBrain brain) {
 		if(brain != null) brain.setEntity(this);
 		this.brain = brain;
@@ -197,7 +197,7 @@ public class CharacterEntity implements BotTarget {
 
 		damagedProgress += Gdx.graphics.getDeltaTime();
 		
-		if(isDashing && dashProgress > Entity.DASH_DURATION) {
+		if(isDashing && dashProgress > dashDuration) {
 			isDashing = false;
 			dashReloadProgress = 0;
 		}
@@ -250,6 +250,10 @@ public class CharacterEntity implements BotTarget {
 
 		return 1;
 	}
+
+	public void setPosition(float x, float y) {
+		body.setTransform(x, y, 0);
+	}
 	
 	public void drawProjectiles(SpriteBatch batch) {
 		projectileManager.render(batch);
@@ -293,16 +297,26 @@ public class CharacterEntity implements BotTarget {
 			FunUtil.setTimer(() -> nearInteraction.act(), skin.getCurrentAnimationDeclaration().actionDelay);
 		}
 	}
-	
+
 	public void dash() {
+		if(wasPower.isZero()) {
+			dash(5, 0, Entity.DASH_DURATION);
+			return;
+		}
+
+		dash(wasPower.x, wasPower.y, Entity.DASH_DURATION);
+	}
+	
+	public void dash(float x, float y, float duration) {
 		if(stats.stamina < Entity.DASH_COST || isDashing || dashReloadProgress < Entity.DASH_DELAY || isDead) return;
 		
 		stats.stamina -= Entity.DASH_COST;
 		dashProgress = 0;
 		isDashing = true;
 		staminaReloadMultiply = .05f;
+		this.dashDuration = duration;
 		
-		if(wasPower.isZero()) wasPower.set(5, 0);
+		wasPower.set(x, y);
 		body.setLinearVelocity(wasPower.scl(100).limit(22));
 		skin.setAnimation(DASH);
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, getPosition());
@@ -416,7 +430,12 @@ public class CharacterEntity implements BotTarget {
 	}
 
 	public Direction getDirection() {
-		return new Direction(wasPower.x);
+		if(lookingAtTarget != null) {
+			var difference = lookingAtTarget.getPosition().x - getPosition().x;
+			return Direction.valueOf(difference);
+		}
+
+		return Direction.valueOf(wasPower.x);
 	}
 
 	public Vector2 getPosition() {

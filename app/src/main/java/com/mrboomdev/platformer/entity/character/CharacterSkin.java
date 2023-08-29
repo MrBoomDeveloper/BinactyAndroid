@@ -50,22 +50,37 @@ public class CharacterSkin {
 	private boolean isAnimationForce;
 
 	public void setAnimationForce(@Nullable String animationName) {
+		isAnimationForce = animationName != null;
+		if(!isAnimationForce) return;
 
+		setAnimationNow(animationName);
 	}
 
 	public void setAnimation(@NonNull Entity.AnimationType animationType) {
+		if(isAnimationForce) return;
+
+		//TODO: Replace this method with "setAnimationSafe(String name)";
+
 		setAnimation(animationType.name().toLowerCase());
 	}
 	
 	public void setAnimation(String animationType) {
+		if(isAnimationForce) return;
+
 		var selectedAnimation = getValidAnimation(animationType);
 		if(selectedAnimation == null || isShouldSkipAnimation(selectedAnimation)) return;
 
-		currentAnimation = animations.containsKey(selectedAnimation) ? selectedAnimation : "idle";
-		var animation = getAnimationDeclaration(animations.containsKey(selectedAnimation) ? selectedAnimation : "idle");
+		String name = animations.containsKey(selectedAnimation) ? selectedAnimation : "idle";
+		var animation = getAnimationDeclaration(name);
 
+		setAnimationNow(name);
 		animationProgress = animation.isAction ? 0 : (float)(Math.random() * 5);
-		LogUtil.debug(LogUtil.Tag.ANIMATION, hashCode() + " : Set character animation to: " + currentAnimation);
+	}
+
+	public void setAnimationNow(String name) {
+		animationProgress = 0;
+		currentAnimation = name;
+		LogUtil.debug(LogUtil.Tag.ANIMATION, hashCode() + " : Set character animation to: " + name);
 	}
 
 	private boolean isShouldSkipAnimation(String animationType) {

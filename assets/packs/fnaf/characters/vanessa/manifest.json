@@ -1,0 +1,35 @@
+{
+	"metadata": {
+		"name": "Vanessa",
+		"description": "This woman was so scared..."
+	},
+
+	"skin": {
+		"texture": "skin.png",
+		"animations": {
+			"idle": {
+				"overridable": "anytime_other",
+				"delay": 0.125,
+				"is_action": false,
+				"size": [ 1, 2 ],
+				"hand_position": [0.4, -0.2],
+				"frames": [
+					{ "region": [ 8, 0, 21, 40 ] }
+				]
+			}
+		}
+	},
+
+	"body": {
+		"size": [ 1.1, 1.8 ],
+		"bottom": [ 1.1, 0.4, 0, -0.7 ],
+		"light_offset": [ 0, 1 ]
+	},
+
+	"stats": {
+		"health": 100,
+		"damage": 25,
+		"speed": 1.2,
+		"stamina": 250
+	}
+}

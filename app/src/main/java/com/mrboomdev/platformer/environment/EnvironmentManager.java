@@ -60,7 +60,7 @@ public class EnvironmentManager {
 		world.step(1 / 60f, 6, 2);
 		gamemode.update();
 		CameraUtil.update(delta);
-		Trigger.update();
+		Trigger.updateAll();
 	}
 	
 	public void start(Stage stage) {

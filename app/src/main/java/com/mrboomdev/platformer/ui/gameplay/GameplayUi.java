@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.gameplay.layout.InventoryLayout;
@@ -32,8 +33,7 @@ public class GameplayUi {
 				Gdx.graphics.getHeight() - game.settings.screenInset - 75
 		));
 
-		if(game.settings.enableEditor) widgets.get("debug").setPosition(120, 45);
-		if(game.settings.debugValues) stage.addActor(widgets.get("debug"));
+		if(game.settings.debugValues || BuildConfig.DEBUG) stage.addActor(widgets.get("debug"));
 
 		var joystick = new JoystickWidget();
 		widgets.put("joystick", joystick);

@@ -30,16 +30,16 @@ public class BotFollower extends CharacterBrain {
 
 	@Override
 	public void update() {
-		if(isFinished) return;
+		if(isFinished || target == null) return;
 
 		this.targeter.update();
 
 		var owner = this.getEntity();
 		var nextPosition = targeter.getPathTo(target);
 
-		if(target.getPosition().dst(owner.getPosition()) < .5f) {
+		if(target.getPosition().dst(owner.getPosition()) < .2f) {
 			isFinished = true;
-			completionCallback.run();
+			if(completionCallback != null) completionCallback.run();
 			owner.usePower(Vector2.Zero, 0);
 			return;
 		}
@@ -63,6 +63,10 @@ public class BotFollower extends CharacterBrain {
 		var power = nextPosition.cpy().sub(owner.getPosition()).scl(5);
 		power.add((float)(Math.random() * 4) - 2, (float)(Math.random() * 4) - 2);
 		owner.usePower(power, owner.stats.speed);
+	}
+
+	public void setTarget(float x, float y) {
+		setTarget(new BotTarget.SimpleBotTarget(x, y));
 	}
 
 	public void setTarget(BotTarget target) {

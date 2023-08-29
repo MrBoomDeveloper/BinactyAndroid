@@ -38,6 +38,7 @@ public class EntitiesBridge {
 		if(!entities.presets.containsKey(name)) {
 			throw BoomException.builder("Tried to create a character, which wasn't been loaded: ").addQuoted(name).build();
 		}
+
 		var character = entities.presets.get(name).cpy("", PackLoader.resolvePath(source.getParent(), name));
 		return new CharacterCreator(character);
 	}

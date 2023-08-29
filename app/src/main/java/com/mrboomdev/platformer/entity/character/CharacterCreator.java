@@ -29,6 +29,7 @@ public class CharacterCreator {
 	
 	public CharacterEntity create() {
 		entity.create(game.environment.world);
+
 		if(spawnTile != null && spawnTile.startsWith("#id:")) {
 			var results = game.environment.map.tilesMap.values().toArray()
 					.select((var tile) -> tile.id != null && tile.id.equals(spawnTile.substring(4)));
@@ -36,8 +37,6 @@ public class CharacterCreator {
 			for(var result : results) {
 				entity.body.setTransform(result.getPosition(false), 0);
 			}
-		} else {
-			entity.body.setTransform(22, -14, 0);
 		}
 
 		game.environment.map.objects.add(new MapEntity(entity));

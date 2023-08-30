@@ -14,32 +14,32 @@ public class SubtitlesLayout extends ActorUtil {
 	private final GameHolder game = GameHolder.getInstance();
 	private BitmapFont font;
 	private final List<Subtitle> lines = new ArrayList<>();
-	private int currentLine;
+	private int currentLine, currentCharacter;
 	private float progress;
 
-	public void addLine(String text, float fadeDuration, float speed, Runnable callback) {
+	public void addLine(String text, float fadeDuration, float duration, Runnable callback) {
 		var line = new Subtitle();
 		line.text = text;
 		line.fadeDuration = fadeDuration;
-		line.speed = speed;
+		line.duration = duration;
 		line.callback = callback;
 		lines.add(line);
 	}
 
-	public void addLine(String text, float fadeDuration, float speed) {
-		addLine(text, fadeDuration, speed, null);
+	public void addLine(String text, float fadeDuration, float duration) {
+		addLine(text, fadeDuration, duration, null);
 	}
 
 	public void addLine(String text, float fadeDuration, Runnable callback) {
-		addLine(text, fadeDuration, 1, callback);
+		addLine(text, fadeDuration, -1, callback);
 	}
 
 	public void addLine(String text, Runnable callback) {
-		addLine(text, -1, 1, callback);
+		addLine(text, -1, -1, callback);
 	}
 
 	public void addLine(String text, float fadeDuration) {
-		addLine(text, fadeDuration, 1);
+		addLine(text, fadeDuration, -1);
 	}
 
 	public void addLine(String text) {
@@ -54,9 +54,16 @@ public class SubtitlesLayout extends ActorUtil {
 		}
 
 		var line = getCurrentLine();
-		if(line == null) return;
+		if(line == null) {
+			progress = 0;
+			return;
+		}
 
-		progress += Gdx.graphics.getDeltaTime() * line.speed;
+		progress += Gdx.graphics.getDeltaTime();
+
+		currentCharacter = Math.min(
+				line.text.length(),
+				Math.round(line.text.length() / line.duration * progress * 2.75f));
 
 		if(line.callback != null && !line.didCallbackRan) {
 			line.didCallbackRan = true;
@@ -70,15 +77,15 @@ public class SubtitlesLayout extends ActorUtil {
 
 		if(progress < line.fadeDuration) {
 			font.setColor(1, 1, 1, 1 / line.fadeDuration * progress);
-			line.glyph.setText(font, line.text);
 		}
 
 		float durationBeforeFade = line.duration - line.fadeDuration;
 		if(progress >= durationBeforeFade) {
 			float alpha = 1 - (1 / line.fadeDuration * (progress - durationBeforeFade));
 			font.setColor(1, 1, 1, alpha);
-			line.glyph.setText(font, line.text);
 		}
+
+		line.glyph.setText(font, line.text.substring(0, currentCharacter));
 
 		font.draw(batch, line.glyph,
 				Gdx.graphics.getWidth() / 2f - line.glyph.width / 2f,
@@ -101,7 +108,7 @@ public class SubtitlesLayout extends ActorUtil {
 				temp.replace(item, "");
 			}
 
-			line.duration = temp.length() / 4f;
+			line.duration = temp.length() / 5f;
 		}
 
 		if(line.fadeDuration == -1) {
@@ -120,7 +127,7 @@ public class SubtitlesLayout extends ActorUtil {
 	public static class Subtitle {
 		public String text;
 		public GlyphLayout glyph;
-		public float duration = -1, fadeDuration = -1, speed = 1;
+		public float duration = -1, fadeDuration = -1;
 		public Runnable callback;
 		public boolean didCallbackRan;
 	}

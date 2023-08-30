@@ -51,7 +51,7 @@ public class CharacterSkin {
 
 	public void setAnimationForce(@Nullable String animationName) {
 		isAnimationForce = animationName != null;
-		if(!isAnimationForce) return;
+		if(!isAnimationForce || !animations.containsKey(animationName)) return;
 
 		setAnimationNow(animationName);
 	}
@@ -59,21 +59,31 @@ public class CharacterSkin {
 	public void setAnimation(@NonNull Entity.AnimationType animationType) {
 		if(isAnimationForce) return;
 
-		//TODO: Replace this method with "setAnimationSafe(String name)";
+		var name = animationType.name().toLowerCase();
+		if(animations.containsKey(name)) {
+			setAnimation(name);
+			return;
+		}
 
-		setAnimation(animationType.name().toLowerCase());
+		for(var alternative : animationType.getAlternatives()) {
+			var alternativeName = alternative.name().toLowerCase();
+			if(animations.containsKey(alternativeName)) {
+				setAnimation(alternativeName);
+				return;
+			}
+		}
+
+		setAnimation("idle");
 	}
 	
 	public void setAnimation(String animationType) {
 		if(isAnimationForce) return;
 
-		var selectedAnimation = getValidAnimation(animationType);
-		if(selectedAnimation == null || isShouldSkipAnimation(selectedAnimation)) return;
+		if(animationType == null || isShouldSkipAnimation(animationType)) return;
 
-		String name = animations.containsKey(selectedAnimation) ? selectedAnimation : "idle";
-		var animation = getAnimationDeclaration(name);
+		var animation = getAnimationDeclaration(animationType);
 
-		setAnimationNow(name);
+		setAnimationNow(animationType);
 		animationProgress = animation.isAction ? 0 : (float)(Math.random() * 5);
 	}
 
@@ -84,6 +94,8 @@ public class CharacterSkin {
 	}
 
 	private boolean isShouldSkipAnimation(String animationType) {
+		if(!animations.containsKey(animationType)) return true;
+
 		if(currentAnimation != null) {
 			var selectedAnimationInfo = getAnimationDeclaration(animationType);
 			var activeAnimationInfo = getCurrentAnimationDeclaration();
@@ -106,23 +118,6 @@ public class CharacterSkin {
 		}
 
 		return false;
-	}
-
-	public void setAnimationForce(@Nullable Entity.AnimationType animationType) {
-		if(animationType == null) {
-			this.isAnimationForce = false;
-			return;
-		}
-
-		this.setAnimation(animationType);
-		this.isAnimationForce = true;
-	}
-	
-	private String getValidAnimation(@NonNull String animationType) {
-		if(animations.containsKey(animationType)) return animationType;
-		if(animationType.equals("current")) return currentAnimation;
-
-		return "idle";
 	}
 	
 	public void draw(

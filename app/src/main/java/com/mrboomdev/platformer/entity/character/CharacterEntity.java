@@ -3,7 +3,6 @@ package com.mrboomdev.platformer.entity.character;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.ACT;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.DAMAGE;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.DASH;
-import static com.mrboomdev.platformer.entity.Entity.AnimationType.DEATH;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.IDLE;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.RUN;
 import static com.mrboomdev.platformer.entity.Entity.AnimationType.WALK;
@@ -65,15 +64,15 @@ public class CharacterEntity implements BotTarget {
 	@Json(ignore = true)
 	private boolean isRunning, isDashing, isAiming;
 	@Json(ignore = true)
-	private ShapeRenderer shape;
+	private final ShapeRenderer shape;
 	@Json(ignore = true)
-	private BitmapFont font;
+	private final BitmapFont font;
 	@Json(ignore = true)
 	private ProjectileManager projectileManager;
 	@Json(ignore = true)
 	private Vector2 damagedPower;
 	@Json(ignore = true)
-	private Sprite shadow;
+	private final Sprite shadow;
 	@Json(ignore = true)
 	private final GameHolder game = GameHolder.getInstance();
 	@Json(ignore = true)
@@ -387,7 +386,7 @@ public class CharacterEntity implements BotTarget {
 
 	public void die(boolean silently) {
 		damagedProgress = 0;
-		skin.setAnimationForce(DEATH);
+		skin.setAnimationForce("death");
 		isDead = true;
 
 		if(silently) return;

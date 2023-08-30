@@ -35,7 +35,7 @@ public class GameLauncher extends AndroidApplication {
 			crashlytics.setCrashlyticsCollectionEnabled(false);
 		}
 		
-		var settings = GameSettings.getFromSharedPreferences(prefs);
+		var settings = new GameSettings(prefs);
 		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
 		settings.ignoreScriptErrors = BuildConfig.DEBUG;
 		game = GameHolder.setInstance(this, settings, new GameAnalytics(analytics));

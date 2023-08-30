@@ -287,19 +287,75 @@ if(nightId == 2) {
 }
 
 void presentationCutscene() {
-	vanessa.lookAt(core.settings.mainPlayer);
+	var me = core.settings.mainPlayer;
 
-	subtitles.addLine("Welcome to the Freddy Fazbear's Pizzeria!", .5f);
-	subtitles.addLine("A fantastic place, where party NEVER ends! (TO BE CONTINUED)", .5f, new Runnable() { run() {
-		setWidgetVisibility("inventory", true);
-		setWidgetVisibility("use", true);
-		setWidgetVisibility("stats_health", true);
-		setWidgetVisibility("stats_stamina", true);
-		setWidgetVisibility("aim", true);
+	game.setTimer(new Runnable() { run() {
+		vanessa.lookAt(me);
+	}}, 1);
 
-		vanessa.gainDamage(9999);
+	subtitles.addLine("Welcome to the Freddy Fazbear's Pizzeria!", .5f, 6, new Runnable() { run() {
+		CameraUtil.setTarget(freddy.entity);
+		CameraUtil.setCameraZoom(.5f, .01f);
+		CameraUtil.setCameraMoveSpeed(.01f);
 
-		didIntroEnded = true;
+		game.setControlsEnabled(false);
+		ui.setVisibility(false);
+	}});
+
+	subtitles.addLine("A fantastic place, where the whole family can celebrate a Party!", .5f, 6);
+
+	subtitles.addLine("A party, which NEVER ends...", .5f, new Runnable() { run() {
+		CameraUtil.setCameraZoom(.35f, .01f);
+		CameraUtil.setTarget(vanessa);
+	}});
+
+	subtitles.addLine("Let me show you the office.", .5f, new Runnable() { run() {
+		CameraUtil.reset();
+		CameraUtil.setTarget(me);
+
+		game.setControlsEnabled(true);
+		ui.setVisibility(true);
+
+		var brain = new BotFollower();
+		brain.setWaypoints(waypoints);
+		brain.setTarget(23, -14);
+
+		vanessa.setBrain(brain);
+		vanessa.lookAt(null);
+
+		brain.start();
+
+		new Trigger(24, -14, 5, new TriggerCallback() { triggered(var character) {
+			if(character != me) return false;
+
+			setWidgetVisibility("use", true);
+			vanessa.lookAt(me);
+			subtitles.addLine("A guy will call you, he will explain everything else.", .5f, 4);
+
+			subtitles.addLine("I've gotta go. Good luck!", .5f, new Runnable() { run() {
+				vanessa.lookAt(null);
+				brain.setTarget(36, 50);
+				brain.onCompleted(new Runnable() { run() {
+					setWidgetVisibility("aim", true);
+
+					vanessa.setBrain(null);
+					vanessa.die(true);
+
+					brain = null;
+					vanessa = null;
+				}});
+
+				didIntroEnded = true;
+
+				me.giveItem(entities.createItem("items/flashlight"));
+				setWidgetVisibility("inventory", true);
+
+				setWidgetVisibility("stats_health", true);
+				setWidgetVisibility("stats_stamina", true);
+			}});
+
+			return true;
+		}});
 	}});
 }
 
@@ -460,8 +516,10 @@ game.setListener(new GameListener() {
 		lightLeft.pointLight.setActive(false);
 		lightRight.pointLight.setActive(false);
 
-		me.giveItem(entities.createItem("items/flashlight"));
-		me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
+		if(nightId > 1) {
+			me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
+			me.giveItem(entities.createItem("items/flashlight"));
+		}
 
 		game.setControlsEnabled(true);
 		ui.setVisibility(true);
@@ -518,7 +576,7 @@ game.setListener(new GameListener() {
 					setCameraZoom(.4f, .1f);
 					setWidgetVisibility("dash", true);
 					vanessaBrain.setTarget(22, 22);
-					vanessa.lookAt(null);
+					vanessa.lookAt(chica.entity);
 
 					presentationTrigger = new Trigger(22, 22, 5, new TriggerCallback() { triggered(var character) {
 						if(character != core.settings.mainPlayer) return false;

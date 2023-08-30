@@ -23,7 +23,7 @@ public class GamemodeManager {
 	public FadeWidget fade;
 	private final GameHolder game = GameHolder.getInstance();
 	private boolean isTimerSetup, isTimerEnd;
-	private float time, timerSpeed;
+	private float time = -1, timerSpeed;
 	private Status status = Status.PREPARING;
 	private Runnable buildCompletedCallback;
 	private float gameOverTimeout;
@@ -69,9 +69,11 @@ public class GamemodeManager {
 					case GAME_OVER:
 						CameraUtil.setTarget(null);
 						CameraUtil.setCameraZoom(1, .01f);
+
 						game.settings.isControlsEnabled = false;
 						game.settings.isUiVisible = false;
 						game.stats.isWin = time == 0;
+
 						gameOverTimeout = 1;
 						fade.start(0, 1, .5f);
 						break;
@@ -90,6 +92,7 @@ public class GamemodeManager {
 								: (operation.progress < (function.duration - 1)
 								? (Math.min(1, title.opacity + Gdx.graphics.getDeltaTime()))
 								: title.opacity - Gdx.graphics.getDeltaTime()));
+
 						if(title.opacity <= 0) operation.isFinished = true;
 						break;
 				}

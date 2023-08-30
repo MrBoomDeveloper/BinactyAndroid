@@ -32,29 +32,39 @@ import box2dLight.RayHandler;
 public class MapManager {
 	public Atmosphere atmosphere;
 	private List<MapTile> tiles;
-	@Json(ignore = true) private long lastSortedTime;
-	@Json(ignore = true) public RayHandler rayHandler;
-	@Json(ignore = true) public Map<String, MapTile> tilesPresets = new HashMap<>();
-	@Json(ignore = true) public ObjectMap<String, MapTile> tilesMap = new OrderedMap<>();
-	@Json(ignore = true) public Array<MapObject> pendingRemoves = new Array<>();
-	@Json(ignore = true) public ArrayList<MapObject> objects = new ArrayList<>();
-	@Json(ignore = true) FileUtil source;
-	@Json(ignore = true) World world;
-	@Json(ignore = true) Runnable buildCallback;
-	@Json(ignore = true) Status status = Status.PREPARING;
-	@Json(ignore = true) GameHolder game = GameHolder.getInstance();
+	@Json(ignore = true)
+	private long lastSortedTime;
+	@Json(ignore = true)
+	public RayHandler rayHandler;
+	@Json(ignore = true)
+	public Map<String, MapTile> tilesPresets = new HashMap<>();
+	@Json(ignore = true)
+	public ObjectMap<String, MapTile> tilesMap = new OrderedMap<>();
+	@Json(ignore = true)
+	public Array<MapObject> pendingRemoves = new Array<>();
+	@Json(ignore = true)
+	public ArrayList<MapObject> objects = new ArrayList<>();
+	@Json(ignore = true)
+	private FileUtil source;
+	@Json(ignore = true)
+	private World world;
+	@Json(ignore = true)
+	private Runnable buildCallback;
+	@Json(ignore = true)
+	private Status status = Status.PREPARING;
+	@Json(ignore = true)
+	private GameHolder game = GameHolder.getInstance();
 	
 	public void render(SpriteBatch batch) {
-		pendingRemoves.forEach(MapObject::remove);
-		pendingRemoves.clear();
+		if(!pendingRemoves.isEmpty()) {
+			pendingRemoves.forEach(MapObject::remove);
+			pendingRemoves.clear();
+		}
 
-		if(System.currentTimeMillis() > lastSortedTime + (long)(game.settings.objectResortDelay * 1000)) {
-			lastSortedTime = System.currentTimeMillis();
-			try {
-				Collections.sort(objects);
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			Collections.sort(objects);
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 
 		for(MapObject object : objects) {

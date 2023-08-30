@@ -32,8 +32,6 @@ public class Entity {
 	}
 
 	public enum AnimationType {
-		@Json(ignore = true)
-		CURRENT(AnimationPriority.STATE),
 		@Json(name = "idle")
 		IDLE(AnimationPriority.STATE),
 		@Json(name = "bored")

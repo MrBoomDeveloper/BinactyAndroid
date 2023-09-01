@@ -25,7 +25,7 @@ public class GameplayUi extends CoreUi {
 					if(((JoystickWidget)game.environment.ui.widgets.get("joystick")).isActive) return;
 					float willZoomTo = cameraZoom + ((from - to) / 1000);
 
-					boolean isZoomLimitExceed = (willZoomTo < 0.4f || willZoomTo > (game.settings.enableEditor ? 10 : 1.2f));
+					boolean isZoomLimitExceed = (willZoomTo < 0.3f || willZoomTo > (game.settings.enableEditor ? 10 : 1));
 					if(isZoomLimitExceed && !game.settings.debugCamera) return;
 
 					game.environment.camera.zoom = willZoomTo;

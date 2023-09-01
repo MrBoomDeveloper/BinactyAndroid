@@ -76,8 +76,12 @@ public class EnvironmentManager {
 	
 	public void setupRayHandler() {
 		rayHandler = new RayHandler(world);
-		rayHandler.setAmbientLight(map.atmosphere.environmentLightColor.getColor());
-		rayHandler.setBlurNum(1);
+		rayHandler.setBlurNum(3);
+		rayHandler.setCulling(true);
+
+		if(game.settings.enableEditor) rayHandler.setShadows(false);
+		else rayHandler.setAmbientLight(map.atmosphere.environmentLightColor.getColor());
+
 		map.rayHandler = rayHandler;
 		entities.setupRayHandler(rayHandler);
 		

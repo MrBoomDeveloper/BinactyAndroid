@@ -106,6 +106,7 @@ public class GameDebugMenu {
 		
 		view.findViewById(R.id.gainHealthButton).setOnClickListener(button -> {
 			if(settings.mainPlayer == null) return;
+
 			settings.mainPlayer.stats.maxHealth = 666666;
 			settings.mainPlayer.gainDamage(-666666);
 			settings.mainPlayer.stats.maxStamina = 666666;
@@ -126,32 +127,50 @@ public class GameDebugMenu {
 		registerTeleportButton(view, R.id.teleportLeftButton, -10, 0);
 		registerTeleportButton(view, R.id.teleportRightButton, 10, 0);
 		
-		view.findViewById(R.id.gameOverButton).setOnClickListener(button -> settings.mainPlayer.gainDamage(Integer.MAX_VALUE));
+		view.findViewById(R.id.gameOverButton).setOnClickListener(button -> {
+			try {
+				settings.mainPlayer.gainDamage(Integer.MAX_VALUE);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		});
 
 		view.findViewById(R.id.killAllButton).setOnClickListener(button -> {
-			var game = GameHolder.getInstance();
-			var everyone = new Array<>(game.environment.entities.characters);
-			for(var character : everyone) {
-				if(character == game.settings.mainPlayer) continue;
-				character.gainDamage(Integer.MAX_VALUE);
+			try {
+				var game = GameHolder.getInstance();
+				var everyone = new Array<>(game.environment.entities.characters);
+				for(var character : everyone) {
+					if(character == game.settings.mainPlayer) continue;
+					character.gainDamage(Integer.MAX_VALUE);
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		});
 
 		view.findViewById(R.id.teleportAllToMeButton).setOnClickListener(button -> {
-			var game = GameHolder.getInstance();
-			var everyone = new Array<>(game.environment.entities.characters);
-			for(var character : everyone) {
-				if(character == game.settings.mainPlayer) continue;
-				character.body.setTransform(game.settings.mainPlayer.getPosition(), 0);
+			try {
+				var game = GameHolder.getInstance();
+				var everyone = new Array<>(game.environment.entities.characters);
+				for(var character : everyone) {
+					if(character == game.settings.mainPlayer) continue;
+					character.body.setTransform(game.settings.mainPlayer.getPosition(), 0);
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		});
 
 		view.findViewById(R.id.healAllButton).setOnClickListener(button -> {
-			var game = GameHolder.getInstance();
-			var everyone = new Array<>(game.environment.entities.characters);
-			for(var character : everyone) {
-				if(character == game.settings.mainPlayer) continue;
-				character.gainDamage(-character.stats.maxHealth);
+			try {
+				var game = GameHolder.getInstance();
+				var everyone = new Array<>(game.environment.entities.characters);
+				for(var character : everyone) {
+					if(character == game.settings.mainPlayer) continue;
+					character.gainDamage(-character.stats.maxHealth);
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		});
 
@@ -163,9 +182,13 @@ public class GameDebugMenu {
 
 	private void registerTeleportButton(@NonNull View view, int id, float x, float y) {
 		view.findViewById(id).setOnClickListener(button -> {
-			var player = GameHolder.getInstance().settings.mainPlayer;
-			var currentPosition = player.body.getPosition();
-			player.body.setTransform(currentPosition.add(x, y), 0);
+			try {
+				var player = GameHolder.getInstance().settings.mainPlayer;
+				var currentPosition = player.body.getPosition();
+				player.body.setTransform(currentPosition.add(x, y), 0);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		});
 	}
 

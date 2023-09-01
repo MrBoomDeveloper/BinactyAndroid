@@ -2,6 +2,8 @@ package com.mrboomdev.platformer.scenes.gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -32,6 +34,7 @@ public class GameplayScreen extends CoreScreen {
 	private Box2DDebugRenderer debugRenderer;
 	private ShaderProgram shaders;
 	private Viewport viewport;
+	private Sprite screenEffect;
 
 	public GameplayScreen(EnvironmentManager manager) {
 		this.environment = manager;
@@ -58,9 +61,14 @@ public class GameplayScreen extends CoreScreen {
 		}
 
 		batch.begin(); {
-			if(game.settings.debugRenderer) debugRenderer.render(environment.world, camera.combined);
+			if(game.settings.debugRenderer) {
+				debugRenderer.render(environment.world, camera.combined);
+			}
+
 			environment.ui.draw(batch);
 			ui.render(delta);
+
+			screenEffect.draw(batch);
 		} batch.end();
 
 		environment.update(delta);
@@ -73,6 +81,10 @@ public class GameplayScreen extends CoreScreen {
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
 		debugRenderer = new Box2DDebugRenderer();
+
+		screenEffect = new Sprite(new Texture("packs/official/src/effects/old_tv.png"));
+		screenEffect.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		screenEffect.setAlpha(.5f);
 
 		shaders = new ShaderProgram(
 				Gdx.files.internal("world/shaders/effects/effects.vert"),

@@ -107,6 +107,7 @@ public class GameplayUi {
 				if(connectedEntity == null) return;
 
 				boolean isActive = game.settings.isControlsEnabled && aimJoystick.isVisible;
+				var item = connectedEntity.inventory.getCurrentItem();
 
 				if(isActive) {
 					CameraUtil.setCameraOffset(power.x / 25, power.y / 25);
@@ -115,6 +116,8 @@ public class GameplayUi {
 					CameraUtil.setCameraOffset(0, 0);
 					connectedEntity.setIsAiming(false);
 				}
+
+				if(item != null && isActive) item.setPower(power);
 
 				var aimSprite = connectedEntity.aimSprite;
 				if(aimJoystick.isActive && isActive) {

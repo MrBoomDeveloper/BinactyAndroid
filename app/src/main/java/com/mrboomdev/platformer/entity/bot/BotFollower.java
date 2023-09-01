@@ -37,16 +37,23 @@ public class BotFollower extends CharacterBrain {
 		var owner = this.getEntity();
 		var nextPosition = targeter.getPathTo(target);
 
-		if(target.getPosition().dst(owner.getPosition()) < .2f) {
+		if(target.getPosition().dst(owner.getPosition()) < .1f) {
 			isFinished = true;
-			if(completionCallback != null) completionCallback.run();
+			if(completionCallback != null) {
+				completionCallback.run();
+				isFinished = true;
+			}
+
 			owner.usePower(Vector2.Zero, 0);
+			updateHoldingItem();
+
 			return;
 		}
 
 		if(nextPosition == null) {
 			if(didAdditionalSteps < 25) {
 				owner.usePower(owner.wasPower, 1);
+				updateHoldingItem(owner.wasPower);
 				didAdditionalSteps++;
 				return;
 			}
@@ -57,12 +64,14 @@ public class BotFollower extends CharacterBrain {
 			}
 
 			owner.usePower(Vector2.Zero, 0);
+			updateHoldingItem();
 			return;
 		}
 
 		var power = nextPosition.cpy().sub(owner.getPosition()).scl(5);
 		power.add((float)(Math.random() * 4) - 2, (float)(Math.random() * 4) - 2);
 		owner.usePower(power, owner.stats.speed);
+		updateHoldingItem(power);
 	}
 
 	public void setTarget(float x, float y) {

@@ -185,13 +185,16 @@ public class CharacterEntity implements BotTarget {
 		if(isDestroyed) return;
 
 		if(!isDead) {
-			stats.stamina = Math.min(stats.maxStamina, isRunning
-					? stats.stamina
-					: stats.stamina + staminaReloadMultiply);
+			if(stats.stamina < stats.maxStamina) {
+				stats.stamina = Math.min(stats.maxStamina, isRunning
+						? stats.stamina
+						: stats.stamina + staminaReloadMultiply);
+
+				staminaReloadMultiply = Math.min(.3f, staminaReloadMultiply * 1.02f);
+			}
 
 			dashProgress += Gdx.graphics.getDeltaTime();
 			dashReloadProgress += Gdx.graphics.getDeltaTime();
-			staminaReloadMultiply = Math.min(.3f, staminaReloadMultiply * 1.02f);
 		}
 
 		damagedProgress += Gdx.graphics.getDeltaTime();
@@ -204,8 +207,10 @@ public class CharacterEntity implements BotTarget {
 		if(damagedProgress < 1 && !isDashing) {
 			body.setLinearVelocity(damagedPower != null ? damagedPower.scl(5).limit(3) : Vector2.Zero);
 		} else {
-			healthPhantom += Gdx.graphics.getDeltaTime() / 2;
-			stats.health = Math.min((int)healthPhantom, stats.maxHealth);
+			if(stats.health < stats.maxHealth) {
+				healthPhantom += Gdx.graphics.getDeltaTime() / 2;
+				stats.health = Math.min((int) healthPhantom, stats.maxHealth);
+			}
 
 			if(this != game.settings.mainPlayer && brain == null) {
 				body.setLinearVelocity(Vector2.Zero);
@@ -282,8 +287,11 @@ public class CharacterEntity implements BotTarget {
 
 	public void attack(Vector2 power) {
 		if(isDead) return;
-		if(inventory.items.size > inventory.current) {
-			inventory.getCurrentItem().attack(power, projectileManager);
+
+		var item = inventory.getCurrentItem();
+
+		if(item != null) {
+			item.attack(power, projectileManager);
 			return;
 		}
 
@@ -293,7 +301,11 @@ public class CharacterEntity implements BotTarget {
 	public void interact() {
 		if(nearInteraction != null && !isDead) {
 			skin.setAnimation(ACT);
-			FunUtil.setTimer(() -> nearInteraction.act(), skin.getCurrentAnimationDeclaration().actionDelay);
+			FunUtil.setTimer(() -> {
+				if(nearInteraction == null || isDead) return;
+
+				nearInteraction.act();
+			}, skin.getCurrentAnimationDeclaration().actionDelay);
 		}
 	}
 
@@ -344,8 +356,12 @@ public class CharacterEntity implements BotTarget {
 		this.gainDamage(damage, Vector2.Zero);
 	}
 
-	public boolean giveItem(Item item) {
-		return inventory.add(item);
+	public boolean giveItem(@NonNull Item item) {
+		item.setOwner(this);
+		boolean status = inventory.add(item);
+		inventory.setCurrentItem(inventory.getCurrentItemIndex());
+
+		return status;
 	}
 
 	public void usePower(Vector2 power, float speed) {
@@ -388,6 +404,9 @@ public class CharacterEntity implements BotTarget {
 		damagedProgress = 0;
 		skin.setAnimationForce("death");
 		isDead = true;
+
+		var item = inventory.getCurrentItem();
+		if(item != null) item.dispose();
 
 		if(silently) return;
 		game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);

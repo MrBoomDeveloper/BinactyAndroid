@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
 
 public class InventoryLayout extends ActorUtil {
+	private final GameHolder game = GameHolder.getInstance();
 	private final Array<ButtonWidget> buttons = new Array<>();
 	private final ShapeRenderer shape = new ShapeRenderer();
 
@@ -35,7 +37,7 @@ public class InventoryLayout extends ActorUtil {
 				buttons.get(i).setForegroundImage((connectedEntity.inventory.items.size > i) ? connectedEntity.inventory.items.get(i).getSprite() : null);
 				
 				Gdx.gl.glLineWidth(3);
-				shape.setColor(1, 1, 1, (connectedEntity.inventory.current == i ? .8f : .1f) * opacity);
+				shape.setColor(1, 1, 1, (connectedEntity.inventory.getCurrentItemIndex() == i ? .8f : .1f) * opacity);
 				shape.set(ShapeRenderer.ShapeType.Line);
 				shape.rect((getX() + i * 80) - (3 * 80), getY(), 75, 75);
 			}
@@ -52,7 +54,11 @@ public class InventoryLayout extends ActorUtil {
 			var button = new ButtonWidget(ButtonWidget.Style.CARD)
 				.toSize(75, 75)
 				.toPosition((getX() + i * 80) - (3 * 80), getY())
-				.onClick(() -> connectedEntity.inventory.current = id)
+				.onClick(() -> {
+					if(!game.settings.isControlsEnabled || !isVisible) return;
+
+					connectedEntity.inventory.setCurrentItem(id);
+				})
 				.addTo(stage);
 			
 			button.setColor(0, 0, 0, .8f);

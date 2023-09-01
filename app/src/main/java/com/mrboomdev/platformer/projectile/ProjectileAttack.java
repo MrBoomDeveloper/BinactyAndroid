@@ -63,7 +63,7 @@ public class ProjectileAttack {
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.filter.categoryBits = Entity.ATTACK;
-		fixtureDef.filter.maskBits = Entity.CHARACTER;
+		fixtureDef.filter.maskBits = Entity.CHARACTER | Entity.TILE_BOTTOM;
 		
 		body.createFixture(fixtureDef);
 		shape.dispose();

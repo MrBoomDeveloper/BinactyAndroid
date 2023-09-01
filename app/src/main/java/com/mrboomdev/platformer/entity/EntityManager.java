@@ -49,10 +49,11 @@ public class EntityManager {
 	
 	public void setMain(CharacterEntity character) {
 		if(mainLight == null) {
-			mainLight = new PointLight(rayHandler, 100, game.environment.map.atmosphere.playerLightColor.getColor(), 10, 0, 0);
+			mainLight = new PointLight(rayHandler, 100, game.environment.map.atmosphere.playerLightColor.getColor(), 8, 0, 0);
 			mainLight.setSoftnessLength(1);
 			mainLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
 		}
+
 		mainLight.attachToBody(character.body, character.worldBody.lightOffset[0], character.worldBody.lightOffset[1]);
 	}
 	

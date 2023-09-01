@@ -3,21 +3,30 @@
 	
 	"skin": {
 		"texture": "texture.png",
-		"size": [0.5, 0.25], "position": [0, 0]
+		"size": [ 0.5, 0.25 ], "position": [ 0, 0 ]
+	},
+
+	"light": {
+		"type": "directional",
+		"duration": "always",
+		"distance": 10,
+		"radius": 20,
+		"rays": 15,
+		"color": [ 1, 1, 1, 0.75 ]
 	},
 	
 	"state": {
 		"initial": "off",
 		"types": {
 			"off": {
-				"skin": [{ "region": [0, 0, 5, 5] }]
+				"skin": [{ "region": [ 0, 0, 5, 5 ] }]
 			},
 			
 			"on": {
-				"skin": [{ "region": [5, 0, 5, 5] }],
+				"skin": [{ "region": [ 5, 0, 5, 5 ] }],
 				"light": [{
 					"radius": 10,
-					"color": { "values": [1, 1, 1, 1] }
+					"color": { "values": [ 1, 1, 1, 1 ] }
 				}]
 			}
 		}

@@ -74,10 +74,10 @@ switch(game.getEnvString("levelId", "night_0")) {
 
 	default: {
 		startups = new int[][] {
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 1, 1 },
-			{ 1, 1 }
+			{ 1, 100 },
+			{ 1, 100 },
+			{ 1, 100 },
+			{ 1, 100 }
 		};
 
 		nightId = 1;
@@ -336,8 +336,6 @@ void presentationCutscene() {
 				vanessa.lookAt(null);
 				brain.setTarget(36, 50);
 				brain.onCompleted(new Runnable() { run() {
-					setWidgetVisibility("aim", true);
-
 					vanessa.setBrain(null);
 					vanessa.die(true);
 
@@ -346,9 +344,6 @@ void presentationCutscene() {
 				}});
 
 				didIntroEnded = true;
-
-				me.giveItem(entities.createItem("items/flashlight"));
-				setWidgetVisibility("inventory", true);
 
 				setWidgetVisibility("stats_health", true);
 				setWidgetVisibility("stats_stamina", true);
@@ -509,6 +504,15 @@ entities.setListener(new EntityListener() {
 
 game.setListener(new GameListener() {
 	start() {
+		var light = createLight("cone");
+		light.setPosition(38, 54);
+		light.setDistance(15);
+		light.setConeDegree(20);
+		light.setDirection(-110);
+		light.setColor(0.25f, 0.25f, 0.5f, .75f);
+		light.setXray(true);
+		light.setStaticLight(true);
+
 		var me = core.settings.mainPlayer;
 		var fade = ui.createFade(1);
 		game.setPlayerPosition(22, -14);
@@ -519,6 +523,8 @@ game.setListener(new GameListener() {
 		if(nightId > 1) {
 			me.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
 			me.giveItem(entities.createItem("items/flashlight"));
+
+			setWidgetVisibility("inventory", true);
 		}
 
 		game.setControlsEnabled(true);
@@ -539,6 +545,11 @@ game.setListener(new GameListener() {
 			setWidgetVisibility("stats_health", false);
 			setWidgetVisibility("stats_stamina", false);
 			setWidgetVisibility("aim", false);
+
+			vanessa.stats.maxHealth = 9999999;
+			vanessa.stats.health = 9999999;
+
+			vanessa.giveItem(entities.createItem("items/flashlight"));
 
 			me.lookAt(vanessa);
 			vanessa.lookAt(me);
@@ -572,11 +583,14 @@ game.setListener(new GameListener() {
 					me.wasPower = new Vector2(-1, 0);
 				}});
 
-				subtitles.addLine("Come here! You'll like this place.", fadeDuration, new Runnable() { run() {
+				subtitles.addLine("Take this and follow me. You'll like this place.", fadeDuration, new Runnable() { run() {
 					setCameraZoom(.4f, .1f);
 					setWidgetVisibility("dash", true);
 					vanessaBrain.setTarget(22, 22);
 					vanessa.lookAt(chica.entity);
+
+					me.giveItem(entities.createItem("items/flashlight"));
+					setWidgetVisibility("aim", true);
 
 					presentationTrigger = new Trigger(22, 22, 5, new TriggerCallback() { triggered(var character) {
 						if(character != core.settings.mainPlayer) return false;
@@ -624,8 +638,8 @@ void startDarkMusic() {
 		"music/dark_ambience_1.ogg",
 		"music/dark_ambience_2.ogg",
 		"music/dark_ambience_3.ogg",
-		"music/dark_ambience_4.ogg"},
-	999);
+		"music/dark_ambience_4.ogg"
+	}, 999);
 }
 
 void powerUpdate() {

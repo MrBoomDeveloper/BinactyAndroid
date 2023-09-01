@@ -8,10 +8,28 @@ import com.mrboomdev.platformer.entity.character.CharacterSkin;
 
 public class ItemInventory {
 	public Array<Item> items = new Array<>();
-	public int current, capacity = 6;
+	public int capacity = 6;
+	private int current;
 
 	public Item getCurrentItem() {
+		if(current >= items.size) return null;
+
 		return items.get(current);
+	}
+
+	public int getCurrentItemIndex() {
+		return this.current;
+	}
+
+	public void setCurrentItem(int index) {
+		var wasItem = getCurrentItem();
+
+		if(wasItem != null) wasItem.setIsSelected(false);
+
+		this.current = index;
+
+		var newItem = getCurrentItem();
+		if(newItem != null) newItem.setIsSelected(true);
 	}
 	
 	public boolean add(Item newItem) {
@@ -25,14 +43,28 @@ public class ItemInventory {
 	}
 	
 	public void draw(SpriteBatch batch, Vector2 position, CharacterSkin characterSkin, boolean isFlip) {
-		if(items.isEmpty() || (current >= items.size) || (items.get(current) == null)) return;
+		if(items.isEmpty() || (current >= items.size) || (getCurrentItem() == null)) return;
 		
-		var item = items.get(current);
+		var item = getCurrentItem();
+		item.update();
+
 		var offset = item.getOffset(characterSkin);
-		var sprite = new Sprite(item.getSprite());
+
+		var gotSprite = item.getSprite();
+		if(gotSprite == null) return;
+
+		var sprite = new Sprite(gotSprite);
+
+		float x = position.x + (offset.x * (isFlip ? -1 : 1));
+		float y = position.y + offset.y;
 		
 		sprite.setFlip(isFlip, false);
-		sprite.setCenter(position.x + (offset.x * (isFlip ? -1 : 1)), position.y + offset.y);
+
+		//TODO: Well instead of being rotated inside of the hand its just races in all around map!
+		//sprite.setOrigin(x, y);
+		//sprite.setRotation(item.degree);
+
+		sprite.setCenter(x, y);
 		sprite.draw(batch);
 	}
 }

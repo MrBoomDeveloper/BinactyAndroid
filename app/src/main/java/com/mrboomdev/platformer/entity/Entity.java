@@ -166,4 +166,26 @@ public class Entity {
 		public float speed;
 		public int damage;
 	}
+
+	public static class LightDeclaration {
+		public LightType type;
+		public LightDuration duration;
+		public float[] color;
+		public float distance, radius;
+		public int rays;
+
+		public enum LightDuration {
+			@Json(name = "always")
+			ALWAYS,
+			@Json(name = "during_usage")
+			DURING_USAGE
+		}
+
+		public enum LightType {
+			@Json(name = "directional")
+			DIRECTIONAL,
+			@Json(name = "point")
+			POINT
+		}
+	}
 }

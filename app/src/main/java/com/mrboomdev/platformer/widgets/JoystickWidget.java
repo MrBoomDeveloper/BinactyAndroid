@@ -17,8 +17,7 @@ import com.mrboomdev.platformer.util.ActorUtil;
 @SuppressWarnings("unchecked")
 public class JoystickWidget extends ActorUtil {
     public boolean isActive;
-    private final Sprite holder;
-    private final Sprite point;
+    private final Sprite holder, point;
     private int usedPointer = 999;
     private float pointOpacity = .3f;
     private Vector2 offset;
@@ -108,6 +107,7 @@ public class JoystickWidget extends ActorUtil {
 		position.x = Math.max(Math.min(position.x, getWidth()), 0);
 		position.y = Math.max(Math.min(position.y, getHeight()), 0);
         Vector2 screenPosition = localToStageCoordinates(position);
+
         point.setCenter(screenPosition.x, screenPosition.y);
     }
 

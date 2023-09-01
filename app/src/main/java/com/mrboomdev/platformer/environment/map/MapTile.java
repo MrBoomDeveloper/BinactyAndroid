@@ -37,8 +37,10 @@ public class MapTile extends MapObject implements BotTarget {
 	public final float[] offset = {0, 0};
 	public TileInteraction interaction;
 	public TileStyle style;
-	@Json(name = "shadow_collision") public float[] shadowCollision;
-
+	@Json(name = "shadow_collision")
+	public float[] shadowCollision;
+	@Json(name = "hit_sound")
+	public String hitSound;
 	@Json(ignore = true)
 	public boolean isSelected;
 	@Json(ignore = true)
@@ -156,7 +158,7 @@ public class MapTile extends MapObject implements BotTarget {
 
 			FixtureDef fixtureDef = new FixtureDef();
 			fixtureDef.filter.categoryBits = Entity.TILE_BOTTOM;
-			fixtureDef.filter.maskBits = Entity.CHARACTER_BOTTOM | Entity.BULLET;
+			fixtureDef.filter.maskBits = Entity.CHARACTER_BOTTOM | Entity.BULLET | Entity.ATTACK;
 			fixtureDef.shape = shape;
 
 			fixture = body.createFixture(fixtureDef);
@@ -240,9 +242,12 @@ public class MapTile extends MapObject implements BotTarget {
 		shadowCollision = tile.shadowCollision;
 		light = tile.light;
 		size = tile.size;
+
 		texture = tile.texture;
 		devTexture = tile.devTexture;
+		hitSound = tile.hitSound;
 		source = tile.source;
+
 		if(tile.style != null) {
 			if(style != null)
 				style.clone(tile.style);
@@ -270,6 +275,7 @@ public class MapTile extends MapObject implements BotTarget {
 		if(light != null) {
 			pointLight = new PointLight(rayHandler, light.rays, light.color.getColor(), light.distance, 0, 0);
 			pointLight.setContactFilter(Entity.LIGHT, Entity.NONE, Entity.BLOCK);
+
 			pointLight.attachToBody(body,
 				flipX ? -light.offset[0] : light.offset[0],
 				flipY ? -light.offset[1] : light.offset[1]);

@@ -26,6 +26,21 @@ public class ProjectileCollision implements ContactListener {
     }
 
     private void onCollide(Object me, Object enemy) {
+		if(me instanceof ProjectileBullet || me instanceof ProjectileAttack) {
+			if(enemy instanceof MapTile) {
+				var tile = (MapTile)enemy;
+				System.out.println("touch tile with sound: " + tile.hitSound);
+
+				//TODO: I literally don't know, why this shit doesn't work!
+
+				/*if(tile.hitSound != null) {
+					var path = tile.source.goTo(tile.hitSound);
+					System.out.println(path.getPath());
+					Gdx.audio.newSound(path.getFileHandle()).play();
+				}*/
+			}
+		}
+
         if(enemy instanceof CharacterEntity) {
             if(me instanceof ProjectileBullet) {
                 ProjectileBullet bullet = (ProjectileBullet) me;
@@ -88,10 +103,10 @@ public class ProjectileCollision implements ContactListener {
     private void onCheckCollision(Object me, Object enemy, Fixture fixture, Contact contact) {
 		var game = GameHolder.getInstance();
 		if(game.settings.mainPlayer == me && game.settings.enableEditor) contact.setEnabled(false);
-		
-        if(me instanceof ProjectileBullet || me instanceof ProjectileAttack) {
-            contact.setEnabled(false);
-        }
+
+		if(me instanceof ProjectileBullet || me instanceof ProjectileAttack) {
+			contact.setEnabled(false);
+		}
 
         if(me instanceof CharacterEntity && enemy instanceof MapTile) {
             if(((CharacterEntity) me).bottomFixture != fixture) {

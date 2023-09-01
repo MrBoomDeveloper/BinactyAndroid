@@ -38,6 +38,10 @@ FileUtil getSource() {
 	return this.__source;
 }
 
+createLight(String type) {
+	return game.createLight(type);
+}
+
 Audio createMusic(String path) {
 	return new Audio(getSource(), path, true);
 }

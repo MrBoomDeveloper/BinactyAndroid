@@ -91,14 +91,10 @@ public class GameplayUi {
 			.toPosition(Gdx.graphics.getWidth() / 2f, game.settings.screenInset)
 			.addTo(stage));
 
-		for(int i = 0; i < 2; i++) {
-			if(game.settings.enableEditor) break;
-			widgets.put("stats_" + (i == 0 ? "health" : "stamina"), new StatBarWidget(i == 0 ? StatBarWidget.Track.HEALTH : StatBarWidget.Track.STAMINA)
-					.toPosition(
-							game.settings.screenInset,
-							Gdx.graphics.getHeight() - game.settings.screenInset - (i == 0 ? StatBarWidget.SIZE : StatBarWidget.SIZE * 2.5f))
-					.addTo(stage));
-		}
+		widgets.put("stats_health", new StatBarWidget(StatBarWidget.Track.HEALTH)
+			.toPosition(game.settings.screenInset, Gdx.graphics.getHeight() - game.settings.screenInset - StatBarWidget.SIZE)
+			.addTo(stage));
+
 		
 		var aimJoystick = new JoystickWidget();
 		widgets.put("aim", aimJoystick);

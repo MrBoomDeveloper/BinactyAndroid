@@ -10,6 +10,7 @@ import static com.mrboomdev.platformer.entity.Entity.AnimationType.WALK;
 import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -89,6 +90,8 @@ public class CharacterEntity implements BotTarget {
 	private Vector2 cachedPosition;
 	@Json(ignore = true)
 	private BotTarget lookingAtTarget;
+	@Json(ignore = true)
+	private float progressBarProgress;
 
 	public interface DamagedListener {
 		void damaged(CharacterEntity attacker, int damage);
@@ -264,21 +267,53 @@ public class CharacterEntity implements BotTarget {
 		if(isDead) return;
 
 		var position = getPosition();
+		boolean isLowHealth = (damagedProgress < 3 && this != game.settings.mainPlayer);
+		boolean isLowEnergy = (stats.stamina < (stats.maxStamina - (stats.maxStamina / 10)) && this == game.settings.mainPlayer);
 
-		if(damagedProgress < 3 && this != game.settings.mainPlayer) {
+		if((isLowEnergy || isLowHealth) && progressBarProgress < 1) {
+			progressBarProgress += Gdx.graphics.getDeltaTime() * 2;
+		}
+
+		if((!isLowEnergy && !isLowHealth) && progressBarProgress > 0) {
+			progressBarProgress -= Gdx.graphics.getDeltaTime();
+		}
+
+		if(progressBarProgress > 1) progressBarProgress = 1;
+		if(progressBarProgress < 0) progressBarProgress = 0;
+
+		if(isLowHealth || (this != game.settings.mainPlayer && progressBarProgress > 0)) {
 			batch.end();
 			shape.setProjectionMatrix(game.environment.camera.combined);
 
+			Gdx.gl.glEnable(GL20.GL_BLEND);
 			shape.begin(ShapeRenderer.ShapeType.Filled); {
-				shape.setColor(1, 0, 0, 1);
+				shape.setColor(1, .2f, .3f, progressBarProgress);
 				float progress = worldBody.size[0] / stats.maxHealth * stats.health;
 
 				shape.rect(
 						position.x - worldBody.size[0] / 2,
 						position.y - worldBody.size[1] / 2 - .4f,
-						progress, .2f);
+						progress, .175f);
 			} shape.end();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
+			batch.begin();
+		}
 
+		if(isLowEnergy || (this == game.settings.mainPlayer && progressBarProgress > 0)) {
+			batch.end();
+			shape.setProjectionMatrix(game.environment.camera.combined);
+
+			Gdx.gl.glEnable(GL20.GL_BLEND);
+			shape.begin(ShapeRenderer.ShapeType.Filled); {
+				shape.setColor(1, 1, 1, progressBarProgress);
+				float progress = worldBody.size[0] / stats.maxStamina * stats.stamina;
+
+				shape.rect(
+						position.x - worldBody.size[0] / 2,
+						position.y - worldBody.size[1] / 2 - .4f,
+						progress, .175f);
+			} shape.end();
+			Gdx.gl.glDisable(GL20.GL_BLEND);
 			batch.begin();
 		}
 

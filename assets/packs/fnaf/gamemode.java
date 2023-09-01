@@ -346,7 +346,6 @@ void presentationCutscene() {
 				didIntroEnded = true;
 
 				setWidgetVisibility("stats_health", true);
-				setWidgetVisibility("stats_stamina", true);
 			}});
 
 			return true;
@@ -516,6 +515,10 @@ game.setListener(new GameListener() {
 		var me = core.settings.mainPlayer;
 		var fade = ui.createFade(1);
 		game.setPlayerPosition(22, -14);
+
+		me.setDamagedListener(new DamagedListener() { damaged(attacker, damage) {
+			setWidgetVisibility("stats_health", true);
+		}});
 		
 		lightLeft.pointLight.setActive(false);
 		lightRight.pointLight.setActive(false);
@@ -543,7 +546,6 @@ game.setListener(new GameListener() {
 			setWidgetVisibility("joystick", false);
 			setWidgetVisibility("dash", false);
 			setWidgetVisibility("stats_health", false);
-			setWidgetVisibility("stats_stamina", false);
 			setWidgetVisibility("aim", false);
 
 			vanessa.stats.maxHealth = 9999999;

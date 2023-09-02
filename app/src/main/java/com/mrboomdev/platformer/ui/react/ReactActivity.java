@@ -32,8 +32,6 @@ import com.mrboomdev.platformer.util.io.ZipUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,10 +51,10 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 		ActivityManager.current = this;
 		ActivityManager.reactActivity = this;
 
-        List<ReactPackage> packages = new ArrayList<>(Arrays.asList(
+        List<ReactPackage> packages = List.of(
 				new MainReactPackage(null),
 				new ReactGame()
-		));
+		);
 
 		reactInstance = ReactInstanceManager.builder()
 			.setApplication(getApplication())
@@ -73,7 +71,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 		ActivityManager.hideSystemUi(this);
 
         prefs = getSharedPreferences("Save", 0);
-        if(!prefs.getBoolean("isNickSetup", false)) {
+        if(!prefs.getBoolean("isNickSetup", false) && !prefs.getBoolean("isFirstGame", true)) {
 			var dialog = new AndroidDialog().setTitle("Welcome to Binacty!").setCancelable(false);
 					
 			dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Please enter your nickname here."));

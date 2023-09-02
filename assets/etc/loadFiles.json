@@ -7,7 +7,7 @@
 				{
 					"path": "ui/font/gilroyBold.ttf", "as": "loading.ttf", "type": "font",
 					"font": {
-						"size": 45,
+						"size": 25,
 						"color": { "values": [1, 1, 1, 1] },
 						"borderSize": 3,
 						"borderColor": { "values": [0, 0, 0, 1] }

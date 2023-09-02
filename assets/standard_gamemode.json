@@ -1,0 +1,5 @@
+{
+	"script_path": "{ \"source\": \"INTERNAL\", \"path\": \"packs/fnaf/gamemode.java\" }",
+	"map_path": "{ \"source\": \"INTERNAL\", \"path\": \"packs/fnaf/maps/fnafMap1.json\" }",
+	"level_id": "night_1"
+}

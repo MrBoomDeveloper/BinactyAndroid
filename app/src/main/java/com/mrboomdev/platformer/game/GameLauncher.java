@@ -15,7 +15,6 @@ import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
-import com.squareup.moshi.JsonAdapter;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -70,7 +69,7 @@ public class GameLauncher extends AndroidApplication {
 		var mapFile = getIntent().getCharSequenceExtra("mapFile");
 		if(levelFile == null || mapFile == null) return;
 
-		JsonAdapter<FileUtil> adapter = ConstantsKt.getMoshi().adapter(FileUtil.class);
+		var adapter = ConstantsKt.getMoshi().adapter(FileUtil.class);
 		game.gamemodeFile = adapter.fromJson(levelFile.toString());
 		game.mapFile = adapter.fromJson(mapFile.toString());
 	}

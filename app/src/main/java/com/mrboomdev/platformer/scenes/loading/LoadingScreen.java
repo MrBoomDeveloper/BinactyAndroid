@@ -5,10 +5,9 @@ import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.PRE
 import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.RESOURCES;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mrboomdev.platformer.ConstantsKt;
 import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -16,13 +15,11 @@ import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
-import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 
 public class LoadingScreen extends CoreScreen {
     private final GameHolder game = GameHolder.getInstance();
-    private final Sprite banner;
     private final SpriteBatch batch;
 	private final BitmapFont font;
 	private EnvironmentCreator environmentCreator;
@@ -31,19 +28,17 @@ public class LoadingScreen extends CoreScreen {
 
     public LoadingScreen() {
         this.batch = new SpriteBatch();
-		this.banner = new Sprite(game.assets.get("packs/official/src/images/banner.jpg", Texture.class));
-		this.banner.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		this.banner.setCenter((float)Gdx.graphics.getWidth() / 2, (float)Gdx.graphics.getHeight() / 2);
 		this.font = game.assets.get("loading.ttf", BitmapFont.class);
     }
 
     @Override
     public void show() {
 		try {
-			var moshi = new Moshi.Builder().build();
-			var adapter = moshi.adapter(LoadingFiles.class);
+			var adapter = ConstantsKt.getMoshi().adapter(LoadingFiles.class);
 			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
+
 			if(files == null) throw new BoomException("LoadingFiles cannot be null.");
+
 			files.loadToManager(game.assets, "GAMEPLAY");
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -69,7 +64,6 @@ public class LoadingScreen extends CoreScreen {
     @Override
     public void render(float delta) {
 		batch.begin(); {
-			banner.draw(batch);
 			font.draw(batch, getStatus(), 50, 75);
 		} batch.end();
 		

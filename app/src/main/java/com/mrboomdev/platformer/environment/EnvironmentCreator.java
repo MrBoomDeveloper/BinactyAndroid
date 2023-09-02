@@ -36,7 +36,9 @@ public class EnvironmentCreator {
 				Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
 				JsonAdapter<MapManager> adapter = moshi.adapter(MapManager.class);
 				manager.map = adapter.fromJson(game.mapFile.readString(true));
+
 				if(manager.map == null) throw new BoomException("Null map file");
+
 				manager.map.build(manager.world, game.mapFile, this::loadGamemode);
 				status = BUILDING_MAP;
 			} catch(Exception e) {

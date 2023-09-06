@@ -503,7 +503,7 @@ entities.setListener(new EntityListener() {
 
 game.setListener(new GameListener() {
 	start() {
-		var light = createLight("cone");
+		var light = createLight("cone", 16);
 		light.setPosition(38, 54);
 		light.setDistance(15);
 		light.setConeDegree(20);

@@ -39,7 +39,11 @@ FileUtil getSource() {
 }
 
 createLight(String type) {
-	return game.createLight(type);
+	return createLight(type, 8);
+}
+
+createLight(String type, int raysCount) {
+	return game.createLight(type, raysCount);
 }
 
 Audio createMusic(String path) {

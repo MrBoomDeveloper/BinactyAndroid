@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.ui.gameplay.layout;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -12,9 +13,10 @@ import java.util.List;
 
 public class SubtitlesLayout extends ActorUtil {
 	private final GameHolder game = GameHolder.getInstance();
+	private Sound speechSound;
 	private BitmapFont font;
 	private final List<Subtitle> lines = new ArrayList<>();
-	private int currentLine, currentCharacter;
+	private int currentLine, wasCharacter, currentCharacter;
 	private float progress;
 
 	public void addLine(String text, float fadeDuration, float duration, Runnable callback) {
@@ -63,7 +65,18 @@ public class SubtitlesLayout extends ActorUtil {
 
 		currentCharacter = Math.min(
 				line.text.length(),
-				Math.round(line.text.length() / line.duration * progress * 2.75f));
+				Math.round(line.text.length() / line.duration * progress * 3));
+
+		if(wasCharacter != currentCharacter) {
+			if(speechSound == null) {
+				speechSound = game.assets.get("audio/sounds/speech.wav");
+			}
+
+			//Uhm... when the right sound will be choosen, ill uncomment this line.
+			//speechSound.play(.5f);
+		}
+
+		wasCharacter = currentCharacter;
 
 		if(line.callback != null && !line.didCallbackRan) {
 			line.didCallbackRan = true;

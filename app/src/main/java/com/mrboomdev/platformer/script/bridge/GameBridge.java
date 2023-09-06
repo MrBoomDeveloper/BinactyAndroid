@@ -52,10 +52,10 @@ public class GameBridge {
 		}
 	}
 
-	public Light createLight(@NonNull String type) {
+	public Light createLight(@NonNull String type, int raysCount) {
 		switch(type) {
 			case "point": {
-				var light = new PointLight(game.environment.rayHandler, 6);
+				var light = new PointLight(game.environment.rayHandler, raysCount);
 				light.setColor(Color.WHITE);
 				light.setDistance(5);
 
@@ -65,7 +65,7 @@ public class GameBridge {
 			case "cone": {
 				var light = new ConeLight(
 						game.environment.rayHandler,
-						15,
+						raysCount,
 						Color.WHITE,
 						50,
 						0, 0,

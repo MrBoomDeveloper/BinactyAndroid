@@ -30,6 +30,7 @@
 				{ "path": "world/effects/attack.png", "type": "texture" },
 				{ "path": "world/effects/shadow.png", "type": "texture" },
 				{ "path": "audio/sounds/step.mp3", "type": "sound" },
+				{ "path": "audio/sounds/speech.wav", "type": "sound" },
 				{ "path": "audio/sounds/player_detected.wav", "type": "sound" },
 				{ "path": "audio/sounds/dash.wav", "type": "sound" },
 				{ "path": "audio/sounds/shot.wav", "type": "sound" },

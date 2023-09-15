@@ -3,8 +3,6 @@ package com.mrboomdev.platformer.environment.path;
 import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.ai.pfa.Connection;
-import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
-import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
 import com.badlogic.gdx.math.Vector2;
@@ -26,14 +24,15 @@ public class PathGraph implements IndexedGraph<PathPoint> {
 		var connection = new PathConnection(from, to);
 		if(!connectionsMap.containsKey(from))
 			connectionsMap.put(from, new Array<>());
+
 		connectionsMap.get(from).add(connection);
 		connections.add(connection);
 	}
 	
-	public GraphPath<PathPoint> findPath(PathPoint from, PathPoint to) {
-		GraphPath<PathPoint> graph = new DefaultGraphPath<>();
-		new IndexedAStarPathFinder<>(this).searchNodePath(from, to, heuristic, graph);
-		return graph;
+	public Path findPath(PathPoint from, PathPoint to) {
+		var path = new Path();
+		new IndexedAStarPathFinder<>(this).searchNodePath(from, to, heuristic, path);
+		return path;
 	}
 	
 	public PathPoint findNearest(Vector2 position) {

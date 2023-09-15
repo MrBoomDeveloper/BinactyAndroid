@@ -16,4 +16,6 @@
 
     <string name="dialog_exit_title">Exit the Game</string>
     <string name="dialog_exit_description">Are you sure, you want to leave?</string>
+
+    <string name="eos_login_protocol_scheme" translatable="false">xyza7891lduq2qrrz0asgf26xibesaty</string>
 </resources>

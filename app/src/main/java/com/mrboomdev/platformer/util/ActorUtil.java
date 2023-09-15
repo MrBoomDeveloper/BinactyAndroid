@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -33,6 +32,16 @@ public abstract class ActorUtil extends Actor {
 		} else if(masterOpacity > 0) {
 			masterOpacity += (0 - masterOpacity) * .05f;
 		}
+	}
+
+	public void setOpacityNow(float opacity) {
+		this.opacity = opacity;
+		this.masterOpacity = opacity;
+	}
+
+	public void setVisibilityNow(boolean isVisible) {
+		setVisibility(isVisible);
+		masterOpacity = (GameHolder.getInstance().settings.isUiVisible && isVisible) ? 1 : 0;
 	}
 
 	public void setVisibility(boolean isVisible) {
@@ -86,11 +95,6 @@ public abstract class ActorUtil extends Actor {
 	
 	public <T extends ActorUtil> T addTo(@NonNull Stage stage) {
 		stage.addActor(this);
-		return (T)this;
-	}
-	
-	public <T extends ActorUtil> T addTo(@NonNull Table table) {
-		table.add(this);
 		return (T)this;
 	}
 	

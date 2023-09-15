@@ -28,6 +28,10 @@ public class UiBridge {
 		return new TextWidget(font).setOpacity(1).setText(text).addTo(game.environment.stage);
 	}
 
+	public Object createImage(String path) {
+		return null;
+	}
+
 	public FadeWidget createFade(float initialOpacity) {
 		return new FadeWidget(initialOpacity).addTo(game.environment.stage);
 	}

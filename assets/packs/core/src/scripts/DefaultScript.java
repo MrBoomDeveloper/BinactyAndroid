@@ -13,8 +13,10 @@ import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.environment.logic.Trigger.TriggerCallback;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.entity.bot.BotFollower;
+import com.mrboomdev.platformer.entity.bot.BotCustom;
 import com.mrboomdev.platformer.ui.gameplay.layout.SubtitlesLayout;
 import com.mrboomdev.platformer.game.pack.PackLoader;
+import com.badlogic.gdx.Gdx;
 
 void setWidgetVisibility(String name, boolean isVisible) {
 	var widgets = core.environment.ui.widgets;
@@ -22,6 +24,10 @@ void setWidgetVisibility(String name, boolean isVisible) {
 
 	var widget = widgets.get(name);
 	widget.setVisible(isVisible);
+}
+
+float getDeltaTime() {
+	return Gdx.graphics.getDeltaTime();
 }
 
 createCharacter(String name) {

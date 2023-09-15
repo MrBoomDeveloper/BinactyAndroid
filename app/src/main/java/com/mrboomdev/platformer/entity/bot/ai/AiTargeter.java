@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.entity.character.CharacterBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.environment.path.Path;
 import com.mrboomdev.platformer.environment.path.PathGraph;
 import com.mrboomdev.platformer.environment.path.PathPoint;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -16,7 +17,7 @@ import java.util.List;
 public class AiTargeter {
 	public float exploreTimeoutProgress;
 	public BotTarget ignoredTarget;
-	private float visionDistance = 8;
+	private float visionDistance = 8, standAfterLostPlayer = 2;
 	private long ignoredStartedTime;
 	private final CharacterBrain brain;
 	private final GameHolder game = GameHolder.getInstance();
@@ -58,7 +59,8 @@ public class AiTargeter {
 
 		//FIXME: A temporary solution was to check only the main player during the demo stage of the project
 		var me = brain.getEntity().getPosition();
-		if(!isMainPlayerIgnored(me, target.getPosition())) {
+
+		if(target != null && !isMainPlayerIgnored(me, target.getPosition())) {
 			this.exploreTimeoutProgress = 0;
 			this.rememberedPosition = null;
 			this.currentTarget = target;
@@ -73,7 +75,16 @@ public class AiTargeter {
 		});*/
 
 		if(currentTarget instanceof CharacterEntity && rememberedPosition == null && currentTarget != ignoredTarget) {
+			System.out.println("LOST PLAYER!!!");
+
+			this.standAfterLostPlayer = 0;
 			this.rememberedPosition = new PathPoint(currentTarget.getPosition().cpy());
+
+			return rememberedPosition;
+		}
+
+		if(standAfterLostPlayer < 2) {
+			standAfterLostPlayer += Gdx.graphics.getDeltaTime();
 			return rememberedPosition;
 		}
 
@@ -92,6 +103,43 @@ public class AiTargeter {
 		return didRememberedTarget ? currentTarget : null;
 	}
 
+	public Path getPath(BotTarget target) {
+		if(target == null) {
+			this.currentTarget = null;
+			return null;
+		}
+
+		var myPosition = brain.getEntity().getPosition();
+		var myPoint = graph.findNearest(myPosition);
+		var targetPoint = graph.findNearest(target.getPosition());
+
+		return graph.findPath(myPoint, targetPoint);
+	}
+
+	public Vector2 getPower(Path path, BotTarget target) {
+		if(target == null) {
+			this.currentTarget = null;
+			return null;
+		}
+
+		var myPosition = brain.getEntity().getPosition();
+		var myPoint = graph.findNearest(myPosition);
+		var targetPoint = graph.findNearest(target.getPosition());
+
+		if(path.getCount() > 1) {
+			return path.get(1).getPosition();
+		}
+
+		if(myPoint.equals(targetPoint)) {
+			this.rememberedPosition = null;
+			this.currentTarget = null;
+			return null;
+		}
+
+		return target.getPosition();
+	}
+
+	@Deprecated
 	@Nullable
 	public Vector2 getPathTo(BotTarget target) {
 		if(target == null) {

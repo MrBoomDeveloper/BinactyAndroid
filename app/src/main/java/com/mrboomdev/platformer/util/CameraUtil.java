@@ -46,13 +46,19 @@ public class CameraUtil {
 	}
 
 	public static void setCameraZoom(float size, float speed) {
+		if(GameHolder.getInstance().settings.debugCamera) return;
+
 		cameraZoomSize = size;
 		cameraZoomSpeed = speed;
 		isZoomedForce = false;
 	}
 
 	public static void setCameraPosition(float x, float y) {
-		var camera = GameHolder.getInstance().environment.camera;
+		var game = GameHolder.getInstance();
+
+		if(game.settings.debugCamera) return;
+
+		var camera = game.environment.camera;
 		camera.position.set(x, y, 0);
 
 		cameraPosition.set(x, y);
@@ -71,8 +77,12 @@ public class CameraUtil {
 	}
 
 	public static void setTarget(BotTarget target) {
+		var game = GameHolder.getInstance();
+
+		if(GameHolder.getInstance().settings.debugCamera && target != game.settings.mainPlayer) return;
+
 		if(target == null) {
-			var camera = GameHolder.getInstance().environment.camera;
+			var camera = game.environment.camera;
 
 			if(CameraUtil.target == null) {
 				cameraPosition.set(camera.position.x, camera.position.y);

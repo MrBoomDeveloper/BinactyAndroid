@@ -2,3 +2,4 @@ app/build
 core/build
 .gradle/
 .androidide/
+app/.cxx

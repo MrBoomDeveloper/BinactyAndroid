@@ -63,6 +63,7 @@ public class GameplayUi {
 				ActionButton.size + 150 + game.settings.screenInset)
 			.onClick(() -> {
 				if(!game.settings.isControlsEnabled || !dash.isVisible) return;
+
 				connectedEntity.dash();
 			})
 			.addTo(stage);
@@ -73,6 +74,7 @@ public class GameplayUi {
 		use.setActive(false)
 			.onClick(() -> {
 				if(!game.settings.isControlsEnabled || !use.isVisible) return;
+
 				connectedEntity.interact();
 			})
 			.toPosition(

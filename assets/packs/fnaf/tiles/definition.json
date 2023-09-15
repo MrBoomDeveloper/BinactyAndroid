@@ -56,7 +56,7 @@
 		"soundBooster": {
 			"texture": "atlas_1.png",
 			"size": [1, 1.2],
-			"region": [76, 111, 13, 16],
+			"region": [76, 111, 12, 16],
 			"collision": [1, 1.2, 0, 0]
 		},
 	

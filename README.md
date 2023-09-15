@@ -1,17 +1,13 @@
 # About the project
-Здесь когда-нибудь будет сюдет, хорошая графика, оптимизация.
 По сюжету богатые люди заскучали и решили сыграть в игру. Игра, в которой главная цель насладиться смертью других. Кого-то охватывает страх, отчаяние, уныние, а кто-то уже сошел с ума и воцаряет хаос.
 ### Plans
 - Gameplay:
   - Advanced bots ai:
-    - Stuck position escaping
     - Try to defense
     - Random personalities
   - More maps:
-    - More blocks
     - More themes
   - More characters:
-    - More animations
     - More skins
   - Effects (Fire, boom and etc.)
 - Multiplayer mode:
@@ -22,12 +18,11 @@
   - Weekly missions
   - Skills tree-style upgrading
 - Story mode:
-  - Intro
-  - Dialogs
+
   - Ending
 - Fancy react menu:
   - Shop screen
-  - Achievments screen
+  - Achievements screen
   - Profile overview
     - My own profile
     - Other's players profiles
@@ -38,17 +33,16 @@
   - Map Editor:
     - Individual tile editor
     - Metadata editor
-    - Ambient editor
   - Character editor:
     - Bone editor
     - Animation editor
   - Detailed character editor (with custom bones, animations)
-- Gamejolt linking:
+- GameJolt linking:
   - Account creation:
     - Connect to the server
     - Store data on server
     - Load data from the server
-  - Achievments
+  - Achievements
     - Storing on the server
     - Reading data from server
   - Account sync

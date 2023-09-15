@@ -72,6 +72,17 @@
 					{ "region": [ 162, 42, 22, 40 ], "hand_position": [ 0.34, -0.22 ] },
 					{ "region": [ 185, 42, 22, 40 ], "hand_position": [  0.3, -0.24 ] }
 				]
+			}, 
+			
+			"talk": {
+				"delay": 0.1,
+				"size": [ 1.1, 1.8 ],
+				"is_action": false,
+				"overridable": "anytime_other",
+				"frames": [
+					{ "region": [ 208, 42, 21, 40 ], "hand_position": [ 0.32, -0.2 ] },
+					{ "region": [ 230, 42, 21, 40 ], "hand_position": [ 0.35, -0.2 ] }
+				]
 			}
 		}
 	},

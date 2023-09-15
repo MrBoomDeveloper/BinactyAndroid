@@ -13,13 +13,13 @@ var presentationTrigger;
 var vanessa;
 
 boolean didFoxyCutsceneEnded, didIntroEnded;
-boolean isGameEnded, isFreddyActive, isPartySongStarted, didPlayerEnteredOffice;
+boolean isGameEnded, isFreddyActive, isPartySongStarted, didPlayerEnteredOffice, isShowcasing;
 int nightId = 1, power = 100, usage = 1;
 
 switch(game.getEnvString("levelId", "night_0")) {
 	case "night_1": {
 		startups = new int[][] {
-			{ 60, 60   }, /* Bonnie */
+			{ 25, 40   }, /* Bonnie */
 			{ 85, 85   }, /* Chica  */
 			{  1, 9999 }, /* Freddy */
 			{  1, 9999 }  /* Foxy   */
@@ -30,7 +30,7 @@ switch(game.getEnvString("levelId", "night_0")) {
 
 	case "night_2": {
 		startups = new int[][] {
-			{  60, 35   },
+			{  20, 30   },
 			{  60, 35   },
 			{   1, 9999 },
 			{ 120, 120  }
@@ -74,7 +74,7 @@ switch(game.getEnvString("levelId", "night_0")) {
 
 	default: {
 		startups = new int[][] {
-			{ 1, 100 },
+			{ 1, 10 },
 			{ 1, 100 },
 			{ 1, 100 },
 			{ 1, 100 }
@@ -94,10 +94,15 @@ game.load("sound", "sounds/door_close.wav");
 game.load("sound", "sounds/error.wav");
 game.load("sound", "sounds/foxy_song.wav");
 game.load("sound", "sounds/win.wav");
+game.load("sound", "sounds/animatronic_start.mp3");
 game.load("sound", "sounds/scream.wav");
 
 for(int i = 1; i <= 3; i++) {
 	game.load("sound", "sounds/freddy_giggle_" + i + ".wav");
+}
+
+for(int i = 1; i <= 5; i++) {
+    game.load("sound", "sounds/robot/run_" + i + ".mp3");
 }
 
 game.load("music", "sounds/fan.wav");
@@ -134,15 +139,107 @@ createAnimatronic(String name) {
 	character.setSpawnTiles(new String[]{ "#id:" + name + "Spawn" });
 	character.create();
 
+	if(character.entity.skin.contains("sleep")) {
+		character.entity.skin.setAnimationForce("sleep");
+	}
+
+	character.entity.skin.setStepListener(new Runnable() {
+		int stepNumber = 1;
+
+		void run() {
+			var player = core.settings.mainPlayer;
+			if(player == null) return;
+
+			float distance = character.entity.getPosition().dst(player.getPosition());
+			float howClose = (10 - distance);
+
+			if(distance > 10) return;
+
+			CameraUtil.addCameraShake(howClose * .02f, .2f);
+			audio.playSound("sounds/robot/run_" + stepNumber + ".mp3", .5f, 10, character.entity.getPosition());
+
+			stepNumber++;
+			if(stepNumber > 5) stepNumber = 1;
+		}
+	});
+
 	return character;
 }
 
 createBrain() {
-	return entities.createBrain()
-		.setStates(null)
-		.setResponder(new BotBrain.Responder() {
-			getWaypoints() { return waypoints; }
-		}).build();
+    boolean ENABLE_NEW_AI = false;
+
+	if(!ENABLE_NEW_AI) {
+		return entities.createBrain()
+			.setResponder(new BotBrain.Responder() {
+				getWaypoints() { return waypoints; }
+			}).build();
+	} else {
+		print("Warning! New AI is a experimental feature and may be unstable!");
+	}
+    
+	var brain = new BotCustom();
+	brain.setWaypoints(waypoints);
+	brain.addTarget(core.settings.mainPlayer);
+
+	brain.setUpdateListener(new Runnable() {
+		var target;
+		float stuckIgnoreTimer = 0;
+		float seeDistance = 8;
+
+		void selectRandomTile() {
+			target = brain.getRandomTarget();
+		}
+
+		void run() {
+			var player = core.settings.mainPlayer;
+			if(player == null) return;
+
+			float distance = brain.getDistance(player);
+			float howClose = (10 - distance);
+
+			if(brain.isStuck()) {
+				stuckIgnoreTimer = 8;
+				brain.escape();
+				selectRandomTile();
+			}
+
+			if(distance < seeDistance && stuckIgnoreTimer <= 0) {
+				brain.goTo(player, 1.5f);
+
+				if(distance < 2) {
+				    var entity = brain.getEntity();
+					entity.attack(player.getPosition().cpy().sub(entity.getPosition()));
+				}
+			
+			    return;
+			}
+
+			stuckIgnoreTimer -= getDeltaTime();
+			if(target != null) brain.goTo(target, 1);
+		}
+	});
+
+	return brain;
+}
+
+void wakeUp(var entity, var brain) {
+    if(entity.brain == brain || entity.skin.getCurrentAnimationName().equals("wakeup")) return;
+
+	if(entity.skin.contains("wakeup")) {
+		entity.skin.setAnimationForce("wakeup");
+	}
+
+    audio.playSound("sounds/animatronic_start.mp3", .5f, 12, entity.getPosition());
+    
+    game.setTimer(new Runnable() { run() {
+        if(entity.brain == brain) return;
+        
+        entity.setBrain(brain);
+        brain.start();
+
+        entity.skin.setAnimationForce(null);
+    }}, 5);
 }
 
 void wakeUpOnDamage(var character, var brain) {
@@ -154,7 +251,7 @@ void wakeUpOnDamage(var character, var brain) {
 		attacksCount++;
 
 		if(attacksCount >= 5) {
-			character.setBot(brain);
+			wakeUp(character.entity, brain);
 		}
 	}});
 }
@@ -179,9 +276,10 @@ wakeUpOnDamage(foxy, foxyBrain);
 ----------*/
 
 var staticLights = new ArrayList();
-for(int i = 1; i < 20; i++) {
+for(int i = 1; i < 100; i++) {
 	var light = map.getById("staticLight" + i);
 	if(light == null) continue;
+	
 	staticLights.add(light);
 }
 
@@ -192,7 +290,45 @@ var lightRight = map.getById("lightRight"), lightLeft = map.getById("lightLeft")
 boolean isLightRightOn = false, isLightLeftOn = false;
 
 map.getById("freddyNose").setListener(new InteractionListener() { use() {
-	audio.playSound("sounds/freddy_nose.wav", 0.5f, 10, map.getById("freddyNose").getPosition(false));
+	audio.playSound("sounds/freddy_nose.wav", 0.5f, 10, map.getById("freddyNose").getPosition());
+}});
+
+void showcase() {
+    if(isShowcasing) return;
+    isShowcasing = true;
+    
+    var freddyLight, bonnieLight, chicaLight;
+    
+    freddyLight = createLight("point", 8);
+    freddyLight.setDistance(4);
+    freddyLight.setColor(1, 1, 1, .7f);
+    freddyLight.setPosition(23, 26.5f);
+    
+    game.setTimer(new Runnable() { run() {
+        bonnieLight = createLight("point", 8);
+        bonnieLight.setColor(1, 1, 1, .85f);
+        bonnieLight.setDistance(4);
+        bonnieLight.setPosition(21, 25.5f);
+    }}, .4f);
+    
+    game.setTimer(new Runnable() { run() {
+        chicaLight = createLight("point", 8);
+        chicaLight.setColor(1, 1, 1, .85f);
+        chicaLight.setDistance(4);
+        chicaLight.setPosition(25, 25.5f);
+    }}, .9f);
+    
+    game.setTimer(new Runnable() { run() {
+        freddyLight.remove(true);
+        bonnieLight.remove(true);
+        chicaLight.remove(true);
+        
+        isShowcasing = false;
+    }}, 25);
+}
+
+map.getById("showButton").setListener(new InteractionListener() { use() {
+	showcase();
 }});
 
 map.getById("buttonLightRight").setListener(new InteractionListener() { use() {
@@ -288,68 +424,85 @@ if(nightId == 2) {
 
 void presentationCutscene() {
 	var me = core.settings.mainPlayer;
+	
+	var brain = new BotFollower();
+	brain.setWaypoints(waypoints);
 
 	game.setTimer(new Runnable() { run() {
 		vanessa.lookAt(me);
+		vanessa.inventory.setCurrentItem(1);
+		me.inventory.setCurrentItem(1);
 	}}, 1);
 
-	subtitles.addLine("Welcome to the Freddy Fazbear's Pizzeria!", .5f, 6, new Runnable() { run() {
+	subtitles.addLine("This place... it's been a nightmare for me.", 2.5f, new Runnable() { run() {
 		CameraUtil.setTarget(freddy.entity);
 		CameraUtil.setCameraZoom(.5f, .01f);
 		CameraUtil.setCameraMoveSpeed(.01f);
 
 		game.setControlsEnabled(false);
 		ui.setVisibility(false);
+		
+		showcase();
 	}});
-
-	subtitles.addLine("A fantastic place, where the whole family can celebrate a Party!", .5f, 6);
-
-	subtitles.addLine("A party, which NEVER ends...", .5f, new Runnable() { run() {
-		CameraUtil.setCameraZoom(.35f, .01f);
+	
+	subtitles.addLine("I can't explain how you ended up here, so just do, what i'll say.", 3.75f, new Runnable() { run() {
+	    CameraUtil.setCameraZoom(.75f, .01f);
+	}});
+	
+	subtitles.addLine("You'll have to maintain the pizzeria", 3, new Runnable() { run() {
+	    CameraUtil.setCameraZoom(.35f, .01f);
 		CameraUtil.setTarget(vanessa);
+		vanessa.inventory.setCurrentItem(0);
+	}});
+	
+	subtitles.addLine("Clean up, wash the floors and keep things in order.", 4, new Runnable() { run() {
+	    CameraUtil.setCameraZoom(.25f, .025f);
+	}});
+	
+	subtitles.addLine("And don't forget about the animatronics.", 3, new Runnable() { run() {
+	    CameraUtil.setCameraMoveSpeed(.01f);
+	    CameraUtil.setCameraZoom(.32f, .01f);
+	    
+	    vanessa.setBrain(brain);
+	    brain.start();
+	    
+	    brain.setTarget(21, 21.5f);
+	    brain.onCompleted(new Runnable() { run() {
+	        
+	    }});
 	}});
 
-	subtitles.addLine("Let me show you the office.", .5f, new Runnable() { run() {
+	subtitles.addLine("They may seem harmless now, but their performance must be maintained. ", 4, new Runnable() { run() {
+	    brain.setTarget(23, 23);
+	}});
+
+	subtitles.addLine("Keep an eye on them, fix any glitches, and make sure they stay in their places.", 4.2f);
+
+	subtitles.addLine("So now go to the office. I'll have to go!", 2.75f, new Runnable() { run() {
 		CameraUtil.reset();
 		CameraUtil.setTarget(me);
+		
+		me.inventory.setCurrentItem(0);
 
 		game.setControlsEnabled(true);
 		ui.setVisibility(true);
-
-		var brain = new BotFollower();
-		brain.setWaypoints(waypoints);
-		brain.setTarget(23, -14);
-
-		vanessa.setBrain(brain);
+		setWidgetVisibility("use", true);
+		setWidgetVisibility("stats_health", true);
+		
 		vanessa.lookAt(null);
+		
+		brain.setTarget(36, 50);
+		brain.setSpeed(2);
+				
+		brain.onCompleted(new Runnable() { run() {
+			vanessa.setBrain(null);
+			vanessa.die(true);
 
-		brain.start();
-
-		new Trigger(24, -14, 5, new TriggerCallback() { triggered(var character) {
-			if(character != me) return false;
-
-			setWidgetVisibility("use", true);
-			vanessa.lookAt(me);
-			subtitles.addLine("A guy will call you, he will explain everything else.", .5f, 4);
-
-			subtitles.addLine("I've gotta go. Good luck!", .5f, new Runnable() { run() {
-				vanessa.lookAt(null);
-				brain.setTarget(36, 50);
-				brain.onCompleted(new Runnable() { run() {
-					vanessa.setBrain(null);
-					vanessa.die(true);
-
-					brain = null;
-					vanessa = null;
-				}});
-
-				didIntroEnded = true;
-
-				setWidgetVisibility("stats_health", true);
-			}});
-
-			return true;
+			brain = null;
+			vanessa = null;
 		}});
+
+		didIntroEnded = true;
 	}});
 }
 
@@ -416,7 +569,7 @@ void checkIfNoPower() {
 	lightLeft.pointLight.setActive(false);
 	lightRight.pointLight.setActive(false);
 	
-	phoneSound.stop();
+	//phoneSound.stop();
 	fanSound.stop();
 	lightSound.stop();
 	
@@ -491,7 +644,7 @@ entities.setListener(new EntityListener() {
 	died(entity) {
 		if(isGameEnded) return;
 		if(entity == core.settings.mainPlayer) {
-			phoneSound.stop();
+			//phoneSound.stop();
 			audio.playSound("sounds/scream.wav", 0.275f);
 			isGameEnded = true;
 			game.over(entity, false);
@@ -504,13 +657,20 @@ entities.setListener(new EntityListener() {
 game.setListener(new GameListener() {
 	start() {
 		var light = createLight("cone", 16);
-		light.setPosition(38, 54);
-		light.setDistance(15);
-		light.setConeDegree(20);
+		light.setPosition(39, 54);
+		light.setDistance(22);
+		light.setConeDegree(17.5f);
 		light.setDirection(-110);
 		light.setColor(0.25f, 0.25f, 0.5f, .75f);
 		light.setXray(true);
 		light.setStaticLight(true);
+		
+		var stageLight = createLight("cone");
+		stageLight.setColor(0.25f, 0.25f, 0.5f, .5f);
+		stageLight.setConeDegree(40);
+		stageLight.setDistance(15);
+		stageLight.setPosition(19, 27);
+		stageLight.setDirection(-75);
 
 		var me = core.settings.mainPlayer;
 		var fade = ui.createFade(1);
@@ -571,25 +731,47 @@ game.setListener(new GameListener() {
 					me.dash(1, 0, 1);
 				}}, .75f);
 
-				float fadeDuration = .25f;
 				subtitles = createSubtitles();
-				subtitles.addLine("Hello!", fadeDuration);
+				subtitles.setFadeDuration(.25f);
+				
+				//vanessa.skin.setAnimationForce("talk");
+				subtitles.addLine("Hello!?", .4f);
+				//game.setTimer(new Runnable() { run() { vanessa.skin.setAnimationForce(null); }}, .5f);
 
-				subtitles.addLine("You're awake!", fadeDuration);
-				subtitles.addLine("Are you a new guard!? Aren't you???", fadeDuration, new Runnable() { run() {
+				subtitles.addLine("Oh my god, a human!", 1.4f, new Runnable() { run() {
+				    vanessa.lookAt(null);
+					vanessaBrain.setSpeed(2.5f);
+				    vanessaBrain.setTarget(35, 48);
+				}});
+				
+				subtitles.addLine("Hey there, welcome to Freddy Fazbear's!", 2.5f, new Runnable() { run() {
 					vanessaBrain.setTarget(37, 46);
+					vanessaBrain.setSpeed(2);
+					vanessa.lookAt(me);
 					setWidgetVisibility("joystick", true);
 
 					me.skin.setAnimationForce(null);
 					me.lookAt(null);
 					me.wasPower = new Vector2(-1, 0);
 				}});
+				
+				subtitles.addLine("Sorry about the cat, she's been my only company for a while now.", 4);
+				
+				subtitles.addLine("Sorry if I'm too intrusive, I just haven't seen anyone for a while.", 4, new Runnable() { run() {
+				    vanessa.lookAt(null);
+				    
+				    vanessaBrain.setTarget(35, 45);
+				    vanessaBrain.onCompleted(new Runnable() { run() {
+				        vanessa.lookAt(me);
+				    }});
+				}});
 
-				subtitles.addLine("Take this and follow me. You'll like this place.", fadeDuration, new Runnable() { run() {
+				subtitles.addLine("Take this and follow me.", 2, new Runnable() { run() {
 					setCameraZoom(.4f, .1f);
 					setWidgetVisibility("dash", true);
-					vanessaBrain.setTarget(22, 22);
-					vanessa.lookAt(chica.entity);
+					vanessaBrain.setTarget(19, 21.5f);
+					vanessaBrain.setSpeed(.8f);
+					vanessa.lookAt(bonnie.entity);
 
 					me.giveItem(entities.createItem("items/flashlight"));
 					setWidgetVisibility("aim", true);
@@ -675,26 +857,26 @@ void startNight() {
 	game.setTimer(new Runnable() { run() {
 		if(bonnie.entity.brain == bonnieBrain) return;
 
-		bonnie.setBot(bonnieBrain);
+		wakeUp(bonnie.entity, bonnieBrain);
 	}}, Math.round(Math.random() * startups[0][0] + startups[0][1]));
 
 	game.setTimer(new Runnable() { run() {
 		if(chica.entity.brain == chicaBrain) return;
 
-		chica.setBot(chicaBrain);
+		wakeUp(chica.entity, chicaBrain);
 	}}, Math.round(Math.random() * startups[1][0] + startups[1][1]));
 
 	game.setTimer(new Runnable() { run() {
 		if(isFreddyActive || freddy.entity.brain == freddyBrain) return;
 
-		freddy.setBot(freddyBrain);
+		wakeUp(freddy.entity, freddyBrain);
 		isFreddyActive = true;
 	}}, Math.round(Math.random() * startups[2][0] + startups[2][1]));
 
 	game.setTimer(new Runnable() { run() {
 		if(foxy.entity.brain == foxyBrain) return;
 
-		foxy.setBot(foxyBrain);
+		wakeUp(foxy.entity, foxyBrain);
 	}}, Math.round(Math.random() * startups[3][0] + startups[3][1]));
 
 	boolean isPartySongEnabled = Math.random() > .75f;
@@ -714,7 +896,7 @@ void startNight() {
 	ui.createTimer(360, 1.2f);
 	ui.createTitle("Survive the Night", 4);
 
-	phoneSound.play();
+	//phoneSound.play();
 
 	usageWidget = ui.createText("statBarWidget.ttf", "Usage: 1").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 25);
 	powerWidget = ui.createText("statBarWidget.ttf", "100%").setAlign(Align.LEFT, Align.BOTTOM).toPosition(25, 60);

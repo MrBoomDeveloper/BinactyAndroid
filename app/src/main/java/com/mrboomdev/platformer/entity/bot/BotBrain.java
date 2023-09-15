@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.entity.bot;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.bot.ai.AiStuckChecker;
@@ -10,16 +11,16 @@ import com.mrboomdev.platformer.environment.path.presets.MapScanner;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.AudioUtil;
 
-import java.util.Arrays;
-
 public class BotBrain extends CharacterBrain {
-	public AiStuckChecker stuckChecker = new AiStuckChecker();
+	public AiStuckChecker stuckChecker = new AiStuckChecker(this);
 	protected Responder responder;
 	protected int refreshRate;
+	private BotTarget lastTargetWarned;
 	private final AiTargeter targeter = new AiTargeter(this);
 	private final GameHolder game = GameHolder.getInstance();
+	private float changeRandomPowerDelay;
 	private Sound playerDetectedSound;
-	private final MapScanner mapScanner = new MapScanner();
+	private final Vector2 randomPower = new Vector2();
 	private long playerLastDetected, mapLastScanned;
 
 	@Override
@@ -33,10 +34,8 @@ public class BotBrain extends CharacterBrain {
 	}
 	
 	public void scanMap() {
-		var graph = mapScanner.getGraph(game.environment.map.tilesMap.values(), tile -> {
-			var stream = Arrays.stream(responder.getWaypoints());
-			return stream.anyMatch(item -> tile.name.equals(item));
-		});
+		var tiles = game.environment.map.tilesMap.values();
+		var graph = MapScanner.getGraphByWaypoints(tiles, responder.getWaypoints());
 
 		this.targeter.setGraph(graph);
 	}
@@ -47,6 +46,19 @@ public class BotBrain extends CharacterBrain {
 		var ownerPosition = owner.getPosition();
 		long currentTime = System.currentTimeMillis();
 
+		if(changeRandomPowerDelay <= 0) {
+			float range = 2;
+
+			randomPower.set(
+					(float)(Math.random() * 2 * range) - range,
+					(float)(Math.random() * 2 * range) - range
+			);
+
+			changeRandomPowerDelay = 1;
+		} else {
+			changeRandomPowerDelay -= Gdx.graphics.getDeltaTime();
+		}
+
 		if((refreshRate != 0) && (currentTime > mapLastScanned + refreshRate * 1000f)) {
 			this.mapLastScanned = currentTime;
 			this.scanMap();
@@ -55,7 +67,7 @@ public class BotBrain extends CharacterBrain {
 		this.targeter.update();
 
 		var selectedTarget = targeter.getTarget(object -> {
-			if(object == game.settings.mainPlayer) {
+			if(object == game.settings.mainPlayer && object != targeter.ignoredTarget) {
 				targeter.setVisionDistance(12);
 				return true;
 			}
@@ -74,36 +86,42 @@ public class BotBrain extends CharacterBrain {
 			}
 		}
 
-		var nextPosition = targeter.getPathTo(selectedTarget);
+		var path = targeter.getPath(selectedTarget);
+		var nextPosition = targeter.getPower(path, selectedTarget);
+
 		if(nextPosition == null) {
 			owner.usePower(Vector2.Zero, 0);
 			stuckChecker.reset();
+			this.lastTargetWarned = selectedTarget;
 			return;
 		}
 
-		stuckChecker.setDestination(nextPosition);
-		stuckChecker.update(ownerPosition);
+		stuckChecker.setDestination(nextPosition, path.getTotalCost() * 1.5f);
+		stuckChecker.update();
 
 		if(stuckChecker.isStuck()) {
+			System.out.println("FUCK! I'M STUCK!");
+
 			stuckChecker.reset();
 			targeter.setIgnored(selectedTarget);
 			targeter.exploreTimeoutProgress = 0;
 		}
 
-		var speed = owner.stats.speed * (isEnemyCharacter ? 1.5f : 1);
-		var randomPower = new Vector2((float)(Math.random() * 4) - 2, (float)(Math.random() * 4) - 2);
+		var speed = owner.stats.speed * (isEnemyCharacter ? 1.6f : 1);
 
 		if(isEnemyCharacter && (owner.stats.health < (owner.stats.maxHealth / 3))) {
 			owner.usePower(nextPosition.cpy().sub(owner.getPosition()).scl(-5).add(randomPower), speed);
+			this.lastTargetWarned = selectedTarget;
 			return;
 		}
 
-		if(isEnemyCharacter && System.currentTimeMillis() > playerLastDetected + 10000) {
+		if(isEnemyCharacter && selectedTarget != lastTargetWarned && System.currentTimeMillis() > playerLastDetected + 10000) {
 			playerLastDetected = System.currentTimeMillis();
 			playerDetectedSound.play(AudioUtil.soundVolume / 3);
 		}
 
 		owner.usePower(nextPosition.cpy().sub(owner.getPosition()).scl(5).add(randomPower), speed);
+		this.lastTargetWarned = selectedTarget;
 	}
 	
 	public interface Responder {

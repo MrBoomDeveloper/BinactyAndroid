@@ -117,9 +117,14 @@ public class GameDebugMenu {
 			settings.isUiVisible = true;
 			settings.isControlsEnabled = true;
 
-			if(settings.mainPlayer != null) {
-				CameraUtil.setTarget(settings.mainPlayer);
+			for(var widget : GameHolder.getInstance().environment.ui.widgets.values()) {
+				widget.setOpacityNow(1);
+				widget.setVisibilityNow(true);
+				widget.setVisible(true);
 			}
+
+			CameraUtil.reset();
+			CameraUtil.setTarget(settings.mainPlayer);
 		});
 
 		registerTeleportButton(view, R.id.teleportDownButton, 0, -10);

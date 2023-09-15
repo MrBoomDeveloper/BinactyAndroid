@@ -11,41 +11,52 @@ import com.mrboomdev.platformer.util.ui.ActorUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class SubtitlesLayout extends ActorUtil {
 	private final GameHolder game = GameHolder.getInstance();
 	private Sound speechSound;
 	private BitmapFont font;
 	private final List<Subtitle> lines = new ArrayList<>();
-	private int currentLine, wasCharacter, currentCharacter;
-	private float progress;
+	private int currentLine, wasCharacter;
+	private float progress, fadeDuration;
 
-	public void addLine(String text, float fadeDuration, float duration, Runnable callback) {
+	public Subtitle addLine(String text, float duration, float endDuration, Runnable callback) {
 		var line = new Subtitle();
 		line.text = text;
-		line.fadeDuration = fadeDuration;
+		line.endDuration = endDuration;
 		line.duration = duration;
 		line.callback = callback;
 		lines.add(line);
+
+		return line;
 	}
 
-	public void addLine(String text, float fadeDuration, float duration) {
-		addLine(text, fadeDuration, duration, null);
+	public void setSpeechSound(Sound sound) {
+		this.speechSound = sound;
 	}
 
-	public void addLine(String text, float fadeDuration, Runnable callback) {
-		addLine(text, fadeDuration, -1, callback);
+	public Subtitle addLine(String text, float duration, float endDuration) {
+		return addLine(text, duration, endDuration, null);
 	}
 
-	public void addLine(String text, Runnable callback) {
-		addLine(text, -1, -1, callback);
+	public Subtitle addLine(String text, float duration, Runnable callback) {
+		return addLine(text, duration, -1, callback);
 	}
 
-	public void addLine(String text, float fadeDuration) {
-		addLine(text, fadeDuration, -1);
+	public Subtitle addLine(String text, Runnable callback) {
+		return addLine(text, -1, -1, callback);
 	}
 
-	public void addLine(String text) {
-		addLine(text, -1);
+	public Subtitle addLine(String text, float duration) {
+		return addLine(text, duration, -1);
+	}
+
+	public Subtitle addLine(String text) {
+		return addLine(text, -1);
+	}
+
+	public void setFadeDuration(float duration) {
+		this.fadeDuration = duration;
 	}
 
 	@Override
@@ -63,17 +74,12 @@ public class SubtitlesLayout extends ActorUtil {
 
 		progress += Gdx.graphics.getDeltaTime();
 
-		currentCharacter = Math.min(
+		int currentCharacter = Math.min(
 				line.text.length(),
-				Math.round(line.text.length() / line.duration * progress * 3));
+				Math.round((line.text.length() / line.duration) * progress));
 
-		if(wasCharacter != currentCharacter) {
-			if(speechSound == null) {
-				speechSound = game.assets.get("audio/sounds/speech.wav");
-			}
-
-			//Uhm... when the right sound will be choosen, ill uncomment this line.
-			//speechSound.play(.5f);
+		if(wasCharacter != currentCharacter && speechSound != null) {
+			speechSound.play(.1f);
 		}
 
 		wasCharacter = currentCharacter;
@@ -83,18 +89,18 @@ public class SubtitlesLayout extends ActorUtil {
 			line.callback.run();
 		}
 
-		if(progress > line.duration) {
+		if(progress > line.duration + line.endDuration) {
 			currentLine++;
 			progress = 0;
 		}
 
-		if(progress < line.fadeDuration) {
-			font.setColor(1, 1, 1, 1 / line.fadeDuration * progress);
+		if(progress < fadeDuration) {
+			font.setColor(1, 1, 1, 1 / fadeDuration * progress);
 		}
 
-		float durationBeforeFade = line.duration - line.fadeDuration;
+		float durationBeforeFade = line.duration + line.endDuration - fadeDuration;
 		if(progress >= durationBeforeFade) {
-			float alpha = 1 - (1 / line.fadeDuration * (progress - durationBeforeFade));
+			float alpha = 1 - (1 / fadeDuration * (progress - durationBeforeFade));
 			font.setColor(1, 1, 1, alpha);
 		}
 
@@ -114,6 +120,10 @@ public class SubtitlesLayout extends ActorUtil {
 			line.glyph = new GlyphLayout(font, line.text);
 		}
 
+		if(line.endDuration == -1) {
+			line.endDuration = 1.5f;
+		}
+
 		if(line.duration == -1) {
 			var temp = line.text;
 
@@ -121,11 +131,7 @@ public class SubtitlesLayout extends ActorUtil {
 				temp.replace(item, "");
 			}
 
-			line.duration = temp.length() / 5f;
-		}
-
-		if(line.fadeDuration == -1) {
-			line.fadeDuration = Math.min(2, line.duration / 4);
+			line.duration = temp.length() / 10f;
 		}
 
 		return line;
@@ -140,7 +146,7 @@ public class SubtitlesLayout extends ActorUtil {
 	public static class Subtitle {
 		public String text;
 		public GlyphLayout glyph;
-		public float duration = -1, fadeDuration = -1;
+		public float duration = -1, endDuration = 2;
 		public Runnable callback;
 		public boolean didCallbackRan;
 	}

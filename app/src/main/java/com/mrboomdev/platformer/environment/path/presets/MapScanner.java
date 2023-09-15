@@ -7,9 +7,20 @@ import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.environment.path.PathGraph;
 import com.mrboomdev.platformer.environment.path.PathPoint;
 
+import java.util.Arrays;
+
 public class MapScanner {
 
-	public PathGraph getGraph(@NonNull Iterable<MapTile> tiles, IsPointOkChecker checker) {
+	@NonNull
+	public static PathGraph getGraphByWaypoints(@NonNull Iterable<MapTile> tiles, String[] waypoints) {
+		return getGraph(tiles, tile -> {
+			var stream = Arrays.stream(waypoints);
+			return stream.anyMatch(item -> tile.name.equals(item));
+		});
+	}
+
+	@NonNull
+	public static PathGraph getGraph(@NonNull Iterable<MapTile> tiles, IsPointOkChecker checker) {
 		var graph = new PathGraph();
 		var points = new Array<PathPoint>();
 

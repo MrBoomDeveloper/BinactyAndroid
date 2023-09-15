@@ -6,6 +6,11 @@ public abstract class CharacterBrain {
 	private CharacterEntity entity;
 
 	public void updateHoldingItem() {
+		if(entity.lookingAtTarget != null) {
+			updateHoldingItem(entity.lookingAtTarget.getPosition().cpy().sub(entity.getPosition()));
+			return;
+		}
+
 		updateHoldingItem(null);
 	}
 

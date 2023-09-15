@@ -89,7 +89,7 @@ public class CharacterEntity implements BotTarget {
 	@Json(ignore = true)
 	private Vector2 cachedPosition;
 	@Json(ignore = true)
-	private BotTarget lookingAtTarget;
+	public BotTarget lookingAtTarget;
 	@Json(ignore = true)
 	private float progressBarProgress;
 
@@ -104,8 +104,11 @@ public class CharacterEntity implements BotTarget {
 	public CharacterEntity(String name, CharacterSkin skin, CharacterBody worldBody, @NonNull Entity.Stats stats) {
 		this.name = name;
 		this.stats = stats;
-		this.skin = skin;
 		this.worldBody = worldBody;
+
+		this.skin = skin;
+		this.skin.setOwner(this);
+
 		shape = new ShapeRenderer();
 		inventory = new ItemInventory();
 		
@@ -233,7 +236,7 @@ public class CharacterEntity implements BotTarget {
 				? Math.min(damagedProgress, 1)
 				: .8f - Math.min(damagedProgress * .8f, .8f));
 
-		skin.draw(batch, position, getDirection(), this, opacity);
+		skin.draw(batch,  opacity);
 		game.environment.batch.flush();
 		shader.setUniformf("flashProgress", 0);
 

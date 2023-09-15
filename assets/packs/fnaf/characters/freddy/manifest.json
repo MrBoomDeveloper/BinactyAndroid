@@ -55,6 +55,43 @@
 					{ "region": [ 232, 1, 21, 43 ] },
 					{ "region": [ 254, 1, 21, 43 ] }
 				]
+			},
+			
+			"sleep": {
+				"delay": 0.1,
+				"mode": "NORMAL",
+				"overridable": "anytime_other",
+				"size": [ 1, 2 ],
+				"hand_position": [0.4, -0.2],
+				"frames": [
+					{ "region": [ 1, 133, 20, 43 ] }
+				]
+			},
+			
+			"wakeup": {
+				"delay": 0.25,
+				"mode": "NORMAL",
+				"overridable": "anytime_other",
+				"size": [ 1, 2 ],
+				"hand_position": [0.4, -0.2],
+				"frames": [
+					{ "region": [ 1, 133, 20, 43 ] },
+					{ "region": [ 22, 133, 20, 43 ] },
+					{ "region": [ 43, 133, 20, 43 ] },
+					{ "region": [ 64, 133, 20, 43 ] },
+					{ "region": [ 85, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 106, 133, 20, 43 ] },
+					{ "region": [ 127, 133, 20, 43 ] }
+				]
 			}
 		}
 	},

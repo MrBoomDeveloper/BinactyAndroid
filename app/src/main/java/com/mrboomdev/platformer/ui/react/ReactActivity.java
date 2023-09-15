@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.epicgames.mobile.eossdk.EOSSDK;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.ReactRootView;
@@ -20,6 +21,7 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.mrboomdev.binacty.BinactyNative;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
@@ -44,7 +46,10 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 	@Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+
+		BinactyNative.init();
         SoLoader.init(this, false);
+		EOSSDK.init(getApplicationContext());
 		ReactRootView root = new ReactRootView(this);
 
 		instance = this;

@@ -12,7 +12,7 @@
 		"seeking": {
 			"targets": ["TILES"],
 			"duration": [10, 24, 50],
-			"speed": 0.8
+			"speed": 0.8,
 			"animation": "WALK",
 			"next": "seeking",
 			"visionDistance": 8

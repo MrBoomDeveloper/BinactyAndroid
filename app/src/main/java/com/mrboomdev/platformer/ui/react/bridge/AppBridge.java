@@ -19,6 +19,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.binacty.packs.PackEntry;
+import com.mrboomdev.binacty.rn.RNActivity;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.game.GameLauncher;
@@ -29,7 +30,6 @@ import com.mrboomdev.platformer.online.profile.AuthParams;
 import com.mrboomdev.platformer.online.profile.ProfileAuthentication;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
-import com.mrboomdev.platformer.ui.react.ReactActivity;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
@@ -241,9 +241,11 @@ public class AppBridge extends ReactContextBaseJavaModule {
 		props.putString("title", activity.getString(R.string.dialog_restart_title));
 		props.putString("description", activity.getString(R.string.dialog_restart_description));
 		props.putString("ok", activity.getString(R.string.action_restart));
+
 		showDialog(props, new PromiseImpl(args -> {
 			stopMusic();
-			var intent = new Intent(activity, ReactActivity.class);
+
+			var intent = new Intent(activity, RNActivity.class);
 			activity.startActivity(intent);
 			activity.finish();
 		}, args -> {}));

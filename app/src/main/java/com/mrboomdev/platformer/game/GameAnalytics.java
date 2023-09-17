@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.mrboomdev.binacty.rn.RNApp;
 import com.mrboomdev.platformer.BuildConfig;
-import com.mrboomdev.platformer.ui.ActivityManager;
 
 public class GameAnalytics {
 	private final FirebaseAnalytics firebaseAnalytics;
@@ -47,9 +47,7 @@ public class GameAnalytics {
 	}
 
 	private boolean isCrashlyticsDisabled() {
-		return BuildConfig.DEBUG || !ActivityManager.current
-				.getSharedPreferences("Save", 0)
-				.getBoolean("crashlytics", true);
+		return BuildConfig.DEBUG || !RNApp.getSave("Save").getBoolean("crashlytics", true);
 	}
 	
 	public enum LogLevel {

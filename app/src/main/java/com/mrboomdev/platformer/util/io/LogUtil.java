@@ -12,8 +12,15 @@ import com.mrboomdev.platformer.ui.android.AndroidDialog;
 public class LogUtil {
 
 	public static void crash(String title, String message, Throwable t) {
-		GameHolder.getInstance().analytics.crash(title, message, t);
-		FileUtil.external("crash.txt").writeString(title + "\n" + message + "\n" + throwableToString(t), false);
+		try {
+			GameHolder.getInstance().analytics.crash(title, message, t);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		String text = title + "\n" + message + "\n" + throwableToString(t);
+		FileUtil.external("crash.txt").writeString(text, false);
+
 		var dialog = new AndroidDialog().setTitle(title).setCancelable(false);
 
 		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT)

@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.mrboomdev.platformer.ui.ActivityManager;
+import com.mrboomdev.binacty.rn.RNApp;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -125,10 +125,13 @@ public class PackLoader {
 		dialog.addAction(new AndroidDialog.Action().setText("Reset").setClickListener(button -> {
 			FileUtil.external("packs").remove();
 			FileUtil.external("packs/installed.json").writeString(FileUtil.internal("packs/defaultList.json").readString(false), false);
+
 			reloadPacks();
 			reloadGamemodes();
-			ReactContext context = ActivityManager.reactActivity.reactInstance.getCurrentReactContext();
+
+			ReactContext context = RNApp.getReactInstance().getCurrentReactContext();
 			if(context == null) return;
+
 			context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
 			dialog.close();
 		}));

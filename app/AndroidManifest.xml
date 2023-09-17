@@ -7,6 +7,7 @@
         tools:ignore="ScopedStorage" />
 
     <application
+        android:name="com.mrboomdev.binacty.rn.RNApp"
         android:label="@string/app_name"
         android:allowBackup="true"
         android:largeHeap="true"
@@ -21,8 +22,9 @@
         tools:targetApi="o">
 
         <activity
-            android:name=".ui.react.ReactActivity"
+            android:name="com.mrboomdev.binacty.rn.RNActivity"
             android:screenOrientation="landscape"
+            android:enabled="true"
             android:theme="@style/Material"
             android:exported="true">
 
@@ -32,6 +34,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -42,6 +45,7 @@
                     android:scheme="https"
                     android:host="binacty.mrboomdev.ru"
                     android:pathPrefix="/get_pack" />
+
             </intent-filter>
         </activity>
 
@@ -73,6 +77,7 @@
                     android:mimeType="*/*"
                     android:pathPattern=".*\\.binacty" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

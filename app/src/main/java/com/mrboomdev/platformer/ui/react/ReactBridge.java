@@ -9,6 +9,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.mrboomdev.binacty.rn.RNActivity;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.ui.ActivityManager;
@@ -38,7 +39,7 @@ public class ReactBridge extends ReactContextBaseJavaModule {
 	
 	@ReactMethod
 	public void finish(String activity) {
-		if(ActivityManager.current instanceof ReactActivity) return;
+		if(ActivityManager.current instanceof RNActivity) return;
 		ActivityManager.current.finish();
 	}
     

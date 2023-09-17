@@ -14,8 +14,9 @@ import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.mrboomdev.binacty.rn.RNActivity;
+import com.mrboomdev.binacty.rn.RNApp;
 import com.mrboomdev.platformer.R;
-import com.mrboomdev.platformer.ui.react.ReactActivity;
 
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ import java.util.Objects;
 public class ActivityManager {
 	public static Activity current;
 	public static MediaPlayer media;
-	public static ReactActivity reactActivity;
+	public static RNActivity reactActivity;
 	private static boolean isMusicPlaying, isActivityResumed;
 
 	public static void onPause() {
@@ -45,7 +46,7 @@ public class ActivityManager {
 		if(reactActivity.isGameStarted || isPlaying()) return;
 		media = MediaPlayer.create(current, R.raw.lobby_theme);
 
-		setVolume(current.getSharedPreferences("Save", 0).getInt("musicVolume", 100) / 100f);
+		setVolume(RNApp.getSave("Save").getInt("musicVolume", 100) / 100f);
 		media.setLooping(true);
 
 		if(!isActivityResumed) return;
@@ -109,16 +110,16 @@ public class ActivityManager {
 	
 	public static void gameOver() {
 		reactActivity.isGameStarted = false;
-		var instance = reactActivity.reactInstance;
-		ReactContext context = instance.getCurrentReactContext();
-		Objects.requireNonNull(context).getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("GameOver", null);
+		var instance = RNApp.getReactInstance();
+		ReactContext context = Objects.requireNonNull(instance.getCurrentReactContext());
+		context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("GameOver", null);
 	}
 	
 	public static void forceExit() {
 		reactActivity.isGameStarted = false;
-		var instance = reactActivity.reactInstance;
-		ReactContext context = instance.getCurrentReactContext();
-		Objects.requireNonNull(context).getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ForceExit", null);
+		var instance = RNApp.getReactInstance();
+		ReactContext context = Objects.requireNonNull(instance.getCurrentReactContext());
+		context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("ForceExit", null);
 	}
 	
 	public static void toast(String text, boolean isLong) {

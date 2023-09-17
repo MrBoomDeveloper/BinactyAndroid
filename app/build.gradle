@@ -7,6 +7,8 @@ plugins {
 	id "com.facebook.react"
 }
 
+def jscFlavor = 'org.webkit:android-jsc:+'
+
 android {
 	namespace "com.mrboomdev.platformer"
 	ndkVersion rootProject.ext.ndkVersion
@@ -138,13 +140,19 @@ dependencies {
 	/* React Native */
 	implementation "com.facebook.react:react-android"
 	implementation "com.facebook.react:hermes-android"
-	// noinspection GradleDynamicVersion
-	implementation "org.webkit:android-jsc:+"
+
+	debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
+	debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
+
+	debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+		exclude group:'com.squareup.okhttp3', module:'okhttp'
+	}
 	
 	/* LibGDX libraries */
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"
 	implementation 'com.badlogicgames.gdx:gdx-ai:1.8.2'
 	implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
 	natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
@@ -184,6 +192,7 @@ tasks.register("copyAndroidNatives") {
 			if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
 			if(jar.name.endsWith("natives-x86_64.jar")) outputDir = file("libs/x86_64")
 			if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")
+
 			if(outputDir != null) {
 				copy {
 					from zipTree(jar)
@@ -209,6 +218,7 @@ tasks.register("run", Exec) {
 		localProperties.withInputStream { instr ->
 			properties.load(instr)
 		}
+
 		def sdkDir = properties.getProperty("sdk.dir")
 		if(sdkDir) {
 			path = sdkDir
@@ -220,9 +230,11 @@ tasks.register("run", Exec) {
 	}
 
 	def adb = path + "/platform-tools/adb"
-	commandLine "$adb", "shell", "am", "start", "-n", "com.mrboomdev.platformer/com.mrboomdev.platformer.GameDebugLauncher"
+	def activity = "com.mrboomdev.platformer/com.mrboomdev.platformer.GameDebugLauncher"
+
+	commandLine "$adb", "shell", "am", "start", "-n", "$activity"
 }
 
 eclipse.project.name = "Binacty" + "-android"
-//apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
-//applyNativeModulesAppBuildGradle(project)
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
+applyNativeModulesAppBuildGradle(project)

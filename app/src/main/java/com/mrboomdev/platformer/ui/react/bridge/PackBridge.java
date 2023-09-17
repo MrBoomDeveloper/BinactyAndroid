@@ -14,6 +14,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.mrboomdev.binacty.Constants;
+import com.mrboomdev.binacty.rn.RNApp;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.game.pack.PackWidget;
@@ -53,8 +54,10 @@ public class PackBridge extends ReactContextBaseJavaModule {
 
 		dialog.addAction(new AndroidDialog.Action().setText("Save and reload").setClickListener(button -> {
 			saveAndReload();
-			ReactContext context = ActivityManager.reactActivity.reactInstance.getCurrentReactContext();
-			Objects.requireNonNull(context).getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
+
+			ReactContext context = Objects.requireNonNull(RNApp.getReactInstance().getCurrentReactContext());
+			context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
+
 			dialog.close();
 		}));
 

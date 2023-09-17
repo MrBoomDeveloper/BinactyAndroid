@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.ui.react;
+package com.mrboomdev.binacty.rn;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -7,22 +7,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.epicgames.mobile.eossdk.EOSSDK;
-import com.facebook.react.ReactInstanceManager;
-import com.facebook.react.ReactPackage;
-import com.facebook.react.ReactRootView;
+import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.common.LifecycleState;
-import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
+import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
+import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.facebook.react.shell.MainReactPackage;
-import com.facebook.soloader.SoLoader;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.mrboomdev.binacty.BinactyNative;
-import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.online.OnlineManager;
@@ -34,108 +28,79 @@ import com.mrboomdev.platformer.util.io.ZipUtil;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
-import java.util.List;
 import java.util.Objects;
 
-public class ReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
-    public static ReactActivity instance;
-    public ReactInstanceManager reactInstance;
-    public SharedPreferences prefs;
+public class RNActivity extends ReactActivity {
+	public SharedPreferences prefs;
 	public boolean isGameStarted;
 
 	@Override
-    protected void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
+	protected void onCreate(Bundle bundle) {
+		super.onCreate(bundle);
 
 		BinactyNative.init();
-        SoLoader.init(this, false);
 		EOSSDK.init(getApplicationContext());
-		ReactRootView root = new ReactRootView(this);
 
-		instance = this;
 		ActivityManager.current = this;
 		ActivityManager.reactActivity = this;
-
-        List<ReactPackage> packages = List.of(
-				new MainReactPackage(null),
-				new ReactGame()
-		);
-
-		reactInstance = ReactInstanceManager.builder()
-			.setApplication(getApplication())
-			.setCurrentActivity(this)
-            .setBundleAssetName("index.android.bundle")
-            .setJSMainModulePath("index")
-            .addPackages(packages)
-            .setUseDeveloperSupport(BuildConfig.DEBUG)
-            .setInitialLifecycleState(LifecycleState.RESUMED)
-            .build();
-
-		root.startReactApplication(reactInstance, "App", null);
-		setContentView(root);
 		ActivityManager.hideSystemUi(this);
 
-        prefs = getSharedPreferences("Save", 0);
-        if(!prefs.getBoolean("isNickSetup", false) && !prefs.getBoolean("isFirstGame", true)) {
+		prefs = getSharedPreferences("Save", 0);
+		if(!prefs.getBoolean("isNickSetup", false) && !prefs.getBoolean("isFirstGame", true)) {
 			var dialog = new AndroidDialog().setTitle("Welcome to Binacty!").setCancelable(false);
-					
+
 			dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#dddddd").setText("Please enter your nickname here."));
 			var nameField = new AndroidDialog.Field(AndroidDialog.FieldType.EDIT_TEXT);
 			dialog.addSpace(30).addField(nameField).addSpace(30);
-					
+
 			dialog.addAction(new AndroidDialog.Action().setText("Save and Continue").setClickListener(button -> {
 				prefs.edit()
-					.putBoolean("isNickSetup", true)
-                    .putString("nick", nameField.getText()).apply();
-					
-                Intent intent = new Intent(this, ReactActivity.class);
+						.putBoolean("isNickSetup", true)
+						.putString("nick", nameField.getText()).apply();
+
+				Intent intent = new Intent(this, getClass());
 				startActivity(intent);
 				finish();
 				dialog.close();
 			}));
 			dialog.show();
-        }
+		}
 
-        if(!prefs.getBoolean("isPacksListDefaultCopied", false)) {
+		if(!prefs.getBoolean("isPacksListDefaultCopied", false)) {
 			FileUtil.external("packs/installed.json").writeString(FileUtil.internal("packs/defaultList.json").readString(false), false);
-            prefs.edit().putBoolean("isPacksListDefaultCopied", true).apply();
-        }
-    }
+			prefs.edit().putBoolean("isPacksListDefaultCopied", true).apply();
+		}
+	}
 
-    @Override
-    public void onPause() {
-        super.onPause();
+	@Override
+	public void onPause() {
+		super.onPause();
 		ActivityManager.onPause();
-    }
+	}
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        ActivityManager.current = this;
+	@Override
+	public void onResume() {
+		super.onResume();
+		ActivityManager.current = this;
 		ActivityManager.onResume();
-    }
+	}
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        ActivityManager.stopMusic();
-    }
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		ActivityManager.stopMusic();
+	}
 
-    @Override
-    public void invokeDefaultOnBackPressed() {
-        finishAffinity();
-    }
+	@Override
+	public void invokeDefaultOnBackPressed() {
+		finishAffinity();
+	}
 
-    @Override
-    public void onBackPressed() {
-		reactInstance.onBackPressed();
-    }
-
-    @Override
+	@Override
 	@SuppressLint("VisibleForTests")
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-        switch(requestCode) {
+		switch(requestCode) {
 			case 1: {
 				if(resultCode != Activity.RESULT_OK || intent == null) return;
 				ActivityManager.toast("Please wait. Loading the pack data", false);
@@ -157,7 +122,9 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 							dest.rename(pack.id);
 							PackLoader.reloadPacks();
 							PackLoader.reloadGamemodes();
-							ReactContext context = reactInstance.getCurrentReactContext();
+
+							ReactContext context = RNApp.getReactInstance().getCurrentReactContext();
+
 							if(context != null) {
 								context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("reload", null);
 							}
@@ -172,7 +139,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 				}
 				break;
 			}
-			
+
 			case 2: {
 				if(resultCode == Activity.RESULT_OK) {
 					try {
@@ -181,14 +148,14 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 							if(result.getIsOk()) {
 								if(!extra.isValid()) throw new BoomException("Invalid authentication data!");
 								prefs.edit()
-									.putString("nick", credentials.getDisplayName())
-									.putString("avatar", credentials.getProfilePictureUri() != null ? credentials.getProfilePictureUri().toString() : "")
-									.putBoolean("isSignedIn", true)
-									.putString("signInMethod", "google")
-									.putString("sessionToken", extra.session_token)
-									.putString("player	UID", extra.player_uid)
-									.apply();
-									
+										.putString("nick", credentials.getDisplayName())
+										.putString("avatar", credentials.getProfilePictureUri() != null ? credentials.getProfilePictureUri().toString() : "")
+										.putBoolean("isSignedIn", true)
+										.putString("signInMethod", "google")
+										.putString("sessionToken", extra.session_token)
+										.putString("player	UID", extra.player_uid)
+										.apply();
+
 								ActivityManager.forceExit();
 							} else {
 								AndroidDialog.createMessageDialog("Failed to connect the server", "Stacktrace:\n" + Log.getStackTraceString(result.getException())).show();
@@ -204,5 +171,18 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 				break;
 			}
 		}
-    }
+	}
+
+	@Override
+	protected String getMainComponentName() {
+		return "App";
+	}
+
+	@Override
+	protected ReactActivityDelegate createReactActivityDelegate() {
+		return new DefaultReactActivityDelegate(
+				this,
+				Objects.requireNonNull(getMainComponentName()),
+				DefaultNewArchitectureEntryPoint.getFabricEnabled());
+	}
 }

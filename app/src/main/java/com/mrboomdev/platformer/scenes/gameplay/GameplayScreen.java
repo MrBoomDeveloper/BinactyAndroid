@@ -73,7 +73,7 @@ public class GameplayScreen extends CoreScreen {
 
 		environment.update(delta);
 		FunUtil.update();
-		AudioUtil.Companion.update();
+		AudioUtil.update();
 	}
 	
 	@Override

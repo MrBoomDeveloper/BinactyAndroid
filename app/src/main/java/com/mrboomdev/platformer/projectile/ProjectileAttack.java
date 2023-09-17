@@ -20,7 +20,7 @@ import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 
-public class ProjectileAttack {
+public class ProjectileAttack extends Projectile {
 	private final Sprite sprite;
 	public final Body body;
 	private final Animation<TextureRegion> animation;
@@ -90,7 +90,22 @@ public class ProjectileAttack {
 	public void destroy() {
 		world.destroyBody(body);
 	}
-	
+
+	@Override
+	public int getDamage() {
+		return owner.stats.damage;
+	}
+
+	@Override
+	public Vector2 getPower() {
+		return power;
+	}
+
+	@Override
+	public CharacterEntity getOwner() {
+		return owner;
+	}
+
 	public static class AttackStats {
 		public int damage = 25;
 		public float delay = .1f;

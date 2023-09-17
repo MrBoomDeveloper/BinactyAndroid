@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
-import com.mrboomdev.platformer.ConstantsKt;
+import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
@@ -50,7 +50,7 @@ public class GameHolder extends Game {
 		analytics.log("GameHolder", "create");
 		
 		try {
-			var adapter = ConstantsKt.getMoshi().adapter(LoadingFiles.class);
+			var adapter = Constants.moshi.adapter(LoadingFiles.class);
 
 			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
 			Objects.requireNonNull(files).loadToManager(assets, "LOADING");

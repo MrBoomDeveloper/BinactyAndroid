@@ -17,9 +17,9 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.binacty.packs.PackEntry;
 import com.mrboomdev.platformer.BuildConfig;
-import com.mrboomdev.platformer.ConstantsKt;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.game.pack.PackData;
@@ -269,7 +269,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 		data.putBoolean("enableEditor", false);
 
 		try {
-			var entryAdapter = ConstantsKt.getMoshi().adapter(PackEntry.class);
+			var entryAdapter = Constants.moshi.adapter(PackEntry.class);
 			var entry = entryAdapter.fromJson(FileUtil.internal("standard_gamemode.json").readString(false));
 
 			if(entry == null) throw new BoomException("Null file: \"standard_gamemode.json\"");
@@ -306,7 +306,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 
 		if(data.hasKey("entry")) {
 			try {
-				var adapter = ConstantsKt.getMoshi().adapter(PackData.GamemodeEntry.class);
+				var adapter = Constants.moshi.adapter(PackData.GamemodeEntry.class);
 				var entry = adapter.fromJson(Objects.requireNonNull(data.getString("entry")));
 				intent.putExtra("gamemodeFile", Objects.requireNonNull(entry).file);
 				intent.putExtra("engine", entry.engine);

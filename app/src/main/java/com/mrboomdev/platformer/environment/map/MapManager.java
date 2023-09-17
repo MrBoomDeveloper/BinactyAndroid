@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import box2dLight.RayHandler;
 
@@ -53,7 +54,7 @@ public class MapManager {
 	@Json(ignore = true)
 	private Status status = Status.PREPARING;
 	@Json(ignore = true)
-	private GameHolder game = GameHolder.getInstance();
+	private final GameHolder game = GameHolder.getInstance();
 	
 	public void render(SpriteBatch batch) {
 		if(!pendingRemoves.isEmpty()) {
@@ -100,6 +101,7 @@ public class MapManager {
 				if(tile.texture == null || tile.source.goTo(tile.texture).isAddedToAsyncLoading()) continue;
 				tile.source.goTo(tile.texture).loadAsync(Texture.class);
 			}
+
 			status = Status.LOADING_RESOURCES;
 		} catch(Exception e) {
 			LogUtil.crash("Failed to build a map.", "Something went wrong while building a map of the environment.", e);
@@ -108,22 +110,57 @@ public class MapManager {
 		return this;
 	}
 	
-	private void addPrefix(@NonNull Map<String, MapTile> hashMap, String prefix) {
+	private void addPrefix(@NonNull Map<String, MapTile> map, String prefix) {
     	Map<String, MapTile> newHashMap = new HashMap<>();
-		for(var entry : hashMap.entrySet()) {
+		for(var entry : map.entrySet()) {
         	String newKey = prefix + entry.getKey();
         	MapTile value = entry.getValue();
         	newHashMap.put(newKey, value);
     	}
-   	 hashMap.clear();
-   	 hashMap.putAll(newHashMap);
+
+   		map.clear();
+   		map.putAll(newHashMap);
 	}
 
 	
-	//Prevents from duplicate tiles
+	// Prevents from duplicate tiles
 	@NonNull
 	private String getTextPosition(@NonNull float[] position, int layer) {
 		return Math.round(position[0]) + ":" + Math.round(position[1]) + ":" + layer;
+	}
+
+	public MapTile findTile(float x, float y, int layer) {
+		var tiles = objects.stream()
+				.filter(object -> object instanceof MapTile && ((MapTile) object).layer == layer)
+				.map(object -> (MapTile)object)
+				.collect(Collectors.toList());
+
+		try {
+			Collections.sort(tiles);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		for(int i = tiles.size() - 1; i >= 0; i--) {
+			var tile = tiles.get(i);
+			var sprite = tile.sprite != null ? tile.sprite : tile.devSprite;
+
+			if(sprite != null) {
+				if(doesCursorTouchesObject(x, y, sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight())) {
+					return tile;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	private boolean doesCursorTouchesObject(float x, float y, float objectX, float objectY, float objectWidth, float objectHeight) {
+		return x >= objectX
+			&& x <= objectX + objectWidth
+			&& y >= objectY
+			&& y <= objectY + objectHeight;
 	}
 	
 	public void addTile(@NonNull String name, float[] position, int layer) {
@@ -131,6 +168,12 @@ public class MapManager {
 			removeTile(position, layer);
 			return;
 		} else if(name.equals("SELECT")) {
+			/*var tile = findTile(position[0], position[1], layer);
+			if(tile != null) {
+				game.environment.ui.editor.selectTile(tile);
+				return;
+			}*/
+
 			var pos = getTextPosition(position, layer);
 			game.environment.ui.editor.selectTile(tilesMap.containsKey(pos) ? tilesMap.get(pos) : null);
 			return;
@@ -141,9 +184,11 @@ public class MapManager {
 		if(tilesMap.containsKey(pos)) return;
 		
 		MapTile tile = new MapTile();
+
 		if(preset == null) {
 			throw BoomException.builder("Tile preset was not found: ").addQuoted(name).build();
 		}
+
 		tile.copyData(preset);
 		position[0] = Math.round(position[0]);
 		position[1] = Math.round(position[1]);
@@ -152,7 +197,10 @@ public class MapManager {
 		tile.name = name;
 		tile.layer = layer;
 		tile.build(world);
-		if(rayHandler != null) tile.setupRayHandler(rayHandler);
+
+		if(rayHandler != null) {
+			tile.setupRayHandler(rayHandler);
+		}
 		
 		objects.add(tile);
 		tiles.add(tile);

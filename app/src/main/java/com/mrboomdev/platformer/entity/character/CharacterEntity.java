@@ -33,11 +33,11 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileAttack;
 import com.mrboomdev.platformer.projectile.ProjectileManager;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
-import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.Direction;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 import com.squareup.moshi.Json;
 
 import org.jetbrains.annotations.Nullable;

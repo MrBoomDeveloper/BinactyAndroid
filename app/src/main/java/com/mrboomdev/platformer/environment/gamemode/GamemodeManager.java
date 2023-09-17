@@ -4,11 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.util.CameraUtil;
-import com.mrboomdev.platformer.util.TimeFormatterKt;
+import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
@@ -68,14 +67,14 @@ public class GamemodeManager {
 				switch(function.action) {
 					case GAME_OVER:
 						CameraUtil.setTarget(null);
-						CameraUtil.setCameraZoom(1, .01f);
+						CameraUtil.setCameraZoom(.9f, .01f);
 
 						game.settings.isControlsEnabled = false;
 						game.settings.isUiVisible = false;
 						game.stats.isWin = time == 0;
 
 						gameOverTimeout = 1;
-						fade.start(0, 1, .5f);
+						fade.start(0, .5f, .5f);
 						break;
 
 					case TIMER_SETUP:
@@ -107,9 +106,11 @@ public class GamemodeManager {
 		if(gameOverTimeout > 0) {
 			gameOverTimeout += Gdx.graphics.getDeltaTime();
 
-			if(gameOverTimeout > 3.5f) {
+			if(gameOverTimeout > 2.5f) {
+				isBroken = true;
+
 				game.script.triggerEnded();
-				game.launcher.exit(GameLauncher.Status.GAME_OVER);
+				game.launcher.gameOver();
 			}
 		}
 		
@@ -134,7 +135,7 @@ public class GamemodeManager {
 		if(!isTimerSetup || isTimerEnd) return;
 		
 		time = Math.max(0, time - (delta * timerSpeed));
-		timer.setText(TimeFormatterKt.formatTimer(time, "mm:ss"));
+		timer.setText(FunUtil.formatTimer(time, "mm:ss"));
 		
 		if(time == 0) {
 			isTimerEnd = true;

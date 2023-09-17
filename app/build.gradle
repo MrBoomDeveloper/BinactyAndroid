@@ -5,7 +5,6 @@ plugins {
 	id "com.google.gms.google-services"
 	id "com.google.firebase.crashlytics"
 	id "com.facebook.react"
-	id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -29,15 +28,21 @@ android {
 		versionName "0.5.0"
 		versionCode 13
 
-		minSdkVersion 24
-		targetSdkVersion 33
-		compileSdk 33
+		minSdkVersion rootProject.ext.minSdkVersion
+		targetSdkVersion rootProject.ext.targetSdkVersion
+		compileSdk rootProject.ext.compileSdkVersion
 		multiDexEnabled true
 
 		var formatter = new SimpleDateFormat()
 		formatter.applyPattern("dd-MM-yyyy, HH:mm")
 
 		buildConfigField("String", "BUILD_TIME", "\"" + formatter.format(new Date()) + "\"")
+
+		buildFeatures {
+			renderScript = true
+			buildConfig = true
+			aidl = true
+		}
 
         externalNativeBuild {
             cmake {
@@ -121,17 +126,14 @@ dependencies {
 	
 	/* Util libraries */
 	implementation 'com.squareup.moshi:moshi:1.15.0'
-	implementation "com.squareup.moshi:moshi-kotlin:1.15.0"
 	implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.11"
 	
 	/* Android libraries */
 	implementation "com.google.android.material:material:1.9.0"
-	implementation "androidx.core:core-ktx:1.10.1"
-	implementation "androidx.appcompat:appcompat:1.6.1"
 	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 	implementation "androidx.constraintlayout:constraintlayout:2.1.4"
 	implementation "androidx.security:security-crypto:1.0.0"
-	implementation "androidx.browser:browser:1.5.0"
+	implementation "androidx.browser:browser:1.4.0"
 	
 	/* React Native */
 	implementation "com.facebook.react:react-android"

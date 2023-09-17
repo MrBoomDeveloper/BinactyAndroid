@@ -22,8 +22,8 @@ import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.R;
-import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.CameraUtil;
+import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 public class GameDebugMenu {
 	private static boolean isMenuCreated = false;

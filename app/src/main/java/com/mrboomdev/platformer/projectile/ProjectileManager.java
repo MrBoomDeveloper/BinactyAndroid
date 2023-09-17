@@ -13,8 +13,8 @@ import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileAttack.AttackStats;
-import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.FunUtil;
+import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 public class ProjectileManager {
     private final World world;

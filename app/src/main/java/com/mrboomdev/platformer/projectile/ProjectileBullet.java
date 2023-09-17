@@ -15,7 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mrboomdev.platformer.entity.Entity;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 
-public class ProjectileBullet {
+public class ProjectileBullet extends Projectile {
     public Body body;
     public ProjectileStats stats;
     public CharacterEntity owner;
@@ -23,6 +23,21 @@ public class ProjectileBullet {
     public boolean isDied;
 	private final Sprite sprite;
 	private final World world;
+
+    @Override
+    public Vector2 getPower() {
+        return power;
+    }
+
+    @Override
+    public int getDamage() {
+        return stats.damage;
+    }
+
+    @Override
+    public CharacterEntity getOwner() {
+        return owner;
+    }
 
     public ProjectileBullet(@NonNull World world, @NonNull CharacterEntity owner, @NonNull Vector2 power) {
         this.world = world;

@@ -7,8 +7,8 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 @SuppressWarnings("unused")
 public class AudioBridge {

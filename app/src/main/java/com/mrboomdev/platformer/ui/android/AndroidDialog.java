@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.mrboomdev.binacty.ui.widgets.Button;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.ui.ActivityManager;
 
@@ -81,6 +82,7 @@ public class AndroidDialog {
 	
 	public void close() {
 		dialog.cancel();
+
 		dialog = null;
 		builder = null;
 		holder = null;
@@ -180,14 +182,13 @@ public class AndroidDialog {
 		
 		public View getView(Activity activity) {
 			if(view == null) {
-				view = new MaterialButton(activity);
+				view = new Button(activity);
 				view.setText(text);
-				view.setTextColor(Color.BLACK);
-				view.setAllCaps(false);
 
 				if(clickListener == null) return view;
 				view.setOnClickListener((button) -> clickListener.clicked(this));
 			}
+
 			return view;
 		}
 		

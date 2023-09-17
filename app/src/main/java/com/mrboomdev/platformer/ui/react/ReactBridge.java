@@ -5,14 +5,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
-import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.ui.ActivityManager;
@@ -33,22 +29,6 @@ public class ReactBridge extends ReactContextBaseJavaModule {
     public String getName() {
         return "GameNative";
     }
-	
-	@ReactMethod
-	public void getStats(Promise promise) {
-		try {
-			var stats = GameHolder.getInstance().stats;
-			WritableMap map = Arguments.createMap();
-			map.putBoolean("isWin", stats.isWin);
-			map.putDouble("totalKills", stats.totalKills);
-			map.putDouble("totalDamage", stats.totalDamage);
-			map.putDouble("matchDuration", stats.matchDuration);
-			promise.resolve(map);
-		} catch(Exception e) {
-			promise.reject("Failed to collect stats", e);
-			e.printStackTrace();
-		}
-	}
 	
 	@ReactMethod
 	public void addListener(String name) {}

@@ -42,7 +42,7 @@ public class EnvironmentManager {
 		world = new World(new Vector2(0, 0), true);
 
 		var particlesDir = FileUtil.internal("packs/official/src/particles");
-		particles = new ParticleManager(world);
+		particles = new ParticleManager();
 		particles.loadParticle(particlesDir.goTo("dust"), "__dust");
 		particles.loadParticle(particlesDir.goTo("tiny_boom"), "__tiny_boom");
 		particles.loadParticle(particlesDir.goTo("medium_boom"), "__medium_boom");

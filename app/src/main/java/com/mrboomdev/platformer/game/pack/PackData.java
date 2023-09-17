@@ -2,7 +2,7 @@ package com.mrboomdev.platformer.game.pack;
 
 import androidx.annotation.NonNull;
 
-import com.mrboomdev.platformer.ConstantsKt;
+import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -66,7 +66,7 @@ public class PackData {
 
 		private static void generateAdapter() {
 			if(jsonAdapter != null) return;
-			jsonAdapter = ConstantsKt.getMoshi().adapter(Config.class);
+			jsonAdapter = Constants.moshi.adapter(Config.class);
 		}
 	}
 	

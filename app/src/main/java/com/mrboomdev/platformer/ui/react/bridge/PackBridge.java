@@ -13,7 +13,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.mrboomdev.platformer.ConstantsKt;
+import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.game.pack.PackWidget;
@@ -155,7 +155,7 @@ public class PackBridge extends ReactContextBaseJavaModule {
 				}
 
 				if(gamemode.entry != null) {
-					var entryAdapter = ConstantsKt.getMoshi().adapter(PackData.GamemodeEntry.class);
+					var entryAdapter = Constants.moshi.adapter(PackData.GamemodeEntry.class);
 					jsGamemode.putString("entry", entryAdapter.toJson(gamemode.entry));
 				}
 

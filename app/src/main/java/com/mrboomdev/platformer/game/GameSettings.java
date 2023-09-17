@@ -4,12 +4,12 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
-import com.mrboomdev.platformer.ConstantsKt;
+import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.online.OnlineManager;
-import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 import java.io.IOException;
 
@@ -37,7 +37,7 @@ public class GameSettings {
 
 		this.objectPositionRecacheDelay = prefs.getFloat("objectPositionRecacheDelay", 1);
 
-		var fileAdapter = ConstantsKt.getMoshi().adapter(FileUtil.class);
+		var fileAdapter = Constants.moshi.adapter(FileUtil.class);
 		var defaultCharacterFile = "{\"source\":\"INTERNAL\",\"path\":\"packs/official/src/characters/klarrie\"}";
 
 		try {

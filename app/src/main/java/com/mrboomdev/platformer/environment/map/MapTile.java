@@ -324,7 +324,7 @@ public class MapTile extends MapObject implements BotTarget {
 			serialized.layer = tile.layer;
 			serialized.flipX = tile.flipX ? true : null;
 			serialized.flipY = tile.flipY ? true : null;
-			serialized.id = (tile.id == null || tile.id.isBlank()) ? null : tile.id;
+			serialized.id = (tile.id == null || tile.id.isEmpty()) ? null : tile.id;
 			return serialized;
 		}
 

@@ -7,7 +7,6 @@ import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.mrboomdev.platformer.ui.react.bridge.AppBridge;
-import com.mrboomdev.platformer.ui.react.bridge.MultiplayerBridge;
 import com.mrboomdev.platformer.ui.react.bridge.PackBridge;
 import com.mrboomdev.platformer.ui.react.view.ReactCharacterViewManager;
 
@@ -22,8 +21,7 @@ public class ReactGame implements ReactPackage {
 		return Arrays.asList(
             new ReactBridge(context),
 			new PackBridge(context),
-			new AppBridge(context),
-			new MultiplayerBridge(context)
+			new AppBridge(context)
        );
     }
 

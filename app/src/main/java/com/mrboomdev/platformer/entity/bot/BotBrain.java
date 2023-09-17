@@ -9,7 +9,7 @@ import com.mrboomdev.platformer.entity.character.CharacterBrain;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.environment.path.presets.MapScanner;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.util.AudioUtil;
+import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 public class BotBrain extends CharacterBrain {
 	public AiStuckChecker stuckChecker = new AiStuckChecker(this);

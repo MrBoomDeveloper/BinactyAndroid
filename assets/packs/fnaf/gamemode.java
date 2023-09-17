@@ -738,7 +738,7 @@ game.setListener(new GameListener() {
 				subtitles.addLine("Hello!?", .4f);
 				//game.setTimer(new Runnable() { run() { vanessa.skin.setAnimationForce(null); }}, .5f);
 
-				subtitles.addLine("Oh my god, a human!", 1.4f, new Runnable() { run() {
+				subtitles.addLine("Oh my god, a human!", 1.2f, new Runnable() { run() {
 				    vanessa.lookAt(null);
 					vanessaBrain.setSpeed(2.5f);
 				    vanessaBrain.setTarget(35, 48);
@@ -755,9 +755,9 @@ game.setListener(new GameListener() {
 					me.wasPower = new Vector2(-1, 0);
 				}});
 				
-				subtitles.addLine("Sorry about the cat, she's been my only company for a while now.", 4);
+				subtitles.addLine("Sorry about the cat, she's been my only company for a while now.", 3.5f);
 				
-				subtitles.addLine("Sorry if I'm too intrusive, I just haven't seen anyone for a while.", 4, new Runnable() { run() {
+				subtitles.addLine("Sorry if I'm too intrusive, I just haven't seen anyone for a while.", 3.5f, new Runnable() { run() {
 				    vanessa.lookAt(null);
 				    
 				    vanessaBrain.setTarget(35, 45);
@@ -766,7 +766,7 @@ game.setListener(new GameListener() {
 				    }});
 				}});
 
-				subtitles.addLine("Take this and follow me.", 2, new Runnable() { run() {
+				subtitles.addLine("Take this and follow me.", 1.5f, new Runnable() { run() {
 					setCameraZoom(.4f, .1f);
 					setWidgetVisibility("dash", true);
 					vanessaBrain.setTarget(19, 21.5f);
@@ -904,6 +904,7 @@ void startNight() {
 
 	game.setTimer(new Runnable() { run() {
 		if(isGameEnded || foxy.entity.isDead || nightId < 2) return;
+
 		audio.playSound("sounds/foxy_song.wav", 0.1f);
 	}}, (float)(Math.random() * 600 + 30));
 

@@ -32,8 +32,10 @@ public class EditorScreen {
 
 	public void selectTile(MapTile tile) {
 		if(selectedTile != null) selectedTile.isSelected = false;
+
 		if(tile != null) tile.isSelected = true;
 		selectedTile = tile;
+
 		if(widgets == null) {
 			widgets = new ObjectMap<>();
 			widgets.put("DownScaleY", new ButtonWidget(ButtonWidget.Style.COMPACT)

@@ -21,74 +21,81 @@ public class ProjectileCollision implements ContactListener {
     @Override
     public void beginContact(@NonNull Contact contact) {
         if (contact.getFixtureA() == null || contact.getFixtureB() == null) return;
+
         onCollide(getUserData(contact, true), getUserData(contact, false));
         onCollide(getUserData(contact, false), getUserData(contact, true));
     }
 
     private void onCollide(Object me, Object enemy) {
-		if(me instanceof ProjectileBullet || me instanceof ProjectileAttack) {
-			if(enemy instanceof MapTile) {
-				var tile = (MapTile)enemy;
-				System.out.println("touch tile with sound: " + tile.hitSound);
+		if(me instanceof Projectile && enemy instanceof MapTile) {
+			var tile = (MapTile)enemy;
+			System.out.println("touch tile with sound: " + tile.hitSound);
 
-				//TODO: I literally don't know, why this shit doesn't work!
+			//TODO: I literally don't know, why this shit doesn't work!
 
-				/*if(tile.hitSound != null) {
-					var path = tile.source.goTo(tile.hitSound);
-					System.out.println(path.getPath());
-					Gdx.audio.newSound(path.getFileHandle()).play();
-				}*/
-			}
+			/*if(tile.hitSound != null) {
+				var path = tile.source.goTo(tile.hitSound);
+				System.out.println(path.getPath());
+				Gdx.audio.newSound(path.getFileHandle()).play();
+			}*/
 		}
 
         if(enemy instanceof CharacterEntity) {
+			var entity = (CharacterEntity)enemy;
+
+			if(me instanceof Projectile) {
+				var projectile = (Projectile)me;
+
+				if(projectile.getOwner() == entity) return;
+
+				entity.gainDamage(projectile.getDamage(), projectile.getPower());
+
+				if(entity.damagedListener != null) {
+					entity.damagedListener.damaged(projectile.getOwner(), projectile.getDamage());
+				}
+
+				if(projectile.getOwner() == game.settings.mainPlayer) {
+					game.stats.totalDamage += projectile.getDamage();
+
+					if(entity.isDead) {
+						game.stats.totalKills++;
+					}
+				}
+			}
+
             if(me instanceof ProjectileBullet) {
                 ProjectileBullet bullet = (ProjectileBullet) me;
-                CharacterEntity player2 = (CharacterEntity) enemy;
-
-                if(bullet.owner == player2) return;
-                player2.gainDamage(bullet.stats.damage, bullet.power);
-
-				if(player2.damagedListener != null) {
-					player2.damagedListener.damaged(bullet.owner, bullet.stats.damage);
-				}
 
 				if(enemy != game.settings.mainPlayer) {
 					game.environment.particles.createParticle(
 							"__medium_boom",
 							bullet.body.getPosition().add(bullet.power.cpy().limit(.5f)),
-							new Direction(bullet.power.x).isBackward());
+							Direction.valueOf(bullet.power.x).isBackward());
 				}
             }
 
 			if(me instanceof ProjectileAttack) {
                 ProjectileAttack attack = (ProjectileAttack) me;
-				var player2 = (CharacterEntity) enemy;
 
                 if(attack.owner == enemy) return;
-                player2.gainDamage(attack.owner.stats.damage, attack.power);
 				attack.isDead = true;
-
-				if(player2.damagedListener != null) {
-					player2.damagedListener.damaged(attack.owner, attack.owner.stats.damage);
-				}
             }
 			
 			if(me instanceof TileInteraction && !game.settings.enableEditor) {
-				var player = ((CharacterEntity)enemy);
 				var interaction = (TileInteraction)me;
-				if(interaction.listener == null || player != game.settings.mainPlayer) return;
-				player.nearInteraction = interaction;
+
+				if(interaction.listener == null || entity != game.settings.mainPlayer) return;
+				entity.nearInteraction = interaction;
 				interaction.owner.isSelected = true;
 				selectedTilesCount++;
+
 				((ActionButton)game.environment.ui.widgets.get("use")).setActive(true);
 			}
         }
 
         if(me instanceof ProjectileBullet && (enemy instanceof CharacterEntity
 				|| enemy instanceof MapTile
-				|| enemy instanceof ProjectileBullet
-				|| enemy instanceof ProjectileAttack)) {
+				|| enemy instanceof Projectile)) {
             ProjectileBullet bullet = (ProjectileBullet) me;
             bullet.deactivate();
         }
@@ -104,7 +111,7 @@ public class ProjectileCollision implements ContactListener {
 		var game = GameHolder.getInstance();
 		if(game.settings.mainPlayer == me && game.settings.enableEditor) contact.setEnabled(false);
 
-		if(me instanceof ProjectileBullet || me instanceof ProjectileAttack) {
+		if(me instanceof Projectile) {
 			contact.setEnabled(false);
 		}
 

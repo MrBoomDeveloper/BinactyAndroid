@@ -3,7 +3,7 @@ package com.mrboomdev.platformer.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.mrboomdev.platformer.ConstantsKt;
+import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -29,7 +29,8 @@ public class EntityManager {
 	
 	public void loadCharacter(FileUtil file, String id) {
 		try {
-			var adapter = ConstantsKt.getMoshi().adapter(CharacterEntity.class);
+			var adapter = Constants.moshi.adapter(CharacterEntity.class);
+
 			presets.put(id, adapter.fromJson(file.goTo("manifest.json").readString(true)));
 		} catch(Exception e) {
 			throw new BoomException("Invalid character config file!", e);
@@ -38,8 +39,9 @@ public class EntityManager {
 	
 	public void loadItem(FileUtil file, String id) {
 		try {
-			var adapter = ConstantsKt.getMoshi().adapter(Item.class);
+			var adapter = Constants.moshi.adapter(Item.class);
 			var item = adapter.fromJson(file.goTo("manifest.json").readString(true));
+
 			Objects.requireNonNull(item).source = file;
 			itemPresets.put(id, item);
 		} catch(Exception e) {

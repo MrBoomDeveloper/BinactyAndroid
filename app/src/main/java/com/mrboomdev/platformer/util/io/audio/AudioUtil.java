@@ -1,16 +1,24 @@
-package com.mrboomdev.platformer.util;
+package com.mrboomdev.platformer.util.io.audio;
 
+import androidx.annotation.NonNull;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mrboomdev.platformer.game.GameHolder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AudioUtil {
+	public static List<Audio> activeAudio = new ArrayList<>();
 	public static float musicVolume = 1, soundVolume = 1;
 	public static boolean isDisabled;
 	public static Array<Music> playingMusic = new Array<>();
 	private static final Array<Music> musicQueue = new Array<>();
+	private static float updateReloadProgress = 1;
 	private static Music currentTheme;
 	
 	public static void setVolume(float music, float sound) {
@@ -83,5 +91,33 @@ public class AudioUtil {
 		musicQueue.clear();
 		playingMusic.clear();
 		if(currentTheme != null) currentTheme.stop();
+	}
+
+	public static void updateSingle(@NonNull Audio audio) {
+		if(audio.isMusic && audio.is3dSetup) {
+			var calculatedVolume = getVolume(audio.position, audio.distance);
+			audio.music.setVolume(calculatedVolume * audio.volume * musicVolume);
+		}
+	}
+
+	public static void update() {
+		if(updateReloadProgress < .5f) {
+			updateReloadProgress += Gdx.graphics.getDeltaTime();
+			return;
+		}
+
+		var iterator = activeAudio.iterator();
+
+		while(iterator.hasNext()) {
+			var audio = iterator.next();
+
+			if(audio.isStopped) {
+				audio.is3dSetup = false;
+				iterator.remove();
+				continue;
+			}
+
+			updateSingle(audio);
+		}
 	}
 }

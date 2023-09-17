@@ -7,7 +7,7 @@ import static com.mrboomdev.platformer.scenes.loading.LoadingScreen.LoadStep.RES
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mrboomdev.platformer.ConstantsKt;
+import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -34,7 +34,7 @@ public class LoadingScreen extends CoreScreen {
     @Override
     public void show() {
 		try {
-			var adapter = ConstantsKt.getMoshi().adapter(LoadingFiles.class);
+			var adapter = Constants.moshi.adapter(LoadingFiles.class);
 			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
 
 			if(files == null) throw new BoomException("LoadingFiles cannot be null.");

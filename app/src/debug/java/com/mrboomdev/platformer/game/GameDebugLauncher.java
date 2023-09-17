@@ -2,18 +2,20 @@ package com.mrboomdev.platformer.game;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.badlogic.gdx.Gdx;
 import com.google.android.material.color.DynamicColors;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
-import com.mrboomdev.platformer.util.AudioUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 public class GameDebugLauncher extends GameLauncher {
-	private GameDebugMenu menu;
 	private static GameSettings previousSettings;
-	
+	private GameDebugMenu menu;
+
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -35,6 +37,7 @@ public class GameDebugLauncher extends GameLauncher {
 	public void onResume() {
 		super.onResume();
 		menu.onResume();
+
 		if(menu.myView != null) {
 			menu.myView.setVisibility(View.VISIBLE);
 		}
@@ -43,6 +46,7 @@ public class GameDebugLauncher extends GameLauncher {
 	@Override
 	public void onPause() {
 		super.onPause();
+
 		if(menu.myView != null) {
 			menu.myView.setVisibility(View.GONE);
 		}
@@ -61,12 +65,16 @@ public class GameDebugLauncher extends GameLauncher {
 	
 	@Override
 	public void exit(Status status) {
+		AudioUtil.clear();
+
+		LinearLayout overlay = findViewById(R.id.overlay);
+		overlay.removeAllViews();
+
 		if(status == Status.CRASH || status == Status.LOBBY) {
 			finishAffinity();
 			return;
 		}
 
-		AudioUtil.clear();
 		Gdx.app.postRunnable(() -> {
 			var game = GameHolder.getInstance();
 			game.reset();

@@ -1,6 +1,7 @@
 package com.mrboomdev.platformer.game;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -9,9 +10,9 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidAudio;
 import com.badlogic.gdx.backends.android.AsynchronousAndroidAudio;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.binacty.Constants;
+import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.binacty.game.overlay.OverlayGameover;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.R;
@@ -23,7 +24,7 @@ import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 import java.io.IOException;
 import java.util.Objects;
 
-public class GameLauncher extends AndroidApplication {
+public class GameLauncher extends AndroidApplication implements CoreLauncher {
 	private GameHolder game;
 	private boolean isFinished;
 	
@@ -32,28 +33,27 @@ public class GameLauncher extends AndroidApplication {
 		super.onCreate(bundle);
 		setContentView(R.layout.gameplay_parent);
 
-		FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(this);
-		FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-		
+		var crashlytics = FirebaseCrashlytics.getInstance();
 		var prefs = getSharedPreferences("Save", 0);
+		var settings = new GameSettings(prefs);
+		var config = new AndroidApplicationConfiguration();
+
 		if(!prefs.getBoolean("crashlytics", true) || BuildConfig.DEBUG) {
 			crashlytics.setCrashlyticsCollectionEnabled(false);
 		}
-		
-		var settings = new GameSettings(prefs);
+
 		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
 		settings.ignoreScriptErrors = BuildConfig.DEBUG;
-		game = GameHolder.setInstance(this, settings, new GameAnalytics(analytics));
+		game = GameHolder.setInstance(this, settings);
 
 		try {
 			resolveGameFiles();
 		} catch(Exception e) {
 			e.printStackTrace();
 
-			if(!BuildConfig.DEBUG) exit(Status.CRASH);
+			if(!BuildConfig.DEBUG) exit(ExitStatus.CRASH);
 		}
 
-		var config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
 		config.useAccelerometer = false;
 		config.useCompass = false;
@@ -68,7 +68,7 @@ public class GameLauncher extends AndroidApplication {
 		ActivityManager.hideSystemUi(this);
 	}
 
-	public void gameOver() {
+	private void gameOver() {
 		runOnUiThread(() -> {
 			LinearLayout overlay = findViewById(R.id.overlay);
 			overlay.setVisibility(View.VISIBLE);
@@ -105,29 +105,35 @@ public class GameLauncher extends AndroidApplication {
 		return new AsynchronousAndroidAudio(context, config);
 	}
 	
-	public void exit(Status status) {
+	public void exit(ExitStatus status) {
 		if(isFinished) return;
-		AudioUtil.clear();
 
-		LinearLayout overlay = findViewById(R.id.overlay);
-		overlay.removeAllViews();
+		runOnUiThread(() -> {
+			LinearLayout overlay = findViewById(R.id.overlay);
+			overlay.removeAllViews();
 
-		switch(status) {
-			case CRASH:
-			case LOBBY:
-				ActivityManager.forceExit();
-				finish();
-				break;
+			switch(status) {
+				case CRASH:
+				case LOBBY:
+					AudioUtil.clear();
+					ActivityManager.forceExit();
 
-			case GAME_OVER:
-				ActivityManager.gameOver();
-				finish();
-				break;
-		}
+					finish();
+					isFinished = true;
+					break;
 
-		isFinished = true;
+				case GAME_OVER:
+					gameOver();
+					break;
+			}
+		});
 	}
-	
+
+	@Override
+	public SharedPreferences getSave() {
+		return getSharedPreferences("Save", 0);
+	}
+
 	public void pause() {
 		game.settings.pause = true;
 		AudioUtil.pause();
@@ -136,7 +142,7 @@ public class GameLauncher extends AndroidApplication {
 		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setTextColor("#ffffff").setText("So you've just stopped the entire universe, huh?"));
 		dialog.addAction(new AndroidDialog.Action().setText("Exit").setClickListener(button -> {
 			game.settings.pause = false;
-			game.launcher.exit(GameLauncher.Status.LOBBY);
+			game.launcher.exit(ExitStatus.LOBBY);
 			dialog.close();
 		}));
 
@@ -165,11 +171,5 @@ public class GameLauncher extends AndroidApplication {
 	public void onPause() {
 		super.onPause();
 		ActivityManager.onPause();
-	}
-	
-	public enum Status {
-		CRASH,
-		GAME_OVER,
-		LOBBY
 	}
 }

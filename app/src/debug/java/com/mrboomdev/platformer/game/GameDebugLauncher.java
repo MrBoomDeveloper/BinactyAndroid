@@ -19,6 +19,7 @@ public class GameDebugLauncher extends GameLauncher {
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
+
 		var game = GameHolder.getInstance();
 		FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
 
@@ -64,13 +65,13 @@ public class GameDebugLauncher extends GameLauncher {
 	}
 	
 	@Override
-	public void exit(Status status) {
+	public void exit(ExitStatus status) {
 		AudioUtil.clear();
 
 		LinearLayout overlay = findViewById(R.id.overlay);
 		overlay.removeAllViews();
 
-		if(status == Status.CRASH || status == Status.LOBBY) {
+		if(status == ExitStatus.CRASH || status == ExitStatus.LOBBY) {
 			finishAffinity();
 			return;
 		}

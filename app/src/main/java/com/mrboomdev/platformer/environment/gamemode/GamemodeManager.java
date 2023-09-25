@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.environment.gamemode;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
@@ -110,7 +111,7 @@ public class GamemodeManager {
 				isBroken = true;
 
 				game.script.triggerEnded();
-				game.launcher.gameOver();
+				game.launcher.exit(CoreLauncher.ExitStatus.GAME_OVER);
 			}
 		}
 		

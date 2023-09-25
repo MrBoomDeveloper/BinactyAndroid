@@ -67,6 +67,10 @@ public class Item {
         this.power = power;
     }
 
+    public Vector2 getPower() {
+        return power;
+    }
+
     public void update() {
         if(didDisposed) return;
 
@@ -187,7 +191,7 @@ public class Item {
     }
 
     public Vector2 getOffset(@NonNull CharacterSkin characterSkin) {
-        if(didDisposed) return Vector2.Zero;
+        if(didDisposed) return new Vector2();
 
         var currentCharacterFrame = characterSkin.getCurrentFrame();
         return new Vector2(skin.position[0] + currentCharacterFrame.handPosition[0], skin.position[1] + currentCharacterFrame.handPosition[1]);

@@ -113,7 +113,6 @@ game.load("character", "characters/chica");
 game.load("character", "characters/foxy");
 
 game.load("item", "items/flashlight");
-game.load("item", "$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol");
 
 game.load("music", "music/music_box.wav");
 game.load("music", "music/party_song.ogg");
@@ -128,7 +127,7 @@ if(nightId == 1) {
 	game.load("character", "characters/vanessa");
 }
 
-game.load("music", "music/phone_" + nightId + ".wav");
+game.load("item", "$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol");
 
 /* ----------
 	CREATE ENTITIES
@@ -422,6 +421,81 @@ if(nightId == 2) {
 	}});
 }
 
+void introAttackCutscene() {
+    var me = core.settings.mainPlayer;
+    me.inventory.setCurrentItem(1);
+    
+    ui.setVisibility(false);
+    game.setControlsEnabled(false);
+    CameraUtil.setCameraMoveSpeed(.01f);
+    CameraUtil.setCameraZoom(.5f, .01f);
+    CameraUtil.setTarget(vanessa);
+    
+    var attackerBrain = new BotFollower();
+    attackerBrain.setWaypoints(waypoints);
+    
+    foxy.entity.setBrain(attackerBrain);
+    foxy.entity.lookAt(vanessa);
+    
+    game.setTimer(new Runnable() { run() {
+        attackerBrain.start();
+        attackerBrain.setTarget(vanessa);
+        attackerBrain.setSpeed(1.2f);
+    }}, .5f);
+    
+    var vanessaBrain = new BotFollower();
+    vanessaBrain.setWaypoints(waypoints);
+    vanessa.setBrain(vanessaBrain);
+    vanessaBrain.start();
+    vanessaBrain.setSpeed(1f);
+    vanessaBrain.setTarget(24, 22);
+    
+    attackerBrain.onCompleted(new Runnable() { run() {
+        vanessa.lookAt(foxy.entity);
+        subtitles.addLine("Dang it!", 2);
+        
+        game.setTimer(new Runnable() { run() {
+            foxy.entity.attack(vanessa);
+            
+            game.setTimer(new Runnable() { run() {
+                vanessa.dash();
+                vanessaBrain.setTarget(foxy.entity);
+                
+                vanessaBrain.onCompleted(new Runnable() { run() {
+                    vanessa.attack(foxy.entity);
+                    foxy.entity.lookAt(null);
+                
+                    game.setTimer(new Runnable() { run() {
+                        vanessa.inventory.setCurrentItem(1);
+                        vanessa.attack(foxy.entity);
+                        
+                        vanessaBrain.setTarget(me);
+                        vanessaBrain.setCompletionListener(new Runnable() { run() {
+                            //vanessaBrain.setTarget(me);
+                        }});
+                        
+                        vanessa.lookAt(me);
+                        me.inventory.setCurrentItem(0);
+                    
+                        ui.setVisibility(true);
+                        game.setControlsEnabled(true);
+                        CameraUtil.reset();
+                        CameraUtil.setTarget(me);
+                    
+                        //subtitles.addLine("Quick! Help me move him fo the salvage room!", 4);
+                        //subtitles.addLine("GO TO OFFICE. CUTSCENE ISN'T DONE YET!", 5);
+                        subtitles.addLine("Quick! Go to the office! It's down the hall!", 4);
+                        
+                        setWidgetVisibility("use", true);
+                        setWidgetVisibility("stats_health", true);
+                        didIntroEnded = true;
+                    }}, .4f);
+                }});
+            }}, .5f);
+        }}, .2f);
+    }});
+}
+
 void presentationCutscene() {
 	var me = core.settings.mainPlayer;
 	
@@ -712,6 +786,7 @@ game.setListener(new GameListener() {
 			vanessa.stats.health = 9999999;
 
 			vanessa.giveItem(entities.createItem("items/flashlight"));
+			vanessa.giveItem(entities.createItem("$a7739b9c-e7df-11ed-a05b-0242ac120003/src/items/pistol"));
 
 			me.lookAt(vanessa);
 			vanessa.lookAt(me);
@@ -735,10 +810,10 @@ game.setListener(new GameListener() {
 				subtitles.setFadeDuration(.25f);
 				
 				//vanessa.skin.setAnimationForce("talk");
-				subtitles.addLine("Hello!?", .4f);
+				subtitles.addLine("Hello!?", .4f, .8f);
 				//game.setTimer(new Runnable() { run() { vanessa.skin.setAnimationForce(null); }}, .5f);
 
-				subtitles.addLine("Oh my god, a human!", 1.2f, new Runnable() { run() {
+				subtitles.addLine("Oh my god, a human!", 1, .8f, new Runnable() { run() {
 				    vanessa.lookAt(null);
 					vanessaBrain.setSpeed(2.5f);
 				    vanessaBrain.setTarget(35, 48);
@@ -748,14 +823,16 @@ game.setListener(new GameListener() {
 					vanessaBrain.setTarget(37, 46);
 					vanessaBrain.setSpeed(2);
 					vanessa.lookAt(me);
-					setWidgetVisibility("joystick", true);
 
 					me.skin.setAnimationForce(null);
 					me.lookAt(null);
 					me.wasPower = new Vector2(-1, 0);
+					
+					CameraUtil.setCameraMoveSpeed(.01f);
+					CameraUtil.setTarget(vanessa);
 				}});
 				
-				subtitles.addLine("Sorry about the cat, she's been my only company for a while now.", 3.5f);
+				//subtitles.addLine("Sorry about the cat, she's been my only company for a while now.", 3.5f);
 				
 				subtitles.addLine("Sorry if I'm too intrusive, I just haven't seen anyone for a while.", 3.5f, new Runnable() { run() {
 				    vanessa.lookAt(null);
@@ -767,21 +844,36 @@ game.setListener(new GameListener() {
 				}});
 
 				subtitles.addLine("Take this and follow me.", 1.5f, new Runnable() { run() {
+				    game.setTimer(new Runnable() { run() {
+				        vanessaBrain.setTarget(28, 22);
+					    vanessaBrain.setSpeed(.6f);
+				    	vanessa.lookAt(bonnie.entity);
+				    	
+				    	CameraUtil.reset();
+				    }}, 1.5f);
+				    
 					setCameraZoom(.4f, .1f);
 					setWidgetVisibility("dash", true);
-					vanessaBrain.setTarget(19, 21.5f);
-					vanessaBrain.setSpeed(.8f);
-					vanessa.lookAt(bonnie.entity);
-
+					
 					me.giveItem(entities.createItem("items/flashlight"));
 					setWidgetVisibility("aim", true);
+					setWidgetVisibility("joystick", true);
+					
+					CameraUtil.setTarget(me);
+					
+					new Trigger(27, 28, 4, new TriggerCallback() { triggered(var character) {
+					    if(character != core.settings.mainPlayer) return false;
+					    
+					    introAttackCutscene();
+					    return true;
+					}});
 
-					presentationTrigger = new Trigger(22, 22, 5, new TriggerCallback() { triggered(var character) {
+					/*presentationTrigger = new Trigger(22, 22, 5, new TriggerCallback() { triggered(var character) {
 						if(character != core.settings.mainPlayer) return false;
 
 						presentationCutscene();
 						return true;
-					}});
+					}});*/
 				}});
 			}}, 3);
 		} else {
@@ -801,10 +893,10 @@ game.setListener(new GameListener() {
 		fanSound.setVolume(0.075f);
 		fanSound.play();
 
-		phoneSound = createMusic("music/phone_" + nightId + ".wav");
+		/*phoneSound = createMusic("music/phone_" + nightId + ".wav");
 		phoneSound.setPosition(24, -14);
 		phoneSound.setDistance(12);
-		phoneSound.setVolume(0.5f);
+		phoneSound.setVolume(0.5f);*/
 
 		lightSound = createMusic("music/light.wav");
 		lightSound.setPosition(24, -14);

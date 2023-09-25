@@ -4,16 +4,17 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.BuildConfig;
+import com.mrboomdev.platformer.game.GameAnalytics;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 
 public class LogUtil {
 
 	public static void crash(String title, String message, Throwable t) {
 		try {
-			GameHolder.getInstance().analytics.crash(title, message, t);
+			GameAnalytics.getInstance().crash(title, message, t);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -31,7 +32,7 @@ public class LogUtil {
 				.setText("Try to restart")
 				.setClickListener(button -> {
 					var game = GameHolder.getInstance();
-					game.launcher.exit(GameLauncher.Status.CRASH);
+					game.launcher.exit(CoreLauncher.ExitStatus.CRASH);
 					dialog.close();
 				}));
 
@@ -52,8 +53,19 @@ public class LogUtil {
 	}
 
 	public static void debug(@NonNull Tag tag, String message) {
+		debug(tag.title, message);
+	}
+
+	public static void debug(String tag, String message) {
 		if(!BuildConfig.DEBUG) return;
-		Log.d(tag.title, message);
+
+		Log.d(tag, message);
+	}
+
+	public static void error(String tag, String message) {
+		if(!BuildConfig.DEBUG) return;
+
+		Log.e(tag, message);
 	}
 	
 	public enum Tag {

@@ -2,7 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="17">
-      <module name="PlatformerReact.react-native-safe-area-context" target="17" />
       <module name="react-native-gradle-plugin" target="11" />
       <module name="react-native-gradle-plugin.main" target="11" />
       <module name="react-native-gradle-plugin.test" target="11" />

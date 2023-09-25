@@ -20,11 +20,11 @@ public class SubtitlesLayout extends ActorUtil {
 	private int currentLine, wasCharacter;
 	private float progress, fadeDuration;
 
-	public Subtitle addLine(String text, float duration, float endDuration, Runnable callback) {
+	public Subtitle addLine(String text, float speed, float endDuration, Runnable callback) {
 		var line = new Subtitle();
 		line.text = text;
 		line.endDuration = endDuration;
-		line.duration = duration;
+		line.speed = speed;
 		line.callback = callback;
 		lines.add(line);
 
@@ -35,20 +35,20 @@ public class SubtitlesLayout extends ActorUtil {
 		this.speechSound = sound;
 	}
 
-	public Subtitle addLine(String text, float duration, float endDuration) {
-		return addLine(text, duration, endDuration, null);
+	public Subtitle addLine(String text, float speed, float endDuration) {
+		return addLine(text, speed, endDuration, null);
 	}
 
-	public Subtitle addLine(String text, float duration, Runnable callback) {
-		return addLine(text, duration, -1, callback);
+	public Subtitle addLine(String text, float speed, Runnable callback) {
+		return addLine(text, speed, -1, callback);
 	}
 
 	public Subtitle addLine(String text, Runnable callback) {
 		return addLine(text, -1, -1, callback);
 	}
 
-	public Subtitle addLine(String text, float duration) {
-		return addLine(text, duration, -1);
+	public Subtitle addLine(String text, float speed) {
+		return addLine(text, speed, -1);
 	}
 
 	public Subtitle addLine(String text) {
@@ -131,7 +131,7 @@ public class SubtitlesLayout extends ActorUtil {
 				temp.replace(item, "");
 			}
 
-			line.duration = temp.length() / 10f;
+			line.duration = temp.length() / 10f / line.speed;
 		}
 
 		return line;
@@ -146,7 +146,7 @@ public class SubtitlesLayout extends ActorUtil {
 	public static class Subtitle {
 		public String text;
 		public GlyphLayout glyph;
-		public float duration = -1, endDuration = 2;
+		public float duration = -1, speed = 1, endDuration = 2;
 		public Runnable callback;
 		public boolean didCallbackRan;
 	}

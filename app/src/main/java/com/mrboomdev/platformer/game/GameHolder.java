@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.mrboomdev.binacty.Constants;
+import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
@@ -31,9 +32,8 @@ import java.util.Objects;
 
 public class GameHolder extends Game {
 	public Bundle envVars = new Bundle();
-	public GameLauncher launcher;
+	public CoreLauncher launcher;
 	public GameSettings settings;
-	public GameAnalytics analytics;
 	public AssetManager assets, externalAssets;
 	public EnvironmentManager environment;
 	public ScriptManager script;
@@ -47,7 +47,7 @@ public class GameHolder extends Game {
 	
 	@Override
 	public void create() {
-		analytics.log("GameHolder", "create");
+		LogUtil.debug("GameHolder", "create");
 		
 		try {
 			var adapter = Constants.moshi.adapter(LoadingFiles.class);
@@ -64,12 +64,11 @@ public class GameHolder extends Game {
 	}
 	
 	public static GameHolder setInstance(
-			GameLauncher launcher,
-			@NonNull GameSettings settings,
-			@NonNull GameAnalytics analytics
+			CoreLauncher launcher,
+			@NonNull GameSettings settings
 	) {
-		analytics.log("GameHolder", "setInstance");
-		instance = new GameHolder(launcher, settings, analytics);
+		LogUtil.debug("GameHolder", "setInstance");
+		instance = new GameHolder(launcher, settings);
 		instance.reset();
 		return instance;
 	}
@@ -91,19 +90,18 @@ public class GameHolder extends Game {
 		}
 	}
 	
-	private GameHolder(GameLauncher launcher, GameSettings settings, @NonNull GameAnalytics analytics) {
-		analytics.log("GameHolder", "constructor");
+	private GameHolder(CoreLauncher launcher, GameSettings settings) {
+		LogUtil.debug("GameHolder", "constructor");
 		this.launcher = launcher;
 		this.settings = settings;
-		this.analytics = analytics;
 		this.stats = new GameStatistics();
-		this.assets = new Assets(analytics, new InternalFileHandleResolver());
-		this.externalAssets = new Assets(analytics, new ExternalFileHandleResolver());
+		this.assets = new Assets(new InternalFileHandleResolver());
+		this.externalAssets = new Assets(new ExternalFileHandleResolver());
 	}
 	
 	@Override
 	public void dispose() {
-		analytics.log("GameHolder", "dispose");
+		LogUtil.debug("GameHolder", "dispose");
 		assets.clear();
 		externalAssets.clear();
 		environment.world.dispose();
@@ -111,24 +109,22 @@ public class GameHolder extends Game {
 	}
 	
 	private static class Assets extends AssetManager {
-		private final GameAnalytics analytics;
 		
-		public Assets(GameAnalytics analytics, FileHandleResolver resolver) {
+		public Assets(FileHandleResolver resolver) {
 			super(resolver);
-			this.analytics = analytics;
 			
 			setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
 			setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 			
 			setErrorListener((asset, throwable) -> {
-				analytics.error("Assets", "Failed to load asset: " + asset.fileName + ", of type: " + asset.type.getName());
+				LogUtil.error("Assets", "Failed to load asset: " + asset.fileName + ", of type: " + asset.type.getName());
 				throw new BoomException(throwable);
 			});
 		}
 		
 		@Override
 		public synchronized <T> void load(String file, Class<T> fileClass) {
-			analytics.log("Assets", "Load file: " + file);
+			LogUtil.debug("Assets", "Load file: " + file);
 			super.load(file, fileClass);
 		}
 	}

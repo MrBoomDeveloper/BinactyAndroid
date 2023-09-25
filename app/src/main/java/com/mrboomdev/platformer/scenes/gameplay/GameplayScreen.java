@@ -20,6 +20,7 @@ import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 import box2dLight.RayHandler;
@@ -92,7 +93,7 @@ public class GameplayScreen extends CoreScreen {
 
 		ShaderProgram.pedantic = false;
 		if(shaders.isCompiled()) {
-			game.analytics.log("Shaders", "Successfully compiled shaders!");
+			LogUtil.debug("Shaders", "Successfully compiled shaders!");
 			batch.setShader(shaders);
 
 			environment.batch = batch;

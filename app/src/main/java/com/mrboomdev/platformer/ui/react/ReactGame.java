@@ -6,6 +6,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.mrboomdev.binacty.rn.components.RNCharacterPreview;
 import com.mrboomdev.platformer.ui.react.bridge.AppBridge;
 import com.mrboomdev.platformer.ui.react.bridge.PackBridge;
 import com.mrboomdev.platformer.ui.react.view.ReactCharacterViewManager;
@@ -29,7 +30,8 @@ public class ReactGame implements ReactPackage {
 	@Override
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext context) {
         return List.of(
-				new ReactCharacterViewManager(context)
+				new ReactCharacterViewManager(context),
+				new RNCharacterPreview()
 		);
     }
 }

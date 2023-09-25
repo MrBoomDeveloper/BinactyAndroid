@@ -129,9 +129,7 @@ public class CharacterEntity implements BotTarget {
 	}
 
 	/**
-	 * Creates character in the world.
-	 * Please note, that the position should to be set manually,
-	 * so i'll recommend to do it right after of the character creation.
+	 * Creates a character in the world.
 	 */
 	public CharacterEntity create(@NonNull World world) {
 		worldBody.build();
@@ -146,8 +144,11 @@ public class CharacterEntity implements BotTarget {
 		fixtureDef.filter.maskBits = Entity.ATTACK | Entity.BULLET | Entity.INTRACTABLE;
 		
 		PolygonShape shape3D = new PolygonShape();
-		shape3D.setAsBox(worldBody.bottom[0] / 2, worldBody.bottom[1] / 2,
-			new Vector2(worldBody.bottom[2], worldBody.bottom[3]), 0);
+
+		shape3D.setAsBox(
+				worldBody.bottom[0] / 2, worldBody.bottom[1] / 2,
+				new Vector2(worldBody.bottom[2], worldBody.bottom[3]), 0);
+
 		FixtureDef fixture3D = new FixtureDef();
 		fixture3D.shape = shape3D;
 		fixture3D.filter.categoryBits = Entity.CHARACTER_BOTTOM;
@@ -178,16 +179,19 @@ public class CharacterEntity implements BotTarget {
 
 	public CharacterEntity setBrain(@Nullable CharacterBrain brain) {
 		if(brain != null) brain.setEntity(this);
+
 		this.brain = brain;
 		return this;
 	}
 
-	public void draw(SpriteBatch batch) {
+	public void update() {
 		cachedPosition = null;
-
 		projectileManager.clearTrash();
 
-		if(isDead && !isDestroyed && damagedProgress > 1) destroy();
+		if(isDead && !isDestroyed && damagedProgress > 1) {
+			destroy();
+		}
+
 		if(isDestroyed) return;
 
 		if(!isDead) {
@@ -204,14 +208,21 @@ public class CharacterEntity implements BotTarget {
 		}
 
 		damagedProgress += Gdx.graphics.getDeltaTime();
-		
+
 		if(isDashing && dashProgress > dashDuration) {
 			isDashing = false;
 			dashReloadProgress = 0;
 		}
 
+		if(!isAiming && lookingAtTarget != null) {
+			var item = inventory.getCurrentItem();
+			if(item != null) {
+				item.setPower(lookingAtTarget.getPosition().cpy().sub(getPosition()));
+			}
+		}
+
 		if(damagedProgress < 1 && !isDashing) {
-			body.setLinearVelocity(damagedPower != null ? damagedPower.scl(5).limit(3) : Vector2.Zero);
+			body.setLinearVelocity(damagedPower != null ? damagedPower.cpy().scl(5).limit(3) : Vector2.Zero);
 		} else {
 			if(stats.health < stats.maxHealth) {
 				healthPhantom += Gdx.graphics.getDeltaTime() / 2;
@@ -223,6 +234,12 @@ public class CharacterEntity implements BotTarget {
 				skin.setAnimation(IDLE);
 			}
 		}
+	}
+
+	public void draw(SpriteBatch batch) {
+		update();
+
+		if(isDestroyed) return;
 
 		var opacity = getOpacity();
 		var position = getPosition();
@@ -297,6 +314,7 @@ public class CharacterEntity implements BotTarget {
 						position.x - worldBody.size[0] / 2,
 						position.y - worldBody.size[1] / 2 - .4f,
 						progress, .175f);
+				
 			} shape.end();
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 			batch.begin();
@@ -315,12 +333,17 @@ public class CharacterEntity implements BotTarget {
 						position.x - worldBody.size[0] / 2,
 						position.y - worldBody.size[1] / 2 - .4f,
 						progress, .175f);
+
 			} shape.end();
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 			batch.begin();
 		}
 
 		font.draw(batch, name, position.x - 1, position.y + (worldBody.size[1] / 2) + .4f, 2, Align.center, false);
+	}
+
+	public void attack(@NonNull BotTarget target) {
+		this.attack(target.getPosition().cpy().sub(getPosition()));
 	}
 
 	public void attack(Vector2 power) {
@@ -366,7 +389,7 @@ public class CharacterEntity implements BotTarget {
 		this.dashDuration = duration;
 		
 		wasPower.set(x, y);
-		body.setLinearVelocity(wasPower.scl(100).limit(22));
+		body.setLinearVelocity(wasPower.cpy().scl(100).limit(22));
 		skin.setAnimation(DASH);
 		AudioUtil.play3DSound(game.assets.get("audio/sounds/dash.wav"), .1f, 10, getPosition());
 	}
@@ -387,6 +410,7 @@ public class CharacterEntity implements BotTarget {
 		isAiming = false;
 		
 		if(stats.health == 0) die(false);
+
 		CameraUtil.addCameraShake(.1f, .25f);
 	}
 	
@@ -410,7 +434,9 @@ public class CharacterEntity implements BotTarget {
 			return;
 		}
 
-		if(isAiming) speed *= .5f;
+		if(isAiming) {
+			speed *= .5f;
+		}
 
 		if(power.isZero() || speed == 0) {
 			isRunning = false;

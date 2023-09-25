@@ -14,9 +14,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.divider.MaterialDivider;
+import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.binacty.ui.widgets.Button;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameLauncher;
 
 public class OverlayGameover extends LinearLayout {
 	private final GameHolder game = GameHolder.getInstance();
@@ -112,7 +112,7 @@ public class OverlayGameover extends LinearLayout {
 		actions.setOrientation(HORIZONTAL);
 		addView(actions);
 
-		var nextButton = createButton("Continue", () -> game.launcher.exit(GameLauncher.Status.GAME_OVER));
+		var nextButton = createButton("Continue", () -> game.launcher.exit(CoreLauncher.ExitStatus.LOBBY));
 		actions.addView(nextButton);
 	}
 

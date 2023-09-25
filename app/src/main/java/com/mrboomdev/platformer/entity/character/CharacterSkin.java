@@ -76,13 +76,17 @@ public class CharacterSkin {
 			return;
 		}
 
-		for(var alternative : animationType.getAlternatives()) {
-			var alternativeName = alternative.name().toLowerCase();
-			if(contains(alternativeName)) {
-				setAnimation(alternativeName);
-				return;
+		var alternatives = animationType.getAlternatives();
+		if(alternatives != null) {
+			for(var alternative : alternatives) {
+				var alternativeName = alternative.name().toLowerCase();
+				if(contains(alternativeName)) {
+					setAnimation(alternativeName);
+					return;
+				}
 			}
 		}
+
 
 		setAnimation("idle");
 	}

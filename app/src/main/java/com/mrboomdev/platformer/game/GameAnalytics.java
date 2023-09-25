@@ -9,10 +9,20 @@ import com.mrboomdev.binacty.rn.RNApp;
 import com.mrboomdev.platformer.BuildConfig;
 
 public class GameAnalytics {
+	private static GameAnalytics instance;
 	private final FirebaseAnalytics firebaseAnalytics;
 	
-	public GameAnalytics(FirebaseAnalytics firebaseAnalytics) {
+	private GameAnalytics(FirebaseAnalytics firebaseAnalytics) {
 		this.firebaseAnalytics = firebaseAnalytics;
+	}
+
+	public static GameAnalytics setInstance(FirebaseAnalytics fb) {
+		instance = new GameAnalytics(fb);
+		return instance;
+	}
+
+	public static GameAnalytics getInstance() {
+		return instance;
 	}
 	
 	public void log(String title, String message) {

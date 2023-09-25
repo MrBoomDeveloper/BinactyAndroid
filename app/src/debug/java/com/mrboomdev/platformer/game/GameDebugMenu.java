@@ -21,6 +21,7 @@ import android.widget.Switch;
 import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.utils.Array;
+import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
@@ -94,8 +95,7 @@ public class GameDebugMenu {
 		myView.setVisibility(View.GONE);
 
 		var launcher = GameHolder.getInstance().launcher;
-		launcher.exit(GameLauncher.Status.LOBBY);
-		launcher.finishAffinity();
+		launcher.exit(CoreLauncher.ExitStatus.LOBBY);
 
 		wm.removeView(myView);
 		isMenuCreated = false;
@@ -226,7 +226,8 @@ public class GameDebugMenu {
 			settings.enableEditor = isActive;
 			settings.pause = false;
 			prefs.edit().putBoolean("forceEditor", isActive).apply();
-			((GameDebugLauncher)context).exit(GameLauncher.Status.GAME_OVER);
+
+			((CoreLauncher)context).exit(CoreLauncher.ExitStatus.GAME_OVER);
 		});
 	}
 }

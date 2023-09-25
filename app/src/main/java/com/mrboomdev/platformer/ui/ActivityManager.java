@@ -44,10 +44,10 @@ public class ActivityManager {
 	public static void startMusic() {
 		isMusicPlaying = true;
 		if(reactActivity.isGameStarted || isPlaying()) return;
-		media = MediaPlayer.create(current, R.raw.lobby_theme);
 
-		setVolume(RNApp.getSave("Save").getInt("musicVolume", 100) / 100f);
+		media = MediaPlayer.create(current, R.raw.lobby_theme);
 		media.setLooping(true);
+		setVolume(RNApp.getSave("Save").getInt("musicVolume", 100) / 100f);
 
 		if(!isActivityResumed) return;
 		media.start();
@@ -90,6 +90,7 @@ public class ActivityManager {
 
 		try {
 			if(!media.isPlaying()) return;
+
 			media.pause();
 			isMusicPlaying = false;
 		} catch(Exception e) {

@@ -11,7 +11,7 @@
 				"overridable": "anytime_other",
 				"delay": 0.125,
 				"is_action": false,
-				"size": [ 1, 2 ],
+				"size": [ 1, 1.8 ],
 				"hand_position": [0.4, -0.2],
 				"frames": [
 					{ "region": [   1, 1, 21, 40 ] },
@@ -54,6 +54,24 @@
 					{ "region": [ 162, 42, 22, 40 ], "hand_position": [ 0.34, -0.22 ] },
 					{ "region": [ 185, 42, 22, 40 ], "hand_position": [  0.3, -0.24 ] }
 				]
+			},
+			
+			"attack": {
+			    "mode": "NORMAL",
+			    "is_action": true,
+			    "delay": 0.075,
+			    "size": [ 1.15, 1.8 ],
+			    "overridable": "until_end",
+			    "frames": [
+			        { "region": [  1, 83, 25, 40 ] },
+			        { "region": [ 27, 83, 25, 40 ] },
+			        { "region": [ 53, 83, 25, 40 ] },
+			        { "region": [ 79, 83, 25, 40 ] },
+			        { "region": [ 79, 83, 25, 40 ] },
+			        { "region": [ 53, 83, 25, 40 ] },
+			        { "region": [ 27, 83, 25, 40 ] },
+			        { "region": [  1, 83, 25, 40 ] }
+			    ]
 			},
 
 			"run": {

@@ -24,6 +24,8 @@ public class GameSettings {
 	public boolean debugRenderer, debugValues, debugRaysDisable, debugStage, debugCamera;
 	public Engine engine;
 
+	public GameSettings() {}
+
 	public GameSettings(@NonNull SharedPreferences prefs) {
 		var online = OnlineManager.getInstance();
 

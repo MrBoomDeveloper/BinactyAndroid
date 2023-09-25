@@ -31,7 +31,8 @@ public class BotFollower extends CharacterBrain {
 		this.targeter.update();
 
 		var owner = this.getEntity();
-		var nextPosition = targeter.getPathTo(target);
+		var path = targeter.getPath(target);
+		var nextPosition = targeter.getPower(path, target);
 
 		if(target.getPosition().dst(owner.getPosition()) < .1f) {
 			isFinished = true;
@@ -89,6 +90,10 @@ public class BotFollower extends CharacterBrain {
 	}
 
 	public void onCompleted(Runnable callback) {
+		this.completionCallback = callback;
+	}
+
+	public void setCompletionListener(Runnable callback) {
 		this.completionCallback = callback;
 	}
 

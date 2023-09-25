@@ -48,6 +48,23 @@
 				]
 			},
 			
+			"attack": {
+			    "delay": 0.075,
+			    "is_action": true,
+			    "size": [ 1.15, 2 ],
+			    "mode": "NORMAL",
+			    "overridable": "until_end",
+			    "hand_position": [ 99999, 99999 ],
+			    "frames": [
+			        { "region": [  1, 87, 22, 42 ] },
+			        { "region": [ 23, 87, 22, 42 ] },
+			        { "region": [ 46, 87, 22, 42 ] },
+			        { "region": [ 69, 87, 22, 42 ] },
+			        { "region": [ 92, 87, 22, 42 ] },
+			        { "region": [ 69, 87, 22, 42 ] }
+			    ]
+			},
+			
 			"walk": {
 				"delay": 0.075,
 				"size": [ 1, 2 ],

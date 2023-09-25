@@ -16,7 +16,7 @@ public class GameStatistics {
 
 		int gotCoins = totalKills * 2 + totalDamage / 200;
 
-		var save = GameHolder.getInstance().launcher.getSharedPreferences("Save", 0);
+		var save = GameHolder.getInstance().launcher.getSave();
 		save.edit().putInt("coins", (save.getInt("coins", 0) + gotCoins)).apply();
 
 		array.add(new StatEntry("Got coins", gotCoins));

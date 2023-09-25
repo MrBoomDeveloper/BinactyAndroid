@@ -72,16 +72,21 @@ public class ProjectileManager {
 	}
 	
 	public void clearTrash() {
-		 for(ProjectileBullet bullet : bullets) {
-			if(bullet.isDied) {
-				bullet.destroy();
-				bullets.removeValue(bullet, true);
+		if(bullets.notEmpty()) {
+			for(ProjectileBullet bullet : bullets) {
+				if(bullet.isDied) {
+					bullet.destroy();
+					bullets.removeValue(bullet, true);
+				}
 			}
 		}
-		for(ProjectileAttack attack : attacks) {
-			if(attack.isDead && attack.isEnded) {
-				attack.destroy();
-				attacks.removeValue(attack, true);
+
+		if(attacks.notEmpty()) {
+			for(ProjectileAttack attack : attacks) {
+				if(attack.isDead && attack.isEnded) {
+					attack.destroy();
+					attacks.removeValue(attack, true);
+				}
 			}
 		}
 	}

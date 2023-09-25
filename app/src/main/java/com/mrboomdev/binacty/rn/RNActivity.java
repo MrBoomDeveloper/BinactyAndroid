@@ -17,6 +17,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.mrboomdev.binacty.BinactyNative;
+import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.online.OnlineManager;
@@ -25,8 +26,6 @@ import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.ZipUtil;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 
 import java.util.Objects;
 
@@ -36,7 +35,7 @@ public class RNActivity extends ReactActivity {
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		super.onCreate(bundle);
+		super.onCreate(null);
 
 		BinactyNative.init();
 		EOSSDK.init(getApplicationContext());
@@ -63,6 +62,7 @@ public class RNActivity extends ReactActivity {
 				finish();
 				dialog.close();
 			}));
+
 			dialog.show();
 		}
 
@@ -81,6 +81,7 @@ public class RNActivity extends ReactActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+
 		ActivityManager.current = this;
 		ActivityManager.onResume();
 	}
@@ -88,7 +89,9 @@ public class RNActivity extends ReactActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+
 		ActivityManager.stopMusic();
+		System.out.println("Destroyed!");
 	}
 
 	@Override
@@ -103,22 +106,30 @@ public class RNActivity extends ReactActivity {
 		switch(requestCode) {
 			case 1: {
 				if(resultCode != Activity.RESULT_OK || intent == null) return;
+
 				ActivityManager.toast("Please wait. Loading the pack data", false);
 				var dest = FileUtil.external("packs/temp");
 				dest.remove();
+
 				try {
-					ZipUtil.unzipFile(getContentResolver().openInputStream(Objects.requireNonNull(intent.getData())), dest, () -> {
+					var stream = getContentResolver().openInputStream(Objects.requireNonNull(intent.getData()));
+
+					ZipUtil.unzipFile(stream, dest, () -> {
 						try {
-							Moshi moshi = new Moshi.Builder().build();
-							JsonAdapter<PackData.Manifest> adapter = moshi.adapter(PackData.Manifest.class);
+							var adapter = Constants.moshi.adapter(PackData.Manifest.class);
 							var pack = adapter.fromJson(dest.goTo("manifest.json").readString(false));
-							if(pack == null || !pack.isValid()) throw new BoomException("Error while importing a pack. Manifest file isn't valid!");
+
+							if(pack == null || !pack.isValid()) {
+								throw new BoomException("Error while importing a pack. Manifest file isn't valid!");
+							}
+
 							if(!PackLoader.addPack(dest.getParent().goTo(pack.id))) {
 								ActivityManager.toast("This pack is already installed, trying to update...", false);
 								dest.getParent().goTo(pack.id).remove();
 							} else {
 								ActivityManager.toast("Installing a new pack...", false);
 							}
+
 							dest.rename(pack.id);
 							PackLoader.reloadPacks();
 							PackLoader.reloadGamemodes();
@@ -146,7 +157,10 @@ public class RNActivity extends ReactActivity {
 						SignInCredential credentials = Identity.getSignInClient(this).getSignInCredentialFromIntent(intent);
 						OnlineManager.getInstance().auth.signIn(credentials.getGoogleIdToken(), (result, extra) -> {
 							if(result.getIsOk()) {
-								if(!extra.isValid()) throw new BoomException("Invalid authentication data!");
+								if(!extra.isValid()) {
+									throw new BoomException("Invalid authentication data!");
+								}
+
 								prefs.edit()
 										.putString("nick", credentials.getDisplayName())
 										.putString("avatar", credentials.getProfilePictureUri() != null ? credentials.getProfilePictureUri().toString() : "")

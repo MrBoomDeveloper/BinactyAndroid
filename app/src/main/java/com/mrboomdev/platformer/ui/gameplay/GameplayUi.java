@@ -86,8 +86,11 @@ public class GameplayUi {
 			.toPosition(
 				Gdx.graphics.getWidth() - ActionButton.size - game.settings.screenInset,
 				Gdx.graphics.getHeight() - ActionButton.size - game.settings.screenInset)
-			.onClick(() -> game.launcher.pause())
-			.addTo(stage));
+			.onClick(() -> {
+				if(game.settings.pause) return;
+
+				game.launcher.pause();
+			}).addTo(stage));
 		
 		widgets.put("inventory", new InventoryLayout()
 			.toPosition(Gdx.graphics.getWidth() / 2f, game.settings.screenInset)

@@ -449,36 +449,45 @@ void introAttackCutscene() {
     vanessaBrain.start();
     vanessaBrain.setSpeed(1f);
     vanessaBrain.setTarget(24, 22);
+
+	subtitles.addLine("Finally someone else is here!", 1.5f);
     
     attackerBrain.onCompleted(new Runnable() { run() {
         vanessa.lookAt(foxy.entity);
         subtitles.addLine("Dang it!", 2);
         
         game.setTimer(new Runnable() { run() {
+			vanessa.setBrain(null);
             foxy.entity.attack(vanessa);
             
             game.setTimer(new Runnable() { run() {
-                vanessa.dash();
-                vanessaBrain.setTarget(foxy.entity);
+				vanessa.dash(foxy.entity);
                 
-                vanessaBrain.onCompleted(new Runnable() { run() {
+                vanessaBrain.setCompletionListener(new Runnable() { run() {
                     vanessa.attack(foxy.entity);
                     foxy.entity.lookAt(null);
                 
                     game.setTimer(new Runnable() { run() {
                         vanessa.inventory.setCurrentItem(1);
                         vanessa.attack(foxy.entity);
-                        
-                        vanessaBrain.setTarget(me);
+
+						game.setTimer(new Runnable() { run() {
+							vanessa.inventory.setCurrentItem(0);
+						}}, 1);
+
                         vanessaBrain.setCompletionListener(new Runnable() { run() {
-                            //vanessaBrain.setTarget(me);
+							vanessaBrain.setStopOnReach(false);
+							vanessaBrain.setTarget(me);
+							vanessaBrain.setCompletionListener(null);
                         }});
-                        
-                        vanessa.lookAt(me);
+
+						vanessa.lookAt(null);
+						vanessaBrain.setTarget(me);
                         me.inventory.setCurrentItem(0);
                     
                         ui.setVisibility(true);
                         game.setControlsEnabled(true);
+
                         CameraUtil.reset();
                         CameraUtil.setTarget(me);
                     
@@ -490,7 +499,12 @@ void introAttackCutscene() {
                         setWidgetVisibility("stats_health", true);
                         didIntroEnded = true;
                     }}, .4f);
+
+					vanessaBrain.setTarget(foxy.entity);
                 }});
+
+				vanessa.setBrain(vanessaBrain);
+				vanessaBrain.setTarget(foxy.entity);
             }}, .5f);
         }}, .2f);
     }});
@@ -539,11 +553,9 @@ void presentationCutscene() {
 	    
 	    vanessa.setBrain(brain);
 	    brain.start();
-	    
+
+		brain.onCompleted(null);
 	    brain.setTarget(21, 21.5f);
-	    brain.onCompleted(new Runnable() { run() {
-	        
-	    }});
 	}});
 
 	subtitles.addLine("They may seem harmless now, but their performance must be maintained. ", 4, new Runnable() { run() {
@@ -564,10 +576,7 @@ void presentationCutscene() {
 		setWidgetVisibility("stats_health", true);
 		
 		vanessa.lookAt(null);
-		
-		brain.setTarget(36, 50);
-		brain.setSpeed(2);
-				
+
 		brain.onCompleted(new Runnable() { run() {
 			vanessa.setBrain(null);
 			vanessa.die(true);
@@ -576,6 +585,8 @@ void presentationCutscene() {
 			vanessa = null;
 		}});
 
+		brain.setTarget(36, 50);
+		brain.setSpeed(2);
 		didIntroEnded = true;
 	}});
 }
@@ -612,8 +623,6 @@ void foxyCutscene() {
 			var brain = new BotFollower();
 			brain.setWaypoints(waypoints);
 
-			brain.setTarget(map.getById("foxySpawn"));
-
 			game.setTimer(new Runnable() { run() {
 				CameraUtil.reset();
 				CameraUtil.setTarget(core.settings.mainPlayer);
@@ -626,6 +635,7 @@ void foxyCutscene() {
 				foxy.entity.setBrain(null);
 			}});
 
+			brain.setTarget(map.getById("foxySpawn"));
 			foxy.setBot(brain);
 		}}, 3);
 	}}, .5f);
@@ -810,16 +820,16 @@ game.setListener(new GameListener() {
 				subtitles.setFadeDuration(.25f);
 				
 				//vanessa.skin.setAnimationForce("talk");
-				subtitles.addLine("Hello!?", .4f, .8f);
+				subtitles.addLine("Hello!?", 2, .8f);
 				//game.setTimer(new Runnable() { run() { vanessa.skin.setAnimationForce(null); }}, .5f);
 
-				subtitles.addLine("Oh my god, a human!", 1, .8f, new Runnable() { run() {
+				subtitles.addLine("Oh my god, a human!", 1.5f, .8f, new Runnable() { run() {
 				    vanessa.lookAt(null);
 					vanessaBrain.setSpeed(2.5f);
 				    vanessaBrain.setTarget(35, 48);
 				}});
 				
-				subtitles.addLine("Hey there, welcome to Freddy Fazbear's!", 2.5f, new Runnable() { run() {
+				subtitles.addLine("Hey there, welcome to Freddy Fazbear's!", 1.5f, new Runnable() { run() {
 					vanessaBrain.setTarget(37, 46);
 					vanessaBrain.setSpeed(2);
 					vanessa.lookAt(me);
@@ -834,13 +844,14 @@ game.setListener(new GameListener() {
 				
 				//subtitles.addLine("Sorry about the cat, she's been my only company for a while now.", 3.5f);
 				
-				subtitles.addLine("Sorry if I'm too intrusive, I just haven't seen anyone for a while.", 3.5f, new Runnable() { run() {
+				subtitles.addLine("Sorry if I'm too intrusive, I just haven't seen anyone for a while.", 1.5f, new Runnable() { run() {
 				    vanessa.lookAt(null);
-				    
-				    vanessaBrain.setTarget(35, 45);
+
 				    vanessaBrain.onCompleted(new Runnable() { run() {
 				        vanessa.lookAt(me);
 				    }});
+
+					vanessaBrain.setTarget(35, 45);
 				}});
 
 				subtitles.addLine("Take this and follow me.", 1.5f, new Runnable() { run() {

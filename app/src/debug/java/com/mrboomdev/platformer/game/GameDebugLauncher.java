@@ -1,14 +1,11 @@
 package com.mrboomdev.platformer.game;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 
-import com.badlogic.gdx.Gdx;
 import com.google.android.material.color.DynamicColors;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.mrboomdev.platformer.R;
-import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
@@ -68,22 +65,15 @@ public class GameDebugLauncher extends GameLauncher {
 	public void exit(ExitStatus status) {
 		AudioUtil.clear();
 
-		LinearLayout overlay = findViewById(R.id.overlay);
-		overlay.removeAllViews();
-
 		if(status == ExitStatus.CRASH || status == ExitStatus.LOBBY) {
 			finishAffinity();
 			return;
 		}
 
-		Gdx.app.postRunnable(() -> {
-			var game = GameHolder.getInstance();
-			game.reset();
-
-			restorePreviousSettings();
-			previousSettings = game.settings;
-
-			game.setScreen(new LoadingScreen());
+		runOnUiThread(() -> {
+			var intent = new Intent(this, GameDebugLauncher.class);
+			startActivity(intent);
+			finish();
 		});
 	}
 

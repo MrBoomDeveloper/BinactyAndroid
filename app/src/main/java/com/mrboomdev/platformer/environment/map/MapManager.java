@@ -98,7 +98,9 @@ public class MapManager {
 				if(tile.devTexture != null && game.settings.enableEditor && !tile.source.goTo(tile.devTexture).isAddedToAsyncLoading()) {
 					tile.source.goTo(tile.devTexture).loadAsync(Texture.class);
 				}
+
 				if(tile.texture == null || tile.source.goTo(tile.texture).isAddedToAsyncLoading()) continue;
+
 				tile.source.goTo(tile.texture).loadAsync(Texture.class);
 			}
 
@@ -112,6 +114,7 @@ public class MapManager {
 	
 	private void addPrefix(@NonNull Map<String, MapTile> map, String prefix) {
     	Map<String, MapTile> newHashMap = new HashMap<>();
+
 		for(var entry : map.entrySet()) {
         	String newKey = prefix + entry.getKey();
         	MapTile value = entry.getValue();
@@ -230,6 +233,7 @@ public class MapManager {
 			if(tile.devTexture != null && game.settings.enableEditor) {
 				tile.setTexture(tile.source.goTo(tile.devTexture).getLoaded(Texture.class), true);
 			}
+
 			if(tile.texture != null) {
 				tile.setTexture(tile.source.goTo(tile.texture).getLoaded(Texture.class), false);
 			}

@@ -378,6 +378,11 @@ public class CharacterEntity implements BotTarget {
 
 		dash(wasPower.x, wasPower.y, Entity.DASH_DURATION);
 	}
+
+	public void dash(@NonNull BotTarget target) {
+		var diff = target.getPosition().cpy().sub(getPosition());
+		dash(diff.x, diff.y, Entity.DASH_DURATION);
+	}
 	
 	public void dash(float x, float y, float duration) {
 		if(stats.stamina < Entity.DASH_COST || isDashing || dashReloadProgress < Entity.DASH_DELAY || isDead) return;

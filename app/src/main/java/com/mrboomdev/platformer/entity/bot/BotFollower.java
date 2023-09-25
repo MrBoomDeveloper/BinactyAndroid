@@ -12,7 +12,7 @@ public class BotFollower extends CharacterBrain {
 	private String[] waypoints;
 	private BotTarget target;
 	private final AiTargeter targeter = new AiTargeter(this);
-	private boolean isFinished;
+	private boolean isFinished, stopOnReach = true;
 	private int didAdditionalSteps;
 	private float speed = 1;
 
@@ -26,7 +26,13 @@ public class BotFollower extends CharacterBrain {
 
 	@Override
 	public void update() {
-		if(isFinished || target == null) return;
+		if(target == null) return;
+
+		if(isFinished && stopOnReach) {
+			updateHoldingItem();
+			getEntity().usePower(Vector2.Zero, 0);
+			return;
+		}
 
 		this.targeter.update();
 
@@ -36,6 +42,7 @@ public class BotFollower extends CharacterBrain {
 
 		if(target.getPosition().dst(owner.getPosition()) < .1f) {
 			isFinished = true;
+
 			if(completionCallback != null) {
 				completionCallback.run();
 				isFinished = true;
@@ -68,6 +75,7 @@ public class BotFollower extends CharacterBrain {
 		var power = nextPosition.cpy().sub(owner.getPosition()).scl(5);
 		power.add((float)(Math.random() * 4) - 2, (float)(Math.random() * 4) - 2);
 		owner.usePower(power, owner.stats.speed * speed);
+
 		updateHoldingItem(power);
 	}
 
@@ -79,6 +87,10 @@ public class BotFollower extends CharacterBrain {
 		this.targeter.setTarget(target);
 		this.target = target;
 		this.isFinished = false;
+	}
+
+	public void setStopOnReach(boolean isStop) {
+		this.stopOnReach = isStop;
 	}
 
 	public void setSpeed(float speed) {
@@ -97,7 +109,7 @@ public class BotFollower extends CharacterBrain {
 		this.completionCallback = callback;
 	}
 
-	public void onFailed(Runnable callback) {
+	public void setFailureListener(Runnable callback) {
 		this.failureCallback = callback;
 	}
 }

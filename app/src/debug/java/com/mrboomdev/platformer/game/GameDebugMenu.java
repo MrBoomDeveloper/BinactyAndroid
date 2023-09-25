@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,15 @@ public class GameDebugMenu {
 	public GameDebugMenu(@NonNull Context context) {
 		this.context = context;
 		this.prefs = context.getSharedPreferences("Save", 0);
+	}
+
+	public GameDebugMenu(@NonNull View parent) {
+		this(parent.getContext());
+
+		var popup = new PopupWindow(parent.getContext());
+		popup.showAtLocation(parent, Gravity.NO_GRAVITY, 0, 0);
+
+		//TODO: Finish this
 	}
 	
 	@TargetApi(26)

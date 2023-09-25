@@ -53,12 +53,11 @@ public class PackWidget {
 							? activity.getAssets().open(data.source.goTo(data.icon).getPath())
 							: new FileInputStream(new File(activity.getExternalFilesDir(null), data.source.goTo(data.icon).getPath()));
 						icon.setImageDrawable(Drawable.createFromStream(is, null));
+
 						is.close();
 					} catch(IOException e) {
 						e.printStackTrace();
 					}
-				} else {
-					icon.setImageDrawable(AppCompatResources.getDrawable(activity, R.drawable.pack_icon_missing));
 				}
 
 				view.addView(icon);
@@ -125,25 +124,30 @@ public class PackWidget {
 					PopupMenu popup = new PopupMenu(activity, view);
 					if(data.source.source != FileUtil.Source.INTERNAL) popup.getMenu().add(0, 0, 0, "Remove");
 					popup.setOnMenuItemClickListener(item -> {
-						switch(item.getItemId()) {
-							case 0: {
-								data.source.remove();
-								PackLoader.getConfigs().remove(data.config);
-								PackLoader.saveConfig();
-								view.setClickable(false);
-								view.setFocusable(false);
-								view.setAlpha(.2f);
-								view.setOnClickListener(null);
-								view.setOnLongClickListener(null);
-								return true;
-							}
-							default: return false;
+						if(item.getItemId() == 0) {
+							data.source.remove();
+							PackLoader.getConfigs().remove(data.config);
+							PackLoader.saveConfig();
+							view.setClickable(false);
+							view.setFocusable(false);
+							view.setAlpha(.2f);
+							view.setOnClickListener(null);
+							view.setOnLongClickListener(null);
+							return true;
 						}
+
+						return false;
 					});
+
 					popup.setGravity(Gravity.END);
-					if(popup.getMenu().size() > 0) popup.show();
+
+					if(popup.getMenu().size() > 0) {
+						popup.show();
+					}
+
 					return false;
 				});
+
 				updateState();
 			} return view;
 		}

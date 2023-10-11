@@ -38,12 +38,7 @@ public class GlobalBoomFile extends BoomFile<GlobalBoomFile> {
 
 	@Override
 	public List<GlobalBoomFile> list() {
-		return null;
-	}
-
-	@Override
-	public List<GlobalBoomFile> listRecursively() {
-		return null;
+		throw new BoomException("Stub!");
 	}
 
 	@Override
@@ -58,6 +53,11 @@ public class GlobalBoomFile extends BoomFile<GlobalBoomFile> {
 		} catch(IOException e) {
 			throw new BoomException("Failed to read file content.", e);
 		}
+	}
+
+	@Override
+	public void writeString(String string, boolean append) {
+		throw new BoomException("Stub!");
 	}
 
 	@Override

@@ -73,21 +73,6 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 	}
 
 	@Override
-	public List<InternalBoomFile> listRecursively() {
-		var list = new ArrayList<InternalBoomFile>();
-
-		for(var item : list()) {
-			if(item.isDirectory()) {
-				list.addAll(item.listRecursively());
-			}
-
-			list.add(item);
-		}
-
-		return list;
-	}
-
-	@Override
 	public void remove() {
 		throw new BoomException("Can't remove a file from a static environment!");
 	}
@@ -99,6 +84,11 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 		} catch(IOException e) {
 			throw new BoomException("Failed to read file content.", e);
 		}
+	}
+
+	@Override
+	public void writeString(String string, boolean append) {
+		throw new BoomException("Can't write into a file from a static environment!");
 	}
 
 	@Override

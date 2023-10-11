@@ -83,6 +83,7 @@ public class PackData {
 	}
 
 	public static class GamemodeEntry {
+		public String id;
 		@Json(name = "source")
 		public BoomFile.Source source;
 		@Json(name = "main")

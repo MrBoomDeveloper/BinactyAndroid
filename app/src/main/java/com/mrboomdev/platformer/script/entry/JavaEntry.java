@@ -13,6 +13,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JavaEntry extends JvmEntry {
 	private static final String TAG = "JavaEntry";
@@ -20,32 +21,40 @@ public class JavaEntry extends JvmEntry {
 	@Override
 	public void compile(PackData.GamemodeEntry entry) {
 		var thread = new Thread(() -> {
-			try(var stringWriter = new StringWriter();
-				var printWriter = new PrintWriter(stringWriter)) {
-				var output = BoomFile.external("cached/" + entry.mainPath.hashCode());
+			try(var stringWriter = new StringWriter(); var printWriter = new PrintWriter(stringWriter)) {
+				var output = BoomFile.external("cache/" + entry.id);
+				var javaSources = BoomFile.fromString(entry.scriptsPath, entry.source);
 
-				var classPath = BoomFile.external("classpath.jar");
+				var classPath = BoomFile.external("cache/classpath.jar");
 				classPath.remove();
 				BoomFile.internal("classpath.jar").copyTo(classPath);
 
-				var compileTargets = (entry.source == BoomFile.Source.INTERNAL
-					? output.goTo("/java_copy").getPath()
-					: output.getPath()) + "/**/*.java";
-
 				if(entry.source == BoomFile.Source.INTERNAL) {
-					var target = output.goTo("/java_copy");
-					BoomFile.internal(entry.scriptsPath).copyTo(target);
+					javaSources = output.goTo("/java_copy");
+					BoomFile.internal(entry.scriptsPath).copyTo(javaSources);
 				}
 
-				var destination = BoomFile.global(output.goTo("/java_compiled"));
-				destination.remove();
+				var javaCompiled = BoomFile.global(output.goTo("/java_compiled"));
+				javaCompiled.remove();
+
+				var javaSourcesList = javaSources.listRecursively().stream()
+						.filter(item -> item.getRelativePath().endsWith(".java"))
+						.collect(Collectors.toList());
+
+				var compileTargets = output.goTo("sources.txt");
+				compileTargets.writeString("");
+
+				for(var clazz : javaSourcesList) {
+					var clazzPath = BoomFile.global(clazz).getPath();
+					compileTargets.writeString(clazzPath + "\n", true);
+				}
 
 				List<String> args = new ArrayList<>(List.of(
 						"-" + "11",
 						"-proc:none",
 						"-cp", classPath.getPath(),
-						"-d", destination.getPath(),
-						compileTargets
+						"-d", javaCompiled.getPath(),
+						"@" + BoomFile.global(compileTargets).getPath()
 				));
 
 				/*args.addAll(BoomFile.fromString(entry.scriptsPath, entry.source)

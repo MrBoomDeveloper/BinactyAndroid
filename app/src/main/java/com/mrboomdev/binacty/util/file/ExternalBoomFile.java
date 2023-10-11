@@ -3,9 +3,11 @@ package com.mrboomdev.binacty.util.file;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.helper.BoomException;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -53,11 +55,6 @@ public class ExternalBoomFile extends BoomFile<ExternalBoomFile> {
 	}
 
 	@Override
-	public List<ExternalBoomFile> listRecursively() {
-		return null;
-	}
-
-	@Override
 	public void remove() {
 		removeRecursively(BoomFile.global(this));
 	}
@@ -68,6 +65,15 @@ public class ExternalBoomFile extends BoomFile<ExternalBoomFile> {
 			return readString(stream);
 		} catch(IOException e) {
 			throw new BoomException("Failed to read file content.", e);
+		}
+	}
+
+	@Override
+	public void writeString(String string, boolean append) {
+		try(var writer = new BufferedWriter(new FileWriter(getFile(), append))) {
+			writer.write(string);
+		} catch(IOException e) {
+			throw new BoomException("Failed to write into a file", e);
 		}
 	}
 

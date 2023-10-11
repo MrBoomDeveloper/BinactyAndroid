@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -93,11 +94,29 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 
 	public abstract List<T> list();
 
-	public abstract List<T> listRecursively();
+	public List<T> listRecursively() {
+		var list = new ArrayList<T>();
+
+		for(var item : list()) {
+			if(item.isDirectory()) {
+				list.addAll(item.listRecursively());
+			}
+
+			list.add(item);
+		}
+
+		return list;
+	}
 
 	public abstract void remove();
 
 	public abstract String readString();
+
+	public abstract void writeString(String string, boolean append);
+
+	public void writeString(String string) {
+		writeString(string, false);
+	}
 
 	public abstract void createDirectory();
 

@@ -22,7 +22,8 @@ public class BotCustom extends CharacterBrain {
 	private final GameHolder game = GameHolder.getInstance();
 	private Runnable updateListener;
 	private String[] waypoints;
-	private float speed = 1, visionDistance = 8;
+	private final float speed = 1;
+	private final float visionDistance = 8;
 
 	public void setUpdateListener(Runnable listener) {
 		this.updateListener = listener;

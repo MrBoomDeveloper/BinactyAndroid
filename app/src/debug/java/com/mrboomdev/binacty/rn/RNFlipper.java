@@ -45,7 +45,7 @@ public class RNFlipper {
 				@Override
 				public void onReactContextInitialized(ReactContext reactContext) {
 					reactInstanceManager.removeReactInstanceEventListener(this);
-					reactContext.runOnNativeModulesQueueThread((Runnable) () -> {
+					reactContext.runOnNativeModulesQueueThread(() -> {
 						client.addPlugin(new FrescoFlipperPlugin());
 					});
 				}

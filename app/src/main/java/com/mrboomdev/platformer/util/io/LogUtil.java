@@ -15,9 +15,7 @@ public class LogUtil {
 	public static void crash(String title, String message, Throwable t) {
 		try {
 			GameAnalytics.getInstance().crash(title, message, t);
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		} catch(NullPointerException ignored) {}
 
 		String text = title + "\n" + message + "\n" + throwableToString(t);
 		FileUtil.external("crash.txt").writeString(text, false);

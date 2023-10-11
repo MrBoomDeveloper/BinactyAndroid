@@ -1,7 +1,9 @@
 package com.mrboomdev.platformer.online;
 
 import com.mrboomdev.platformer.util.helper.BoomException;
+
 import java.io.IOException;
+
 import okhttp3.Response;
 
 public class ResultData {
@@ -31,7 +33,7 @@ public class ResultData {
 	}
 	
 	public static class Builder {
-		private ResultData data = new ResultData();
+		private final ResultData data = new ResultData();
 		
 		public Builder setIsOK(boolean isOk) {
 			data.isOk = isOk;

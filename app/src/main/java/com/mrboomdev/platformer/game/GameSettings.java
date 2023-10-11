@@ -44,6 +44,11 @@ public class GameSettings {
 
 		try {
 			var characterFile = prefs.getString("playerCharacter", defaultCharacterFile);
+
+			if(characterFile == null) {
+				throw new BoomException("Null character file!");
+			}
+
 			this.playerCharacter = fileAdapter.fromJson(characterFile);
 		} catch(IOException e) {
 			e.printStackTrace();
@@ -64,10 +69,5 @@ public class GameSettings {
 				prefs.getInt("soundsVolume", 100) / 100f);
 	}
 
-	public enum Engine {
-		BEANSHELL,
-		JVM,
-		JS,
-		NATIVE
-	}
+	public enum Engine { BEANSHELL, JVM, JAVA, JS, NATIVE }
 }

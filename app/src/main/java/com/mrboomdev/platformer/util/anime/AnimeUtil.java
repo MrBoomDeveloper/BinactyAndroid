@@ -2,12 +2,11 @@ package com.mrboomdev.platformer.util.anime;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.Array;
-import com.mrboomdev.platformer.util.anime.AnimeStep;
 
 @Deprecated
 public class AnimeUtil {
-    private Array<AnimeStep> steps = new Array<>();
-    private Array<Integer> offsets = new Array<>();
+    private final Array<AnimeStep> steps = new Array<>();
+    private final Array<Integer> offsets = new Array<>();
     private boolean cancelOnStart = false;
     
     public AnimeUtil addStep(AnimeStep step, int offset) {

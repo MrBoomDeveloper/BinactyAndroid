@@ -1,26 +1,27 @@
 package com.mrboomdev.platformer.ui.react.view;
 
 import android.os.Bundle;
-import android.view.Choreographer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
+
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
-import com.facebook.react.uimanager.annotations.ReactPropGroup;
 import com.mrboomdev.platformer.ui.gameplay.screens.CharacterScreen;
+
 import java.util.Map;
 
 public class ReactCharacterViewManager extends ViewGroupManager<FrameLayout> {
-    private ReactApplicationContext context;
+    private final ReactApplicationContext context;
     private View view;
 	private int width, height;
 
@@ -50,11 +51,9 @@ public class ReactCharacterViewManager extends ViewGroupManager<FrameLayout> {
         int reactNativeViewId = args.getInt(0);
         int commandIdInt = Integer.parseInt(commandId);
 
-        switch (commandIdInt) {
-            case 1:
-                createFragment(root, reactNativeViewId);
-                break;
-        }
+		if(commandIdInt == 1) {
+			createFragment(root, reactNativeViewId);
+		}
     }
 
     public void createFragment(FrameLayout root, int reactNativeViewId) {

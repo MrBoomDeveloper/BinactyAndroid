@@ -1,4 +1,5 @@
 import com.badlogic.gdx.math.Vector2;
+import com.mrboomdev.platformer.ui.ActivityManager;
 
 /* ----------
 	INIT VALUES
@@ -391,6 +392,8 @@ void updateLight() {
 	GAMEPLAY
 ----------*/
 
+print(1);
+
 var officeTrigger = new Trigger(24, -15, 5, new TriggerCallback() { triggered(var character) {
 	if(character != core.settings.mainPlayer
 		|| didPlayerEnteredOffice
@@ -404,6 +407,8 @@ var officeTrigger = new Trigger(24, -15, 5, new TriggerCallback() { triggered(va
 
 	return true;
 }});
+
+print(2);
 
 if(nightId == 1) {
 	vanessa = createCharacter("characters/vanessa");
@@ -427,9 +432,11 @@ void introAttackCutscene() {
     
     ui.setVisibility(false);
     game.setControlsEnabled(false);
+
     CameraUtil.setCameraMoveSpeed(.01f);
     CameraUtil.setCameraZoom(.5f, .01f);
     CameraUtil.setTarget(vanessa);
+	AudioUtil.setTarget(vanessa);
     
     var attackerBrain = new BotFollower();
     attackerBrain.setWaypoints(waypoints);
@@ -473,16 +480,19 @@ void introAttackCutscene() {
 
 						game.setTimer(new Runnable() { run() {
 							vanessa.inventory.setCurrentItem(0);
+							
+							vanessaBrain.setCompletionListener(new Runnable() { run() {
+                        	    vanessaBrain.setCompletionListener(new Runnable() { run() {
+                        	        subtitles.addLine("Damn it! It was so close!");
+                                }});
+                            
+                                vanessaBrain.setTarget(22, 20);
+                            }});
+                        
+                            vanessaBrain.setTarget(me);
 						}}, 1);
 
-                        vanessaBrain.setCompletionListener(new Runnable() { run() {
-							vanessaBrain.setStopOnReach(false);
-							vanessaBrain.setTarget(me);
-							vanessaBrain.setCompletionListener(null);
-                        }});
-
 						vanessa.lookAt(null);
-						vanessaBrain.setTarget(me);
                         me.inventory.setCurrentItem(0);
                     
                         ui.setVisibility(true);
@@ -490,6 +500,7 @@ void introAttackCutscene() {
 
                         CameraUtil.reset();
                         CameraUtil.setTarget(me);
+						AudioUtil.setTarget(me);
                     
                         //subtitles.addLine("Quick! Help me move him fo the salvage room!", 4);
                         //subtitles.addLine("GO TO OFFICE. CUTSCENE ISN'T DONE YET!", 5);
@@ -500,7 +511,9 @@ void introAttackCutscene() {
                         didIntroEnded = true;
                     }}, .4f);
 
+                    vanessaBrain.setTarget(null);
 					vanessaBrain.setTarget(foxy.entity);
+					//ActivityManager.toast("hi!", false);
                 }});
 
 				vanessa.setBrain(vanessaBrain);

@@ -74,12 +74,15 @@ public class MapManager {
 	}
 	
 	public MapManager build(World world, FileUtil source, Runnable callback) {
+		LogUtil.debug("GameStart", "Build \"MapManager\"");
+
+		this.world = world;
+		this.source = source;
+		this.buildCallback = callback;
+
 		try {
 			Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
 			JsonAdapter<PackData.Tiles> adapter = moshi.adapter(PackData.Tiles.class);
-			this.world = world;
-			this.source = source;
-			this.buildCallback = callback;
 		
 			for(String pack : atmosphere.tiles) {
 				var tilesFile = PackLoader.resolvePath(source.getParent(), pack);
@@ -105,10 +108,12 @@ public class MapManager {
 			}
 
 			status = Status.LOADING_RESOURCES;
+			LogUtil.debug("GameStart", "Done updating path aliases all textures");
 		} catch(Exception e) {
 			LogUtil.crash("Failed to build a map.", "Something went wrong while building a map of the environment.", e);
 			e.printStackTrace();
 		}
+
 		return this;
 	}
 	
@@ -221,11 +226,19 @@ public class MapManager {
 		tilesMap.remove(pos);
 	}
 	
-	public void ping() {
-		if(game.assets.update(17) && game.externalAssets.update(17) && status == Status.LOADING_RESOURCES) {
-			buildTerrain();
+	public String ping() {
+		if(game.assets.update() && game.externalAssets.update() && status == Status.LOADING_RESOURCES) {
+			LogUtil.debug("GameStart", "Build the map");
+
 			status = Status.BUILDING_BLOCKS;
+			buildTerrain();
 		}
+
+		if(status == Status.BUILDING_BLOCKS) {
+			return "Building the map...";
+		}
+
+		return "Loading map resources...";
 	}
 	
 	private void buildTerrain() {
@@ -238,15 +251,20 @@ public class MapManager {
 				tile.setTexture(tile.source.goTo(tile.texture).getLoaded(Texture.class), false);
 			}
 		}
+
+		LogUtil.debug("GameStart", "Done setting all tile textures");
 		
 		for(var tile : tiles) {
 			tile.copyData(Objects.requireNonNull(tilesPresets.get(tile.name)));
 			tile.build(world);
+
 			objects.add(tile);
 			tilesMap.put(getTextPosition(tile.position, tile.layer), tile);
 		}
-		
+
+		LogUtil.debug("GameStart", "Done adding all tiles");
 		status = Status.DONE;
+
 		buildCallback.run();
 	}
 	

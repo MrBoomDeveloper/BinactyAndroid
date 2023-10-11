@@ -11,6 +11,7 @@
 				"description": "Welcome to your new summer job at Freddy Fazbear's Pizza, where kids and parents alike come for entertainment and food!",
 				"maxPlayers": 1,
 				"time": "6:00",
+				"type": "match",
 
 				"levels": [
 					{
@@ -25,13 +26,10 @@
 					}
 				],
 
-				"type": "match",
-				"file": { "path": "gamemode.java" },
-				"maps": [{
-					"name": "FNaF 1",
-					"author": "MrBoomDev",
-					"file": { "path": "maps/fnafMap1.json" }
-				}]
+				"entry": {
+					"scripts": "scripts", "main": "com.mrboomdev.binacty.fnaf.Main", "engine": "JAVA",
+					"level_id": "night_1"
+				}
 			},
 
 			{

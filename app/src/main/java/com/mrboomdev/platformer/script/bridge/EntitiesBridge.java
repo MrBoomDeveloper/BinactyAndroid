@@ -44,10 +44,10 @@ public class EntitiesBridge {
 	}
 	
 	public CharacterEntity getCharacter(@NonNull Entity.Target target) {
-		switch(target) {
-			case MAIN_PLAYER: return game.settings.mainPlayer;
-			default: return null;
+		if(target == Entity.Target.MAIN_PLAYER) {
+			return game.settings.mainPlayer;
 		}
+		return null;
 	}
 	
 	public Item createItem(String name) {

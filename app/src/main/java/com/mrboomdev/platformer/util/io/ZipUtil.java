@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
@@ -21,7 +22,7 @@ public class ZipUtil {
 
 	@NonNull
 	public static byte[] getCompressedString(@NonNull String input) throws IOException {
-		byte[] data = input.getBytes("UTF-8");
+		byte[] data = input.getBytes(StandardCharsets.UTF_8);
 		ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
 		GZIPOutputStream gos = new GZIPOutputStream(os);
 		gos.write(data);

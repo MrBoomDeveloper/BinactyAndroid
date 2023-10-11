@@ -7,8 +7,6 @@ plugins {
 	id "com.facebook.react"
 }
 
-def jscFlavor = 'org.webkit:android-jsc:+'
-
 android {
 	namespace "com.mrboomdev.platformer"
 	ndkVersion rootProject.ext.ndkVersion
@@ -51,6 +49,24 @@ android {
                 cppFlags ''
             }
         }
+
+		packagingOptions {
+			pickFirst "META-INF/AL2.0"
+			pickFirst "META-INF/LGPL2.1"
+			pickFirst "xsd/catalog.xml"
+
+			merge "META-INF/INDEX.LIST"
+
+			merge "META-INF/DEPENDENCIES"
+
+			merge "META-INF/LICENSE-notice.md"
+			merge "META-INF/LICENSE.md"
+			merge "META-INF/LICENSE"
+			merge "META-INF/licenses"
+
+			merge "META-INF/NOTICE"
+			merge "META-INF/NOTICE.md"
+		}
     }
 	
 	splits {
@@ -129,6 +145,15 @@ dependencies {
 	/* Util libraries */
 	implementation 'com.squareup.moshi:moshi:1.15.0'
 	implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.11"
+	implementation "org.apache-extras.beanshell:bsh:2.0b6"
+	//implementation "com.linkedin.dexmaker:dexmaker:2.28.3"
+	//implementation "org.eclipse.jdt:ecj:3.26.0"
+	//implementation "io.earcam.wrapped:jdk.compiler:1.8.132"
+	implementation "org.apache.ant:ant:1.10.12"
+
+	implementation ("com.android.tools.build:builder:8.1.2") {
+		exclude group: "com.sun.activation", module: "javax.activation"
+	}
 	
 	/* Android libraries */
 	implementation "com.google.android.material:material:1.9.0"

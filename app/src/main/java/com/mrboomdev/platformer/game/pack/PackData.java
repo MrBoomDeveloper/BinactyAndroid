@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.environment.map.MapTile;
+import com.mrboomdev.platformer.game.GameSettings;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
@@ -83,8 +84,13 @@ public class PackData {
 	}
 
 	public static class GamemodeEntry {
-		public String engine, file, main;
-		public int version;
+		@Json(name = "main")
+		public String mainPath;
+		@Json(name = "scripts")
+		public String scriptsPath;
+		@Json(name = "level_id")
+		public String levelId;
+		public GameSettings.Engine engine;
 	}
 	
 	public static class GamemodesRow {

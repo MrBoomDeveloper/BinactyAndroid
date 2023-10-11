@@ -19,20 +19,27 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class FileUtil {
 	public final String path;
 	public final Source source;
-	@Json(ignore = true) static JsonAdapter<FileUtil> jsonAdapter;
-	@Json(ignore = true) static final String errorMessageBase = "Error while operating with FileUtil! ";
-	@Json(ignore = true) static final String errorMessageUnknownSource = errorMessageBase + "Unknown source or it is undefined. ";
-	@Json(ignore = true) static final String errorMessageIO = errorMessageBase + "We don't know the reason of the error. Only the type. It is IOException!";
-	@Json(ignore = true) static final String errorMessageNotFound = errorMessageBase + "File not found! ";
-	@Json(ignore = true) static final String errorMessageUnknown = errorMessageBase + "Something unexpected has happened! ";
+	@Json(ignore = true)
+	private static JsonAdapter<FileUtil> jsonAdapter;
+	@Json(ignore = true)
+	private static final String errorMessageBase = "Error while operating with FileUtil! ";
+	@Json(ignore = true)
+	private static final String errorMessageUnknownSource = errorMessageBase + "Unknown source or it is undefined. ";
+	@Json(ignore = true)
+	private static final String errorMessageIO = errorMessageBase + "We don't know the reason of the error. Only the type. It is IOException!";
+	@Json(ignore = true)
+	private static final String errorMessageNotFound = errorMessageBase + "File not found! ";
+	@Json(ignore = true)
+	private static final String errorMessageUnknown = errorMessageBase + "Something unexpected has happened! ";
 
-	
 	public FileUtil(String path, Source source) {
 		this.path = path;
 		this.source = source;
@@ -77,6 +84,7 @@ public class FileUtil {
 					return errorMessageUnknown + e.getMessage();
 				}
 			}
+
 			case EXTERNAL: {
 				try {
 					FileInputStream fis = new FileInputStream(new File(ActivityManager.current.getExternalFilesDir(null), path));
@@ -101,7 +109,59 @@ public class FileUtil {
 					return errorMessageUnknown + e.getMessage();
 				}
 			}
+
 			default: return errorMessageUnknownSource;
+		}
+	}
+
+	public void copy(FileUtil destination) throws BoomException {
+		switch(source) {
+			case INTERNAL: {
+				try(var stream = ActivityManager.current.getAssets().open(getPath())) {
+					destination.copyToMe(stream);
+				} catch(IOException e) {
+					throw new BoomException("Failed to copy a file from assets! " + getPath(), e);
+				}
+			}
+
+			case FULL: {
+				throw new BoomException("Currently unavailable!");
+			}
+
+			default: throw new BoomException("Unavailable destination!");
+		}
+	}
+
+	private void copyToMe(InputStream inputStream) throws BoomException {
+		switch(source) {
+			case EXTERNAL: {
+				var path = new File(ActivityManager.current.getExternalFilesDir(null), getPath());
+
+				try(var outStream = new FileOutputStream(path)) {
+					copy(inputStream, outStream);
+				} catch(IOException e) {
+					throw new BoomException(e);
+				}
+			}
+
+			case FULL: {
+				try(var outStream = new FileOutputStream(getPath())) {
+					copy(inputStream, outStream);
+				} catch(IOException e) {
+					throw new BoomException(e);
+				}
+			}
+
+			default: throw new BoomException("Unavailable destination!");
+		}
+	}
+
+	private static void copy(@NonNull InputStream input, OutputStream out) throws IOException {
+		var buffer = new byte[1024];
+		int read;
+
+		while((read = input.read(buffer)) != -1) {
+			out.write(buffer, 0 , read);
 		}
 	}
 	
@@ -201,13 +261,16 @@ public class FileUtil {
 			case FULL:
 			case EXTERNAL: {
 				var file = new File(getFullPath(false));
+
 				if(file.isDirectory()) {
 					var list = file.listFiles();
 					if(list == null) return;
+
 					for(var child : list) {
 						new FileUtil(child.getAbsolutePath(), Source.FULL).remove();
 					}
 				}
+
 				file.delete();
 				break;
 			}

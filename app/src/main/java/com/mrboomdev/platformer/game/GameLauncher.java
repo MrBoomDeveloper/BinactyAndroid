@@ -92,12 +92,12 @@ public class GameLauncher extends AndroidApplication implements CoreLauncher {
 		game.settings.engine = GameSettings.Engine.valueOf(engine.toUpperCase());
 
 		var levelFile = getIntent().getCharSequenceExtra("gamemodeFile");
-		var mapFile = getIntent().getCharSequenceExtra("mapFile");
-		if(levelFile == null || mapFile == null) return;
+		//var mapFile = getIntent().getCharSequenceExtra("mapFile");
+		if(levelFile == null) return;
 
 		var adapter = Constants.moshi.adapter(FileUtil.class);
 		game.gamemodeFile = adapter.fromJson(levelFile.toString());
-		game.mapFile = adapter.fromJson(mapFile.toString());
+		//game.mapFile = adapter.fromJson(mapFile.toString());
 	}
 	
 	@Override

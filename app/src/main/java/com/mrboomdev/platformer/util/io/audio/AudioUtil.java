@@ -7,7 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.entity.bot.BotTarget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,11 @@ public class AudioUtil {
 	private static final Array<Music> musicQueue = new Array<>();
 	private static float updateReloadProgress = 1;
 	private static Music currentTheme;
+	private static BotTarget target;
+
+	public static void setTarget(BotTarget mTarget) {
+		target = mTarget;
+	}
 	
 	public static void setVolume(float music, float sound) {
 		musicVolume = music;
@@ -60,11 +65,10 @@ public class AudioUtil {
 	
 	public static float getVolume(Vector2 position, float power) {
 		if(isDisabled) return 0;
-
 		float distance = 0;
-		var game = GameHolder.getInstance();
-		if(game.settings.mainPlayer != null) {
-			var playerPosition = game.settings.mainPlayer.body.getPosition();
+
+		if(target != null) {
+			var playerPosition = target.getPosition();
 			distance = position.dst(playerPosition);
 		}
 		

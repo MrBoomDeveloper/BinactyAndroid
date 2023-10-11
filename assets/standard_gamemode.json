@@ -1,5 +1,4 @@
 {
-	"script_path": "{ \"source\": \"INTERNAL\", \"path\": \"packs/fnaf/gamemode.java\" }",
-	"map_path": "{ \"source\": \"INTERNAL\", \"path\": \"packs/fnaf/maps/fnafMap1.json\" }",
+	"scripts": "scripts", "main": "com.mrboomdev.binacty.fnaf.Main", "engine": "JAVA",
 	"level_id": "night_1"
 }

@@ -18,7 +18,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.binacty.Constants;
-import com.mrboomdev.binacty.packs.PackEntry;
 import com.mrboomdev.binacty.rn.RNActivity;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.R;
@@ -271,17 +270,20 @@ public class AppBridge extends ReactContextBaseJavaModule {
 		data.putBoolean("enableEditor", false);
 
 		try {
-			var entryAdapter = Constants.moshi.adapter(PackEntry.class);
+			var entryAdapter = Constants.moshi.adapter(PackData.GamemodeEntry.class);
 			var entry = entryAdapter.fromJson(FileUtil.internal("standard_gamemode.json").readString(false));
 
 			if(entry == null) throw new BoomException("Null file: \"standard_gamemode.json\"");
 
-			var map = Arguments.createMap();
-			map.putString("id", entry.levelId);
-			data.putMap("level", map);
+			var jsEntry = Arguments.createMap();
+			jsEntry.putString("scripts", entry.scriptsPath);
+			jsEntry.putString("main", entry.mainPath);
+			jsEntry.putString("engine", entry.engine.name());
+			data.putMap("entry", jsEntry);
 
-			data.putString("file", entry.scriptPath);
-			data.putString("mapFile", entry.mapPath);
+			var jsLevel = Arguments.createMap();
+			jsLevel.putString("id", entry.levelId);
+			data.putMap("level", jsLevel);
 		} catch(IOException e) {
 			throw new BoomException("Failed to parse: \"standard_gamemode.json\"", e);
 		}
@@ -292,6 +294,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void play(ReadableMap data) {
 		var activity = ActivityManager.reactActivity;
+
 		if(activity.isGameStarted) return;
 		activity.isGameStarted = true;
 
@@ -306,20 +309,19 @@ public class AppBridge extends ReactContextBaseJavaModule {
 			intent.putExtra("level", levelBundle);
 		}
 
-		if(data.hasKey("entry")) {
-			try {
-				var adapter = Constants.moshi.adapter(PackData.GamemodeEntry.class);
-				var entry = adapter.fromJson(Objects.requireNonNull(data.getString("entry")));
-				intent.putExtra("gamemodeFile", Objects.requireNonNull(entry).file);
-				intent.putExtra("engine", entry.engine);
-				intent.putExtra("version", entry.version);
-				intent.putExtra("main", entry.main);
-			} catch(IOException e) {
-				e.printStackTrace();
+		try {
+			var adapter = Constants.moshi.adapter(PackData.GamemodeEntry.class);
+			var entry = Objects.requireNonNull(adapter.fromJson(Objects.requireNonNull(data.getString("entry"))));
+
+			intent.putExtra("scripts", entry.scriptsPath);
+			intent.putExtra("engine", entry.engine.name());
+			intent.putExtra("main", entry.mainPath);
+
+			if(entry.levelId != null) {
+				intent.putExtra("level_id", entry.levelId);
 			}
-		} else {
-			intent.putExtra("gamemodeFile", data.getString("file"));
-			intent.putExtra("mapFile", data.getString("mapFile"));
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
 
 		activity.startActivity(intent);

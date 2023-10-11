@@ -1,11 +1,12 @@
 package com.mrboomdev.platformer.ui.gameplay.widgets;
 
 import com.mrboomdev.platformer.util.ActorUtil;
+
 import java.util.HashMap;
 
 public class TabsWidget extends ActorUtil {
-	private HashMap<String, Tab> tabs = new HashMap<>();
-	private Style style;
+	private final HashMap<String, Tab> tabs = new HashMap<>();
+	private final Style style;
 	
 	public TabsWidget(Style style) {
 		this.style = style;

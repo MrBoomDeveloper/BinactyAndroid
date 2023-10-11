@@ -122,7 +122,9 @@ public class GameplayScreen extends CoreScreen {
 		game.settings.mainPlayer = player;
 		game.environment.entities.setMain(player);
 		camera.position.set(player.getPosition(), 0);
+
 		CameraUtil.setTarget(player);
+		AudioUtil.setTarget(player);
 		
 		ui = new GameplayUi(this, player);
 		Gdx.input.setInputProcessor(ui.stage);

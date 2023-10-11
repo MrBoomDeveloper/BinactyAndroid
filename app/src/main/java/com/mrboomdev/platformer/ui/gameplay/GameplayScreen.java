@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameplayScreen implements Screen {
-	private SpriteBatch batch;
+	private final SpriteBatch batch;
 	
 	public GameplayScreen() {
 		this.batch = new SpriteBatch();

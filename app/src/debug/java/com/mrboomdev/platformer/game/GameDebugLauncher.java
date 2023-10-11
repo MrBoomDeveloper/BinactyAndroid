@@ -1,11 +1,14 @@
 package com.mrboomdev.platformer.game;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.material.color.DynamicColors;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
@@ -13,19 +16,23 @@ public class GameDebugLauncher extends GameLauncher {
 	private static GameSettings previousSettings;
 	private GameDebugMenu menu;
 
+	@SuppressLint("SetTextI18n")
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 
 		var game = GameHolder.getInstance();
 		FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+		DynamicColors.applyToActivityIfAvailable(this);
 
 		game.gamemodeFile = FileUtil.internal("packs/fnaf/gamemode.java");
 		game.mapFile = FileUtil.internal("packs/fnaf/maps/fnafMap1.json");
 		AudioUtil.setVolume(1, 1);
-		
+
 		menu = new GameDebugMenu(this);
-		DynamicColors.applyToActivityIfAvailable(this);
+		FrameLayout parent = findViewById(R.id.gameplay_parent);
+		parent.addView(menu, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+		menu.start(this);
 
 		restorePreviousSettings();
 		previousSettings = game.settings;
@@ -34,20 +41,20 @@ public class GameDebugLauncher extends GameLauncher {
 	@Override
 	public void onResume() {
 		super.onResume();
-		menu.onResume();
+		//menu.onResume();
 
-		if(menu.myView != null) {
+		/*if(menu.myView != null) {
 			menu.myView.setVisibility(View.VISIBLE);
-		}
+		}*/
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
 
-		if(menu.myView != null) {
+		/*if(menu.myView != null) {
 			menu.myView.setVisibility(View.GONE);
-		}
+		}*/
 	}
 	
 	@Override
@@ -58,7 +65,7 @@ public class GameDebugLauncher extends GameLauncher {
 	
 	@Override
 	public void onBackPressed() {
-		menu.destroy();
+		//menu.destroy();
 	}
 	
 	@Override

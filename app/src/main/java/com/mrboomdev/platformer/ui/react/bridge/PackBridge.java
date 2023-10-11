@@ -111,7 +111,6 @@ public class PackBridge extends ReactContextBaseJavaModule {
 				jsGamemode.putString("id", gamemode.id);
 				jsGamemode.putInt("maxPlayers", gamemode.maxPlayers);
 
-				if(gamemode.file != null) jsGamemode.putString("file", gamemode.file.toString());
 				if(gamemode.author != null) jsGamemode.putString("author", gamemode.author);
 				if(gamemode.time != null) jsGamemode.putString("time", gamemode.time);
 				if(gamemode.description != null) jsGamemode.putString("description", gamemode.description);
@@ -143,18 +142,6 @@ public class PackBridge extends ReactContextBaseJavaModule {
 					}
 
 					jsGamemode.putArray("levels", jsLevels);
-				}
-
-				if(gamemode.maps != null) {
-					var jsMaps = Arguments.createArray();
-					for(var map : gamemode.maps) {
-						var jsMap = Arguments.createMap();
-						jsMap.putString("name", map.name);
-						jsMap.putString("author", map.author);
-						jsMap.putString("file", gamemode.source.goTo(map.file.getPath()).toString());
-						jsMaps.pushMap(jsMap);
-					}
-					jsGamemode.putArray("maps", jsMaps);
 				}
 
 				if(gamemode.entry != null) {

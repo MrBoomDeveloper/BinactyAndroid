@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.mrboomdev.binacty.Constants;
+import com.mrboomdev.binacty.api.pack.PackContext;
 import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.logic.Trigger;
@@ -28,9 +29,12 @@ import com.mrboomdev.platformer.util.io.LogUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class GameHolder extends Game {
+	public List<PackContext> packs;
+	public PackContext mainPack;
 	public Bundle envVars = new Bundle();
 	public CoreLauncher launcher;
 	public GameSettings settings;
@@ -40,9 +44,21 @@ public class GameHolder extends Game {
 	public GameStatistics stats;
 	public FileUtil gamemodeFile, mapFile;
 	private static GameHolder instance;
+	private boolean wasReady;
 
 	static {
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> LogUtil.crash(throwable));
+	}
+
+	public boolean isReady() {
+		if(wasReady) return true;
+		if(packs.isEmpty()) return false;
+
+		for(var pack : packs) {
+			if(!pack.isReady()) return false;
+		}
+
+		return (wasReady = true);
 	}
 	
 	@Override
@@ -83,6 +99,7 @@ public class GameHolder extends Game {
 	public void reset() {
 		CameraUtil.reset();
 		Trigger.triggers = new ArrayList<>();
+		packs = new ArrayList<>();
 
 		if(settings.enableEditor) {
 			settings.isUiVisible = true;

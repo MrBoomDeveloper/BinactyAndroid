@@ -5,11 +5,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.game.GameSettings;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
 import com.mrboomdev.platformer.widgets.TextWidget;
 
@@ -32,22 +34,31 @@ public class GamemodeManager {
 	public GamemodeManager(FileUtil scenario) {
 		game.environment.gamemode = this;
 
-		game.script = new ScriptManager(scenario, "pack.Main", false);
+		game.script = new ScriptManager(scenario, "pack.Main", GameSettings.Engine.BEANSHELL);
 		if(!game.settings.enableEditor) game.script.eval(scenario.readString(true));
 	}
 	
 	public GamemodeManager build(Runnable callback) {
-		game.script.triggerLoaded();
 		this.buildCompletedCallback = callback;
 		status = Status.LOADING_RESOURCES;
+
+		game.script.triggerLoaded();
 		return this;
 	}
 	
-	public void ping() {
-		if(status == Status.LOADING_RESOURCES && game.assets.update(17) && game.externalAssets.update(17)) {
+	public String ping() {
+		if(game.assets.update()
+		&& game.externalAssets.update()
+		&& status == Status.LOADING_RESOURCES) {
 			buildCompletedCallback.run();
 			status = Status.DONE;
+
+			LogUtil.debug("GameStart", "Done evaluating gamemode's script");
+			return "Done!";
 		}
+
+		int progress = Math.round((game.assets.getProgress() + game.externalAssets.getProgress()) * 50);
+		return "Loading gamemode resources " + progress + "%";
 	}
 	
 	public void runFunction(GamemodeFunction function) {

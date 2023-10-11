@@ -15,16 +15,15 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.mrboomdev.binacty.Constants;
-import com.mrboomdev.binacty.api.pack.PackContext;
 import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.logic.Trigger;
+import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
 import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
-import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
 import java.io.IOException;
@@ -33,8 +32,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameHolder extends Game {
-	public List<PackContext> packs;
-	public PackContext mainPack;
+	public List<PackData.GamemodeEntry> entries;
+	public PackData.LevelsCategory.Level level;
 	public Bundle envVars = new Bundle();
 	public CoreLauncher launcher;
 	public GameSettings settings;
@@ -42,28 +41,26 @@ public class GameHolder extends Game {
 	public EnvironmentManager environment;
 	public ScriptManager script;
 	public GameStatistics stats;
-	public FileUtil gamemodeFile, mapFile;
+	private static final String TAG = "GameHolder";
 	private static GameHolder instance;
 	private boolean wasReady;
 
 	static {
-		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> LogUtil.crash(throwable));
+		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+			LogUtil.crash(throwable);
+		});
 	}
 
 	public boolean isReady() {
 		if(wasReady) return true;
-		if(packs.isEmpty()) return false;
-
-		for(var pack : packs) {
-			if(!pack.isReady()) return false;
-		}
+		if(entries == null || entries.isEmpty()) return false;
 
 		return (wasReady = true);
 	}
 	
 	@Override
 	public void create() {
-		LogUtil.debug("GameHolder", "create");
+		LogUtil.debug(TAG, "create");
 		
 		try {
 			var adapter = Constants.moshi.adapter(LoadingFiles.class);
@@ -81,11 +78,14 @@ public class GameHolder extends Game {
 	
 	public static GameHolder setInstance(
 			CoreLauncher launcher,
-			@NonNull GameSettings settings
+			@NonNull GameSettings settings,
+			List<PackData.GamemodeEntry> entries
 	) {
-		LogUtil.debug("GameHolder", "setInstance");
-		instance = new GameHolder(launcher, settings);
+		LogUtil.debug(TAG, "setInstance");
+
+		instance = new GameHolder(launcher, settings, entries);
 		instance.reset();
+
 		return instance;
 	}
 	
@@ -93,13 +93,13 @@ public class GameHolder extends Game {
 		if(instance == null) {
 			throw new BoomException("You need to set the instance first!");
 		}
+
 		return instance;
 	}
 
 	public void reset() {
 		CameraUtil.reset();
 		Trigger.triggers = new ArrayList<>();
-		packs = new ArrayList<>();
 
 		if(settings.enableEditor) {
 			settings.isUiVisible = true;
@@ -107,25 +107,31 @@ public class GameHolder extends Game {
 		}
 	}
 	
-	private GameHolder(CoreLauncher launcher, GameSettings settings) {
-		LogUtil.debug("GameHolder", "constructor");
+	private GameHolder(CoreLauncher launcher, GameSettings settings, List<PackData.GamemodeEntry> entries) {
 		this.launcher = launcher;
 		this.settings = settings;
+		this.entries = entries;
+
 		this.stats = new GameStatistics();
+		this.script = new ScriptManager();
+
 		this.assets = new Assets(new InternalFileHandleResolver());
 		this.externalAssets = new Assets(new ExternalFileHandleResolver());
 	}
 	
 	@Override
 	public void dispose() {
-		LogUtil.debug("GameHolder", "dispose");
+		LogUtil.debug(TAG, "dispose");
+
 		assets.clear();
 		externalAssets.clear();
 		environment.world.dispose();
+
 		super.dispose();
 	}
 	
 	private static class Assets extends AssetManager {
+		private static final String TAG = "GameHolderAssets";
 		
 		public Assets(FileHandleResolver resolver) {
 			super(resolver);
@@ -134,14 +140,14 @@ public class GameHolder extends Game {
 			setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 			
 			setErrorListener((asset, throwable) -> {
-				LogUtil.error("Assets", "Failed to load asset: " + asset.fileName + ", of type: " + asset.type.getName());
+				LogUtil.error(TAG, "Failed to load asset: " + asset.fileName + ", of type: " + asset.type.getName());
 				throw new BoomException(throwable);
 			});
 		}
 		
 		@Override
 		public synchronized <T> void load(String file, Class<T> fileClass) {
-			LogUtil.debug("Assets", "Load file: " + file);
+			LogUtil.debug(TAG, "Load file: " + file);
 			super.load(file, fileClass);
 		}
 	}

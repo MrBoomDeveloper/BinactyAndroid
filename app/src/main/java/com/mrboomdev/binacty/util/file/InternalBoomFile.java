@@ -1,5 +1,7 @@
 package com.mrboomdev.binacty.util.file;
 
+import android.content.res.AssetManager;
+
 import androidx.annotation.NonNull;
 
 import com.mrboomdev.platformer.ui.ActivityManager;
@@ -8,6 +10,9 @@ import com.mrboomdev.platformer.util.helper.BoomException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 
@@ -17,7 +22,16 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 
 	@Override
 	public void copyTo(@NonNull BoomFile<?> destination) {
-		try(var stream = ActivityManager.current.getAssets().open(getPath())) {
+		if(isDirectory()) {
+			for(var item : list()) {
+				var next = destination.goTo(item.getName());
+				item.copyTo(next);
+			}
+
+			return;
+		}
+
+		try(var stream = getAssets().open(getRelativePath())) {
 			destination.copyToMe(stream);
 		} catch(IOException e) {
 			throw new BoomException(e);
@@ -30,18 +44,58 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 	}
 
 	@Override
+	public boolean isDirectory() {
+		try {
+			getAssets().open(getRelativePath()).close();
+			return false;
+		} catch(IOException e) {
+			return true;
+		}
+	}
+
+	@Override
+	public List<InternalBoomFile> list() {
+		var list = new ArrayList<InternalBoomFile>();
+		String[] nativeList;
+
+		try {
+			nativeList = Objects.requireNonNull(getAssets().list(getRelativePath()));
+		} catch(IOException | NullPointerException e) {
+			e.printStackTrace();
+			return list;
+		}
+
+		for(var child : nativeList) {
+			list.add(goTo(new File(child).getName()));
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<InternalBoomFile> listRecursively() {
+		var list = new ArrayList<InternalBoomFile>();
+
+		for(var item : list()) {
+			if(item.isDirectory()) {
+				list.addAll(item.listRecursively());
+			}
+
+			list.add(item);
+		}
+
+		return list;
+	}
+
+	@Override
 	public void remove() {
 		throw new BoomException("Can't remove a file from a static environment!");
 	}
 
 	@Override
 	public String readString() {
-		try(var stream = ActivityManager.current.getAssets().open(getPath())) {
-			int size = stream.available();
-			var buffer = new byte[size];
-
-			stream.read(buffer);
-			return new String(buffer);
+		try(var stream = getAssets().open(getRelativePath())) {
+			return readString(stream);
 		} catch(IOException e) {
 			throw new BoomException("Failed to read file content.", e);
 		}
@@ -54,6 +108,10 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 
 	@Override
 	public File getFile() {
-		throw new BoomException("Can't get a file from a static environment!");
+		return new File(getRelativePath());
+	}
+
+	private AssetManager getAssets() {
+		return ActivityManager.current.getAssets();
 	}
 }

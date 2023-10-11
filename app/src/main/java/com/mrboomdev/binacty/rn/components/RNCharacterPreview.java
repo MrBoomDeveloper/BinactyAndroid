@@ -67,7 +67,7 @@ public class RNCharacterPreview extends SimpleViewManager<ReactTextView> {
 				}
 			};
 
-			var game = GameHolder.setInstance(launcher, settings);
+			//var game = GameHolder.setInstance(launcher, settings);
 			//TODO: Create a gamemode where above of player there is light, and behind him is walls with floor.
 
 			return initializeForView(GameHolder.getInstance(), config);

@@ -38,7 +38,7 @@ public class ParticleManager {
 		var adapter = Constants.moshi.adapter(ParticleEffect.Preset.class);
 
 		try {
-			particle.preset = adapter.fromJson(file.goTo("manifest.json").readString(true));
+			particle.preset = adapter.fromJson(file.goTo("manifest.json").readString());
 		} catch(IOException e) {
 			throw BoomException.builder("Failed to deserialize a particle: ").addQuoted(name).build();
 		}

@@ -86,7 +86,7 @@ public class MapManager {
 		
 			for(String pack : atmosphere.tiles) {
 				var tilesFile = PackLoader.resolvePath(source.getParent(), pack);
-				var tilesPreset = Objects.requireNonNull(adapter.fromJson(tilesFile.readString(true))).tiles;
+				var tilesPreset = Objects.requireNonNull(adapter.fromJson(tilesFile.readString())).tiles;
 				tilesPreset.values().forEach(tile -> tile.source = tilesFile.getParent());
 
 				if(pack.startsWith("$")) {

@@ -3,44 +3,63 @@ package com.mrboomdev.platformer.script;
 import androidx.annotation.NonNull;
 
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameSettings;
+import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.script.bridge.AudioBridge;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.script.bridge.GameBridge;
 import com.mrboomdev.platformer.script.bridge.MapBridge;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
-import com.mrboomdev.platformer.script.engine.MbsEngine;
+import com.mrboomdev.platformer.script.entry.ScriptEntry;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
-import bsh.EvalError;
-import bsh.Interpreter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScriptManager {
-	private final GameSettings.Engine engine;
 	public GameBridge gameBridge;
 	public EntitiesBridge entitiesBridge;
 	public UiBridge uiBridge;
 	public AudioBridge audioBridge;
 	public MapBridge mapBridge;
-	private Interpreter interpreter;
+	private boolean isCompiledAll;
+	private final List<ScriptEntry> entries = new ArrayList<>();
+	//private Interpreter interpreter;
 	//private ScriptEntry runner;
 
-	public ScriptManager(FileUtil source, String main, @NonNull GameSettings.Engine engine) {
-		this.engine = engine;
+	public boolean isReady() {
+		if(entries.isEmpty()) return false;
 
-		intiMbs(source);
+		for(var entry : entries) {
+			if(!entry.isReady()) return false;
+		}
 
-		if(engine == GameSettings.Engine.BEANSHELL) {
-			initBeanshell(source);
-		} else {
-			throw new BoomException("Unsupported engine! " + engine.name());
+		return true;
+	}
+
+	public void compile(@NonNull List<PackData.GamemodeEntry> entries) {
+		for(var entry : entries) {
+			var entryHolder = ScriptCompiler.compile(entry);
+			entryHolder.compile(entry);
+			this.entries.add(entryHolder);
 		}
 	}
 
+	public String ping() {
+		if(!isCompiledAll) {
+			for(var entry : entries) {
+				if(entry.isCompiled()) isCompiledAll = true;
+			}
+
+			return "Compiling scripts...";
+		}
+
+		return "Idk...";
+	}
+
 	private void intiMbs(FileUtil source) {
-		var a = new MbsEngine("HelloWorld", source);
-		a.compile();
+		//var a = new MbsEngine("HelloWorld", source);
+		//a.compile();
 
 		//a.loadClass("HelloWorld");
 		//var b = a.getClass("HelloWorld");
@@ -74,10 +93,10 @@ public class ScriptManager {
 	}
 
 	private void initBeanshell(FileUtil source) {
-		this.interpreter = new Interpreter();
+		//this.interpreter = new Interpreter();
 
 		var path = "packs/core/src/scripts/DefaultScript.java";
-		this.eval(FileUtil.internal(path).readString(true));
+		this.eval(FileUtil.internal(path).readString());
 
 		initScriptable(source);
 	}
@@ -102,43 +121,43 @@ public class ScriptManager {
 		//if(engine == GameSettings.Engine.GROOVY) return;
 
 		try {
-			interpreter.eval(code);
+			//interpreter.eval(code);
 		} catch(Exception e) {
 			handleException(e);
 		}
 	}
 	
 	public void put(String reference, Object value) {
-		switch(engine) {
+		/*switch(engine) {
 			case BEANSHELL: try {
 				interpreter.set(reference, value);
 			} catch(EvalError e) {
 				handleException(e);
 			} break;
 
-			/*case GROOVY: {
+			*//*case GROOVY: {
 				//groovyEntry.setProperty(reference, value);
-			} break;*/
+			} break;*//*
 
 			default: {
 				throw new BoomException("Unsupported engine!");
 			}
-		}
+		}*/
 	}
 
 	public void triggerLoaded() {
 		//if(runner != null) runner.loaded();
-		if(interpreter != null) gameBridge.callListener(GameBridge.Function.BUILD);
+		//if(interpreter != null) gameBridge.callListener(GameBridge.Function.BUILD);
 	}
 
 	public void triggerStarted() {
 		//if(runner != null) runner.start();
-		if(interpreter != null) gameBridge.callListener(GameBridge.Function.START);
+		//if(interpreter != null) gameBridge.callListener(GameBridge.Function.START);
 	}
 
 	public void triggerEnded() {
 		//if(runner != null) runner.finish();
-		if(interpreter != null) gameBridge.callListener(GameBridge.Function.END);
+		//if(interpreter != null) gameBridge.callListener(GameBridge.Function.END);
 	}
 	
 	private void handleException(@NonNull Throwable t) {

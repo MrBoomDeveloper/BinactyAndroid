@@ -18,7 +18,6 @@ import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.ui.gameplay.widgets.ButtonWidget;
 import com.mrboomdev.platformer.util.ActorUtil;
 import com.mrboomdev.platformer.util.ColorUtil;
-import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Moshi;
 
@@ -202,22 +201,23 @@ public class EditorScreen {
 					Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
 					var adapter = moshi.adapter(MapManager.class);
 					var map = game.environment.map;
-					if(game.mapFile.source == FileUtil.Source.EXTERNAL) {
+					/*if(game.mapFile.source == FileUtil.Source.EXTERNAL) {
 						game.mapFile.writeString(adapter.toJson(map), true);
 					} else {
 						Gdx.files.external("exportedMap.json").writeString(adapter.toJson(map), false);
-					}
+					}*/
 
 					var dialog = new AndroidDialog().setTitle("Saved successfully!");
 
 					var message = new StringBuilder("Everything is ok! ");
 					message.append("You can continue working! ");
-					if(game.mapFile.source == FileUtil.Source.INTERNAL) {
+					/*if(game.mapFile.source == FileUtil.Source.INTERNAL) {
 						message.append("Warning! This pack is placed in the internal files of the game, ");
 						message.append("so you won't see any changes after reopen. ");
 						message.append("Instead we saved your map in '");
 						message.append(FileUtil.external("exportedMap.json").getFullPath(false)).append("'");
-					}
+					}*/
+
 					dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT)
 							.setTextColor("#ffffff")
 							.setText("Everything is ok, you can continue."));

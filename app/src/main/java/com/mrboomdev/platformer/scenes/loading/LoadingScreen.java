@@ -6,9 +6,6 @@ import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
-import com.mrboomdev.platformer.util.helper.BoomException;
-
-import java.io.IOException;
 
 public class LoadingScreen extends CoreScreen {
     private final GameHolder game = GameHolder.getInstance();
@@ -24,15 +21,7 @@ public class LoadingScreen extends CoreScreen {
 
     @Override
     public void show() {
-		try {
-			environmentCreator.loadRequiredResources(() -> {
-
-			});
-		} catch(IOException e) {
-			throw new BoomException("Failed to load required resources", e);
-		}
-
-		//environmentCreator.start();
+		environmentCreator.start();
     }
 
     @Override

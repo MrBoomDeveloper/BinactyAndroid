@@ -12,6 +12,10 @@ import com.mrboomdev.platformer.ui.android.AndroidDialog;
 
 public class LogUtil {
 
+	public static void setThreadCrashHandler(@NonNull Thread thread) {
+		thread.setUncaughtExceptionHandler((thread1, throwable) -> LogUtil.crash(throwable));
+	}
+
 	public static void crash(String title, String message, Throwable t) {
 		try {
 			GameAnalytics.getInstance().crash(title, message, t);

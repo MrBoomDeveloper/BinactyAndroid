@@ -57,7 +57,7 @@ public class PackLoader {
 			JsonAdapter<List<PackData.GamemodesRow>> adapter = moshi.adapter(Types.newParameterizedType(List.class, PackData.GamemodesRow.class));
 			for(var pack : packs) {
 				if(!pack.config.active || pack.resources == null || pack.resources.gamemodes == null) continue;
-				List<PackData.GamemodesRow> rows = adapter.fromJson(pack.source.goTo(pack.resources.gamemodes).readString(false));
+				List<PackData.GamemodesRow> rows = adapter.fromJson(pack.source.goTo(pack.resources.gamemodes).readString());
 				if(rows == null) continue;
 				for(var row : rows) {
 					for(var gamemode : row.data) {
@@ -65,9 +65,7 @@ public class PackLoader {
 						var entry = gamemode.entry;
 						gamemode.source = pack.source.goTo(pack.resources.gamemodes).getParent();
 						if(entry != null) {
-							entry.file = gamemode.source.goTo(gamemode.entry.file).getPath();
-						} else if(gamemode.file != null) {
-							gamemode.file = gamemode.source.goTo(gamemode.file.getPath());
+							//entry.file = gamemode.source.goTo(gamemode.entry.file).getPath();
 						}
 					}
 				}
@@ -85,11 +83,11 @@ public class PackLoader {
 		try {
 			Moshi moshi = new Moshi.Builder().build();
 			JsonAdapter<List<PackData.Config>> adapter = moshi.adapter(Types.newParameterizedType(List.class, PackData.Config.class));
-			configs = adapter.fromJson(FileUtil.external("packs/installed.json").readString(false));
+			configs = adapter.fromJson(FileUtil.external("packs/installed.json").readString());
 			if(configs == null) return;
 			for(var config : configs) {
 				JsonAdapter<PackData.Manifest> manifestAdapter = moshi.adapter(PackData.Manifest.class);
-				var manifest = manifestAdapter.fromJson(config.file.goTo("manifest.json").readString(false));
+				var manifest = manifestAdapter.fromJson(config.file.goTo("manifest.json").readString());
 				if(manifest == null) continue;
 				manifest.source = config.file.goTo("");
 				manifest.config = config;
@@ -121,10 +119,10 @@ public class PackLoader {
 	private static void showErrorDialog(Exception e) {
 		var dialog = new AndroidDialog().setTitle("Failed to load Packs").setCancelable(false);
 		dialog.addField(new AndroidDialog.Field(AndroidDialog.FieldType.TEXT).setText("Something went wrong while loading Packs. Stacktrace:\n" + Log.getStackTraceString(e)));
-		dialog.addAction(new AndroidDialog.Action().setText("Ignore").setClickListener(button -> dialog.close()));
+		dialog.addAction(new AndroidDialog.Action().setText("Stay Here").setClickListener(button -> dialog.close()));
 		dialog.addAction(new AndroidDialog.Action().setText("Reset").setClickListener(button -> {
 			FileUtil.external("packs").remove();
-			FileUtil.external("packs/installed.json").writeString(FileUtil.internal("packs/defaultList.json").readString(false), false);
+			FileUtil.external("packs/installed.json").writeString(FileUtil.internal("packs/defaultList.json").readString(), false);
 
 			reloadPacks();
 			reloadGamemodes();

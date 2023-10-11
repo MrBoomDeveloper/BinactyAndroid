@@ -6,30 +6,42 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.google.android.material.color.DynamicColors;
+import androidx.annotation.NonNull;
+
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.mrboomdev.binacty.Constants;
+import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.R;
-import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.game.pack.PackData;
+import com.mrboomdev.platformer.ui.ActivityManager;
+import com.mrboomdev.platformer.util.helper.BoomException;
+import com.mrboomdev.platformer.util.io.LogUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
+
+import java.io.IOException;
+import java.util.Objects;
 
 public class GameDebugLauncher extends GameLauncher {
 	private static GameSettings previousSettings;
-	private GameDebugMenu menu;
 
 	@SuppressLint("SetTextI18n")
 	@Override
 	public void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 
-		var game = GameHolder.getInstance();
+		LogUtil.setThreadCrashHandler(Thread.currentThread());
+		ActivityManager.current = this;
 		FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
-		DynamicColors.applyToActivityIfAvailable(this);
+		GameHolder game;
 
-		game.gamemodeFile = FileUtil.internal("packs/fnaf/gamemode.java");
-		game.mapFile = FileUtil.internal("packs/fnaf/maps/fnafMap1.json");
-		AudioUtil.setVolume(1, 1);
+		try {
+			game = createGameInstance(getDebugIntent());
+			AudioUtil.setVolume(1, 1);
+		} catch(IOException e) {
+			throw new BoomException("Unable to start game!", e);
+		}
 
-		menu = new GameDebugMenu(this);
+		GameDebugMenu menu = new GameDebugMenu(this);
 		FrameLayout parent = findViewById(R.id.gameplay_parent);
 		parent.addView(menu, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 		menu.start(this);
@@ -37,35 +49,28 @@ public class GameDebugLauncher extends GameLauncher {
 		restorePreviousSettings();
 		previousSettings = game.settings;
 	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		//menu.onResume();
 
-		/*if(menu.myView != null) {
-			menu.myView.setVisibility(View.VISIBLE);
-		}*/
-	}
-	
-	@Override
-	public void onPause() {
-		super.onPause();
+	@NonNull
+	private Intent getDebugIntent() throws IOException {
+		var intent = new Intent();
 
-		/*if(menu.myView != null) {
-			menu.myView.setVisibility(View.GONE);
-		}*/
+		var entryJson = BoomFile.internal("standard_gamemode.json").readString();
+		var adapter = Constants.moshi.adapter(PackData.GamemodeEntry.class);
+		var entry = Objects.requireNonNull(adapter.fromJson(entryJson));
+
+		var level = new Bundle();
+		level.putString("id", entry.levelId);
+
+		intent.putExtra("level", level);
+		intent.putExtra("entries", new String[] { entryJson });
+
+		return intent;
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		finishAffinity();
-	}
-	
-	@Override
-	public void onBackPressed() {
-		//menu.destroy();
+		ActivityManager.dispose();
 	}
 	
 	@Override

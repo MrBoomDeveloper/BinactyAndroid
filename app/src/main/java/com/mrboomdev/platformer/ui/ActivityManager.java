@@ -109,13 +109,6 @@ public class ActivityManager {
 		}
 	}
 	
-	public static void gameOver() {
-		reactActivity.isGameStarted = false;
-		var instance = RNApp.getReactInstance();
-		ReactContext context = Objects.requireNonNull(instance.getCurrentReactContext());
-		context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("GameOver", null);
-	}
-	
 	public static void forceExit() {
 		reactActivity.isGameStarted = false;
 		var instance = RNApp.getReactInstance();
@@ -142,5 +135,15 @@ public class ActivityManager {
 
 		window.setAttributes(params);
 		window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+	}
+
+	public static void dispose() {
+		if(current != null) current.finish();
+		if(reactActivity != null) reactActivity.finish();
+		if(media != null) stopMusic();
+
+		current = null;
+		reactActivity = null;
+		media = null;
 	}
 }

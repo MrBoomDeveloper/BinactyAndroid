@@ -67,7 +67,7 @@ public class RNActivity extends ReactActivity {
 		}
 
 		if(!prefs.getBoolean("isPacksListDefaultCopied", false)) {
-			FileUtil.external("packs/installed.json").writeString(FileUtil.internal("packs/defaultList.json").readString(false), false);
+			FileUtil.external("packs/installed.json").writeString(FileUtil.internal("packs/defaultList.json").readString(), false);
 			prefs.edit().putBoolean("isPacksListDefaultCopied", true).apply();
 		}
 	}
@@ -117,7 +117,7 @@ public class RNActivity extends ReactActivity {
 					ZipUtil.unzipFile(stream, dest, () -> {
 						try {
 							var adapter = Constants.moshi.adapter(PackData.Manifest.class);
-							var pack = adapter.fromJson(dest.goTo("manifest.json").readString(false));
+							var pack = adapter.fromJson(dest.goTo("manifest.json").readString());
 
 							if(pack == null || !pack.isValid()) {
 								throw new BoomException("Error while importing a pack. Manifest file isn't valid!");

@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExternalBoomFile extends BoomFile<ExternalBoomFile> {
 
@@ -22,6 +24,9 @@ public class ExternalBoomFile extends BoomFile<ExternalBoomFile> {
 
 	@Override
 	public void copyToMe(InputStream input) {
+		var parent = getParent();
+		if(parent != this) parent.createDirectory();
+
 		try(var out = new FileOutputStream(getFile())) {
 			copy(input, out);
 		} catch(IOException e) {
@@ -30,18 +35,37 @@ public class ExternalBoomFile extends BoomFile<ExternalBoomFile> {
 	}
 
 	@Override
+	public boolean isDirectory() {
+		return getFile().isDirectory();
+	}
+
+	@Override
+	public List<ExternalBoomFile> list() {
+		var list = new ArrayList<ExternalBoomFile>();
+		var nativeList = getFile().listFiles();
+		if(nativeList == null) return list;
+
+		for(var child : nativeList) {
+			list.add(goTo(child.getName()));
+		}
+
+		return list;
+	}
+
+	@Override
+	public List<ExternalBoomFile> listRecursively() {
+		return null;
+	}
+
+	@Override
 	public void remove() {
-		getFile().delete();
+		removeRecursively(BoomFile.global(this));
 	}
 
 	@Override
 	public String readString() {
 		try(var stream = new FileInputStream(getFile())) {
-			int size = stream.available();
-			var buffer = new byte[size];
-
-			stream.read(buffer);
-			return new String(buffer);
+			return readString(stream);
 		} catch(IOException e) {
 			throw new BoomException("Failed to read file content.", e);
 		}

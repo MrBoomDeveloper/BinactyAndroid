@@ -4,8 +4,10 @@ import com.mrboomdev.platformer.util.helper.BoomException;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class GlobalBoomFile extends BoomFile<GlobalBoomFile> {
 
@@ -20,22 +22,39 @@ public class GlobalBoomFile extends BoomFile<GlobalBoomFile> {
 
 	@Override
 	public void copyToMe(InputStream input) {
-		throw new BoomException("Stub!");
+		getParent().createDirectory();
+
+		try(var out = new FileOutputStream(getFile())) {
+			copy(input, out);
+		} catch(IOException e) {
+			throw new BoomException(e);
+		}
+	}
+
+	@Override
+	public boolean isDirectory() {
+		return getFile().isDirectory();
+	}
+
+	@Override
+	public List<GlobalBoomFile> list() {
+		return null;
+	}
+
+	@Override
+	public List<GlobalBoomFile> listRecursively() {
+		return null;
 	}
 
 	@Override
 	public void remove() {
-		getFile().delete();
+		removeRecursively(this);
 	}
 
 	@Override
 	public String readString() {
 		try(var stream = new FileInputStream(getFile())) {
-			int size = stream.available();
-			var buffer = new byte[size];
-
-			stream.read(buffer);
-			return new String(buffer);
+			return readString(stream);
 		} catch(IOException e) {
 			throw new BoomException("Failed to read file content.", e);
 		}

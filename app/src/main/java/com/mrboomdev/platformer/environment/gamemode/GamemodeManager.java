@@ -5,8 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.GameSettings;
-import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
@@ -34,8 +32,8 @@ public class GamemodeManager {
 	public GamemodeManager(FileUtil scenario) {
 		game.environment.gamemode = this;
 
-		game.script = new ScriptManager(scenario, "pack.Main", GameSettings.Engine.BEANSHELL);
-		if(!game.settings.enableEditor) game.script.eval(scenario.readString(true));
+		//game.script = new ScriptManager(scenario, "pack.Main", GameSettings.Engine.BEANSHELL);
+		//if(!game.settings.enableEditor) game.script.eval(scenario.readString());
 	}
 	
 	public GamemodeManager build(Runnable callback) {

@@ -1,4 +1,9 @@
 {
-	"scripts": "scripts", "main": "com.mrboomdev.binacty.fnaf.Main", "engine": "JAVA",
+	"scripts": "packs/fnaf/src/scripts",
+	"source": "internal",
+
+	"main": "com.mrboomdev.binacty.fnaf.Main",
+	"engine": "JAVA",
+
 	"level_id": "night_1"
 }

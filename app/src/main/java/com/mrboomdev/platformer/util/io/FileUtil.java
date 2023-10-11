@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.helper.BoomException;
@@ -13,32 +14,15 @@ import com.squareup.moshi.Moshi;
 
 import org.jetbrains.annotations.Contract;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
 public class FileUtil {
 	public final String path;
 	public final Source source;
 	@Json(ignore = true)
 	private static JsonAdapter<FileUtil> jsonAdapter;
-	@Json(ignore = true)
-	private static final String errorMessageBase = "Error while operating with FileUtil! ";
-	@Json(ignore = true)
-	private static final String errorMessageUnknownSource = errorMessageBase + "Unknown source or it is undefined. ";
-	@Json(ignore = true)
-	private static final String errorMessageIO = errorMessageBase + "We don't know the reason of the error. Only the type. It is IOException!";
-	@Json(ignore = true)
-	private static final String errorMessageNotFound = errorMessageBase + "File not found! ";
-	@Json(ignore = true)
-	private static final String errorMessageUnknown = errorMessageBase + "Something unexpected has happened! ";
 
 	public FileUtil(String path, Source source) {
 		this.path = path;
@@ -67,104 +51,14 @@ public class FileUtil {
 		return new FileUtil(path, Source.INTERNAL);
 	}
 	
-	public String readString(boolean isGdxThread) {
-		switch(source) {
-			case INTERNAL: if(isGdxThread) {
-				return getFileHandle().readString();
-			} else {
-				try(var stream = ActivityManager.current.getAssets().open(getPath())) {
-					var buffer = new byte[stream.available()];
-					stream.read(buffer);
-					return new String(buffer);
-				} catch(IOException e) {
-					e.printStackTrace();
-					return errorMessageIO + e.getMessage();
-				} catch(Exception e) {
-					e.printStackTrace();
-					return errorMessageUnknown + e.getMessage();
-				}
-			}
-
-			case EXTERNAL: {
-				try {
-					FileInputStream fis = new FileInputStream(new File(ActivityManager.current.getExternalFilesDir(null), path));
-					InputStreamReader inputStreamReader = new InputStreamReader(fis, StandardCharsets.UTF_8);
-					StringBuilder stringBuilder = new StringBuilder();
-					try(BufferedReader reader = new BufferedReader(inputStreamReader)) {
-						String line = reader.readLine();
-						while(line != null) {
-							stringBuilder.append(line).append('\n');
-							line = reader.readLine();
-						}
-					}
-					return stringBuilder.toString();
-				} catch(FileNotFoundException e) {
-					e.printStackTrace();
-					return errorMessageNotFound + e.getMessage();
-				} catch (IOException e) {
-					e.printStackTrace();
-					return errorMessageIO + e.getMessage();
-				} catch(Exception e) {
-					e.printStackTrace();
-					return errorMessageUnknown + e.getMessage();
-				}
-			}
-
-			default: return errorMessageUnknownSource;
-		}
+	public String readString() {
+		return toBoomFile().readString();
 	}
 
-	public void copy(FileUtil destination) throws BoomException {
-		switch(source) {
-			case INTERNAL: {
-				try(var stream = ActivityManager.current.getAssets().open(getPath())) {
-					destination.copyToMe(stream);
-				} catch(IOException e) {
-					throw new BoomException("Failed to copy a file from assets! " + getPath(), e);
-				}
-			}
-
-			case FULL: {
-				throw new BoomException("Currently unavailable!");
-			}
-
-			default: throw new BoomException("Unavailable destination!");
-		}
+	public void copy(@NonNull FileUtil destination) throws BoomException {
+		toBoomFile().copyTo(destination.toBoomFile());
 	}
 
-	private void copyToMe(InputStream inputStream) throws BoomException {
-		switch(source) {
-			case EXTERNAL: {
-				var path = new File(ActivityManager.current.getExternalFilesDir(null), getPath());
-
-				try(var outStream = new FileOutputStream(path)) {
-					copy(inputStream, outStream);
-				} catch(IOException e) {
-					throw new BoomException(e);
-				}
-			}
-
-			case FULL: {
-				try(var outStream = new FileOutputStream(getPath())) {
-					copy(inputStream, outStream);
-				} catch(IOException e) {
-					throw new BoomException(e);
-				}
-			}
-
-			default: throw new BoomException("Unavailable destination!");
-		}
-	}
-
-	private static void copy(@NonNull InputStream input, OutputStream out) throws IOException {
-		var buffer = new byte[1024];
-		int read;
-
-		while((read = input.read(buffer)) != -1) {
-			out.write(buffer, 0 , read);
-		}
-	}
-	
 	public void writeString(String text, boolean isGdxThread) {
 		if(source != Source.EXTERNAL) return;
 
@@ -197,13 +91,6 @@ public class FileUtil {
 		}
 	}
 
-	public boolean isLoadedAsync() {
-		var game = GameHolder.getInstance();
-		var assetsManager = source == Source.EXTERNAL ? game.externalAssets : game.assets;
-
-		return assetsManager.isLoaded(getPath());
-	}
-	
 	public FileUtil getParent() {
 		return new FileUtil(new File(path).getParent() + "/", source);
 	}
@@ -213,6 +100,7 @@ public class FileUtil {
 		if(result.startsWith("/")) {
 			result = result.substring(1);
 		}
+
 		return result;
 	}
 	
@@ -256,25 +144,7 @@ public class FileUtil {
 	}
 	
 	public void remove() {
-		switch(source) {
-			case INTERNAL: throw BoomException.builder("Failed to remove a file. Can't edit internal assets! Path: ").addQuoted(getPath()).build();
-			case FULL:
-			case EXTERNAL: {
-				var file = new File(getFullPath(false));
-
-				if(file.isDirectory()) {
-					var list = file.listFiles();
-					if(list == null) return;
-
-					for(var child : list) {
-						new FileUtil(child.getAbsolutePath(), Source.FULL).remove();
-					}
-				}
-
-				file.delete();
-				break;
-			}
-		}
+		toBoomFile().remove();
 	}
 	
 	public void rename(String name) {
@@ -289,8 +159,7 @@ public class FileUtil {
 	}
 	
 	public File getFile() {
-		if(source != Source.EXTERNAL) return new File(getPath());
-		return new File(ActivityManager.current.getExternalFilesDir(null), path);
+		return toBoomFile().getFile();
 	}
 	
 	public FileHandle getFileHandle() {
@@ -320,9 +189,13 @@ public class FileUtil {
 		}
 	}
 
-	public enum Source {
-		INTERNAL,
-		EXTERNAL,
-		FULL
+	public BoomFile<?> toBoomFile() {
+		if(source == Source.INTERNAL) return BoomFile.internal(getPath());
+		if(source == Source.EXTERNAL) return BoomFile.external(getPath());
+		if(source == Source.FULL) return BoomFile.global(getPath());
+
+		throw new BoomException("Unknown source");
 	}
+
+	public enum Source { INTERNAL, EXTERNAL, FULL }
 }

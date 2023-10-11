@@ -19,6 +19,7 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.binacty.rn.RNActivity;
+import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.R;
 import com.mrboomdev.platformer.game.GameLauncher;
@@ -30,7 +31,6 @@ import com.mrboomdev.platformer.online.profile.ProfileAuthentication;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
 import com.mrboomdev.platformer.util.helper.BoomException;
-import com.mrboomdev.platformer.util.io.FileUtil;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -258,10 +258,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 		props.putString("title", activity.getString(R.string.dialog_exit_title));
 		props.putString("description", activity.getString(R.string.dialog_exit_description));
 		props.putString("ok", activity.getString(R.string.action_exit));
-		showDialog(props, new PromiseImpl(args -> {
-			activity.finishAffinity();
-			stopMusic();
-		}, args -> {}));
+		showDialog(props, new PromiseImpl(args -> ActivityManager.dispose(), args -> {}));
 	}
 
 	@ReactMethod
@@ -271,7 +268,7 @@ public class AppBridge extends ReactContextBaseJavaModule {
 
 		try {
 			var entryAdapter = Constants.moshi.adapter(PackData.GamemodeEntry.class);
-			var entry = entryAdapter.fromJson(FileUtil.internal("standard_gamemode.json").readString(false));
+			var entry = entryAdapter.fromJson(BoomFile.internal("standard_gamemode.json").readString());
 
 			if(entry == null) throw new BoomException("Null file: \"standard_gamemode.json\"");
 
@@ -353,4 +350,10 @@ public class AppBridge extends ReactContextBaseJavaModule {
 
 		dialog.addSpace(30).show();
 	}
+
+	@ReactMethod
+	public void addListener(String name) {}
+
+	@ReactMethod
+	public void removeListeners(Integer count) {}
 }

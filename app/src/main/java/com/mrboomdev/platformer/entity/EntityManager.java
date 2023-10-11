@@ -31,7 +31,7 @@ public class EntityManager {
 		try {
 			var adapter = Constants.moshi.adapter(CharacterEntity.class);
 
-			presets.put(id, adapter.fromJson(file.goTo("manifest.json").readString(true)));
+			presets.put(id, adapter.fromJson(file.goTo("manifest.json").readString()));
 		} catch(Exception e) {
 			throw new BoomException("Invalid character config file!", e);
 		}
@@ -40,7 +40,7 @@ public class EntityManager {
 	public void loadItem(FileUtil file, String id) {
 		try {
 			var adapter = Constants.moshi.adapter(Item.class);
-			var item = adapter.fromJson(file.goTo("manifest.json").readString(true));
+			var item = adapter.fromJson(file.goTo("manifest.json").readString());
 
 			Objects.requireNonNull(item).source = file;
 			itemPresets.put(id, item);

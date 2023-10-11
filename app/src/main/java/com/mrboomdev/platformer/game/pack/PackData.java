@@ -3,6 +3,7 @@ package com.mrboomdev.platformer.game.pack;
 import androidx.annotation.NonNull;
 
 import com.mrboomdev.binacty.Constants;
+import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameSettings;
 import com.mrboomdev.platformer.util.helper.BoomException;
@@ -76,14 +77,14 @@ public class PackData {
 		@Deprecated public String type;
 		public String author;
 		public int maxPlayers;
-		@Deprecated public List<MapData> maps;
-		@Deprecated public FileUtil file;
 		public FileUtil source;
 		public GamemodeEntry entry;
 		public LevelsCategory[] levels;
 	}
 
 	public static class GamemodeEntry {
+		@Json(name = "source")
+		public BoomFile.Source source;
 		@Json(name = "main")
 		public String mainPath;
 		@Json(name = "scripts")

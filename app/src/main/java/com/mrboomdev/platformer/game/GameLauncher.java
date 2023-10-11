@@ -1,10 +1,13 @@
 package com.mrboomdev.platformer.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -16,12 +19,16 @@ import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.binacty.game.overlay.OverlayGameover;
 import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.R;
+import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.ui.android.AndroidDialog;
-import com.mrboomdev.platformer.util.io.FileUtil;
+import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class GameLauncher extends AndroidApplication implements CoreLauncher {
@@ -35,37 +42,73 @@ public class GameLauncher extends AndroidApplication implements CoreLauncher {
 
 		var crashlytics = FirebaseCrashlytics.getInstance();
 		var prefs = getSharedPreferences("Save", 0);
-		var settings = new GameSettings(prefs);
-		var config = new AndroidApplicationConfiguration();
 
 		if(!prefs.getBoolean("crashlytics", true) || BuildConfig.DEBUG) {
 			crashlytics.setCrashlyticsCollectionEnabled(false);
 		}
 
-		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
-		settings.ignoreScriptErrors = BuildConfig.DEBUG;
-		game = GameHolder.setInstance(this, settings);
-
 		try {
-			resolveGameFiles();
+			game = createGameInstance(getIntent());
 		} catch(Exception e) {
-			e.printStackTrace();
+			if(getClass().getName().equals(GameLauncher.class.getName()) && !BuildConfig.DEBUG) e.printStackTrace();
 
 			if(!BuildConfig.DEBUG) exit(ExitStatus.CRASH);
 		}
-
-		config.useImmersiveMode = true;
-		config.useAccelerometer = false;
-		config.useCompass = false;
-
-		var gdxView = initializeForView(game, config);
-		LinearLayout gdxParent = findViewById(R.id.gameplay);
-		gdxParent.addView(gdxView);
 
 		var overlay = findViewById(R.id.overlay);
 		overlay.setVisibility(View.GONE);
 
 		ActivityManager.hideSystemUi(this);
+	}
+
+	private void initGdxView() {
+		var config = new AndroidApplicationConfiguration();
+		config.useImmersiveMode = true;
+		config.useAccelerometer = false;
+		config.useCompass = false;
+
+		LinearLayout gdxParent = findViewById(R.id.gameplay);
+		gdxParent.removeAllViews();
+
+		var gdxView = initializeForView(game, config);
+		gdxParent.addView(gdxView);
+	}
+
+	public GameHolder createGameInstance(@NonNull Intent intent) throws IOException {
+		var prefs = getSharedPreferences("Save", 0);
+		var settings = new GameSettings(prefs);
+
+		settings.enableEditor = getIntent().getBooleanExtra("enableEditor", false);
+		settings.ignoreScriptErrors = BuildConfig.DEBUG;
+
+		var entries = new ArrayList<PackData.GamemodeEntry>();
+		var entriesJson = intent.getStringArrayExtra("entries");
+
+		if(entriesJson == null) {
+			throw new BoomException("Null entries list!");
+		}
+
+		for(var json : entriesJson) {
+			var adapter = Constants.moshi.adapter(PackData.GamemodeEntry.class);
+			var entry = Objects.requireNonNull(adapter.fromJson(json));
+			entries.add(entry);
+		}
+
+		game = GameHolder.setInstance(this, settings, entries);
+		game.level = getLevel(intent.getBundleExtra("level"));
+
+		initGdxView();
+		return game;
+	}
+
+	public PackData.LevelsCategory.Level getLevel(@Nullable Bundle bundle) {
+		if(bundle == null) return null;
+
+		var level = new PackData.LevelsCategory.Level();
+		level.id = bundle.getString("id");
+		level.name = bundle.getString("name");
+
+		return level;
 	}
 
 	private void gameOver() {
@@ -78,26 +121,6 @@ public class GameLauncher extends AndroidApplication implements CoreLauncher {
 
 			gameoverOverlay.startAnimation();
 		});
-	}
-
-	private void resolveGameFiles() throws IOException {
-		var level = getIntent().getBundleExtra("level");
-
-		if(level != null) {
-			game.envVars.putString("levelId", level.getString("id"));
-			game.envVars.putString("levelName", level.getString("name"));
-		}
-
-		var engine = Objects.requireNonNullElse(getIntent().getStringExtra("engine"), "BeanShell");
-		game.settings.engine = GameSettings.Engine.valueOf(engine.toUpperCase());
-
-		var levelFile = getIntent().getCharSequenceExtra("gamemodeFile");
-		//var mapFile = getIntent().getCharSequenceExtra("mapFile");
-		if(levelFile == null) return;
-
-		var adapter = Constants.moshi.adapter(FileUtil.class);
-		game.gamemodeFile = adapter.fromJson(levelFile.toString());
-		//game.mapFile = adapter.fromJson(mapFile.toString());
 	}
 	
 	@Override

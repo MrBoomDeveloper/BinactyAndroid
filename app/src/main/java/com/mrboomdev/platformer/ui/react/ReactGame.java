@@ -20,7 +20,6 @@ public class ReactGame implements ReactPackage {
 	@Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext context) {
 		return Arrays.asList(
-            new ReactBridge(context),
 			new PackBridge(context),
 			new AppBridge(context)
        );
@@ -28,6 +27,7 @@ public class ReactGame implements ReactPackage {
 
     @NonNull
 	@Override
+	@SuppressWarnings("rawtypes")
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext context) {
         return List.of(
 				new ReactCharacterViewManager(context),

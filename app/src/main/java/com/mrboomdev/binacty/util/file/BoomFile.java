@@ -10,7 +10,11 @@ import com.squareup.moshi.Json;
 
 import org.jetbrains.annotations.Contract;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -55,27 +59,42 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 		}
 	}
 
-	public abstract void copyTo(BoomFile<?> destination);
+	public void copyTo(BoomFile<?> destination) {
+		if(isDirectory()) {
+			copyRecursivelyTo(destination);
 
-	public abstract void copyToMe(InputStream input);
+			return;
+		}
 
-	public static void copy(@NonNull InputStream input, OutputStream out) throws IOException {
-		var buffer = new byte[1024];
-		int read;
-
-		while((read = input.read(buffer)) != -1) {
-			out.write(buffer, 0 , read);
+		try(var stream = getInputStream()) {
+			destination.copyToMe(stream);
+		} catch(IOException e) {
+			throw new BoomException(e);
 		}
 	}
 
-	@NonNull
-	@Contract("_ -> new")
-	public static String readString(@NonNull InputStream stream) throws IOException {
-		int size = stream.available();
-		var buffer = new byte[size];
+	public void copyToMe(InputStream input) {
+		var parent = getParent();
+		if(parent != this) parent.createDirectory();
 
-		stream.read(buffer);
-		return new String(buffer);
+		try(var stream = getOutputStream()) {
+			copy(input, stream);
+		} catch(IOException e) {
+			throw new BoomException(e);
+		}
+	}
+
+	public static void copy(@NonNull InputStream input, OutputStream out) {
+		try {
+			var buffer = new byte[1024];
+			int read;
+
+			while((read = input.read(buffer)) != -1) {
+				out.write(buffer, 0 , read);
+			}
+		} catch(IOException e) {
+			throw new BoomException(e);
+		}
 	}
 
 	public static void removeRecursively(@NonNull GlobalBoomFile boomFile) {
@@ -90,9 +109,22 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 		file.delete();
 	}
 
-	public abstract boolean isDirectory();
+	public boolean isDirectory() {
+		return getFile().isDirectory();
+	}
 
-	public abstract List<T> list();
+	public List<T> list() {
+		var list = new ArrayList<T>();
+		var nativeList = getFile().listFiles();
+
+		if(nativeList == null) return list;
+
+		for(var child : nativeList) {
+			list.add(goTo(child.getName()));
+		}
+
+		return list;
+	}
 
 	public List<T> listRecursively() {
 		var list = new ArrayList<T>();
@@ -108,19 +140,61 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 		return list;
 	}
 
-	public abstract void remove();
+	public void copyRecursivelyTo(BoomFile<?> destination) {
+		if(!isDirectory()) {
+			copyTo(destination);
+			return;
+		}
 
-	public abstract String readString();
+		for(var item : list()) {
+			var next = destination.goTo(item.getName());
+			item.copyTo(next);
+		}
+	}
 
-	public abstract void writeString(String string, boolean append);
+	public InputStream getInputStream() throws IOException {
+		return new FileInputStream(getFile());
+	}
+
+	public OutputStream getOutputStream() throws IOException {
+		return new FileOutputStream(getFile());
+	}
+
+	public void remove() {
+		getFile().delete();
+	}
+
+	public String readString() {
+		try(var stream = getInputStream()) {
+			int size = stream.available();
+			var buffer = new byte[size];
+
+			stream.read(buffer);
+			return new String(buffer);
+		} catch(IOException e) {
+			throw new BoomException(e);
+		}
+	}
+
+	public void writeString(String string, boolean append) {
+		try(var writer = new BufferedWriter(new FileWriter(getFile(), append))) {
+			writer.write(string);
+		} catch(IOException e) {
+			throw new BoomException("Failed to write into a file", e);
+		}
+	}
 
 	public void writeString(String string) {
 		writeString(string, false);
 	}
 
-	public abstract void createDirectory();
+	public void createDirectory() {
+		getFile().mkdirs();
+	}
 
-	public abstract File getFile();
+	public File getFile() {
+		return new File(getPath());
+	}
 
 	@NonNull
 	@Contract("_ -> new")

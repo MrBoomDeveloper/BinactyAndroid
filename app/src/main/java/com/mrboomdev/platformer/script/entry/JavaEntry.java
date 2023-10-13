@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.script.entry;
 
+import androidx.annotation.NonNull;
+
 import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.util.helper.BoomException;
@@ -18,51 +20,72 @@ import java.util.stream.Collectors;
 public class JavaEntry extends JvmEntry {
 	private static final String TAG = "JavaEntry";
 
+	@NonNull
+	private String prepareAndGetSourcesPath(@NonNull PackData.GamemodeEntry entry) {
+		var output = BoomFile.external(".cache/" + entry.id);
+		var javaSources = BoomFile.fromString(entry.scriptsPath, entry.source);
+
+		if(entry.source == BoomFile.Source.INTERNAL) {
+			javaSources = output.goTo("/java_copy");
+			javaSources.remove();
+			BoomFile.internal(entry.scriptsPath).copyTo(javaSources);
+		}
+
+		var allowedExtensions = List.of(".java", ".jar");
+
+		List<BoomFile<?>> javaSourcesList = new ArrayList<>(javaSources.listRecursively());
+
+		javaSourcesList = javaSourcesList.stream()
+				.filter(item -> {
+					var path = item.getRelativePath();
+
+					return allowedExtensions.stream().anyMatch(path::endsWith);
+				})
+				.collect(Collectors.toList());
+
+		var compileTargets = output.goTo("sources.txt");
+		compileTargets.remove();
+		compileTargets.writeString("");
+
+		for(var clazz : javaSourcesList) {
+			var clazzPath = BoomFile.global(clazz).getPath();
+			compileTargets.writeString(clazzPath + "\n", true);
+		}
+
+		return BoomFile.global(compileTargets).getPath();
+	}
+
+	@NonNull
+	private String prepareAndGetClasspaths() {
+		var output = BoomFile.external(".cache/libraries");
+
+		var javaClasspath = BoomFile.global(output.goTo("classpath.jar"));
+		var apiClasspath = BoomFile.global(output.goTo("api.jar"));
+
+		javaClasspath.remove();
+		apiClasspath.remove();
+
+		BoomFile.internal("classpath.jar").copyTo(javaClasspath);
+		BoomFile.internal("BinactyApi.jar").copyTo(apiClasspath);
+
+		return apiClasspath.getPath() + ":" + javaClasspath.getPath();
+	}
+
 	@Override
 	public void compile(PackData.GamemodeEntry entry) {
 		var thread = new Thread(() -> {
 			try(var stringWriter = new StringWriter(); var printWriter = new PrintWriter(stringWriter)) {
-				var output = BoomFile.external("cache/" + entry.id);
-				var javaSources = BoomFile.fromString(entry.scriptsPath, entry.source);
-
-				var classPath = BoomFile.external("cache/classpath.jar");
-				classPath.remove();
-				BoomFile.internal("classpath.jar").copyTo(classPath);
-
-				if(entry.source == BoomFile.Source.INTERNAL) {
-					javaSources = output.goTo("/java_copy");
-					BoomFile.internal(entry.scriptsPath).copyTo(javaSources);
-				}
+				var output = BoomFile.external(".cache/" + entry.id);
 
 				var javaCompiled = BoomFile.global(output.goTo("/java_compiled"));
 				javaCompiled.remove();
 
-				var javaSourcesList = javaSources.listRecursively().stream()
-						.filter(item -> item.getRelativePath().endsWith(".java"))
-						.collect(Collectors.toList());
-
-				var compileTargets = output.goTo("sources.txt");
-				compileTargets.writeString("");
-
-				for(var clazz : javaSourcesList) {
-					var clazzPath = BoomFile.global(clazz).getPath();
-					compileTargets.writeString(clazzPath + "\n", true);
-				}
-
-				List<String> args = new ArrayList<>(List.of(
+				List<String> args = List.of(
 						"-" + "11",
 						"-proc:none",
-						"-cp", classPath.getPath(),
 						"-d", javaCompiled.getPath(),
-						"@" + BoomFile.global(compileTargets).getPath()
-				));
-
-				/*args.addAll(BoomFile.fromString(entry.scriptsPath, entry.source)
-						.listRecursively()
-						.stream()
-						.filter(item -> item.getPath().endsWith(".java"))
-						.map(item -> BoomFile.global(item).getPath())
-						.collect(Collectors.toList()));*/
+						"-cp", prepareAndGetClasspaths(),
+						"@" + prepareAndGetSourcesPath(entry));
 
 				LogUtil.debug(TAG, "Start with the following args: " + Arrays.toString(args.toArray(new String[0])));
 

@@ -2,14 +2,13 @@ package com.mrboomdev.binacty.util.file;
 
 import android.content.res.AssetManager;
 
-import androidx.annotation.NonNull;
-
 import com.mrboomdev.platformer.ui.ActivityManager;
 import com.mrboomdev.platformer.util.helper.BoomException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,24 +17,6 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 
 	public InternalBoomFile(String path) {
 		super(path);
-	}
-
-	@Override
-	public void copyTo(@NonNull BoomFile<?> destination) {
-		if(isDirectory()) {
-			for(var item : list()) {
-				var next = destination.goTo(item.getName());
-				item.copyTo(next);
-			}
-
-			return;
-		}
-
-		try(var stream = getAssets().open(getRelativePath())) {
-			destination.copyToMe(stream);
-		} catch(IOException e) {
-			throw new BoomException(e);
-		}
 	}
 
 	@Override
@@ -51,6 +32,11 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 		} catch(IOException e) {
 			return true;
 		}
+	}
+
+	@Override
+	public InputStream getInputStream() throws IOException {
+		return getAssets().open(getRelativePath());
 	}
 
 	@Override
@@ -73,27 +59,13 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 	}
 
 	@Override
+	public OutputStream getOutputStream() {
+		throw new BoomException("Can't get a OutputStream in a static environment!");
+	}
+
+	@Override
 	public void remove() {
 		throw new BoomException("Can't remove a file from a static environment!");
-	}
-
-	@Override
-	public String readString() {
-		try(var stream = getAssets().open(getRelativePath())) {
-			return readString(stream);
-		} catch(IOException e) {
-			throw new BoomException("Failed to read file content.", e);
-		}
-	}
-
-	@Override
-	public void writeString(String string, boolean append) {
-		throw new BoomException("Can't write into a file from a static environment!");
-	}
-
-	@Override
-	public void createDirectory() {
-		throw new BoomException("Can't create a directory inside of a static environment!");
 	}
 
 	@Override

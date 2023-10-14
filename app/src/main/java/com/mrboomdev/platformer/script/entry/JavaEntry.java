@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.game.pack.PackData;
+import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
@@ -33,7 +34,7 @@ public class JavaEntry extends JvmEntry {
 
 		var allowedExtensions = List.of(".java", ".jar");
 
-		List<BoomFile<?>> javaSourcesList = new ArrayList<>(javaSources.listRecursively());
+		List<BoomFile<?>> javaSourcesList = new ArrayList<>(javaSources.listFilesRecursively());
 
 		javaSourcesList = javaSourcesList.stream()
 				.filter(item -> {
@@ -48,27 +49,25 @@ public class JavaEntry extends JvmEntry {
 		compileTargets.writeString("");
 
 		for(var clazz : javaSourcesList) {
-			var clazzPath = BoomFile.global(clazz).getPath();
+			var clazzPath = clazz.getAbsolutePath();
 			compileTargets.writeString(clazzPath + "\n", true);
 		}
 
-		return BoomFile.global(compileTargets).getPath();
+		return compileTargets.getAbsolutePath();
 	}
 
 	@NonNull
-	private String prepareAndGetClasspaths() {
-		var output = BoomFile.external(".cache/libraries");
+	private String prepareAndGetClasspathsJoined() {
+		var classpaths = prepareAndGetClasspaths();
 
-		var javaClasspath = BoomFile.global(output.goTo("classpath.jar"));
-		var apiClasspath = BoomFile.global(output.goTo("api.jar"));
+		StringBuilder result = new StringBuilder();
 
-		javaClasspath.remove();
-		apiClasspath.remove();
+		for(int i = 0; i < classpaths.size(); i++) {
+			if(i > 0) result.append(":");
+			result.append(classpaths.get(i).getAbsolutePath());
+		}
 
-		BoomFile.internal("classpath.jar").copyTo(javaClasspath);
-		BoomFile.internal("BinactyApi.jar").copyTo(apiClasspath);
-
-		return apiClasspath.getPath() + ":" + javaClasspath.getPath();
+		return result.toString();
 	}
 
 	@Override
@@ -83,8 +82,8 @@ public class JavaEntry extends JvmEntry {
 				List<String> args = List.of(
 						"-" + "11",
 						"-proc:none",
-						"-d", javaCompiled.getPath(),
-						"-cp", prepareAndGetClasspaths(),
+						"-d", javaCompiled.getAbsolutePath(),
+						"-cp", prepareAndGetClasspathsJoined(),
 						"@" + prepareAndGetSourcesPath(entry));
 
 				LogUtil.debug(TAG, "Start with the following args: " + Arrays.toString(args.toArray(new String[0])));
@@ -94,7 +93,12 @@ public class JavaEntry extends JvmEntry {
 
 				if(isSuccessful) {
 					LogUtil.debug(TAG, "Finished compilation successfully! Compiler output: " + stringWriter);
-					super.compile(entry);
+
+					var newEntry = FunUtil.copy(PackData.GamemodeEntry.class, entry);
+					newEntry.source = BoomFile.Source.GLOBAL;
+					newEntry.scriptsPath = javaCompiled.getAbsolutePath();
+
+					super.compile(newEntry);
 				} else {
 					throw new BoomException("Failed to compile java! ", new BoomException(stringWriter));
 				}

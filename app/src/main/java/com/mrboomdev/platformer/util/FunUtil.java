@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.mrboomdev.binacty.Constants;
+import com.mrboomdev.platformer.util.helper.BoomException;
+
+import java.io.IOException;
 
 public class FunUtil {
 	public static Array<TimerTask> timerTasks = new Array<>();
@@ -17,6 +21,17 @@ public class FunUtil {
 				task.runnable.run();
 				iterator.remove();
 			}
+		}
+	}
+
+	public static <T> T copy(Class<T> clazz, T obj) {
+		var adapter = Constants.moshi.adapter(clazz);
+		var json = adapter.toJson(obj);
+
+		try {
+			return adapter.fromJson(json);
+		} catch(IOException e) {
+			throw new BoomException(e);
 		}
 	}
 

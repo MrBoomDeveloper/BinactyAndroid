@@ -8,8 +8,7 @@ import com.android.tools.r8.D8;
 import com.android.tools.r8.D8Command;
 import com.android.tools.r8.OutputMode;
 import com.mrboomdev.binacty.util.file.BoomFile;
-import com.mrboomdev.binacty.util.file.ExternalBoomFile;
-import com.mrboomdev.binacty.util.file.GlobalBoomFile;
+import com.mrboomdev.binacty.util.file.InternalBoomFile;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
@@ -54,13 +53,11 @@ public class MbsCompiler {
 	public void addSources(@NonNull List<BoomFile<?>> files) {
 		var fullPaths = files.stream()
 				.map(item -> {
-					if(item instanceof ExternalBoomFile) {
-						return BoomFile.global((ExternalBoomFile) item).getPath();
+					if(item instanceof InternalBoomFile) {
+						throw new BoomException("Currently unavailable!");
 					}
 
-					if(item instanceof GlobalBoomFile) return item.getPath();
-
-					throw new BoomException("Currently unavailable!");
+					return item.getAbsolutePath();
 				})
 				.collect(Collectors.toList());
 
@@ -76,8 +73,8 @@ public class MbsCompiler {
 			List<String> args = new ArrayList<>(List.of(
 					"-" + "11",
 					"-proc:none",
-					"-cp", classpath.getPath(),
-					"-d", BoomFile.global(output).getPath()
+					"-cp", classpath.getAbsolutePath(),
+					"-d", output.getAbsolutePath()
 			));
 
 			args.addAll(sources);

@@ -18,6 +18,6 @@ public class ExternalBoomFile extends BoomFile<ExternalBoomFile> {
 	@Override
 	public File getFile() {
 		var external = ActivityManager.current.getExternalFilesDir(null);
-		return new File(external, getPath());
+		return new File(external, getRelativePath());
 	}
 }

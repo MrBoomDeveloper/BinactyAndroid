@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public abstract class BoomFile<T extends BoomFile<T>> {
@@ -33,14 +34,18 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 		if(!(obj.getClass().isAssignableFrom(getClass()))) return false;
 
 		var checkable = (T)obj;
-		return getPath().equals(checkable.getPath());
+		return getAbsolutePath().equals(checkable.getAbsolutePath());
 	}
 
 	public BoomFile(String path) {
 		this.path = new File(path).getPath();
 	}
 
-	public String getPath() {
+	public String getAbsolutePath() {
+		if(this instanceof ExternalBoomFile) {
+			return BoomFile.global((ExternalBoomFile)this).getRelativePath();
+		}
+
 		return path;
 	}
 
@@ -140,6 +145,14 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 		return list;
 	}
 
+	public List<T> listFilesRecursively() {
+		var list = listRecursively();
+
+		return list.stream()
+				.filter(item -> !item.isDirectory())
+				.collect(Collectors.toList());
+	}
+
 	public void copyRecursivelyTo(BoomFile<?> destination) {
 		if(!isDirectory()) {
 			copyTo(destination);
@@ -193,7 +206,7 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 	}
 
 	public File getFile() {
-		return new File(getPath());
+		return new File(getRelativePath());
 	}
 
 	@NonNull
@@ -269,9 +282,9 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 	}
 
 	public FileUtil toFileUtil() {
-		if(getSource() == Source.EXTERNAL) return FileUtil.external(path);
-		if(getSource() == Source.INTERNAL) return FileUtil.internal(path);
-		if(getSource() == Source.GLOBAL) return new FileUtil(path, FileUtil.Source.FULL);
+		if(getSource() == Source.EXTERNAL) return FileUtil.external(getRelativePath());
+		if(getSource() == Source.INTERNAL) return FileUtil.internal(getRelativePath());
+		if(getSource() == Source.GLOBAL) return new FileUtil(getRelativePath(), FileUtil.Source.FULL);
 
 		throw new BoomException("Unknown source of file!");
 	}

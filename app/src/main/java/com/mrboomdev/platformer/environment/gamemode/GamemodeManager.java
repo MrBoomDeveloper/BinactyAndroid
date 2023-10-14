@@ -40,7 +40,6 @@ public class GamemodeManager {
 		this.buildCompletedCallback = callback;
 		status = Status.LOADING_RESOURCES;
 
-		game.script.triggerLoaded();
 		return this;
 	}
 	
@@ -119,7 +118,7 @@ public class GamemodeManager {
 			if(gameOverTimeout > 2.5f) {
 				isBroken = true;
 
-				game.script.triggerEnded();
+				game.script.bridge.triggerFinished();
 				game.launcher.exit(CoreLauncher.ExitStatus.GAME_OVER);
 			}
 		}

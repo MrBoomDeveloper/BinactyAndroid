@@ -116,6 +116,7 @@ public class FileUtil {
 	
 	public boolean isAddedToAsyncLoading() {
 		var game = GameHolder.getInstance();
+
 		switch(source) {
 			case INTERNAL: return game.assets.contains(getPath());
 			case EXTERNAL: return game.externalAssets.contains(getPath());
@@ -138,6 +139,7 @@ public class FileUtil {
 				var file = new File(ActivityManager.current.getExternalFilesDir(null), path);
 				return isUrl ? ("file://" + file.getAbsolutePath()) : file.getAbsolutePath();
 			}
+
 			case INTERNAL: return isUrl ? ("asset:/" + getPath()) : getPath();
 			default: return isUrl ? "file:///" + getPath() : getPath();
 		}

@@ -2,33 +2,25 @@ package com.mrboomdev.platformer.script;
 
 import androidx.annotation.NonNull;
 
-import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.pack.PackData;
-import com.mrboomdev.platformer.script.bridge.AudioBridge;
 import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
-import com.mrboomdev.platformer.script.bridge.GameBridge;
-import com.mrboomdev.platformer.script.bridge.MapBridge;
 import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.script.entry.ScriptEntry;
-import com.mrboomdev.platformer.util.helper.BoomException;
-import com.mrboomdev.platformer.util.io.FileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScriptManager {
-	public GameBridge gameBridge;
 	public EntitiesBridge entitiesBridge;
 	public UiBridge uiBridge;
-	public AudioBridge audioBridge;
-	public MapBridge mapBridge;
-	private boolean isCompiledAll;
+	public final ScriptBridge bridge = new ScriptBridge(this);
+	private final ScriptCompiler compiler = new ScriptCompiler();
 	private final List<ScriptEntry> entries = new ArrayList<>();
-	//private Interpreter interpreter;
-	//private ScriptEntry runner;
 
 	public boolean isReady() {
-		if(entries.isEmpty()) return false;
+		if(entries.isEmpty()
+		|| compiler.isCompiling()
+		|| !compiler.isReady()) return false;
 
 		for(var entry : entries) {
 			if(!entry.isReady()) return false;
@@ -39,25 +31,26 @@ public class ScriptManager {
 
 	public void compile(@NonNull List<PackData.GamemodeEntry> entries) {
 		for(var entry : entries) {
-			var entryHolder = ScriptCompiler.compile(entry);
-			entryHolder.compile(entry);
+			var entryHolder = compiler.compile(entry);
 			this.entries.add(entryHolder);
 		}
 	}
 
 	public String ping() {
-		if(!isCompiledAll) {
-			for(var entry : entries) {
-				if(entry.isCompiled()) isCompiledAll = true;
-			}
+		if(compiler.isCompiling()) {
+			return "Compiling scripts " + Math.round(compiler.getProgress() * 100) + "%";
+		}
 
-			return "Compiling scripts...";
+		if(!compiler.isReady()) {
+			compiler.loadIntoMemoryAll();
+
+			return "Loading scripts into memory...";
 		}
 
 		return "Idk...";
 	}
 
-	private void intiMbs(FileUtil source) {
+	/*private void intiMbs(FileUtil source) {
 		//var a = new MbsEngine("HelloWorld", source);
 		//a.compile();
 
@@ -68,10 +61,10 @@ public class ScriptManager {
 		//var c = b.newInstance();
 
 		//System.out.println(c);
-	}
+	}*/
 
-	private void initJar(FileUtil source, String main) {
-		/*try {
+	/*private void initJar(FileUtil source, String main) {
+		*//*try {
 			ClassLoader loader = new DexClassLoader(
 					source.getFullPath(true),
 					source.getParent().goTo("cache").getFullPath(true),
@@ -89,19 +82,19 @@ public class ScriptManager {
 			handleException(e, "Main Entry doesn't implements ScriptEntry interface!");
 		} catch(Exception e) {
 			handleException(e);
-		}*/
-	}
+		}*//*
+	}*/
 
-	private void initBeanshell(FileUtil source) {
+	/*private void initBeanshell(FileUtil source) {
 		//this.interpreter = new Interpreter();
 
-		var path = "packs/core/src/scripts/DefaultScript.java";
-		this.eval(FileUtil.internal(path).readString());
+		//var path = "packs/core/src/scripts/DefaultScript.java";
+		//this.eval(FileUtil.internal(path).readString());
 
-		initScriptable(source);
-	}
+		//initScriptable(source);
+	}*/
 
-	private void initScriptable(@NonNull FileUtil source) {
+	/*private void initScriptable(@NonNull FileUtil source) {
 		this.gameBridge = new GameBridge(source);
 		this.mapBridge = new MapBridge();
 		this.uiBridge = new UiBridge();
@@ -115,56 +108,5 @@ public class ScriptManager {
 		this.put("entities", entitiesBridge);
 		this.put("audio", audioBridge);
 		this.put("core", GameHolder.getInstance());
-	}
-	
-	public void eval(String code) {
-		//if(engine == GameSettings.Engine.GROOVY) return;
-
-		try {
-			//interpreter.eval(code);
-		} catch(Exception e) {
-			handleException(e);
-		}
-	}
-	
-	public void put(String reference, Object value) {
-		/*switch(engine) {
-			case BEANSHELL: try {
-				interpreter.set(reference, value);
-			} catch(EvalError e) {
-				handleException(e);
-			} break;
-
-			*//*case GROOVY: {
-				//groovyEntry.setProperty(reference, value);
-			} break;*//*
-
-			default: {
-				throw new BoomException("Unsupported engine!");
-			}
-		}*/
-	}
-
-	public void triggerLoaded() {
-		//if(runner != null) runner.loaded();
-		//if(interpreter != null) gameBridge.callListener(GameBridge.Function.BUILD);
-	}
-
-	public void triggerStarted() {
-		//if(runner != null) runner.start();
-		//if(interpreter != null) gameBridge.callListener(GameBridge.Function.START);
-	}
-
-	public void triggerEnded() {
-		//if(runner != null) runner.finish();
-		//if(interpreter != null) gameBridge.callListener(GameBridge.Function.END);
-	}
-	
-	private void handleException(@NonNull Throwable t) {
-		handleException(t, "It looks that something strange has happened and we don't know why ._.");
-	}
-
-	private void handleException(@NonNull Throwable t, String message) {
-		throw new BoomException("Script error has occurred!\n" + message, t);
-	}
+	}*/
 }

@@ -2,7 +2,11 @@ package com.mrboomdev.platformer.script.entry;
 
 import com.mrboomdev.platformer.game.pack.PackData;
 
-public class BeanshellEntry implements ScriptEntry {
+public class BeanshellEntry extends ScriptEntry {
+
+	public BeanshellEntry(PackData.GamemodeEntry entry) {
+		super(entry);
+	}
 
 	@Override
 	public boolean isReady() {
@@ -15,7 +19,12 @@ public class BeanshellEntry implements ScriptEntry {
 	}
 
 	@Override
-	public void compile(PackData.GamemodeEntry entry) {
+	public void compile() {
+
+	}
+
+	@Override
+	public void load() {
 
 	}
 

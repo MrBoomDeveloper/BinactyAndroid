@@ -20,6 +20,11 @@ import java.util.stream.Collectors;
 
 public class JavaEntry extends JvmEntry {
 	private static final String TAG = "JavaEntry";
+	private float progress;
+
+	public JavaEntry(PackData.GamemodeEntry entry) {
+		super(entry);
+	}
 
 	@NonNull
 	private String prepareAndGetSourcesPath(@NonNull PackData.GamemodeEntry entry) {
@@ -71,48 +76,54 @@ public class JavaEntry extends JvmEntry {
 	}
 
 	@Override
-	public void compile(PackData.GamemodeEntry entry) {
-		var thread = new Thread(() -> {
-			try(var stringWriter = new StringWriter(); var printWriter = new PrintWriter(stringWriter)) {
-				var output = BoomFile.external(".cache/" + entry.id);
-
-				var javaCompiled = BoomFile.global(output.goTo("/java_compiled"));
-				javaCompiled.remove();
-
-				List<String> args = List.of(
-						"-" + "11",
-						"-proc:none",
-						"-d", javaCompiled.getAbsolutePath(),
-						"-cp", prepareAndGetClasspathsJoined(),
-						"@" + prepareAndGetSourcesPath(entry));
-
-				LogUtil.debug(TAG, "Start with the following args: " + Arrays.toString(args.toArray(new String[0])));
-
-				var jdtCompiler = new Main(printWriter, printWriter, false, null, null);
-				boolean isSuccessful = jdtCompiler.compile(args.toArray(new String[0]));
-
-				if(isSuccessful) {
-					LogUtil.debug(TAG, "Finished compilation successfully! Compiler output: " + stringWriter);
-
-					var newEntry = FunUtil.copy(PackData.GamemodeEntry.class, entry);
-					newEntry.source = BoomFile.Source.GLOBAL;
-					newEntry.scriptsPath = javaCompiled.getAbsolutePath();
-
-					super.compile(newEntry);
-				} else {
-					throw new BoomException("Failed to compile java! ", new BoomException(stringWriter));
-				}
-			} catch(IOException e) {
-				throw new BoomException(e);
-			}
-		});
-
-		thread.setName("JavaCompilerThread");
-		thread.start();
+	public float getProgress() {
+		return (progress + super.getProgress()) / 2;
 	}
 
 	@Override
-	public boolean isReady() {
-		return false;
+	public void compile() {
+		try(var stringWriter = new StringWriter(); var printWriter = new PrintWriter(stringWriter)) {
+			var entry = getEntry();
+			var output = BoomFile.external(".cache/" + entry.id);
+			progress = .2f;
+
+			var javaCompiled = BoomFile.global(output.goTo("/java_compiled"));
+			javaCompiled.remove();
+			progress = .4f;
+
+			var classpaths = prepareAndGetClasspathsJoined();
+			progress = .6f;
+
+			var sources = prepareAndGetSourcesPath(entry);
+			progress = .8f;
+
+			List<String> args = List.of(
+					"-" + "11",
+					"-proc:none",
+					"-d", javaCompiled.getAbsolutePath(),
+					"-cp", classpaths,
+					"@" + sources);
+
+			LogUtil.debug(TAG, "Start with the following args: " + Arrays.toString(args.toArray(new String[0])));
+
+			var jdtCompiler = new Main(printWriter, printWriter, false, null, null);
+			boolean isSuccessful = jdtCompiler.compile(args.toArray(new String[0]));
+			progress = 1;
+
+			if(isSuccessful) {
+				LogUtil.debug(TAG, "Finished compilation successfully! Compiler output: " + stringWriter);
+
+				var newEntry = FunUtil.copy(PackData.GamemodeEntry.class, entry);
+				newEntry.source = BoomFile.Source.GLOBAL;
+				newEntry.scriptsPath = javaCompiled.getAbsolutePath();
+
+				setEntry(newEntry);
+				super.compile();
+			} else {
+				throw new BoomException("Failed to compile java! ", new BoomException(stringWriter));
+			}
+		} catch(IOException e) {
+			throw new BoomException(e);
+		}
 	}
 }

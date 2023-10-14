@@ -12,13 +12,21 @@ import com.mrboomdev.platformer.util.io.LogUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class JvmEntry implements ScriptEntry {
+import dalvik.system.DexClassLoader;
+
+public class JvmEntry extends ScriptEntry {
 	private static final String TAG = "JvmEntry";
-	private boolean isCompiled;
+	private ClassLoader classLoader;
+	private boolean isCompiled, isLoaded;
+	private float progress;
+
+	public JvmEntry(PackData.GamemodeEntry entry) {
+		super(entry);
+	}
 
 	@Override
 	public boolean isReady() {
-		return isCompiled();
+		return isCompiled() && isLoaded;
 	}
 
 	@Override
@@ -27,15 +35,24 @@ public class JvmEntry implements ScriptEntry {
 	}
 
 	@Override
-	public void compile(PackData.GamemodeEntry entry) {
+	public float getProgress() {
+		return progress;
+	}
+
+	@Override
+	public void compile() {
 		try {
+			var entry = getEntry();
 			var output = BoomFile.external(".cache/" + entry.id + "/dex_compiled.jar");
 			var inputSource = BoomFile.fromString(entry.scriptsPath, entry.source);
 
 			if(entry.source == BoomFile.Source.INTERNAL) {
 				inputSource = output.goTo("/jvm_copy");
 				inputSource.remove();
+				progress = .2f;
+
 				BoomFile.internal(entry.scriptsPath).copyTo(inputSource);
+				progress = .4f;
 			}
 
 			var inputFiles = inputSource.listFilesRecursively()
@@ -48,6 +65,8 @@ public class JvmEntry implements ScriptEntry {
 					.map(item -> item.getFile().toPath())
 					.collect(Collectors.toList());
 
+			progress = .8f;
+
 			D8.run(D8Command.builder()
 					.setIntermediate(true)
 					.addClasspathFiles(classpaths)
@@ -56,10 +75,26 @@ public class JvmEntry implements ScriptEntry {
 					.build());
 
 			isCompiled = true;
+			progress = 1;
 			LogUtil.debug(TAG, "Successfully compiled dex files!");
 		} catch(CompilationFailedException e) {
 			throw new BoomException("Failed to compile into DEX!", e);
 		}
+	}
+
+	@Override
+	public void load() {
+		var entry = getEntry();
+		var source = BoomFile.fromString(entry.scriptsPath, entry.source);
+		var cache = BoomFile.external(".cache/" + entry.id);
+
+		classLoader = new DexClassLoader(
+				source.getAbsolutePath(),
+				cache.goTo("optimized/").getAbsolutePath(),
+				null,
+				getClass().getClassLoader());
+
+		isLoaded = true;
 	}
 
 	public List<BoomFile<?>> prepareAndGetClasspaths() {

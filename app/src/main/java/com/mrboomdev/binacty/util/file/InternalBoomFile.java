@@ -35,6 +35,11 @@ public class InternalBoomFile extends BoomFile<InternalBoomFile> {
 	}
 
 	@Override
+	public String getUrl() {
+		return "asset:/" + getRelativePath();
+	}
+
+	@Override
 	public InputStream getInputStream() throws IOException {
 		return getAssets().open(getRelativePath());
 	}

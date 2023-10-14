@@ -41,6 +41,10 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 		this.path = new File(path).getPath();
 	}
 
+	public String getUrl() {
+		return "file://" + getAbsolutePath();
+	}
+
 	public String getAbsolutePath() {
 		if(this instanceof ExternalBoomFile) {
 			return BoomFile.global((ExternalBoomFile)this).getRelativePath();

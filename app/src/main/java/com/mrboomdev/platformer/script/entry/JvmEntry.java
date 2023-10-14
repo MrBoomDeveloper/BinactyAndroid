@@ -4,11 +4,13 @@ import com.android.tools.r8.CompilationFailedException;
 import com.android.tools.r8.D8;
 import com.android.tools.r8.D8Command;
 import com.android.tools.r8.OutputMode;
+import com.mrboomdev.binacty.api.client.BinactyClient;
 import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,12 +18,18 @@ import dalvik.system.DexClassLoader;
 
 public class JvmEntry extends ScriptEntry {
 	private static final String TAG = "JvmEntry";
-	private ClassLoader classLoader;
-	private boolean isCompiled, isLoaded;
+	private BoomFile<?> dexLocation;
+	private BinactyClient client;
+	private boolean isCompiled, isLoaded, didInit;
 	private float progress;
 
 	public JvmEntry(PackData.GamemodeEntry entry) {
 		super(entry);
+	}
+
+	@Override
+	public boolean isSoftReady() {
+		return didInit && client.isReady();
 	}
 
 	@Override
@@ -43,11 +51,14 @@ public class JvmEntry extends ScriptEntry {
 	public void compile() {
 		try {
 			var entry = getEntry();
-			var output = BoomFile.external(".cache/" + entry.id + "/dex_compiled.jar");
+			var output = BoomFile.external(".cache/" + entry.id);
 			var inputSource = BoomFile.fromString(entry.scriptsPath, entry.source);
 
+			dexLocation = output.goTo("dex_compiled.jar");
+			dexLocation.remove();
+
 			if(entry.source == BoomFile.Source.INTERNAL) {
-				inputSource = output.goTo("/jvm_copy");
+				inputSource = output.goTo("jvm_copy/");
 				inputSource.remove();
 				progress = .2f;
 
@@ -70,9 +81,11 @@ public class JvmEntry extends ScriptEntry {
 			D8.run(D8Command.builder()
 					.setIntermediate(true)
 					.addClasspathFiles(classpaths)
-					.setOutput(output.getFile().toPath(), OutputMode.DexIndexed)
+					.setOutput(dexLocation.getFile().toPath(), OutputMode.DexIndexed)
 					.addProgramFiles(inputFiles)
 					.build());
+
+			dexLocation.getFile().setWritable(false);
 
 			isCompiled = true;
 			progress = 1;
@@ -85,16 +98,37 @@ public class JvmEntry extends ScriptEntry {
 	@Override
 	public void load() {
 		var entry = getEntry();
-		var source = BoomFile.fromString(entry.scriptsPath, entry.source);
 		var cache = BoomFile.external(".cache/" + entry.id);
 
-		classLoader = new DexClassLoader(
-				source.getAbsolutePath(),
+		var classLoader = new DexClassLoader(
+				dexLocation.getAbsolutePath(),
 				cache.goTo("optimized/").getAbsolutePath(),
 				null,
 				getClass().getClassLoader());
 
-		isLoaded = true;
+		try {
+			var clazz = classLoader.loadClass(entry.mainPath);
+			var constructor = clazz.getConstructor(String.class);
+			var client = constructor.newInstance(entry.id);
+
+			if(client instanceof BinactyClient) {
+				this.client = (BinactyClient) client;
+				isLoaded = true;
+			} else {
+				throw new BoomException("Invalid parent class! Make sure that it extends a: \""
+						+ BinactyClient.class.getName() + "\" class!");
+			}
+		} catch(ClassNotFoundException e) {
+			throw new BoomException("Failed to found a requested class!", e);
+		} catch(NoSuchMethodException e) {
+			throw new BoomException("Failed to found a required class constructor!", e);
+		} catch(InvocationTargetException e) {
+			throw new BoomException("Failed to invoke a constructor!", e);
+		} catch(IllegalAccessException e) {
+			throw new BoomException("Can't access to a private constructor!", e);
+		} catch(InstantiationException e) {
+			throw new BoomException("Invalid class entry!", e);
+		}
 	}
 
 	public List<BoomFile<?>> prepareAndGetClasspaths() {
@@ -114,21 +148,17 @@ public class JvmEntry extends ScriptEntry {
 
 	@Override
 	public void start() {
-
+		client.start();
 	}
 
 	@Override
-	public void resume() {
-
-	}
-
-	@Override
-	public void pause() {
-
+	public void create() {
+		client.create();
+		didInit = true;
 	}
 
 	@Override
 	public void destroy() {
-
+		client.destroy();
 	}
 }

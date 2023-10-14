@@ -21,6 +21,10 @@ public abstract class ScriptEntry {
 		return 0;
 	}
 
+	public boolean isSoftReady() {
+		return true;
+	}
+
 	public abstract boolean isReady();
 
 	public abstract boolean isCompiled();
@@ -29,11 +33,9 @@ public abstract class ScriptEntry {
 
 	public abstract void load();
 
+	public abstract void create();
+
 	public abstract void start();
-
-	public abstract void resume();
-
-	public abstract void pause();
 
 	public abstract void destroy();
 }

@@ -32,7 +32,6 @@ import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileAttack;
 import com.mrboomdev.platformer.projectile.ProjectileManager;
-import com.mrboomdev.platformer.script.bridge.EntitiesBridge;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.Direction;
 import com.mrboomdev.platformer.util.FunUtil;
@@ -478,7 +477,7 @@ public class CharacterEntity implements BotTarget {
 		if(item != null) item.dispose();
 
 		if(silently) return;
-		game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);
+		//game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);
 	}
 	
 	public static class CharacterBody {

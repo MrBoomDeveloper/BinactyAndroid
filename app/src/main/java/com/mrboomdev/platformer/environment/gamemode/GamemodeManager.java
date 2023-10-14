@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mrboomdev.binacty.game.core.CoreLauncher;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.script.bridge.UiBridge;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
@@ -148,7 +147,7 @@ public class GamemodeManager {
 		
 		if(time == 0) {
 			isTimerEnd = true;
-			game.script.uiBridge.callListener(UiBridge.Function.TIMER_END);
+			//game.script.uiBridge.callListener(UiBridge.Function.TIMER_END);
 		}
 	}
 	

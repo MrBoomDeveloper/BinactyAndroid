@@ -34,12 +34,7 @@ public class BeanshellEntry extends ScriptEntry {
 	}
 
 	@Override
-	public void resume() {
-
-	}
-
-	@Override
-	public void pause() {
+	public void create() {
 
 	}
 

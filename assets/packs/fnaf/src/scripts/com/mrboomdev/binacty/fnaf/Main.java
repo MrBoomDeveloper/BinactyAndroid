@@ -10,8 +10,13 @@ public class Main extends BinactyClient {
 	}
 
 	@Override
-	public boolean isReady() {
+	public void create() {
 		System.out.println("LOL");
+	}
+
+	@Override
+	public boolean isReady() {
+		System.out.println("no >:(");
 		return false;
 	}
 }

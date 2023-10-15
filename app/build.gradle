@@ -66,6 +66,12 @@ android {
 
 			merge "META-INF/NOTICE"
 			merge "META-INF/NOTICE.md"
+
+			exclude "com/badlogic/**"
+			exclude "bsh/util/**"
+			exclude "bsh/servlet/*"
+			exclude "images/ant_logo_large.gif"
+			exclude "license/**"
 		}
     }
 	
@@ -100,7 +106,6 @@ android {
 			versionNameSuffix "-debug"
 			signingConfig signingConfigs.debug
             jniDebuggable true
-            renderscriptDebuggable true
         }
 		
 		release {
@@ -146,9 +151,6 @@ dependencies {
 	implementation 'com.squareup.moshi:moshi:1.15.0'
 	implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.11"
 	implementation "org.apache-extras.beanshell:bsh:2.0b6"
-	//implementation "com.linkedin.dexmaker:dexmaker:2.28.3"
-	//implementation "org.eclipse.jdt:ecj:3.26.0"
-	//implementation "io.earcam.wrapped:jdk.compiler:1.8.132"
 	implementation "org.apache.ant:ant:1.10.12"
 
 	implementation ("com.android.tools.build:builder:8.1.2") {

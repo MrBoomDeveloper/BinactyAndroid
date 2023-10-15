@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.script;
+package com.mrboomdev.binacty.script;
 
 public class ScriptBridge {
 	private ScriptManager manager;

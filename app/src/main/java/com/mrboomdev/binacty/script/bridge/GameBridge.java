@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.script.bridge;
+package com.mrboomdev.binacty.script.bridge;
 
 import androidx.annotation.NonNull;
 

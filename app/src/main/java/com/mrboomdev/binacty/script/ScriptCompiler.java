@@ -1,12 +1,12 @@
-package com.mrboomdev.platformer.script;
+package com.mrboomdev.binacty.script;
 
 import androidx.annotation.NonNull;
 
+import com.mrboomdev.binacty.script.entry.BeanshellEntry;
+import com.mrboomdev.binacty.script.entry.JavaEntry;
+import com.mrboomdev.binacty.script.entry.JvmEntry;
+import com.mrboomdev.binacty.script.entry.ScriptEntry;
 import com.mrboomdev.platformer.game.pack.PackData;
-import com.mrboomdev.platformer.script.entry.BeanshellEntry;
-import com.mrboomdev.platformer.script.entry.JavaEntry;
-import com.mrboomdev.platformer.script.entry.JvmEntry;
-import com.mrboomdev.platformer.script.entry.ScriptEntry;
 import com.mrboomdev.platformer.util.helper.BoomException;
 
 import org.jetbrains.annotations.Contract;

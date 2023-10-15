@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.script.entry;
+package com.mrboomdev.binacty.script.entry;
 
 import androidx.annotation.NonNull;
 
@@ -29,9 +29,9 @@ public class JavaEntry extends JvmEntry {
 	@NonNull
 	private String prepareAndGetSourcesPath(@NonNull PackData.GamemodeEntry entry) {
 		var output = BoomFile.external(".cache/" + entry.id);
-		var javaSources = BoomFile.fromString(entry.scriptsPath, entry.source);
+		var javaSources = BoomFile.fromString(entry.scriptsPath, entry.scriptsSource);
 
-		if(entry.source == BoomFile.Source.INTERNAL) {
+		if(entry.scriptsSource == BoomFile.Source.INTERNAL) {
 			javaSources = output.goTo("/java_copy");
 			javaSources.remove();
 			BoomFile.internal(entry.scriptsPath).copyTo(javaSources);
@@ -114,7 +114,7 @@ public class JavaEntry extends JvmEntry {
 				LogUtil.debug(TAG, "Finished compilation successfully! Compiler output: " + stringWriter);
 
 				var newEntry = FunUtil.copy(PackData.GamemodeEntry.class, entry);
-				newEntry.source = BoomFile.Source.GLOBAL;
+				newEntry.scriptsSource = BoomFile.Source.GLOBAL;
 				newEntry.scriptsPath = javaCompiled.getAbsolutePath();
 
 				setEntry(newEntry);

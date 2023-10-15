@@ -11,23 +11,16 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.mrboomdev.platformer.entity.character.CharacterCreator;
-import com.mrboomdev.platformer.environment.EnvironmentManager;
-import com.mrboomdev.platformer.environment.editor.EditorManager;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileCollision;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
-import com.mrboomdev.platformer.util.CameraUtil;
-import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
-import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 import box2dLight.RayHandler;
 
 public class GameplayScreen extends CoreScreen {
-	public EnvironmentManager environment;
-	private final GameHolder game;
+	private final GameHolder game = GameHolder.getInstance();
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
 	private GameplayUi ui;
@@ -36,11 +29,6 @@ public class GameplayScreen extends CoreScreen {
 	private ShaderProgram shaders;
 	private Viewport viewport;
 	private Sprite screenEffect;
-
-	public GameplayScreen(EnvironmentManager manager) {
-		this.environment = manager;
-		this.game = GameHolder.getInstance();
-	}
 	
 	@Override
 	public void render(float delta) {
@@ -53,7 +41,7 @@ public class GameplayScreen extends CoreScreen {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		
 		batch.begin(); {
-			environment.render(batch);
+			game.environment.render(batch);
 		} batch.end();
 
 		if(!game.settings.debugRaysDisable) {
@@ -63,18 +51,16 @@ public class GameplayScreen extends CoreScreen {
 
 		batch.begin(); {
 			if(game.settings.debugRenderer) {
-				debugRenderer.render(environment.world, camera.combined);
+				debugRenderer.render(game.environment.world, camera.combined);
 			}
 
-			environment.ui.draw(batch);
-			ui.render(delta);
+			//game.environment.ui.draw(batch);
+			//ui.render(delta);
 
 			screenEffect.draw(batch);
 		} batch.end();
 
-		environment.update(delta);
-		FunUtil.update();
-		AudioUtil.update();
+		game.environment.update(delta);
 	}
 	
 	@Override
@@ -96,43 +82,44 @@ public class GameplayScreen extends CoreScreen {
 			LogUtil.debug("Shaders", "Successfully compiled shaders!");
 			batch.setShader(shaders);
 
-			environment.batch = batch;
-			environment.shader = shaders;
+			game.environment.batch = batch;
+			game.environment.shader = shaders;
 		} else {
 			throw BoomException.builder("Failed to compile shaders!\nDefault shader logs: ")
 					.addQuoted(shaders.getLog()).build();
 		}
 		
-		environment.world.setContactListener(new ProjectileCollision());
-		environment.setupRayHandler();
-		rayHandler = environment.rayHandler;
+		game.environment.world.setContactListener(new ProjectileCollision());
+		game.environment.setupRayHandler();
+		rayHandler = game.environment.rayHandler;
 		
 		var camera = new OrthographicCamera(32, 18);
 		camera.zoom = .75f;
-		environment.camera = camera;
+		game.environment.camera = camera;
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
 
-		var path = game.settings.playerCharacter;
-		environment.entities.loadCharacter(path, "klarrie");
-		var player = new CharacterCreator(environment.entities.presets
+		//var path = game.settings.playerCharacter;
+		/*game.environment.entities.loadCharacter(path, "klarrie");
+		var player = new CharacterCreator(game.environment.entities.presets
 				.get("klarrie")
 				.cpy(game.settings.playerName, path))
-				.create();
+				.create();*/
 		
-		game.settings.mainPlayer = player;
+		/*game.settings.mainPlayer = player;
 		game.environment.entities.setMain(player);
-		camera.position.set(player.getPosition(), 0);
+		camera.position.set(player.getPosition(), 0);*/
 
-		CameraUtil.setTarget(player);
-		AudioUtil.setTarget(player);
+		//CameraUtil.setTarget(player);
+		//AudioUtil.setTarget(player);
 		
-		ui = new GameplayUi(this, player);
-		Gdx.input.setInputProcessor(ui.stage);
+		//ui = new GameplayUi(this, player);
+		//Gdx.input.setInputProcessor(ui.stage);
 		if(game.settings.enableEditor) {
-			EditorManager editor = new EditorManager();
-			ui.attachLayerDrawer(editor);
+			//var editor = new EditorManager();
+			//ui.attachLayerDrawer(editor);
 		}
-		environment.start(ui.stage);
+
+		//game.environment.start(ui.stage);
 	}
 	
 	@Override
@@ -144,7 +131,7 @@ public class GameplayScreen extends CoreScreen {
 	public void dispose() {
 		shapeRenderer.dispose();
 		rayHandler.dispose();
-		ui.dispose();
+		//ui.dispose();
 		shaders.dispose();
 	}
 }

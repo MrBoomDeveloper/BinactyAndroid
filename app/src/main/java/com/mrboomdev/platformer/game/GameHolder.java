@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
@@ -16,19 +16,23 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.binacty.game.core.CoreLauncher;
+import com.mrboomdev.binacty.script.ScriptManager;
+import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.environment.EnvironmentManager;
 import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.game.pack.PackData;
+import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 import com.mrboomdev.platformer.scenes.loading.LoadingFiles;
 import com.mrboomdev.platformer.scenes.loading.LoadingScreen;
-import com.mrboomdev.platformer.script.ScriptManager;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class GameHolder extends Game {
@@ -41,9 +45,10 @@ public class GameHolder extends Game {
 	public EnvironmentManager environment;
 	public ScriptManager script;
 	public GameStatistics stats;
+	public Map<String, Screen> screens;
+	private boolean wasReady;
 	private static final String TAG = "GameHolder";
 	private static GameHolder instance;
-	private boolean wasReady;
 
 	static {
 		Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
@@ -57,23 +62,51 @@ public class GameHolder extends Game {
 
 		return (wasReady = true);
 	}
-	
+
+	@Override
+	public void render() {
+		super.render();
+
+		if(script.isReady()) {
+			if(getScreen() instanceof LoadingScreen) setScreen(getScreen("gameplay"));
+		} else {
+			if(getScreen() instanceof GameplayScreen) setScreen(getScreen("loading"));
+		}
+	}
+
+	private Screen getScreen(String name) {
+		Screen screen = null;
+
+		if(screens.containsKey(name)) {
+			screen = screens.get(name);
+		} else {
+			if(name.equals("loading")) screen = new LoadingScreen();
+			if(name.equals("gameplay")) screen = new GameplayScreen();
+
+			screens.put(name, screen);
+		}
+
+		return screen;
+	}
+
 	@Override
 	public void create() {
 		LogUtil.debug(TAG, "create");
 		
 		try {
 			var adapter = Constants.moshi.adapter(LoadingFiles.class);
+			var fileJson = BoomFile.internal("etc/loadFiles.json").readString();
 
-			LoadingFiles files = adapter.fromJson(Gdx.files.internal("etc/loadFiles.json").readString());
-			Objects.requireNonNull(files).loadToManager(assets, "LOADING");
+			var files = Objects.requireNonNull(adapter.fromJson(fileJson));
+			files.loadToManager(assets, "LOADING");
+
+			assets.finishLoading();
 		} catch(IOException e) {
-			LogUtil.crash("Failed to load resources", "It looks, that the internal loader list was broken.", e);
-			e.printStackTrace();
+			throw new BoomException("Failed to load required resources!", e);
 		}
-		
-		assets.finishLoading();
-		setScreen(new LoadingScreen());
+
+		screens = new HashMap<>();
+		setScreen(getScreen("loading"));
 	}
 	
 	public static GameHolder setInstance(

@@ -1,23 +1,4 @@
-import com.mrboomdev.platformer.entity.Entity.Target;
-import com.mrboomdev.platformer.script.bridge.GameBridge.GameListener;
-import com.mrboomdev.platformer.script.bridge.EntitiesBridge.EntityListener;
-import com.mrboomdev.platformer.script.bridge.UiBridge.UiListener;
-import com.mrboomdev.platformer.entity.character.CharacterCreator;
-import com.mrboomdev.platformer.entity.character.CharacterEntity.DamagedListener;
-import com.mrboomdev.platformer.environment.map.tile.TileInteraction.InteractionListener;
-import com.mrboomdev.platformer.util.ui.ActorUtil.Align;
-import com.mrboomdev.platformer.entity.bot.BotBrain;
-import com.mrboomdev.platformer.util.io.audio.Audio;
-import com.mrboomdev.platformer.util.io.audio.AudioUtil;
-import com.mrboomdev.platformer.util.io.FileUtil;
-import com.mrboomdev.platformer.environment.logic.Trigger;
-import com.mrboomdev.platformer.environment.logic.Trigger.TriggerCallback;
-import com.mrboomdev.platformer.util.CameraUtil;
-import com.mrboomdev.platformer.entity.bot.BotFollower;
-import com.mrboomdev.platformer.entity.bot.BotCustom;
-import com.mrboomdev.platformer.ui.gameplay.layout.SubtitlesLayout;
-import com.mrboomdev.platformer.game.pack.PackLoader;
-import com.badlogic.gdx.Gdx;
+
 
 void setWidgetVisibility(String name, boolean isVisible) {
 	var widgets = core.environment.ui.widgets;

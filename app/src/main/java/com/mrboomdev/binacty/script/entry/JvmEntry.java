@@ -1,10 +1,12 @@
-package com.mrboomdev.platformer.script.entry;
+package com.mrboomdev.binacty.script.entry;
 
 import com.android.tools.r8.CompilationFailedException;
 import com.android.tools.r8.D8;
 import com.android.tools.r8.D8Command;
 import com.android.tools.r8.OutputMode;
 import com.mrboomdev.binacty.api.client.BinactyClient;
+import com.mrboomdev.binacty.api.pack.PackContext;
+import com.mrboomdev.binacty.script.bridge.MyPackContext;
 import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.game.pack.PackData;
 import com.mrboomdev.platformer.util.helper.BoomException;
@@ -52,12 +54,12 @@ public class JvmEntry extends ScriptEntry {
 		try {
 			var entry = getEntry();
 			var output = BoomFile.external(".cache/" + entry.id);
-			var inputSource = BoomFile.fromString(entry.scriptsPath, entry.source);
+			var inputSource = BoomFile.fromString(entry.scriptsPath, entry.scriptsSource);
 
 			dexLocation = output.goTo("dex_compiled.jar");
 			dexLocation.remove();
 
-			if(entry.source == BoomFile.Source.INTERNAL) {
+			if(entry.scriptsSource == BoomFile.Source.INTERNAL) {
 				inputSource = output.goTo("jvm_copy/");
 				inputSource.remove();
 				progress = .2f;
@@ -108,8 +110,10 @@ public class JvmEntry extends ScriptEntry {
 
 		try {
 			var clazz = classLoader.loadClass(entry.mainPath);
-			var constructor = clazz.getConstructor(String.class);
-			var client = constructor.newInstance(entry.id);
+			var constructor = clazz.getConstructor(PackContext.class);
+
+			var context = new MyPackContext(entry);
+			var client = constructor.newInstance(context);
 
 			if(client instanceof BinactyClient) {
 				this.client = (BinactyClient) client;

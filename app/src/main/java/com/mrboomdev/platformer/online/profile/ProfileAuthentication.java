@@ -1,6 +1,6 @@
 package com.mrboomdev.platformer.online.profile;
 
-import static com.mrboomdev.platformer.online.OnlineManager.playerIOClient;
+//import static com.mrboomdev.platformer.online.OnlineManager.playerIOClient;
 
 import androidx.annotation.NonNull;
 
@@ -8,10 +8,6 @@ import com.mrboomdev.platformer.BuildConfig;
 import com.mrboomdev.platformer.online.Online;
 import com.mrboomdev.platformer.online.OnlineManager;
 import com.mrboomdev.platformer.online.ResultData;
-import com.mrboomdev.platformer.util.io.LogUtil;
-import com.playerio.Client;
-import com.playerio.PlayerIO;
-import com.playerio.PlayerIOError;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
 
@@ -37,7 +33,8 @@ public class ProfileAuthentication {
 
 	public static boolean isLoggedIn() {
 		if(manager.isGuest) return true;
-		return playerIOClient != null;
+		//return playerIOClient != null;
+		return false;
 	}
 
 	public static void auth(@NonNull AuthParams params, Runnable authCallback) {
@@ -51,7 +48,7 @@ public class ProfileAuthentication {
 			put("userId", params.userId);
 		}};
 
-		PlayerIO.authenticate(
+		/*PlayerIO.authenticate(
 				params.activity,
 				params.gameId,
 				params.connectionId.title, map,
@@ -72,7 +69,7 @@ public class ProfileAuthentication {
 
 						LogUtil.crash("Failed to Authenticate", message, e);
 					}
-				});
+				});*/
 	}
 	
 	public void signIn(String token, AuthCallback callback) {

@@ -1,9 +1,9 @@
-package com.mrboomdev.platformer.script;
+package com.mrboomdev.binacty.script;
 
 import androidx.annotation.NonNull;
 
+import com.mrboomdev.binacty.script.entry.ScriptEntry;
 import com.mrboomdev.platformer.game.pack.PackData;
-import com.mrboomdev.platformer.script.entry.ScriptEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,8 @@ public class ScriptManager {
 	public boolean isReady() {
 		if(entries.isEmpty()
 		|| compiler.isCompiling()
-		|| !compiler.isReady()) return false;
+		|| !compiler.isReady()
+		|| !isSoftReady()) return false;
 
 		for(var entry : entries) {
 			if(!entry.isReady()) return false;
@@ -55,7 +56,7 @@ public class ScriptManager {
 			return "Starting the game...";
 		}
 
-		return "Idk...";
+		return "Done!";
 	}
 
 	private boolean isSoftReady() {

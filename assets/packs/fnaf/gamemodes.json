@@ -27,7 +27,16 @@
 				],
 
 				"entry": {
-					"scripts": "scripts", "main": "com.mrboomdev.binacty.fnaf.Main", "engine": "JAVA",
+					"scripts_path": "packs/fnaf/src/scripts",
+					"scripts_source": "internal",
+
+					"resources_path": "packs/fnaf",
+					"resources_source": "internal",
+
+					"main": "com.mrboomdev.binacty.fnaf.Main",
+					"engine": "JAVA",
+
+					"id": "com.mrboomdev.binacty.fnaf",
 					"level_id": "night_1"
 				}
 			},

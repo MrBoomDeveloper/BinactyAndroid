@@ -1,6 +1,9 @@
 {
-	"scripts": "packs/fnaf/src/scripts",
-	"source": "internal",
+	"scripts_path": "packs/fnaf/src/scripts",
+	"scripts_source": "internal",
+
+	"resources_path": "packs/fnaf",
+	"resources_source": "internal",
 
 	"main": "com.mrboomdev.binacty.fnaf.Main",
 	"engine": "JAVA",

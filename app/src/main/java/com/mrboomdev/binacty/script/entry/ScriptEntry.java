@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.script.entry;
+package com.mrboomdev.binacty.script.entry;
 
 import com.mrboomdev.platformer.game.pack.PackData;
 

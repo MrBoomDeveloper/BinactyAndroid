@@ -84,15 +84,22 @@ public class PackData {
 
 	public static class GamemodeEntry {
 		public String id;
-		@Json(name = "source")
-		public BoomFile.Source source;
 		@Json(name = "main")
 		public String mainPath;
-		@Json(name = "scripts")
-		public String scriptsPath;
+
 		@Json(name = "level_id")
 		public String levelId;
 		public GameSettings.Engine engine;
+
+		@Json(name = "scripts_path")
+		public String scriptsPath;
+		@Json(name = "scripts_source")
+		public BoomFile.Source scriptsSource;
+
+		@Json(name = "resources_path")
+		public String resourcesPath;
+		@Json(name = "resources_source")
+		public BoomFile.Source resourcesSource;
 	}
 	
 	public static class GamemodesRow {

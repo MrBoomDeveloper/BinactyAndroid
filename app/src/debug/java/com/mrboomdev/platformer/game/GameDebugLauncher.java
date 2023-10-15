@@ -38,7 +38,7 @@ public class GameDebugLauncher extends GameLauncher {
 			game = createGameInstance(getDebugIntent());
 			AudioUtil.setVolume(1, 1);
 		} catch(IOException e) {
-			throw new BoomException("Unable to start game!", e);
+			throw new BoomException("Unable to start a game!", e);
 		}
 
 		GameDebugMenu menu = new GameDebugMenu(this);

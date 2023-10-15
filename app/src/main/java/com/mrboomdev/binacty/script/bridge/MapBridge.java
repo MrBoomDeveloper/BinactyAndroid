@@ -1,4 +1,4 @@
-package com.mrboomdev.platformer.script.bridge;
+package com.mrboomdev.binacty.script.bridge;
 
 import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;

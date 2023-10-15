@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mrboomdev.platformer.environment.EnvironmentCreator;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
-import com.mrboomdev.platformer.scenes.gameplay.GameplayScreen;
 
 public class LoadingScreen extends CoreScreen {
     private final GameHolder game = GameHolder.getInstance();
@@ -32,9 +31,9 @@ public class LoadingScreen extends CoreScreen {
 			font.draw(batch, environmentCreator.getStatus(), 50, 75);
 		} batch.end();
 		
-		if(environmentCreator.getBareStatus() == EnvironmentCreator.Status.DONE && game.isReady()) {
+		/*if(environmentCreator.getBareStatus() == EnvironmentCreator.Status.DONE && game.isReady()) {
 			game.setScreen(new GameplayScreen(game.environment));
-        }
+        }*/
     }
     
     @Override

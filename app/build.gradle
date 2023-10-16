@@ -163,6 +163,7 @@ dependencies {
 	implementation "androidx.constraintlayout:constraintlayout:2.1.4"
 	implementation "androidx.security:security-crypto:1.0.0"
 	implementation "androidx.browser:browser:1.4.0"
+	implementation "androidx.core:core-splashscreen:1.0.1"
 	
 	/* React Native */
 	implementation "com.facebook.react:react-android"

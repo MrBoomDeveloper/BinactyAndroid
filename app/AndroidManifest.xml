@@ -18,14 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:isGame="true"
         android:appCategory="game"
-        android:theme="@style/GdxTheme"
-        tools:targetApi="o">
+        android:theme="@style/Binacty">
 
         <activity
             android:name="com.mrboomdev.binacty.rn.RNActivity"
+            android:theme="@style/Binacty.Splash"
             android:screenOrientation="landscape"
-            android:enabled="true"
-            android:theme="@style/Material"
             android:exported="true">
 
             <intent-filter>
@@ -52,12 +50,10 @@
         <activity
             android:name=".game.GameLauncher"
             android:screenOrientation="landscape"
-            android:theme="@style/Material"
             android:exported="false" />
 
         <activity
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
-            android:label="Developer Settings"
             android:exported="false" />
 
         <activity

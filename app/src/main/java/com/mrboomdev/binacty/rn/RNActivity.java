@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.core.splashscreen.SplashScreen;
+
 import com.epicgames.mobile.eossdk.EOSSDK;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -35,8 +37,10 @@ public class RNActivity extends ReactActivity {
 
 	@Override
 	protected void onCreate(Bundle bundle) {
+		SplashScreen.installSplashScreen(this);
 		super.onCreate(null);
 
+		prefs = getSharedPreferences("Save", 0);
 		BinactyNative.init();
 		EOSSDK.init(getApplicationContext());
 
@@ -44,7 +48,6 @@ public class RNActivity extends ReactActivity {
 		ActivityManager.reactActivity = this;
 		ActivityManager.hideSystemUi(this);
 
-		prefs = getSharedPreferences("Save", 0);
 		if(!prefs.getBoolean("isNickSetup", false) && !prefs.getBoolean("isFirstGame", true)) {
 			var dialog = new AndroidDialog().setTitle("Welcome to Binacty!").setCancelable(false);
 
@@ -53,9 +56,10 @@ public class RNActivity extends ReactActivity {
 			dialog.addSpace(30).addField(nameField).addSpace(30);
 
 			dialog.addAction(new AndroidDialog.Action().setText("Save and Continue").setClickListener(button -> {
-				prefs.edit()
-						.putBoolean("isNickSetup", true)
-						.putString("nick", nameField.getText()).apply();
+				var newPrefs = prefs.edit();
+				newPrefs.putBoolean("isNickSetup", true);
+				newPrefs.putString("nick", nameField.getText());
+				newPrefs.apply();
 
 				Intent intent = new Intent(this, getClass());
 				startActivity(intent);

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -38,6 +39,7 @@ public class GameDebugMenu extends FrameLayout {
 
 		var button = new Button(activity);
 		button.setText("DevMenu");
+		button.setBackgroundColor(Color.WHITE);
 		buttonHolder.addView(button);
 
 		button.setOnClickListener(v -> {

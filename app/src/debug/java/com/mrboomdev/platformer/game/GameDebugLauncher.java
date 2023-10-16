@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.splashscreen.SplashScreen;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.mrboomdev.binacty.Constants;
@@ -27,6 +28,7 @@ public class GameDebugLauncher extends GameLauncher {
 	@SuppressLint("SetTextI18n")
 	@Override
 	public void onCreate(Bundle bundle) {
+		SplashScreen.installSplashScreen(this);
 		super.onCreate(bundle);
 
 		LogUtil.setThreadCrashHandler(Thread.currentThread());

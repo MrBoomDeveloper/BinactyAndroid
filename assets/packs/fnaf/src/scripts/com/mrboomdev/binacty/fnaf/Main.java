@@ -14,12 +14,12 @@ public class Main extends BinactyClient {
 	@Override
 	public void create() {
 		try {
-			Class.forName("com.mrboomdev.binacty.LegacyFnafBridge").newInstance();
+			var clazz = Class.forName("com.mrboomdev.binacty.LegacyFnafBridge");
+			var constructor = clazz.getConstructor(BinactyClient.class);
+			constructor.newInstance(this);
 		} catch(Exception e) {
 			throw new BinactyException("Failed to start a game! Please check if you have the latest version.", e);
 		}
-
-		getResources().getMusic("music/music_box.wav").play();
 	}
 
 	@Override

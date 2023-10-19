@@ -27,7 +27,22 @@ public class JavaEntry extends JvmEntry {
 	}
 
 	@NonNull
-	private String prepareAndGetSourcesPath(@NonNull PackData.GamemodeEntry entry) {
+	private BoomFile<?> collectSourcesInFile(@NonNull PackData.GamemodeEntry entry, @NonNull List<BoomFile<?>> javaSourcesList) {
+		var output = BoomFile.external(".cache/" + entry.id);
+
+		var compileTargets = output.goTo("sources.txt");
+		compileTargets.remove();
+		compileTargets.writeString("");
+
+		for(var clazz : javaSourcesList) {
+			var clazzPath = clazz.getAbsolutePath();
+			compileTargets.writeString(clazzPath + "\n", true);
+		}
+
+		return compileTargets;
+	}
+
+	public List<BoomFile<?>> prepareAndGetSources(@NonNull PackData.GamemodeEntry entry) {
 		var output = BoomFile.external(".cache/" + entry.id);
 		var javaSources = BoomFile.fromString(entry.scriptsPath, entry.scriptsSource);
 
@@ -49,16 +64,7 @@ public class JavaEntry extends JvmEntry {
 				})
 				.collect(Collectors.toList());
 
-		var compileTargets = output.goTo("sources.txt");
-		compileTargets.remove();
-		compileTargets.writeString("");
-
-		for(var clazz : javaSourcesList) {
-			var clazzPath = clazz.getAbsolutePath();
-			compileTargets.writeString(clazzPath + "\n", true);
-		}
-
-		return compileTargets.getAbsolutePath();
+		return javaSourcesList;
 	}
 
 	@NonNull
@@ -87,43 +93,58 @@ public class JavaEntry extends JvmEntry {
 			var output = BoomFile.external(".cache/" + entry.id);
 			progress = .2f;
 
-			var javaCompiled = BoomFile.global(output.goTo("/java_compiled"));
-			javaCompiled.remove();
+			var sources = prepareAndGetSources(entry);
+			var sourcesChecksum = getSourcesChecksum(sources);
 			progress = .4f;
+
+			var javaCompiled = BoomFile.global(output.goTo("/java_compiled"));
+			var lastSourcesChecksum = output.goTo("java_sources_checksum.txt");
+
+			if(lastSourcesChecksum.exists() && lastSourcesChecksum.readString().equals(sourcesChecksum)) {
+				LogUtil.debug(TAG, "Skipping compilation, because sources are same.");
+				finishSuccessfully(entry, javaCompiled);
+				return;
+			}
 
 			var classpaths = prepareAndGetClasspathsJoined();
 			progress = .6f;
-
-			var sources = prepareAndGetSourcesPath(entry);
-			progress = .8f;
 
 			List<String> args = List.of(
 					"-" + "11",
 					"-proc:none",
 					"-d", javaCompiled.getAbsolutePath(),
 					"-cp", classpaths,
-					"@" + sources);
+					"@" + collectSourcesInFile(entry, sources).getAbsolutePath());
 
 			LogUtil.debug(TAG, "Start with the following args: " + Arrays.toString(args.toArray(new String[0])));
 
+			javaCompiled.remove();
+			progress = .8f;
+
 			var jdtCompiler = new Main(printWriter, printWriter, false, null, null);
 			boolean isSuccessful = jdtCompiler.compile(args.toArray(new String[0]));
-			progress = 1;
 
 			if(isSuccessful) {
 				LogUtil.debug(TAG, "Finished compilation successfully! Compiler output: " + stringWriter);
 
-				var newEntry = FunUtil.copy(PackData.GamemodeEntry.class, entry);
-				newEntry.scriptsSource = BoomFile.Source.GLOBAL;
-				newEntry.scriptsPath = javaCompiled.getAbsolutePath();
-
-				setEntry(newEntry);
-				super.compile();
+				lastSourcesChecksum.writeString(sourcesChecksum);
+				finishSuccessfully(entry, javaCompiled);
 			} else {
 				throw new BoomException("Failed to compile java! ", new BoomException(stringWriter));
 			}
 		} catch(IOException e) {
 			throw new BoomException(e);
 		}
+	}
+
+	private void finishSuccessfully(PackData.GamemodeEntry entry, @NonNull BoomFile<?> javaCompiled) {
+		progress = 1;
+
+		var newEntry = FunUtil.copy(PackData.GamemodeEntry.class, entry);
+		newEntry.scriptsSource = BoomFile.Source.GLOBAL;
+		newEntry.scriptsPath = javaCompiled.getAbsolutePath();
+
+		setEntry(newEntry);
+		super.compile();
 	}
 }

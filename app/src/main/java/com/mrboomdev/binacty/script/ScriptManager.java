@@ -14,6 +14,10 @@ public class ScriptManager {
 	private final List<ScriptEntry> entries = new ArrayList<>();
 	private boolean didCalledCreate;
 
+	public List<ScriptEntry> getEntries() {
+		return entries;
+	}
+
 	public boolean isReady() {
 		if(entries.isEmpty()
 		|| compiler.isCompiling()

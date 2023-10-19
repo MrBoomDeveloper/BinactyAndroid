@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,6 +58,10 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 
 	public String getRelativePath() {
 		return path;
+	}
+
+	public boolean exists() {
+		return getFile().exists();
 	}
 
 	public T goTo(String path) {
@@ -198,6 +205,28 @@ public abstract class BoomFile<T extends BoomFile<T>> {
 			writer.write(string);
 		} catch(IOException e) {
 			throw new BoomException("Failed to write into a file", e);
+		}
+	}
+
+	public byte[] readBytes() {
+		try(var stream = getInputStream()) {
+			int size = stream.available();
+			var buffer = new byte[size];
+
+			stream.read(buffer);
+			return buffer;
+		} catch(IOException e) {
+			throw new BoomException("Failed to read bytes of a file!", e);
+		}
+	}
+
+	public String getChecksum() {
+		try {
+			var md5 = MessageDigest.getInstance("MD5");
+			var hash = md5.digest(readBytes());
+			return new BigInteger(1, hash).toString(16);
+		} catch(NoSuchAlgorithmException e) {
+			throw new BoomException("MD5 isn't supported on you device!", e);
 		}
 	}
 

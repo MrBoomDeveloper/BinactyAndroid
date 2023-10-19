@@ -17,14 +17,11 @@ import com.mrboomdev.platformer.scenes.core.CoreScreen;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
-import box2dLight.RayHandler;
-
 public class GameplayScreen extends CoreScreen {
 	private final GameHolder game = GameHolder.getInstance();
-	private SpriteBatch batch;
+	public static SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
 	private GameplayUi ui;
-	private RayHandler rayHandler;
 	private Box2DDebugRenderer debugRenderer;
 	private ShaderProgram shaders;
 	private Viewport viewport;
@@ -44,9 +41,9 @@ public class GameplayScreen extends CoreScreen {
 			game.environment.render(batch);
 		} batch.end();
 
-		if(!game.settings.debugRaysDisable) {
-			rayHandler.setCombinedMatrix(camera);
-			rayHandler.updateAndRender();
+		if(!game.settings.debugRaysDisable && game.environment.rayHandler != null) {
+			game.environment.rayHandler.setCombinedMatrix(camera);
+			game.environment.rayHandler.updateAndRender();
 		}
 
 		batch.begin(); {
@@ -90,8 +87,6 @@ public class GameplayScreen extends CoreScreen {
 		}
 		
 		game.environment.world.setContactListener(new ProjectileCollision());
-		game.environment.setupRayHandler();
-		rayHandler = game.environment.rayHandler;
 		
 		var camera = new OrthographicCamera(32, 18);
 		camera.zoom = .75f;
@@ -130,7 +125,7 @@ public class GameplayScreen extends CoreScreen {
 	@Override
 	public void dispose() {
 		shapeRenderer.dispose();
-		rayHandler.dispose();
+		if(game.environment.rayHandler != null) game.environment.rayHandler.dispose();
 		//ui.dispose();
 		shaders.dispose();
 	}

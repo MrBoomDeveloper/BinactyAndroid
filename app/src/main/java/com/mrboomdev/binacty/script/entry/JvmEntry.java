@@ -1,5 +1,7 @@
 package com.mrboomdev.binacty.script.entry;
 
+import androidx.annotation.NonNull;
+
 import com.android.tools.r8.CompilationFailedException;
 import com.android.tools.r8.D8;
 import com.android.tools.r8.D8Command;
@@ -13,6 +15,7 @@ import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +60,6 @@ public class JvmEntry extends ScriptEntry {
 			var inputSource = BoomFile.fromString(entry.scriptsPath, entry.scriptsSource);
 
 			dexLocation = output.goTo("dex_compiled.jar");
-			dexLocation.remove();
 
 			if(entry.scriptsSource == BoomFile.Source.INTERNAL) {
 				inputSource = output.goTo("jvm_copy/");
@@ -68,8 +70,20 @@ public class JvmEntry extends ScriptEntry {
 				progress = .4f;
 			}
 
-			var inputFiles = inputSource.listFilesRecursively()
-					.stream()
+			List<BoomFile<?>> sources = new ArrayList<>(inputSource.listFilesRecursively());
+			var lastSourcesChecksum = output.goTo("jvm_sources_checksum.txt");
+			var sourcesChecksum = getSourcesChecksum(sources);
+
+			if(lastSourcesChecksum.exists() && lastSourcesChecksum.readString().equals(sourcesChecksum)) {
+				LogUtil.debug(TAG, "Skipping dex compilation, because checksums are same.");
+
+				isCompiled = true;
+				progress = 1;
+
+				return;
+			}
+
+			var inputFiles = sources.stream()
 					.map(item -> item.getFile().toPath())
 					.collect(Collectors.toList());
 
@@ -80,6 +94,7 @@ public class JvmEntry extends ScriptEntry {
 
 			progress = .8f;
 
+			dexLocation.remove();
 			D8.run(D8Command.builder()
 					.setIntermediate(true)
 					.addClasspathFiles(classpaths)
@@ -88,6 +103,7 @@ public class JvmEntry extends ScriptEntry {
 					.build());
 
 			dexLocation.getFile().setWritable(false);
+			lastSourcesChecksum.writeString(sourcesChecksum);
 
 			isCompiled = true;
 			progress = 1;
@@ -95,6 +111,11 @@ public class JvmEntry extends ScriptEntry {
 		} catch(CompilationFailedException e) {
 			throw new BoomException("Failed to compile into DEX!", e);
 		}
+	}
+
+	@Override
+	public BinactyClient getClient() {
+		return this.client;
 	}
 
 	@Override
@@ -133,6 +154,16 @@ public class JvmEntry extends ScriptEntry {
 		} catch(InstantiationException e) {
 			throw new BoomException("Invalid class entry!", e);
 		}
+	}
+
+	public String getSourcesChecksum(@NonNull List<BoomFile<?>> sources) {
+		var gotChecksum = new StringBuilder();
+
+		for(var source : sources) {
+			gotChecksum.append(source.getChecksum());
+		}
+
+		return gotChecksum.toString();
 	}
 
 	public List<BoomFile<?>> prepareAndGetClasspaths() {

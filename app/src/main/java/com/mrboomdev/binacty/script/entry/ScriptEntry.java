@@ -1,5 +1,6 @@
 package com.mrboomdev.binacty.script.entry;
 
+import com.mrboomdev.binacty.api.client.BinactyClient;
 import com.mrboomdev.platformer.game.pack.PackData;
 
 public abstract class ScriptEntry {
@@ -19,6 +20,10 @@ public abstract class ScriptEntry {
 
 	public float getProgress() {
 		return 0;
+	}
+
+	public BinactyClient getClient() {
+		return null;
 	}
 
 	public boolean isSoftReady() {

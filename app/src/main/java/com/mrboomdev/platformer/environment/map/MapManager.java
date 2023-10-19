@@ -16,7 +16,6 @@ import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.LogUtil;
 import com.squareup.moshi.Json;
-import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.util.ArrayList;
@@ -81,8 +80,8 @@ public class MapManager {
 		this.buildCallback = callback;
 
 		try {
-			Moshi moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
-			JsonAdapter<PackData.Tiles> adapter = moshi.adapter(PackData.Tiles.class);
+			var moshi = new Moshi.Builder().add(new MapTile.Adapter()).build();
+			var adapter = moshi.adapter(PackData.Tiles.class);
 		
 			for(String pack : atmosphere.tiles) {
 				var tilesFile = PackLoader.resolvePath(source.getParent(), pack);

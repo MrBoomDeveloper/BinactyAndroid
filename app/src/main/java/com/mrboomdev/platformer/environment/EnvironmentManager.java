@@ -12,6 +12,7 @@ import com.mrboomdev.platformer.entity.particle.ParticleManager;
 import com.mrboomdev.platformer.environment.gamemode.GamemodeManager;
 import com.mrboomdev.platformer.environment.logic.Trigger;
 import com.mrboomdev.platformer.environment.map.MapManager;
+import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.ui.gameplay.GameplayUi;
 import com.mrboomdev.platformer.util.CameraUtil;
@@ -48,13 +49,14 @@ public class EnvironmentManager {
 	}
 	
 	public void render(SpriteBatch batch) {
-		//map.render(batch);
+		if(map != null) map.render(batch);
 		//entities.render(batch);
 		particles.draw(batch);
 		//stage.draw();
 	}
 	
 	public void update(float delta) {
+		if(map != null) map.ping();
 		//stage.act(delta);
 		world.step(1 / 60f, 6, 2);
 		//gamemode.update();
@@ -85,14 +87,14 @@ public class EnvironmentManager {
 		rayHandler.setCulling(true);
 
 		if(game.settings.enableEditor) rayHandler.setShadows(false);
-		//else rayHandler.setAmbientLight(map.atmosphere.environmentLightColor.getColor());
+		else rayHandler.setAmbientLight(map.atmosphere.environmentLightColor.getColor());
 
-		//map.rayHandler = rayHandler;
-		//entities.setupRayHandler(rayHandler);
+		map.rayHandler = rayHandler;
+		entities.setupRayHandler(rayHandler);
 		
-		/*for(var object : map.objects) {
+		for(var object : map.objects) {
 			if(!(object instanceof MapTile)) continue;
 			((MapTile)object).setupRayHandler(rayHandler);
-		}*/
+		}
 	}
 }

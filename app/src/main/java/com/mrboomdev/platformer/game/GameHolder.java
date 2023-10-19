@@ -67,6 +67,15 @@ public class GameHolder extends Game {
 	public void render() {
 		super.render();
 
+		for(var entry : script.getEntries()) {
+			var client = entry.getClient();
+			if(client != null) client.render();
+		}
+
+		checkIfNeedToChangeScreen();
+	}
+
+	private void checkIfNeedToChangeScreen() {
 		if(script.isReady()) {
 			if(getScreen() instanceof LoadingScreen) setScreen(getScreen("gameplay"));
 		} else {

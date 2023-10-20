@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
@@ -324,7 +324,7 @@ public class EditorScreen {
 			.addTo(stage);
 	}
 
-	public void draw(@NonNull SpriteBatch batch) {
+	public void draw(@NonNull Batch batch) {
 		batch.end();
 		shape.begin(ShapeRenderer.ShapeType.Filled); {
 			shape.setColor(.1f, .1f, .1f, 1);

@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -134,7 +134,6 @@ public class GameplayUi {
 			})
 			.onUse(power -> {
 				if(!game.settings.isControlsEnabled || !aimJoystick.isVisible) return;
-
 				connectedEntity.attack(power.scl(.2f));
 			})
 			.toPosition(Gdx.graphics.getWidth() - 225 - game.settings.screenInset, game.settings.screenInset)
@@ -147,7 +146,7 @@ public class GameplayUi {
 		editor.create(stage);
 	}
 
-	public void draw(SpriteBatch batch) {
+	public void draw(Batch batch) {
 		if(editor != null) editor.draw(batch);
 	}
 	

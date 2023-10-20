@@ -51,6 +51,7 @@ public class ProjectileManager {
 	
 	public void attack(Vector2 power) {
 		if(attackDelayProgress < 0.5f) return;
+
 		attacks.add(new ProjectileAttack(world, owner, attackStats, power));
 
 		owner.usePower(power, .25f);
@@ -66,6 +67,7 @@ public class ProjectileManager {
 		for(ProjectileBullet bullet : bullets) {
 			bullet.draw(batch);
 		}
+
 		for(ProjectileAttack attack : attacks) {
 			attack.draw(batch);
 		}

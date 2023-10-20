@@ -14,7 +14,7 @@ public class Main extends BinactyClient {
 	@Override
 	public void create() {
 		try {
-			var clazz = Class.forName("com.mrboomdev.binacty.LegacyFnafBridge");
+			var clazz = Class.forName("com.mrboomdev.binacty.script.__legacy.LegacyFnafBridge");
 			var constructor = clazz.getConstructor(BinactyClient.class);
 			constructor.newInstance(this);
 		} catch(Exception e) {

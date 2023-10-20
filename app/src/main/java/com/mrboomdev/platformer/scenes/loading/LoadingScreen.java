@@ -7,14 +7,15 @@ import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
 
 public class LoadingScreen extends CoreScreen {
-    private final GameHolder game = GameHolder.getInstance();
 	private final EnvironmentCreator environmentCreator;
     private final SpriteBatch batch;
 	private final BitmapFont font;
 
     public LoadingScreen() {
-        this.batch = new SpriteBatch();
+		var game = GameHolder.getInstance();
 		this.font = game.assets.get("loading.ttf");
+
+        this.batch = new SpriteBatch();
 		this.environmentCreator = new EnvironmentCreator();
     }
 
@@ -30,10 +31,6 @@ public class LoadingScreen extends CoreScreen {
 		batch.begin(); {
 			font.draw(batch, environmentCreator.getStatus(), 50, 75);
 		} batch.end();
-		
-		/*if(environmentCreator.getBareStatus() == EnvironmentCreator.Status.DONE && game.isReady()) {
-			game.setScreen(new GameplayScreen(game.environment));
-        }*/
     }
     
     @Override

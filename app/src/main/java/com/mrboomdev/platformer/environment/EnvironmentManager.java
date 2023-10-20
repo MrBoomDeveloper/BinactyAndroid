@@ -77,8 +77,8 @@ public class EnvironmentManager {
 		if(game.settings.enableEditor) ui.createEditor(stage);
 
 		//ui.connectCharacter(game.settings.mainPlayer);
-		gamemode.createUi(stage);
-		game.script.bridge.triggerStarted();
+		//gamemode.createUi(stage);
+		//game.script.bridge.triggerStarted();
 	}
 	
 	public void setupRayHandler() {

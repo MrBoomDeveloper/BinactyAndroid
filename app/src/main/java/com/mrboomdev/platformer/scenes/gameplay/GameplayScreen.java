@@ -38,11 +38,6 @@ public class GameplayScreen extends CoreScreen {
 			//game.environment.render(batch);
 		} batch.end();
 
-		if(!game.settings.debugRaysDisable && game.environment.rayHandler != null) {
-			//game.environment.rayHandler.setCombinedMatrix(camera);
-			//game.environment.rayHandler.updateAndRender();
-		}
-
 		batch.begin(); {
 			//game.environment.ui.draw(batch);
 			//ui.render(delta);
@@ -84,20 +79,6 @@ public class GameplayScreen extends CoreScreen {
 		camera.zoom = .75f;
 		game.environment.camera = camera;
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
-
-		//var path = game.settings.playerCharacter;
-		/*game.environment.entities.loadCharacter(path, "klarrie");
-		var player = new CharacterCreator(game.environment.entities.presets
-				.get("klarrie")
-				.cpy(game.settings.playerName, path))
-				.create();*/
-		
-		/*game.settings.mainPlayer = player;
-		game.environment.entities.setMain(player);
-		camera.position.set(player.getPosition(), 0);*/
-
-		//CameraUtil.setTarget(player);
-		//AudioUtil.setTarget(player);
 		
 		//ui = new GameplayUi(this, player);
 		//Gdx.input.setInputProcessor(ui.stage);

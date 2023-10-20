@@ -6,6 +6,10 @@ import com.mrboomdev.platformer.game.pack.PackData;
 
 public class MyPackContext extends PackContext {
 	public final PackData.GamemodeEntry entry;
+
+	@Override
+	public void update() {}
+
 	public final BinactyResources resources;
 
 	public MyPackContext(PackData.GamemodeEntry entry) {

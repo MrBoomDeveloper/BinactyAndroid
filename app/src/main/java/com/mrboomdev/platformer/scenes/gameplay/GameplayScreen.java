@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -21,8 +20,6 @@ public class GameplayScreen extends CoreScreen {
 	private final GameHolder game = GameHolder.getInstance();
 	public static SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
-	private GameplayUi ui;
-	private Box2DDebugRenderer debugRenderer;
 	private ShaderProgram shaders;
 	private Viewport viewport;
 	private Sprite screenEffect;
@@ -38,23 +35,19 @@ public class GameplayScreen extends CoreScreen {
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		
 		batch.begin(); {
-			game.environment.render(batch);
+			//game.environment.render(batch);
 		} batch.end();
 
 		if(!game.settings.debugRaysDisable && game.environment.rayHandler != null) {
-			game.environment.rayHandler.setCombinedMatrix(camera);
-			game.environment.rayHandler.updateAndRender();
+			//game.environment.rayHandler.setCombinedMatrix(camera);
+			//game.environment.rayHandler.updateAndRender();
 		}
 
 		batch.begin(); {
-			if(game.settings.debugRenderer) {
-				debugRenderer.render(game.environment.world, camera.combined);
-			}
-
 			//game.environment.ui.draw(batch);
 			//ui.render(delta);
 
-			screenEffect.draw(batch);
+			//screenEffect.draw(batch);
 		} batch.end();
 
 		game.environment.update(delta);
@@ -64,7 +57,6 @@ public class GameplayScreen extends CoreScreen {
 	public void show() {
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
-		debugRenderer = new Box2DDebugRenderer();
 
 		screenEffect = new Sprite(new Texture("packs/official/src/effects/old_tv.png"));
 		screenEffect.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

@@ -69,7 +69,11 @@ public class GameHolder extends Game {
 
 		for(var entry : script.getEntries()) {
 			var client = entry.getClient();
-			if(client != null) client.render();
+
+			if(client != null) {
+				if(client.isReady()) client.render();
+				client.update();
+			}
 		}
 
 		checkIfNeedToChangeScreen();

@@ -2,6 +2,7 @@ package com.mrboomdev.binacty;
 
 import androidx.annotation.NonNull;
 
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.mrboomdev.binacty.api.client.BinactyClient;
 import com.mrboomdev.binacty.api.frontend.graphics.DrawableGraphic;
 import com.mrboomdev.binacty.util.file.BoomFile;
@@ -23,6 +24,7 @@ public class LegacyFnafBridge {
 
 	public LegacyFnafBridge(@NonNull BinactyClient client) {
 		var myScreen = new MyScreen();
+		myScreen.create();
 		client.setScreen(myScreen);
 
 		new Thread(() -> {
@@ -65,10 +67,11 @@ public class LegacyFnafBridge {
 
 	private static class MyScreen implements DrawableGraphic {
 		private final GameHolder game = GameHolder.getInstance();
+		private Box2DDebugRenderer debugRenderer;
 
 		@Override
 		public void create() {
-
+			debugRenderer = new Box2DDebugRenderer();
 		}
 
 		@Override
@@ -77,19 +80,31 @@ public class LegacyFnafBridge {
 		}
 
 		@Override
+		public void update() {
+			var map = game.environment.map;
+			if(map != null) map.ping();
+		}
+
+		@Override
 		public void render() {
 			var batch = GameplayScreen.batch;
 			if(batch == null) return;
 
-			//batch.begin();
+			batch.begin();
 
 			var map = game.environment.map;
-			if(map != null) {
-				//map.ping();
-				//map.render(batch);
+			if(map != null) map.render(batch);
+
+			batch.end();
+
+			if(!game.settings.debugRaysDisable && game.environment.rayHandler != null) {
+				game.environment.rayHandler.setCombinedMatrix(game.environment.camera);
+				game.environment.rayHandler.updateAndRender();
 			}
 
-			//batch.end();
+			if(game.settings.debugRenderer) {
+				debugRenderer.render(game.environment.world, game.environment.camera.combined);
+			}
 		}
 	}
 }

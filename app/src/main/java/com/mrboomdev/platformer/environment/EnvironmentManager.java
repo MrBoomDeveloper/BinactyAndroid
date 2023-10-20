@@ -49,14 +49,14 @@ public class EnvironmentManager {
 	}
 	
 	public void render(SpriteBatch batch) {
-		if(map != null) map.render(batch);
+		//if(map != null) map.render(batch);
 		//entities.render(batch);
-		particles.draw(batch);
+		//particles.draw(batch);
 		//stage.draw();
 	}
 	
 	public void update(float delta) {
-		if(map != null) map.ping();
+		//if(map != null) map.ping();
 		//stage.act(delta);
 		world.step(1 / 60f, 6, 2);
 		//gamemode.update();

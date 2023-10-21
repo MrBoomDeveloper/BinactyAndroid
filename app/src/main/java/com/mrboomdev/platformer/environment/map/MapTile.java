@@ -19,6 +19,7 @@ import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.environment.map.tile.TileInteraction;
 import com.mrboomdev.platformer.environment.map.tile.TileStyle;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.io.FileUtil;
 import com.squareup.moshi.Json;
 import com.squareup.moshi.ToJson;
@@ -78,7 +79,7 @@ public class MapTile extends MapObject implements BotTarget {
 
 		if(shape != null && isSelected) {
 			batch.end();
-			shape.setProjectionMatrix(game.environment.camera.combined);
+			shape.setProjectionMatrix(CameraUtil.camera.combined);
 			Gdx.gl.glLineWidth(3);
 			shape.begin(ShapeRenderer.ShapeType.Line);
 			shape.setColor(1, 1, 1, 1);
@@ -95,7 +96,7 @@ public class MapTile extends MapObject implements BotTarget {
 	}
 
 	private boolean isVisible() {
-		var camera = game.environment.camera;
+		var camera = CameraUtil.camera;
 		var position = getCachedPosition();
 
 		float viewportWidth = camera.viewportWidth * camera.zoom;

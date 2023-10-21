@@ -45,7 +45,7 @@ public class GameplayUi {
 				}
 
 				connectedEntity.usePower(power, connectedEntity.stats.speed *
-						(game.settings.enableEditor ? (game.environment.camera.zoom * 8) : 1));
+						(game.settings.enableEditor ? (CameraUtil.camera.zoom * 8) : 1));
 
 				getWidget("debug", DebugValuesWidget.class).setValue("Movement Joystick Power", power.toString());
 			})

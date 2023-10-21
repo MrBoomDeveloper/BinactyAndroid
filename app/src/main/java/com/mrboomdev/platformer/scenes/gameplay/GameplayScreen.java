@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.projectile.ProjectileCollision;
 import com.mrboomdev.platformer.scenes.core.CoreScreen;
+import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.LogUtil;
 
@@ -29,8 +30,7 @@ public class GameplayScreen extends CoreScreen {
 		if(game.settings.pause) return;
 		ScreenUtils.clear(0, 0, 0, 1);
 		
-		var camera = game.environment.camera;
-		camera.update();
+		var camera = CameraUtil.camera;
 		batch.setProjectionMatrix(camera.combined);
 		shapeRenderer.setProjectionMatrix(camera.combined);
 		
@@ -76,8 +76,8 @@ public class GameplayScreen extends CoreScreen {
 		game.environment.world.setContactListener(new ProjectileCollision());
 		
 		var camera = new OrthographicCamera(32, 18);
+		CameraUtil.setCamera(camera);
 		camera.zoom = .75f;
-		game.environment.camera = camera;
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
 		
 		//ui = new GameplayUi(this, player);

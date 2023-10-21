@@ -20,9 +20,9 @@ public class CharacterCreator {
 		return this;
 	}
 	
-	public CharacterEntity create(@NonNull MapManager map) {
+	public CharacterEntity create(String id, @NonNull MapManager map) {
 		entity.create(game.environment.world);
-		map.addCharacter(entity);
+		map.addCharacter(id, entity);
 
 		return entity;
 	}

@@ -1,14 +1,13 @@
 package com.mrboomdev.binacty.script.bridge;
 
 import com.mrboomdev.binacty.api.pack.PackContext;
+import com.mrboomdev.binacty.api.pack.PackSaves;
 import com.mrboomdev.binacty.api.resources.BinactyResources;
 import com.mrboomdev.platformer.game.pack.PackData;
 
 public class MyPackContext extends PackContext {
 	public final PackData.GamemodeEntry entry;
-
-	@Override
-	public void update() {}
+	public final MyPackSaves saves;
 
 	public final BinactyResources resources;
 
@@ -17,6 +16,15 @@ public class MyPackContext extends PackContext {
 		this.entry = entry;
 
 		this.resources = new MyResources(this);
+		this.saves = new MyPackSaves(this);
+	}
+
+	@Override
+	public void update() {}
+
+	@Override
+	public PackSaves getSaves() {
+		return saves;
 	}
 
 	@Override

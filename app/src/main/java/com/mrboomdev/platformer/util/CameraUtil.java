@@ -1,5 +1,6 @@
 package com.mrboomdev.platformer.util;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.game.GameHolder;
@@ -14,6 +15,7 @@ public class CameraUtil {
 	private static final Vector2 shakeCurrent = new Vector2();
 	private static final Vector2 offset = new Vector2();
 	private static final Vector2 cameraPosition = new Vector2();
+	public static OrthographicCamera camera;
 	
 	public static void addCameraShake(float power, float duration) {
 		if(GameHolder.getInstance().settings.debugCamera) return;
@@ -28,6 +30,10 @@ public class CameraUtil {
 		shakeDuration = duration;
 		shakeProgress = 0;
 		shakeCurrent.setZero();
+	}
+
+	public static void setCamera(OrthographicCamera _camera) {
+		camera = _camera;
 	}
 
 	public static void setCameraOffset(float x, float y) {
@@ -55,12 +61,9 @@ public class CameraUtil {
 
 	public static void setCameraPosition(float x, float y) {
 		var game = GameHolder.getInstance();
-
 		if(game.settings.debugCamera) return;
 
-		var camera = game.environment.camera;
 		camera.position.set(x, y, 0);
-
 		cameraPosition.set(x, y);
 	}
 
@@ -79,11 +82,9 @@ public class CameraUtil {
 	public static void setTarget(BotTarget target) {
 		var game = GameHolder.getInstance();
 
-		if(GameHolder.getInstance().settings.debugCamera && target != game.settings.mainPlayer) return;
+		if(game.settings.debugCamera && target != game.settings.mainPlayer) return;
 
 		if(target == null) {
-			var camera = game.environment.camera;
-
 			if(CameraUtil.target == null) {
 				cameraPosition.set(camera.position.x, camera.position.y);
 			} else {
@@ -96,8 +97,8 @@ public class CameraUtil {
 	}
 	
 	public static void update(float delta) {
+		camera.update();
 		var game = GameHolder.getInstance();
-		var camera = game.environment.camera;
 
 		if(game.settings.debugCamera) cameraSpeed = DEFAULT_CAMERA_SPEED;
 

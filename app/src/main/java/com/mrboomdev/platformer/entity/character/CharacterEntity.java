@@ -48,7 +48,7 @@ public class CharacterEntity implements BotTarget {
 	@Json(name = "body")
 	public CharacterBody worldBody;
 	@Json(ignore = true)
-	public String name;
+	public String name = "";
 	@Json(ignore = true)
 	public Sprite aimSprite;
 	@Json(ignore = true)
@@ -91,17 +91,22 @@ public class CharacterEntity implements BotTarget {
 	public BotTarget lookingAtTarget;
 	@Json(ignore = true)
 	private float progressBarProgress;
+	@Json(ignore = true)
+	private FileUtil source;
 
 	public interface DamagedListener {
 		void damaged(CharacterEntity attacker, int damage);
 	}
-	
-	public CharacterEntity cpy(String name, FileUtil source) {
-		return new CharacterEntity(name, skin.build(source), worldBody, stats);
+
+	public CharacterEntity(@NonNull CharacterEntity parent) {
+		this(
+				parent.skin.build(parent.source),
+				parent.worldBody,
+				parent.stats
+		);
 	}
 	
-	public CharacterEntity(String name, CharacterSkin skin, CharacterBody worldBody, @NonNull Entity.Stats stats) {
-		this.name = name;
+	public CharacterEntity(CharacterSkin skin, CharacterBody worldBody, @NonNull Entity.Stats stats) {
 		this.stats = stats;
 		this.worldBody = worldBody;
 
@@ -127,28 +132,32 @@ public class CharacterEntity implements BotTarget {
 		stats.maxStamina = stats.stamina;
 	}
 
+	public void setSource(FileUtil source) {
+		this.source = source;
+	}
+
 	/**
 	 * Creates a character in the world.
 	 */
 	public CharacterEntity create(@NonNull World world) {
 		worldBody.build();
-		BodyDef bodyDef = new BodyDef();
+		var bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
 		
-		PolygonShape shape = new PolygonShape();
+		var shape = new PolygonShape();
 		shape.setAsBox(worldBody.size[0] / 2, worldBody.size[1] / 2);
-		FixtureDef fixtureDef = new FixtureDef();
+		var fixtureDef = new FixtureDef();
 		fixtureDef.shape = shape;
 		fixtureDef.filter.categoryBits = Entity.CHARACTER;
 		fixtureDef.filter.maskBits = Entity.ATTACK | Entity.BULLET | Entity.INTRACTABLE;
 		
-		PolygonShape shape3D = new PolygonShape();
+		var shape3D = new PolygonShape();
 
 		shape3D.setAsBox(
 				worldBody.bottom[0] / 2, worldBody.bottom[1] / 2,
 				new Vector2(worldBody.bottom[2], worldBody.bottom[3]), 0);
 
-		FixtureDef fixture3D = new FixtureDef();
+		var fixture3D = new FixtureDef();
 		fixture3D.shape = shape3D;
 		fixture3D.filter.categoryBits = Entity.CHARACTER_BOTTOM;
 		fixture3D.filter.maskBits = Entity.TILE_BOTTOM;
@@ -280,14 +289,20 @@ public class CharacterEntity implements BotTarget {
 	public void setPosition(float x, float y) {
 		body.setTransform(x, y, 0);
 	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public void drawProjectiles(SpriteBatch batch) {
 		projectileManager.render(batch);
 		if(isDead) return;
 
 		var position = getPosition();
-		boolean isLowHealth = (damagedProgress < 3 && this != game.settings.mainPlayer);
-		boolean isLowEnergy = (stats.stamina < (stats.maxStamina - (stats.maxStamina / 10)) && this == game.settings.mainPlayer);
+		boolean isMainPlayer = this == game.settings.mainPlayer;
+
+		boolean isLowHealth = (damagedProgress < 3 && !isMainPlayer);
+		boolean isLowEnergy = (stats.stamina < (stats.maxStamina - (stats.maxStamina / 10)) && isMainPlayer);
 
 		if((isLowEnergy || isLowHealth) && progressBarProgress < 1) {
 			progressBarProgress += Gdx.graphics.getDeltaTime() * 2;
@@ -302,7 +317,7 @@ public class CharacterEntity implements BotTarget {
 
 		if(isLowHealth || (this != game.settings.mainPlayer && progressBarProgress > 0)) {
 			batch.end();
-			shape.setProjectionMatrix(game.environment.camera.combined);
+			shape.setProjectionMatrix(CameraUtil.camera.combined);
 
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			shape.begin(ShapeRenderer.ShapeType.Filled); {
@@ -321,7 +336,7 @@ public class CharacterEntity implements BotTarget {
 
 		if(isLowEnergy || (this == game.settings.mainPlayer && progressBarProgress > 0)) {
 			batch.end();
-			shape.setProjectionMatrix(game.environment.camera.combined);
+			shape.setProjectionMatrix(CameraUtil.camera.combined);
 
 			Gdx.gl.glEnable(GL20.GL_BLEND);
 			shape.begin(ShapeRenderer.ShapeType.Filled); {
@@ -476,7 +491,7 @@ public class CharacterEntity implements BotTarget {
 		var item = inventory.getCurrentItem();
 		if(item != null) item.dispose();
 
-		if(silently) return;
+		//if(silently) return;
 		//game.script.entitiesBridge.callListener(EntitiesBridge.Function.DIED, this);
 	}
 	

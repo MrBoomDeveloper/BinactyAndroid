@@ -9,7 +9,6 @@ import com.mrboomdev.platformer.entity.character.CharacterCreator;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.game.GameHolder;
-import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
@@ -39,7 +38,7 @@ public class EntitiesBridge {
 			throw BoomException.builder("Tried to create a character, which wasn't been loaded: ").addQuoted(name).build();
 		}
 
-		var character = entities.presets.get(name).cpy("", PackLoader.resolvePath(source.getParent(), name));
+		var character = new CharacterEntity(entities.presets.get(name));
 		return new CharacterCreator(character);
 	}
 	

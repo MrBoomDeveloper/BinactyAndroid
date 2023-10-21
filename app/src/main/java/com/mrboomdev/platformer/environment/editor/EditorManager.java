@@ -11,6 +11,7 @@ import com.mrboomdev.platformer.environment.map.MapTile;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.scenes.core.CoreUi;
 import com.mrboomdev.platformer.util.ActorUtil;
+import com.mrboomdev.platformer.util.CameraUtil;
 
 import java.util.HashMap;
 
@@ -26,7 +27,7 @@ public class EditorManager implements CoreUi.UiDrawer {
 		tileSetter.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Vector3 gamePosition = game.environment.camera.unproject(new Vector3(x, Gdx.graphics.getHeight() - y, 0));
+				Vector3 gamePosition = CameraUtil.camera.unproject(new Vector3(x, Gdx.graphics.getHeight() - y, 0));
 				float[] roundPosition = {Math.round(gamePosition.x), Math.round(gamePosition.y), 0};
 				game.environment.map.addTile(EditorManager.current, roundPosition, EditorManager.layer);
 			}

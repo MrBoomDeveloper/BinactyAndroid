@@ -3,7 +3,6 @@ package com.mrboomdev.binacty.fnaf;
 import com.mrboomdev.binacty.api.client.BinactyClient;
 import com.mrboomdev.binacty.api.pack.PackContext;
 import com.mrboomdev.binacty.api.util.BinactyException;
-import com.mrboomdev.binacty.fnaf.cutscenes.IntroCutscene;
 
 public class Main extends BinactyClient {
 

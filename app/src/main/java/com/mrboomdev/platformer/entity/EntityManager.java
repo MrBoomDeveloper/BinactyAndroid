@@ -1,5 +1,7 @@
 package com.mrboomdev.platformer.entity;
 
+import androidx.annotation.NonNull;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -7,9 +9,11 @@ import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
 import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.game.pack.PackLoader;
 import com.mrboomdev.platformer.util.helper.BoomException;
 import com.mrboomdev.platformer.util.io.FileUtil;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import box2dLight.PointLight;
@@ -27,24 +31,32 @@ public class EntityManager {
 		this.rayHandler = rayHandler;
 	}
 	
-	public void loadCharacter(FileUtil file, String id) {
+	public void loadCharacter(@NonNull FileUtil file, String id) {
 		try {
 			var adapter = Constants.moshi.adapter(CharacterEntity.class);
+			var json = file.goTo("manifest.json").readString();
 
-			presets.put(id, adapter.fromJson(file.goTo("manifest.json").readString()));
-		} catch(Exception e) {
+			var character = Objects.requireNonNull(adapter.fromJson(json));
+			character.setSource(PackLoader.resolvePath(file.getParent(), id));
+
+			presets.put(id, character);
+		} catch(IOException e) {
 			throw new BoomException("Invalid character config file!", e);
 		}
 	}
+
+	public CharacterEntity cloneCharacter(String name) {
+		return new CharacterEntity(presets.get(name));
+	}
 	
-	public void loadItem(FileUtil file, String id) {
+	public void loadItem(@NonNull FileUtil file, String id) {
 		try {
 			var adapter = Constants.moshi.adapter(Item.class);
 			var item = adapter.fromJson(file.goTo("manifest.json").readString());
 
 			Objects.requireNonNull(item).source = file;
 			itemPresets.put(id, item);
-		} catch(Exception e) {
+		} catch(IOException e) {
 			throw new BoomException("Invalid item config file!", e);
 		}
 	}

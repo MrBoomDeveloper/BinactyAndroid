@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.util.ActorUtil;
+import com.mrboomdev.platformer.util.CameraUtil;
 
 import java.util.TreeMap;
 
@@ -31,7 +32,7 @@ public class DebugValuesWidget extends ActorUtil {
 	@Override
 	public void act(float delta) {
 		var game = GameHolder.getInstance();
-		var camera = game.environment.camera;
+		var camera = CameraUtil.camera;
 		var entityPosition = connectedEntity.getPosition();
 
 		setValue("Assets loaded", "[ Internal: " + game.assets.getLoadedAssets() + ", External: " + game.externalAssets.getLoadedAssets() + " ]");

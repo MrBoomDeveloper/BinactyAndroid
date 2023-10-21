@@ -56,7 +56,7 @@ public class MapManager {
 	@Json(ignore = true)
 	private final GameHolder game = GameHolder.getInstance();
 	@Json(ignore = true)
-	private final List<CharacterEntity> characters = new ArrayList<>();
+	private final Map<String, CharacterEntity> characters = new HashMap<>();
 	
 	public void render(SpriteBatch batch) {
 		if(!pendingRemoves.isEmpty()) {
@@ -74,15 +74,19 @@ public class MapManager {
 			object.draw(batch);
 		}
 
-		for(var entity : characters) {
+		for(var entity : characters.values()) {
 			entity.drawProjectiles(batch);
 			entity.aimSprite.draw(batch);
 		}
 	}
 
-	public void addCharacter(CharacterEntity entity) {
-		characters.add(entity);
+	public void addCharacter(String id, CharacterEntity entity) {
+		characters.put(id, entity);
 		objects.add(new MapEntity(entity));
+	}
+
+	public CharacterEntity getCharacter(String id) {
+		return characters.get(id);
 	}
 	
 	public MapManager build(World world, FileUtil source, Runnable callback) {

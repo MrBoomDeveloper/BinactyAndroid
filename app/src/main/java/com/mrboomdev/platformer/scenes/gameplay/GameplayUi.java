@@ -15,7 +15,7 @@ public class GameplayUi extends CoreUi {
 	public GameplayUi() {
 		stage = new Stage();
 		
-		cameraZoom = game.environment.camera.zoom;
+		cameraZoom = CameraUtil.camera.zoom;
 
 		stage.addListener(new ActorGestureListener() {
 			private boolean isJoystickActive() {
@@ -36,14 +36,14 @@ public class GameplayUi extends CoreUi {
 				boolean isZoomLimitExceed = (willZoomTo < 0.3f || willZoomTo > (game.settings.enableEditor ? 10 : 1));
 				if(isZoomLimitExceed && !game.settings.debugCamera) return;
 
-				game.environment.camera.zoom = willZoomTo;
+				CameraUtil.camera.zoom = willZoomTo;
 				CameraUtil.isZoomedForce = true;
 			}
 				
 			@Override
 			public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				if(isJoystickActive()) return;
-				cameraZoom = game.environment.camera.zoom;
+				cameraZoom = CameraUtil.camera.zoom;
 			}
 		});
 	}

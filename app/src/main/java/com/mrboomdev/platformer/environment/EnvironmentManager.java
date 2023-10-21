@@ -1,6 +1,5 @@
 package com.mrboomdev.platformer.environment;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
@@ -24,7 +23,6 @@ import box2dLight.RayHandler;
 
 public class EnvironmentManager {
 	public MapManager map;
-	public OrthographicCamera camera;
 	public GamemodeManager gamemode;
 	public RayHandler rayHandler;
 	public World world;

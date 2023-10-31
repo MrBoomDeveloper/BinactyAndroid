@@ -1,5 +1,7 @@
 package com.mrboomdev.binacty.script.__legacy.world;
 
+import androidx.annotation.NonNull;
+
 import com.mrboomdev.binacty.util.file.BoomFile;
 import com.mrboomdev.platformer.entity.EntityManager;
 import com.mrboomdev.platformer.entity.character.CharacterCreator;
@@ -10,14 +12,23 @@ import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 public class Characters {
 
 	public static void loadForNightId(int id) {
+		if(id == 0 || id == 1) {
+			createCharacters("freddy", "bonnie", "chica", "foxy", "vanessa");
+			return;
+		}
+
+		createCharacters("freddy", "bonnie", "chica", "foxy");
+	}
+
+	public static void createCharacters(@NonNull String... names) {
 		var game = GameHolder.getInstance();
 
-		if(id == 0 || id == 1) {
-			var vanessaPath = BoomFile.internal("packs/fnaf/characters/vanessa").toFileUtil();
-			game.environment.entities.loadCharacter(vanessaPath, "vanessa");
+		for(var name : names) {
+			var vanessaPath = BoomFile.internal("packs/fnaf/characters/" + name).toFileUtil();
+			game.environment.entities.loadCharacter(vanessaPath, name);
 
-			var vanessa = game.environment.entities.cloneCharacter("vanessa");
-			new CharacterCreator(vanessa).create("vanessa", game.environment.map);
+			var vanessa = game.environment.entities.cloneCharacter(name);
+			new CharacterCreator(vanessa).create(name, game.environment.map);
 		}
 	}
 

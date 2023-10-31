@@ -18,6 +18,7 @@ public class Main {
 
 		var saves = bridge.client.getSaves();
 		var player = game.settings.mainPlayer;
+		player.name = "";
 
 		if(saves.getInt("night") == 0) {
 			IntroCutscene.start(bridge);

@@ -21,9 +21,13 @@ import com.mrboomdev.platformer.widgets.DebugValuesWidget;
 import com.mrboomdev.platformer.widgets.JoystickWidget;
 import com.mrboomdev.platformer.widgets.StatBarWidget;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GameplayUi {
 	public EditorScreen editor;
-	public ObjectMap<String, ActorUtil> widgets = new ObjectMap<>();
+	public final ObjectMap<String, ActorUtil> widgets = new ObjectMap<>();
+	public final Map<String, ActorUtil> dynamicWidgets = new HashMap<>();
 	private final GameHolder game = GameHolder.getInstance();
 	private CharacterEntity connectedEntity;
 	

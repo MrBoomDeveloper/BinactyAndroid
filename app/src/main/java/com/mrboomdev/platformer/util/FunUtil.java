@@ -14,9 +14,11 @@ public class FunUtil {
 	
 	public static void update() {
 		var iterator = timerTasks.iterator();
+
 		while(iterator.hasNext()) {
 			var task = iterator.next();
 			task.progress += Gdx.graphics.getDeltaTime();
+
 			if(task.progress > task.delay) {
 				task.runnable.run();
 				iterator.remove();
@@ -24,6 +26,9 @@ public class FunUtil {
 		}
 	}
 
+	/**
+	 * Please use only for simple copy operation!
+	 **/
 	public static <T> T copy(Class<T> clazz, T obj) {
 		var adapter = Constants.moshi.adapter(clazz);
 		var json = adapter.toJson(obj);
@@ -36,13 +41,22 @@ public class FunUtil {
 	}
 
 	@NonNull
+	private static String makeTwoDigitString(int value) {
+		if(value > 9) {
+			return "0" + value;
+		}
+
+		return String.valueOf(value);
+	}
+
+	@NonNull
 	public static String formatTimer(float time, @NonNull String format) {
-		int minutes = (int)(time / 60);
-		int remainingSeconds = (int)(time % 60);
+		float minutes = time / 60;
+		float seconds = time % 60;
 
 		return format
-				.replace("ss", (remainingSeconds > 9) ? String.valueOf(remainingSeconds) : ("0" + remainingSeconds))
-				.replace("mm", (minutes > 9) ? String.valueOf(minutes) : ("0" + minutes));
+				.replace("ss", makeTwoDigitString((int)seconds))
+				.replace("mm", makeTwoDigitString((int)minutes));
 	}
 	
 	public static void setTimer(Runnable runnable, float delay) {

@@ -18,44 +18,23 @@ public class SubtitlesLayout extends ActorUtil {
 	private BitmapFont font;
 	private final List<Subtitle> lines = new ArrayList<>();
 	private int currentLine, wasCharacter;
-	private float progress, fadeDuration;
+	private float progress, fadeDuration, speed, endDuration;
 
-	public Subtitle addLine(String text, float speed, float endDuration, Runnable callback) {
-		var line = new Subtitle();
-		line.text = text;
-		line.endDuration = endDuration;
-		line.speed = speed;
-		line.callback = callback;
-		lines.add(line);
-
-		return line;
+	public SubtitlesLayout() {
+		setDefaultSpeed(.9f);
+		setDefaultEndDuration(2);
+		setDefaultFadeDuration(.5f);
 	}
 
-	public void setSpeechSound(Sound sound) {
-		this.speechSound = sound;
+	public void setDefaultSpeed(float speed) {
+		this.speed = speed;
 	}
 
-	public Subtitle addLine(String text, float speed, float endDuration) {
-		return addLine(text, speed, endDuration, null);
+	public void setDefaultEndDuration(float endDuration) {
+		this.endDuration = endDuration;
 	}
 
-	public Subtitle addLine(String text, float speed, Runnable callback) {
-		return addLine(text, speed, -1, callback);
-	}
-
-	public Subtitle addLine(String text, Runnable callback) {
-		return addLine(text, -1, -1, callback);
-	}
-
-	public Subtitle addLine(String text, float speed) {
-		return addLine(text, speed, -1);
-	}
-
-	public Subtitle addLine(String text) {
-		return addLine(text, -1);
-	}
-
-	public void setFadeDuration(float duration) {
+	public void setDefaultFadeDuration(float duration) {
 		this.fadeDuration = duration;
 	}
 
@@ -94,13 +73,13 @@ public class SubtitlesLayout extends ActorUtil {
 			progress = 0;
 		}
 
-		if(progress < fadeDuration) {
-			font.setColor(1, 1, 1, 1 / fadeDuration * progress);
+		if(progress < line.fadeDuration) {
+			font.setColor(1, 1, 1, 1 / line.fadeDuration * progress);
 		}
 
-		float durationBeforeFade = line.duration + line.endDuration - fadeDuration;
+		float durationBeforeFade = line.duration + line.endDuration - line.fadeDuration;
 		if(progress >= durationBeforeFade) {
-			float alpha = 1 - (1 / fadeDuration * (progress - durationBeforeFade));
+			float alpha = 1 - (1 / line.fadeDuration * (progress - durationBeforeFade));
 			font.setColor(1, 1, 1, alpha);
 		}
 
@@ -120,8 +99,16 @@ public class SubtitlesLayout extends ActorUtil {
 			line.glyph = new GlyphLayout(font, line.text);
 		}
 
+		if(line.speed == -1) {
+			line.speed = speed;
+		}
+
 		if(line.endDuration == -1) {
-			line.endDuration = 1.5f;
+			line.endDuration = endDuration;
+		}
+
+		if(line.fadeDuration == -1) {
+			line.fadeDuration = fadeDuration;
 		}
 
 		if(line.duration == -1) {
@@ -143,11 +130,56 @@ public class SubtitlesLayout extends ActorUtil {
 		font = game.assets.get("subtitles.ttf");
 	}
 
+	public Subtitle addLine() {
+		return new Subtitle(this);
+	}
+
 	public static class Subtitle {
-		public String text;
-		public GlyphLayout glyph;
-		public float duration = -1, speed = 1, endDuration = 2;
-		public Runnable callback;
-		public boolean didCallbackRan;
+		protected String text;
+		protected GlyphLayout glyph;
+		protected float duration = -1, speed = -1, endDuration = -1, fadeDuration = -1;
+		protected Runnable callback;
+		protected boolean didCallbackRan;
+		private SubtitlesLayout owner;
+
+		public Subtitle() {}
+
+		public Subtitle(SubtitlesLayout owner) {
+			this.owner = owner;
+		}
+
+		public Subtitle setText(String text) {
+			this.text = text;
+			return this;
+		}
+
+		public Subtitle setDuration(float duration) {
+			this.duration = duration;
+			return this;
+		}
+
+		public Subtitle setSpeed(float speed) {
+			this.speed = speed;
+			return this;
+		}
+
+		public Subtitle setEndDuration(float endDuration) {
+			this.endDuration = endDuration;
+			return this;
+		}
+
+		public Subtitle setFadeDuration(float fadeDuration) {
+			this.fadeDuration = fadeDuration;
+			return this;
+		}
+
+		public Subtitle setStartCallback(Runnable callback) {
+			this.callback = callback;
+			return this;
+		}
+
+		public void build() {
+			owner.lines.add(this);
+		}
 	}
 }

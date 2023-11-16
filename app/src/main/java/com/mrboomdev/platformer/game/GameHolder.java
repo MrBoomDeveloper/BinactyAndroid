@@ -192,8 +192,8 @@ public class GameHolder extends Game {
 		}
 		
 		@Override
-		public synchronized <T> void load(String file, Class<T> fileClass) {
-			LogUtil.debug(TAG, "Load file: " + file);
+		public synchronized <T> void load(String file, @NonNull Class<T> fileClass) {
+			LogUtil.debug(TAG, "Load file: \"" + file + "\", as: " + fileClass.getSimpleName());
 			super.load(file, fileClass);
 		}
 	}

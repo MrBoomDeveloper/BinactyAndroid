@@ -24,19 +24,22 @@ android {
 	}
 	
 	defaultConfig {
+		var date = new Date()
+
+		var versionNameFormat = new SimpleDateFormat("MM.dd.HH.mm")
+		var versionCodeFormat = new SimpleDateFormat("MMddHHmm")
+		var fancyFormat = new SimpleDateFormat("dd-MM-yy, HH:mm")
+
 		applicationId "com.mrboomdev.platformer"
-		versionName "0.5.0"
-		versionCode 13
+		versionName "0.5.0." + versionNameFormat.format(date)
+		versionCode Integer.parseInt(versionCodeFormat.format(date))
 
 		minSdkVersion rootProject.ext.minSdkVersion
 		targetSdkVersion rootProject.ext.targetSdkVersion
 		compileSdk rootProject.ext.compileSdkVersion
 		multiDexEnabled true
 
-		var formatter = new SimpleDateFormat()
-		formatter.applyPattern("dd-MM-yyyy, HH:mm")
-
-		buildConfigField("String", "BUILD_TIME", "\"" + formatter.format(new Date()) + "\"")
+		buildConfigField("String", "BUILD_TIME", "\"" + fancyFormat.format(date) + "\"")
 
 		buildFeatures {
 			renderScript = true

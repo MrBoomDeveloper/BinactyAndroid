@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.binacty.script.__legacy.LegacyFnafBridge;
 import com.mrboomdev.platformer.game.GameHolder;
+import com.mrboomdev.platformer.ui.gameplay.layout.SubtitlesLayout;
 import com.mrboomdev.platformer.util.CameraUtil;
 import com.mrboomdev.platformer.util.FunUtil;
 import com.mrboomdev.platformer.widgets.FadeWidget;
@@ -13,6 +14,10 @@ public class IntroCutscene {
 
 	public static void start(@NonNull LegacyFnafBridge bridge) {
 		var game = GameHolder.getInstance();
+
+		var subtitles = new SubtitlesLayout();
+		subtitles.addTo(game.environment.stage);
+		game.environment.ui.dynamicWidgets.put("subtitles", subtitles);
 
 		var fade = new FadeWidget(1);
 		fade.addTo(game.environment.stage);
@@ -57,6 +62,33 @@ public class IntroCutscene {
 
 		FunUtil.setTimer(() -> {
 			player.skin.setAnimationForce("walk");
+
+			FunUtil.setTimer(() -> {
+				subtitles.addLine().setText("Uhh...")
+						.setSpeed(.7f)
+						.setFadeDuration(1.5f)
+						.setEndDuration(4)
+						.build();
+
+				FunUtil.setTimer(() -> {
+					subtitles.addLine().setText("Where am i?")
+							.setSpeed(.85f)
+							.setFadeDuration(1)
+							.setEndDuration(2.5f)
+							.build();
+
+					vanessa.dash(player);
+
+					//var brain = new BotFollower();
+					//brain.setEntity(vanessa);
+					//brain.setTarget(player);
+					//brain.start();
+
+					FunUtil.setTimer(() -> {
+						subtitles.addLine().setText("HOLY MOLY!").setSpeed(3).setEndDuration(2).build();
+					}, 1.5f);
+				}, 3);
+			}, 2);
 		}, 10);
 	}
 

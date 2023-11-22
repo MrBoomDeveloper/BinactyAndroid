@@ -79,14 +79,15 @@ public class SubtitlesLayout extends ActorUtil {
 			progress = 0;
 		}
 
-		if(progress < line.fadeDuration) {
-			font.setColor(1, 1, 1, Math.min(1, 1 / line.fadeDuration * progress));
-		}
-
 		float durationBeforeFade = line.duration + line.endDuration - line.fadeDuration;
-		if(progress >= durationBeforeFade) {
+
+		if(progress < line.fadeDuration) {
+			font.setColor(1, 1, 1, 1 / line.fadeDuration * progress);
+		} else if(progress >= durationBeforeFade) {
 			float alpha = 1 - (1 / line.fadeDuration * (progress - durationBeforeFade));
 			font.setColor(1, 1, 1, alpha);
+		} else {
+			font.setColor(1, 1, 1, 1);
 		}
 
 		line.glyph.setText(font, letterByLetter ? line.text.substring(0, currentCharacter) : line.text);

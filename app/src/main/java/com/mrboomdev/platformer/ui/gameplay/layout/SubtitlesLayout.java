@@ -19,11 +19,17 @@ public class SubtitlesLayout extends ActorUtil {
 	private final List<Subtitle> lines = new ArrayList<>();
 	private int currentLine, wasCharacter;
 	private float progress, fadeDuration, speed, endDuration;
+	private boolean letterByLetter;
 
 	public SubtitlesLayout() {
 		setDefaultSpeed(.9f);
 		setDefaultEndDuration(2);
 		setDefaultFadeDuration(.5f);
+		setLetterByLetterEffectEnabled(true);
+	}
+
+	public void setLetterByLetterEffectEnabled(boolean enable) {
+		this.letterByLetter = enable;
 	}
 
 	public void setDefaultSpeed(float speed) {
@@ -74,7 +80,7 @@ public class SubtitlesLayout extends ActorUtil {
 		}
 
 		if(progress < line.fadeDuration) {
-			font.setColor(1, 1, 1, 1 / line.fadeDuration * progress);
+			font.setColor(1, 1, 1, Math.min(1, 1 / line.fadeDuration * progress));
 		}
 
 		float durationBeforeFade = line.duration + line.endDuration - line.fadeDuration;
@@ -83,7 +89,7 @@ public class SubtitlesLayout extends ActorUtil {
 			font.setColor(1, 1, 1, alpha);
 		}
 
-		line.glyph.setText(font, line.text.substring(0, currentCharacter));
+		line.glyph.setText(font, letterByLetter ? line.text.substring(0, currentCharacter) : line.text);
 
 		font.draw(batch, line.glyph,
 				Gdx.graphics.getWidth() / 2f - line.glyph.width / 2f,
@@ -104,7 +110,7 @@ public class SubtitlesLayout extends ActorUtil {
 		}
 
 		if(line.endDuration == -1) {
-			line.endDuration = endDuration;
+			line.endDuration = (line.duration == -1) ? endDuration : 0;
 		}
 
 		if(line.fadeDuration == -1) {

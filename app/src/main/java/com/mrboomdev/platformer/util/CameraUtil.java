@@ -82,7 +82,7 @@ public class CameraUtil {
 	public static void setTarget(BotTarget target) {
 		var game = GameHolder.getInstance();
 
-		if(game.settings.debugCamera && target != game.settings.mainPlayer) return;
+		if(game.settings.debugCamera) return;
 
 		if(target == null) {
 			if(CameraUtil.target == null) {
@@ -97,12 +97,22 @@ public class CameraUtil {
 	}
 	
 	public static void update(float delta) {
-		camera.update();
 		var game = GameHolder.getInstance();
+		camera.update();
 
-		if(game.settings.debugCamera) cameraSpeed = DEFAULT_CAMERA_SPEED;
+		if(game.settings.debugCamera) {
+			cameraSpeed = DEFAULT_CAMERA_SPEED;
+		}
 
+		updateEffects(delta);
+		updateZoom();
+		updatePosition();
+	}
+
+	private static void updateEffects(float delta) {
+		var game = GameHolder.getInstance();
 		shakeProgress += delta;
+
 		if(shakeProgress < shakeDuration && !game.settings.debugCamera) {
 			shakeCurrent.set(
 					(float)(Math.random() * shakePower - (shakePower / 2)),
@@ -110,16 +120,23 @@ public class CameraUtil {
 		} else {
 			shakeCurrent.setZero();
 		}
+	}
 
-		var newPosition = target != null ? target.getPosition() : cameraPosition;
+	private static void updatePosition() {
+		var newPosition = (target != null ? target.getPosition() : cameraPosition).cpy().add(offset);
+		float speed = cameraSpeed / camera.zoom;
 
-		camera.position.set(shakeCurrent.add(
-				camera.position.x + ((newPosition.x + offset.x) - camera.position.x) * (cameraSpeed / camera.zoom),
-				camera.position.y + ((newPosition.y + offset.y) - camera.position.y) * (cameraSpeed / camera.zoom)
+		camera.position.set(shakeCurrent.cpy().add(
+				camera.position.x + ((newPosition.x - camera.position.x) * speed),
+				camera.position.y + ((newPosition.y - camera.position.y) * speed)
 		), 0);
+	}
 
-		if(!game.settings.enableEditor && !isZoomedForce && !game.settings.debugCamera) {
-			camera.zoom = camera.zoom + (cameraZoomSize - camera.zoom) * cameraZoomSpeed;
-		}
+	private static void updateZoom() {
+		var game = GameHolder.getInstance();
+		if(game.settings.enableEditor || isZoomedForce || game.settings.debugCamera) return;
+
+		float diff = cameraZoomSize - camera.zoom;
+		camera.zoom = camera.zoom + (diff * cameraZoomSpeed);
 	}
 }

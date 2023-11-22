@@ -139,6 +139,9 @@ public class Entity {
 		public boolean force;
 		public Frame[] frames;
 		public PlayMode mode;
+		public String parent;
+		@Json(name = "shadow_position")
+		public float[] shadowPosition;
 	}
 
 	@SuppressWarnings("unused")

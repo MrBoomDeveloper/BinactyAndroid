@@ -11,7 +11,7 @@ import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 
 public class Characters {
 
-	public static void loadForNightId(int id) {
+	public static void createForNightId(int id) {
 		if(id == 0 || id == 1) {
 			createCharacters("freddy", "bonnie", "chica", "foxy", "vanessa");
 			return;
@@ -28,7 +28,7 @@ public class Characters {
 			game.environment.entities.loadCharacter(vanessaPath, name);
 
 			var vanessa = game.environment.entities.cloneCharacter(name);
-			new CharacterCreator(vanessa).create(name, game.environment.map);
+			CharacterCreator.create(vanessa, name, game.environment.map);
 		}
 	}
 
@@ -40,14 +40,13 @@ public class Characters {
 		game.environment.entities.loadCharacter(path, "klarrie");
 
 		var player = game.environment.entities.cloneCharacter("klarrie");
-		new CharacterCreator(player).create("klarrie", game.environment.map);
+		CharacterCreator.create(player, "klarrie", game.environment.map);
 		player.setName(game.settings.playerName);
 
 		game.settings.mainPlayer = player;
 		game.environment.setupRayHandler();
 		game.environment.entities.setMain(player);
 
-		CameraUtil.setCameraPosition(player.getPosition().x, player.getPosition().y);
 		CameraUtil.setTarget(player);
 		AudioUtil.setTarget(player);
 	}

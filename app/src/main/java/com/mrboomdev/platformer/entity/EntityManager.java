@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.mrboomdev.binacty.Constants;
 import com.mrboomdev.platformer.entity.character.CharacterEntity;
+import com.mrboomdev.platformer.entity.character.CharacterProgrammable;
 import com.mrboomdev.platformer.entity.item.Item;
 import com.mrboomdev.platformer.game.GameHolder;
 import com.mrboomdev.platformer.game.pack.PackLoader;
@@ -45,8 +46,8 @@ public class EntityManager {
 		}
 	}
 
-	public CharacterEntity cloneCharacter(String name) {
-		return new CharacterEntity(presets.get(name));
+	public CharacterProgrammable cloneCharacter(String name) {
+		return new CharacterProgrammable(presets.get(name));
 	}
 	
 	public void loadItem(@NonNull FileUtil file, String id) {

@@ -55,7 +55,7 @@ public class LegacyFnafBridge {
 
 					map.build(game.environment.world, mapFile.toFileUtil(), () -> Gdx.app.postRunnable(() -> {
 						Characters.create();
-						Characters.loadForNightId(client.getSaves().getInt("night"));
+						Characters.createForNightId(client.getSaves().getInt("night"));
 
 						ui = new GameplayUi();
 						Gdx.input.setInputProcessor(ui.stage);

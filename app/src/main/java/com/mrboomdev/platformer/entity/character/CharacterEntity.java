@@ -39,8 +39,6 @@ import com.mrboomdev.platformer.util.io.FileUtil;
 import com.mrboomdev.platformer.util.io.audio.AudioUtil;
 import com.squareup.moshi.Json;
 
-import org.jetbrains.annotations.Nullable;
-
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class CharacterEntity implements BotTarget {
 	public Entity.Stats stats;
@@ -55,8 +53,6 @@ public class CharacterEntity implements BotTarget {
 	public ItemInventory inventory;
 	@Json(ignore = true)
 	public Fixture bottomFixture;
-	@Json(ignore = true)
-	public CharacterBrain brain;
 	@Json(ignore = true)
 	public TileInteraction nearInteraction;
 	@Json(ignore = true)
@@ -185,13 +181,6 @@ public class CharacterEntity implements BotTarget {
 		this.lookingAtTarget = target;
 	}
 
-	public CharacterEntity setBrain(@Nullable CharacterBrain brain) {
-		if(brain != null) brain.setEntity(this);
-
-		this.brain = brain;
-		return this;
-	}
-
 	public void update() {
 		cachedPosition = null;
 		projectileManager.clearTrash();
@@ -237,11 +226,21 @@ public class CharacterEntity implements BotTarget {
 				stats.health = Math.min((int) healthPhantom, stats.maxHealth);
 			}
 
-			if(this != game.settings.mainPlayer && brain == null) {
+			if(shouldStopSliding()) {
 				body.setLinearVelocity(Vector2.Zero);
 				skin.setAnimation(IDLE);
 			}
 		}
+	}
+
+	protected boolean shouldStopSliding() {
+		return this != game.settings.mainPlayer;
+	}
+
+	protected boolean canDash() {
+		return (!isDashing && !isDead
+				&& stats.stamina > Entity.DASH_COST
+				&& dashReloadProgress > Entity.DASH_DELAY);
 	}
 
 	public void draw(SpriteBatch batch) {
@@ -251,9 +250,12 @@ public class CharacterEntity implements BotTarget {
 
 		var opacity = getOpacity();
 		var position = getPosition();
+		var shadowPosition = skin.getCurrentAnimationDeclaration().shadowPosition;
+
+		if(shadowPosition == null) shadow.setCenter(position.x, position.y - worldBody.size[1] / 2);
+		else shadow.setCenter(position.x + shadowPosition[0], position.y - worldBody.size[1] / 2 + shadowPosition[1]);
 
 		shadow.setAlpha(opacity);
-		shadow.setCenter(position.x, position.y - worldBody.size[1] / 2);
 		shadow.draw(batch);
 
 		var shader = game.environment.shader;
@@ -266,8 +268,6 @@ public class CharacterEntity implements BotTarget {
 		shader.setUniformf("flashProgress", 0);
 
 		inventory.draw(batch, position, skin, getDirection().isBackward());
-
-		if(brain != null) brain.update();
 	}
 
 	public void setIsAiming(boolean isAiming) {
@@ -399,7 +399,7 @@ public class CharacterEntity implements BotTarget {
 	}
 	
 	public void dash(float x, float y, float duration) {
-		if(stats.stamina < Entity.DASH_COST || isDashing || dashReloadProgress < Entity.DASH_DELAY || isDead) return;
+		if(!canDash()) return;
 		
 		stats.stamina -= Entity.DASH_COST;
 		dashProgress = 0;

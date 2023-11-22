@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class CharacterSkin {
+	private static final String TAG = "CharacterSkin";
 	@SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "unused"})
 	@Json(name = "animations")
 	private Map<String, Entity.Animation> animationsJson;
@@ -105,7 +106,7 @@ public class CharacterSkin {
 	public void setAnimationNow(String name) {
 		animationProgress = 0;
 		currentAnimation = name;
-		LogUtil.debug(LogUtil.Tag.ANIMATION, hashCode() + " : Set character animation to: " + name);
+		LogUtil.debug(TAG, hashCode() + " : Set character animation to: " + name);
 	}
 
 	private boolean isShouldSkipAnimation(String animationType) {
@@ -215,6 +216,10 @@ public class CharacterSkin {
 			var mode = entry.getValue().mode != null ? entry.getValue().mode : PlayMode.LOOP;
 			Animation<Entity.Frame> animation = new Animation<>(entry.getValue().delay, frames, mode);
 			animations.put(entry.getKey(), animation);
+
+			if(entry.getValue().parent != null) {
+				LogUtil.warn(TAG, "Parent animations isn't implemented yet!");
+			}
 		}
 
 		setAnimation(IDLE);

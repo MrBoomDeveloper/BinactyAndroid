@@ -54,34 +54,21 @@ public class LogUtil {
 		return Log.getStackTraceString(t);
 	}
 
-	public static void debug(@NonNull Tag tag, String message) {
-		debug(tag.title, message);
-	}
-
 	public static void debug(String tag, String message) {
 		if(!BuildConfig.DEBUG) return;
 
 		Log.d(tag, message);
 	}
 
+	public static void warn(String tag, String message) {
+		if(!BuildConfig.DEBUG) return;
+
+		Log.w(tag, message);
+	}
+
 	public static void error(String tag, String message) {
 		if(!BuildConfig.DEBUG) return;
 
 		Log.e(tag, message);
-	}
-	
-	public enum Tag {
-		SHADERS("Shaders"),
-		BOT("BotBrain"),
-		SCRIPT_API("BinactyApi"),
-		ANALYTICS("Analytics"),
-		ANIMATION("Animation"),
-		PLATFORM("Platform");
-		
-		public final String title;
-		
-		Tag(String title) {
-			this.title = title;
-		}
 	}
 }

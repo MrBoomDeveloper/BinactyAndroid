@@ -79,6 +79,7 @@ public class IntroCutscene {
 		CameraUtil.setCameraMoveSpeed(.005f);
 		CameraUtil.setCameraPosition(37, 42);
 		CameraUtil.setCameraZoom(.1f, .005f);
+		CameraUtil.setCameraOffset(0, .05f);
 		fade.start(1, 0, .05f);
 
 		FunUtil.setTimer(() -> {
@@ -109,6 +110,9 @@ public class IntroCutscene {
 						vanessaBrain.setGoStraightToTarget(true);
 						vanessaBrain.setTarget(36, 46);
 						vanessaBrain.start();
+
+						FunUtil.setTimer(() -> CameraUtil.addCameraShake(
+								.35f, .2f, .15f), .75f);
 
 						FunUtil.setTimer(() -> {
 							player.skin.setAnimationForce("sit_scared");

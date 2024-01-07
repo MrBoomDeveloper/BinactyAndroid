@@ -5,23 +5,27 @@ import com.badlogic.gdx.math.Vector2;
 import com.mrboomdev.platformer.entity.bot.BotTarget;
 import com.mrboomdev.platformer.game.GameHolder;
 
+import java.util.Random;
+
 @SuppressWarnings("unused")
 public class CameraUtil {
 	public static boolean isZoomedForce, isOffsetForce;
 	private static BotTarget target;
+	private static final Random random = new Random();
 	private static final float DEFAULT_CAMERA_SPEED = .05f;
-	private static float shakePower, shakeDuration, shakeProgress;
+	private static float shakePower, shakeDuration, shakeProgress, shakeLimit;
 	private static float cameraZoomSize, cameraZoomSpeed, cameraSpeed;
 	private static final Vector2 shakeCurrent = new Vector2();
 	private static final Vector2 offset = new Vector2();
 	private static final Vector2 cameraPosition = new Vector2();
 	public static OrthographicCamera camera;
 	
-	public static void addCameraShake(float power, float duration) {
+	public static void addCameraShake(float power, float duration, float limit) {
 		if(GameHolder.getInstance().settings.debugCamera) return;
 
 		if(shakeProgress < shakeDuration && shakePower < .5f) {
 			shakePower += power;
+			shakeLimit += limit;
 			shakeDuration += duration;
 			return;
 		}
@@ -29,7 +33,12 @@ public class CameraUtil {
 		shakePower = power;
 		shakeDuration = duration;
 		shakeProgress = 0;
+		shakeLimit = limit;
 		shakeCurrent.setZero();
+	}
+
+	public static void addCameraShake(float power, float duration) {
+		addCameraShake(power, duration, power);
 	}
 
 	public static void setCamera(OrthographicCamera _camera) {
@@ -115,8 +124,8 @@ public class CameraUtil {
 
 		if(shakeProgress < shakeDuration && !game.settings.debugCamera) {
 			shakeCurrent.set(
-					(float)(Math.random() * shakePower - (shakePower / 2)),
-					(float)Math.random() * shakePower - (shakePower / 2));
+					Math.max(-shakeLimit, (random.nextFloat() * shakePower - (shakePower / 2))),
+					Math.min(shakeLimit, (random.nextFloat() * shakePower - (shakePower / 2))));
 		} else {
 			shakeCurrent.setZero();
 		}
